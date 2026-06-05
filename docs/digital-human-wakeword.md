@@ -1,43 +1,43 @@
-# 数字人digital-human启动方法
+#Phương pháp khởi nghiệp số-con người
 
-## 概述
+## Tổng quan
 
-测试页面集成了基于 **Sherpa-ONNX** 的高精度语音唤醒功能，支持自定义唤醒词和实时检测。使用轻量级关键词检测模型，提供毫秒级响应速度。
+Trang thử nghiệm tích hợp chức năng đánh thức bằng giọng nói có độ chính xác cao dựa trên **Sherpa-ONNX**, hỗ trợ các từ đánh thức tùy chỉnh và phát hiện theo thời gian thực. Sử dụng mô hình phát hiện từ khóa nhẹ để cung cấp tốc độ phản hồi ở mức mili giây.
 
-## 唤醒词模型
+## Mô hình từ đánh thức
 
-### 模型下载（必需）
+### Tải xuống mô hình (bắt buộc)
 
-**重要说明**: 项目不包含模型文件，需要提前下载配置。
+**Lưu ý quan trọng**: Dự án không chứa tệp mô hình và cần phải tải xuống cấu hình trước.
 
-### 官方模型下载地址
+### Địa chỉ tải mẫu chính thức
 
-- **官方模型列表**: <https://csukuangfj.github.io/sherpa/onnx/kws/pretrained_models/index.html>
-- **推荐模型**: `sherpa-onnx-kws-zipformer-wenetspeech-3.3M-2024-01-01`
+- **Danh sách người mẫu chính thức**: <https://csukuangfj.github.io/sherpa/onnx/kws/pretrain_models/index.html>
+- **Mẫu máy đề xuất**: `sherpa-onnx-kws-zipformer-wenetspeech-3.3M-2024-01-01`
 
-### 下载和配置步骤
+### Các bước tải xuống và cấu hình
 
-#### 1. 下载模型包
+#### 1. Tải gói mô hình
 
-```bash
-# 方法1：直接下载（推荐）
+``` bash
+#Phương pháp 1: Tải xuống trực tiếp (khuyến nghị)
 cd main/digital-human/wakeword_runtime/
 wget https://github.com/k2-fsa/sherpa-onnx/releases/download/kws-models/sherpa-onnx-kws-zipformer-wenetspeech-3.3M-2024-01-01.tar.bz2
 
-# 解压
+# Giải nén
 tar xvf sherpa-onnx-kws-zipformer-wenetspeech-3.3M-2024-01-01.tar.bz2
 
-# 方法2：使用ModelScope
-pip install modelscope
-python -c "
-from modelscope import snapshot_download
+#Phương pháp 2: Sử dụng ModelScope
+cài đặt pip mô hình
+trăn -c"
+từ nhập modelscope snapshot_download
 snapshot_download('pkufool/sherpa-onnx-kws-zipformer-wenetspeech-3.3M-2024-01-01', cache_dir='./models')
 "
 ```
 
-#### 2. 配置模型文件
+#### 2. Cấu hình file model
 
-模型包下载后包含以下文件：
+Gói mô hình chứa các tệp sau sau khi tải xuống:
 
 ```
 sherpa-onnx-kws-zipformer-wenetspeech-3.3M-2024-01-01/
@@ -59,52 +59,52 @@ sherpa-onnx-kws-zipformer-wenetspeech-3.3M-2024-01-01/
 └── README.md                     # 说明文档（可选）
 ```
 
-#### 3. 选择配置方案
+#### 3. Chọn phương án cấu hình
 
-**方案一：精度优先（推荐）**
+**Tùy chọn 1: Độ chính xác là trên hết (được khuyến nghị)**
 
 ```bash
 cd sherpa-onnx-kws-zipformer-wenetspeech-3.3M-2024-01-01
 
-# 创建模型目录
-mkdir -p ../models
+#Tạo thư mục mô hình
+mkdir -p ../model
 
-# 复制精度优先的epoch-99 fp32三件套
-cp encoder-epoch-99-avg-1-chunk-16-left-64.onnx ../models/encoder.onnx
-cp decoder-epoch-99-avg-1-chunk-16-left-64.onnx ../models/decoder.onnx
+# Sao chép bộ ba mảnh ưu tiên độ chính xác epoch-99 fp32
+cp bộ mã hóa-epoch-99-avg-1-chunk-16-left-64.onnx ../models/encoding.onnx
+bộ giải mã cp-epoch-99-avg-1-chunk-16-left-64.onnx ../models/decoding.onnx
 cp joiner-epoch-99-avg-1-chunk-16-left-64.onnx ../models/joiner.onnx
 
-# 复制配套文件
-cp tokens.txt ../models/tokens.txt
-# keywords_raw.txt 如果模型包里附带，可自行保留；runtime 不依赖它
+# Sao chép các tập tin hỗ trợ
+cp token.txt ../models/tokens.txt
+# keywords_raw.txt Nếu nó đi kèm với gói mô hình, bạn có thể tự giữ nó; thời gian chạy không phụ thuộc vào nó
 ```
 
-**方案二：速度优先**
+**Phương án 2: Ưu tiên tốc độ**
 
 ```bash
 cd sherpa-onnx-kws-zipformer-wenetspeech-3.3M-2024-01-01
 
-# 创建模型目录
-mkdir -p ../models
+#Tạo thư mục mô hình
+mkdir -p ../model
 
-# 复制速度优先的epoch-99 int8三件套
-cp encoder-epoch-99-avg-1-chunk-16-left-64.int8.onnx ../models/encoder.onnx
-cp decoder-epoch-99-avg-1-chunk-16-left-64.onnx ../models/decoder.onnx
+# Bộ ba mảnh ưu tiên tốc độ sao chép epoch-99 int8
+cp bộ mã hóa-epoch-99-avg-1-chunk-16-left-64.int8.onnx ../models/encoding.onnx
+bộ giải mã cp-epoch-99-avg-1-chunk-16-left-64.onnx ../models/decoding.onnx
 cp joiner-epoch-99-avg-1-chunk-16-left-64.int8.onnx ../models/joiner.onnx
 
-# 复制配套文件
-cp tokens.txt ../models/tokens.txt
+# Sao chép các tập tin hỗ trợ
+cp token.txt ../models/tokens.txt
 ```
 
-**注意事项**:
+**Ghi chú**:
 
-- **不要混用 fp32 与 int8**：三个模型文件必须保持一致的精度
-- **优先选择 epoch-99**：比 epoch-12 训练更充分，精度更高
-- **必需文件**：`encoder.onnx` + `decoder.onnx` + `joiner.onnx` + `tokens.txt` + `keywords.txt`
+- **Không trộn lẫn fp32 và int8**: ba tệp mô hình phải duy trì độ chính xác nhất quán
+- **Ưu tiên epoch-99**: đào tạo đầy đủ hơn và độ chính xác cao hơn epoch-12
+- **Hồ sơ cần thiết**: `encoder.onnx` + `decoder.onnx` + `joiner.onnx` + `tokens.txt` + `keywords.txt`
 
-### 最终模型文件结构
+### Cấu trúc file mô hình cuối cùng
 
-配置完成后，模型文件应放在 `wakeword_runtime/models/` 目录下，完整路径为 `main/digital-human/wakeword_runtime/models/`：
+Sau khi cấu hình hoàn tất, tệp mô hình phải được đặt trong thư mục `wakeword_runtime/models/` và đường dẫn đầy đủ là `main/digital-human/wakeword_runtime/models/`:
 
 ```
 wakeword_runtime/models/
@@ -116,31 +116,31 @@ wakeword_runtime/models/
 └── keywords_raw.txt  # 可选，runtime 不依赖
 ```
 
-## 启动方式
+## Phương thức khởi động
 
-在 `main/digital-human` 目录执行：
+Thực thi trong thư mục `main/digital-human`:
 
 ```bash
 pip install -r wakeword_runtime/requirements.txt
 python start.py
 ```
 
-启动后默认地址：
+Địa chỉ mặc định sau khi khởi động:
 
-- 页面地址：`http://127.0.0.1:8006/index.html`
-- 事件桥地址：`ws://127.0.0.1:8006/wakeword-ws`
-- 健康检查：`http://127.0.0.1:8006/health`
+- Địa chỉ trang: `http://127.0.0.1:8006/index.html`
+- Địa chỉ cầu nối sự kiện: `ws://127.0.0.1:8006/wakeword-ws`
+- Khám sức khỏe: `http://127.0.0.1:8006/health`
 
-停止方式：
+Phương pháp dừng:
 
-- 在运行终端按 `Ctrl+C`
-- 会同时停止静态页面服务、事件桥和唤醒词检测流程
+- Nhấn `Ctrl+C` trong terminal đang chạy
+- Dịch vụ trang tĩnh, cầu sự kiện và quá trình phát hiện từ đánh thức sẽ bị dừng cùng lúc
 
-## 配置文件说明
+## Mô tả tệp cấu hình
 
-配置文件位于 [main/digital-human/wakeword_runtime/config.json](../main/digital-human/wakeword_runtime/config.json)。
+Tệp cấu hình được đặt tại [main/digit-human/wakeword_runtime/config.json](../main/digital-human/wakeword_runtime/config.json).
 
-当前主要配置项：
+Các mục cấu hình chính hiện tại:
 
 ```json
 {
@@ -170,51 +170,51 @@ python start.py
 }
 ```
 
-各字段含义：
+Ý nghĩa của từng trường:
 
-| 参数 | 说明 |
+| Thông số | Mô tả |
 | --- | --- |
-| `wakeword.enabled` | 是否启用本地唤醒词检测 |
-| `model_dir` | 模型和词表所在目录 |
-| `audio.input_device` | 麦克风输入设备，默认使用系统默认设备 |
-| `audio.sample_rate` | 采样率，默认 `16000` |
-| `audio.channels` | 声道数，默认 `1` |
-| `detector.num_threads` | 检测器线程数 |
-| `detector.provider` | 推理 provider，当前通常为 `cpu` |
-| `detector.max_active_paths` | 搜索路径数 |
-| `detector.keywords_score` | 关键词增强分数 |
-| `detector.keywords_threshold` | 检测阈值 |
-| `detector.num_trailing_blanks` | 尾随空白数量 |
-| `detector.cooldown_seconds` | 连续触发冷却时间 |
-| `logging.level` | 日志等级 |
-| `logging.dir` | 日志目录 |
-| `logging.file` | 日志文件名 |
+| `wakeword.enabled` | Có bật tính năng phát hiện từ đánh thức cục bộ hay không |
+| `model_dir` | Thư mục chứa mô hình và từ vựng |
+| `audio.input_device` | Thiết bị đầu vào micrô, thiết bị mặc định của hệ thống được sử dụng theo mặc định |
+| `audio.sample_rate` | Tốc độ lấy mẫu, mặc định `16000` |
+| `audio.channels` | Số kênh, mặc định `1` |
+| `detector.num_threads` | Số lượng chủ đề máy dò |
+| `detector.provider` | Nhà cung cấp suy luận, hiện nay thường `cpu` |
+| `detector.max_active_paths` | Số đường dẫn tìm kiếm |
+| `detector.keywords_score` | Điểm nâng cao từ khóa |
+| `detector.keywords_threshold` | Ngưỡng phát hiện |
+| `detector.num_trailing_blanks` | Số lượng khoảng trống ở cuối |
+| `detector.cooldown_seconds` | Thời gian làm mát kích hoạt liên tục |
+| `logging.level` | Cấp độ nhật ký |
+| `logging.dir` | Thư mục nhật ký |
+| `logging.file` | Tên tệp nhật ký |
 
-## 推荐使用流程
+## Quy trình sử dụng được đề xuất
 
-### 首次使用
+### Lần đầu sử dụng
 
-1. 准备 `models/` 目录下的模型文件和 `tokens.txt`
-2. 确认 `models/keywords.txt` 存在
-3. 在 `digital-human` 目录运行 `python start.py`
-4. 浏览器打开 `http://127.0.0.1:8006/index.html`
-5. 进入设置页检查“唤醒词”配置
+1. Chuẩn bị file mô hình và `tokens.txt` trong thư mục `models/`
+2. Xác nhận rằng `models/keywords.txt` tồn tại
+3. Chạy `python start.py` trong thư mục `digital-human`
+4. Mở trình duyệt `http://127.0.0.1:8006/index.html`
+5. Vào trang cài đặt để kiểm tra cấu hình "Wake Word"
 
-### 修改唤醒词
+### Sửa đổi từ đánh thức
 
-1. 打开数字人页面设置
-2. 切到“唤醒词”页签
-3. 修改启用状态或唤醒词列表
-4. 点击“应用唤醒词”
-5. 根据提示决定是否立即重启
+1. Mở cài đặt trang Digital Man
+2. Chuyển sang tab “Wake Word”
+3. Sửa đổi trạng thái kích hoạt hoặc danh sách từ đánh thức
+4. Nhấp vào "Áp dụng Wake Word"
+5. Quyết định có khởi động lại ngay lập tức theo lời nhắc hay không
 
-### 禁用唤醒词
+### Tắt từ đánh thức
 
-1. 将“启用本地唤醒词”改成禁用
-2. 点击“应用唤醒词”
-3. 建议立即重启一次
+1. Thay đổi "Bật từ đánh thức cục bộ" thành tắt
+2. Nhấp vào "Áp dụng Wake Word"
+3. Nên khởi động lại ngay
 
-禁用后：
+Sau khi vô hiệu hóa:
 
-- 页面与事件桥仍然可用
-- 唤醒词检测不会继续运行
+- Cầu trang và sự kiện vẫn có sẵn
+- Phát hiện từ đánh thức sẽ không tiếp tục chạy

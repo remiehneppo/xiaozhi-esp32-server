@@ -1,58 +1,58 @@
-# 智控台 火山双流式语音合成+音色克隆配置教程
+# Bảng điều khiển thông minh Tổng hợp giọng nói hai luồng Volcano + hướng dẫn cấu hình nhân bản giai điệu
 
-本教程分为4个阶段：准备阶段、配置阶段、克隆阶段、使用阶段。主要是介绍通过智控台配置火山双流式语音合成+音色克隆的过程。
+Hướng dẫn này được chia thành 4 giai đoạn: giai đoạn chuẩn bị, giai đoạn cấu hình, giai đoạn nhân bản và giai đoạn sử dụng. Nó chủ yếu giới thiệu quy trình định cấu hình tổng hợp giọng nói dòng kép + nhân bản âm thanh của Volcano thông qua bảng điều khiển thông minh.
 
-## 第一阶段：准备阶段
-超级管理员先预先把火山引擎服务开通好，获取到App Id，Access Token。默认火上引擎会赠送一个音色资源。这个音色资源需要把它复制到本项目里。
+## Giai đoạn đầu tiên: giai đoạn chuẩn bị
+Quản trị viên cấp cao trước tiên sẽ kích hoạt trước dịch vụ Volcano Engine và lấy ID ứng dụng và Mã thông báo truy cập. Theo mặc định, Huoshang Engine sẽ cung cấp tài nguyên âm thanh. Tài nguyên âm thanh này cần được sao chép vào dự án này.
 
-如果你想克隆多个音色，需要购买开通多个音色资源。只要把每个音色资源的声音ID(S_xxxxx)复制到本项目。然后分配给系统的账号使用即可。以下是详细步骤：
+Nếu bạn muốn sao chép nhiều âm sắc, bạn cần mua và kích hoạt nhiều tài nguyên âm sắc. Chỉ cần sao chép ID âm thanh (S_xxxxx) của từng tài nguyên âm thanh vào dự án này. Sau đó sử dụng tài khoản được gán cho hệ thống. Dưới đây là các bước chi tiết:
 
-### 1.开通火山引擎服务
-访问 https://console.volcengine.com/speech/app  在应用管理创建应用，勾选语音合成大模型和声音复刻大模型。
+### 1. Kích hoạt dịch vụ động cơ núi lửa
+Truy cập https://console.volcengine.com/speech/app, tạo một ứng dụng trong quản lý ứng dụng và kiểm tra mô hình tổng hợp giọng nói cũng như mô hình tái tạo âm thanh.
 
-### 2.获取音色资源ID
-访问 https://console.volcengine.com/speech/service/9999 复制三项内容，分别是App Id，Access Token以及声音ID(S_xxxxx)。如图
+### 2. Lấy ID tài nguyên âm sắc
+Truy cập https://console.volcengine.com/speech/service/9999 và sao chép ba mục, đó là Id ứng dụng, Mã thông báo truy cập và ID âm thanh (S_xxxxx). Như thể hiện trong images
 
-![获取音色资源](images/image-clone-integration-01.png)
+![Nhận tài nguyên âm thanh](images/image-clone-integration-01.png)
 
-## 第二阶段：配置火山引擎服务
+## Giai đoạn 2: Cấu hình Volcano Engine Service
 
-### 1.填写火山引擎配置
+### 1. Điền cấu hình động cơ núi lửa
 
-使用超级管理员账号登录智控台，点击顶部【模型配置】，再点击模型配置页面左侧的【语音合成】，搜索找到“火山双流式语音合成”，点击修改，将你火山引擎的`App Id`填入到【应用ID】字段里，将`Access Token`填入到【访问令牌】字段里。然后保存。
+Sử dụng tài khoản quản trị viên cấp cao để đăng nhập vào bảng điều khiển thông minh, nhấp vào [Cấu hình mô hình] ở trên cùng, sau đó nhấp vào [Tổng hợp giọng nói] ở bên trái của trang cấu hình mô hình, tìm kiếm "Tổng hợp giọng nói hai luồng Volcano", nhấp vào Sửa đổi, điền `App Id` của công cụ Volcano của bạn vào trường [ID ứng dụng] và điền `Access Token` vào trường [Mã thông báo truy cập]. Sau đó lưu lại.
 
-### 2.将音色资源ID分配给系统账号
+### 2. Gán ID tài nguyên âm sắc cho tài khoản hệ thống
 
-使用超级管理员账号登录智控台，点击顶部`参数字典`，在下拉菜单中，点击`系统功能配置`页面。在页面上勾选`音色克隆`，点击保存配置。即可在顶部菜单看到`音色克隆`按钮。
+Sử dụng tài khoản quản trị viên cấp cao để đăng nhập vào bảng điều khiển thông minh, nhấp vào `参数字典` ở trên cùng và trong menu thả xuống, nhấp vào trang `系统功能配置`. Kiểm tra `音色克隆` trên trang và nhấp vào Lưu cấu hình. Bạn có thể thấy nút `音色克隆` ở menu trên cùng.
 
-使用超级管理员账号登录智控台，点击顶部【音色克隆】、【音色资源】。
+Đăng nhập vào bảng điều khiển thông minh bằng tài khoản quản trị viên cấp cao và nhấp vào [Bản sao giai điệu] và [Tài nguyên giai điệu] ở trên cùng.
 
-点击新增按钮，在【平台名称】选择“火山双流式语音合成”；
+Nhấp vào nút Thêm và chọn "Tổng hợp giọng nói hai luồng núi lửa" trong [Tên nền tảng];
 
-在【音色资源ID】填入你火山引擎的声音资源ID(S_xxxxx)，填入后按回车；
+Điền ID tài nguyên âm thanh (S_xxxxx) của động cơ núi lửa của bạn vào [ID tài nguyên âm thanh], điền và nhấn Enter;
 
-在【归属账号】选择你要分配给的系统账号，你可以分配给你自己。然后点击保存
+Trong [Tài khoản phân bổ], chọn tài khoản hệ thống bạn muốn chỉ định. Bạn có thể gán nó cho chính mình. Sau đó bấm lưu
 
-## 第三阶段：克隆阶段
+## Giai đoạn thứ ba: giai đoạn nhân bản
 
-如果登录后，点击顶部【音色克隆】》【音色克隆】，显示【您的账号暂无音色资源请联系管理员分配音色资源】，说明你在第二阶段还没有把音色资源ID分配给这个账号。那就是回到第二阶段，分配音色资源给对应的账号。
+Nếu sau khi đăng nhập, nhấp vào [Bản sao âm] và [Bản sao âm] ở trên cùng và nó hiển thị [Tài khoản của bạn hiện không có tài nguyên âm, vui lòng liên hệ với quản trị viên để phân bổ tài nguyên âm], điều đó có nghĩa là bạn chưa chỉ định ID tài nguyên âm cho tài khoản này trong giai đoạn thứ hai. Tức là quay lại giai đoạn thứ hai và phân bổ tài nguyên âm sắc cho các tài khoản tương ứng.
 
-如果登录后，点击顶部【音色克隆】》【音色克隆】，能看到对应的音色列表。请继续。
+Nếu bạn đăng nhập, hãy nhấp vào [Tone Clone] và [Tone Clone] ở trên cùng để xem danh sách âm tương ứng. Hãy tiếp tục.
 
-在列表里会看到对应的音色列表。选择其中一个音色资源，点击【上传音频】按钮。上传后，可以试听一下声音或者截取某段声音。确认后点击【上传音频】按钮。
-![上传音频](images/image-clone-integration-02.png)
+Bạn sẽ thấy danh sách âm tương ứng trong danh sách. Chọn một trong các tài nguyên âm thanh và nhấp vào nút [Tải lên âm thanh]. Sau khi tải lên, bạn có thể nghe âm thanh hoặc chặn một đoạn âm thanh nhất định. Sau khi xác nhận, hãy nhấp vào nút [Tải lên âm thanh].
+![Tải âm thanh lên](images/image-clone-integration-02.png)
 
-上传音频后，在列表里会看到对应的音色会变成“待复刻”状态。点击【立即复刻】按钮。等1~2秒会返回结果。
+Sau khi tải âm thanh lên, bạn sẽ thấy trong danh sách âm sắc tương ứng sẽ trở thành "được tái tạo". Nhấp vào nút [Sao chép ngay]. Đợi 1~2 giây để trả về kết quả.
 
-如果复刻失败，请将鼠标放到“错误信息”图标上，会显示失败的原因。
+Nếu sao chép không thành công, vui lòng đặt chuột vào biểu tượng "Thông báo lỗi" và lý do thất bại sẽ được hiển thị.
 
-如果复刻成功，在列表里会看到对应的音色会变成“训练成功”状态。此时你可以点击【声音名称】栏的修改按钮，修改音色资源的名称，方便后期选择使用。
+Nếu sao chép thành công, bạn sẽ thấy âm báo tương ứng trong danh sách sẽ chuyển sang trạng thái "Đào tạo thành công". Tại thời điểm này, bạn có thể nhấp vào nút sửa đổi trong cột [Tên âm thanh] để sửa đổi tên của tài nguyên âm thanh nhằm thuận tiện cho việc lựa chọn và sử dụng sau này.
 
-## 第四阶段：使用阶段
+## Giai đoạn thứ tư: giai đoạn sử dụng
 
-点击顶部【智能体管理】，选择任意一个智能体，点击【配置角色】按钮。
+Nhấp vào [Quản lý đại lý] ở trên cùng, chọn bất kỳ đại lý nào và nhấp vào nút [Cấu hình vai trò].
 
-语音合成(TTS)选择“火山双流式语音合成”。在列表里，找到名字带有“克隆音色”的音色资源（如图），选择它，点击保存。
-![选择音色](images/image-clone-integration-03.png)
+Để tổng hợp giọng nói (TTS), chọn "Tổng hợp giọng nói hai luồng núi lửa". Trong danh sách, tìm tài nguyên âm thanh có tên "Clone Sound" (như trong hình), chọn tài nguyên đó và nhấp vào Lưu.
+![Chọn âm](images/image-clone-integration-03.png)
 
-接下来，可以唤醒小智和它对话。
+Tiếp theo, bạn có thể đánh thức Xiaozhi và nói chuyện với nó.

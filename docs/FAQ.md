@@ -1,55 +1,55 @@
-# 常见问题 ❓
+# Câu hỏi thường gặp ❓
 
-### 1、为什么我说的话，小智识别出来很多韩文、日文、英文？🇰🇷
+### 1. Tại sao Xiaozhi nhận ra nhiều tiếng Hàn, tiếng Nhật và tiếng Anh khi tôi nói? 🇰🇷
 
-建议：检查一下`models/SenseVoiceSmall`是否已经有`model.pt`
-文件，如果没有就要下载，查看这里[下载语音识别模型文件](Deployment.md#模型文件)
+Gợi ý: Kiểm tra xem `models/SenseVoiceSmall` đã có `model.pt` chưa
+File, nếu chưa có thì tải về, check tại đây [Tải file mô hình nhận dạng giọng nói](Deployment.md#模型文件)
 
-### 2、为什么会出现"TTS 任务出错 文件不存在"？📁
+### 2. Tại sao lại xuất hiện thông báo "tệp lỗi tác vụ TTS không tồn tại"? 📁
 
-建议：检查一下是否正确使用`conda` 安装了`libopus`和`ffmpeg`库。
+Đề xuất: Kiểm tra xem `conda` có được sử dụng đúng cách để cài đặt thư viện `libopus` và `ffmpeg` hay không.
 
-如果没有安装，就安装
+Nếu chưa cài thì cài đi
 
 ```
 conda install conda-forge::libopus
 conda install conda-forge::ffmpeg
 ```
 
-### 3、TTS 经常失败，经常超时 ⏰
+### 3. TTS thường xuyên bị lỗi và time out ⏰
 
-建议：如果 `EdgeTTS` 经常失败，请先检查是否使用了代理（梯子）。如果使用了，请尝试关闭代理后再试；  
-如果用的是火山引擎的豆包 TTS，经常失败时建议使用付费版本，因为测试版本仅支持 2 个并发。
+Đề xuất: Nếu `EdgeTTS` thường xuyên bị lỗi, trước tiên hãy kiểm tra xem proxy (thang) có được sử dụng hay không. Nếu được sử dụng, vui lòng thử đóng proxy và thử lại;
+Nếu bạn đang sử dụng Beanbag TTS của Volcano engine thì nên sử dụng phiên bản trả phí khi nó thường xuyên bị lỗi, vì phiên bản thử nghiệm chỉ hỗ trợ 2 đồng thời.
 
-### 4、使用Wifi能连接自建服务器，但是4G模式却接不上 🔐
+### 4. Bạn có thể kết nối với máy chủ tự build bằng Wifi nhưng chế độ 4G không kết nối được 🔐
 
-原因：虾哥的固件，4G模式需要使用安全连接。
+Lý do: Phần sụn của Xia Ge yêu cầu kết nối an toàn ở chế độ 4G.
 
-解决方法：目前有两种方法可以解决。任选一种：
+Giải pháp: Hiện nay có 2 cách giải quyết. Chọn bất kỳ một:
 
-1、改代码。参考这个视频解决 https://www.bilibili.com/video/BV18MfTYoE85
+1. Thay đổi mã. Tham khảo video này để giải quyết vấn đề https://www.bilibili.com/video/BV18MfTYoE85
 
-2、使用nginx配置ssl证书。参考教程 https://icnt94i5ctj4.feishu.cn/docx/GnYOdMNJOoRCljx1ctecsj9cnRe
+2. Sử dụng nginx để định cấu hình chứng chỉ ssl. Hướng dẫn tham khảo https://icnt94i5ctj4.feishu.cn/docx/GnYOdMNJOoRCljx1ctecsj9cnRe
 
-### 5、如何提高小智对话响应速度？ ⚡
+### 5. Làm cách nào để cải thiện tốc độ phản hồi hội thoại của Xiaozhi? ⚡
 
-本项目默认配置为低成本方案，建议初学者先使用默认免费模型，解决"跑得动"的问题，再优化"跑得快"。  
-如需提升响应速度，可尝试更换各组件。自`0.5.2`版本起，项目支持流式配置，相比早期版本，响应速度提升约`2.5秒`，显著改善用户体验。
+Cấu hình mặc định của dự án này là một giải pháp chi phí thấp. Người mới bắt đầu nên sử dụng mô hình miễn phí mặc định trước để giải quyết vấn đề "chạy nhanh" và sau đó tối ưu hóa "chạy nhanh".
+Nếu bạn cần cải thiện tốc độ phản hồi, bạn có thể thử thay thế từng thành phần. Bắt đầu từ phiên bản `0.5.2`, dự án hỗ trợ cấu hình phát trực tuyến. So với các phiên bản trước, tốc độ phản hồi tăng lên khoảng `2.5秒`, cải thiện đáng kể trải nghiệm người dùng.
 
-| 模块名称 | 入门全免费设置 | 流式配置 |
+| Tên mô-đun | Thiết lập cấp đầu vào miễn phí | Cấu hình phát trực tuyến |
 |:---:|:---:|:---:|
-| ASR(语音识别) | FunASR(本地) | 👍XunfeiStreamASR(讯飞流式) |
-| LLM(大模型) | glm-4-flash(智谱) | 👍qwen-flash(阿里百炼) |
-| VLLM(视觉大模型) | glm-4v-flash(智谱) | 👍qwen3.5-flash(阿里百炼) |
-| TTS(语音合成) | EdgeTTS(微软) | 👍HuoshanDoubleStreamTTS(火山流式) |
-| Intent(意图识别) | function_call(函数调用) | function_call(函数调用) |
-| Memory(记忆功能) | mem_local_short(本地短期记忆） | mem_local_short（本地短期记忆） |
+| ASR (Nhận dạng giọng nói) | FunASR (Địa phương) | 👍XunfeiStreamASR (Truyền phát iFlytek) |
+| LLM (Mô hình lớn) | glm-4-flash (Zhipu) | 👍qwen-flash (Alibaba Bailian) |
+| VLLM (Mô hình trực quan lớn) | glm-4v-flash (Phổ trí tuệ) | 👍qwen3.5-flash (Alibaba Bailian) |
+| TTS (tổng hợp giọng nói) | EdgeTTS (Microsoft) | 👍HuoshanDoubleStreamTTS (dòng núi lửa) |
+| Ý định (nhận dạng ý định) | function_call (gọi hàm) | function_call (gọi hàm) |
+| Bộ nhớ (chức năng bộ nhớ) | mem_local_short (bộ nhớ ngắn hạn cục bộ) | mem_local_short (bộ nhớ ngắn hạn cục bộ) |
 
-如果您关心各组件的耗时，请查阅[小智各组件性能测试报告](https://github.com/xinnan-tech/xiaozhi-performance-research)，可按报告中的测试方法在您的环境中实际测试。
+Nếu bạn lo ngại về mức tiêu thụ thời gian của từng thành phần, vui lòng kiểm tra [báo cáo kiểm tra hiệu suất thành phần của Xiaozhi](https://github.com/xinnan-tech/xiaozhi-performance-research) và bạn thực sự có thể kiểm tra nó trong môi trường của mình theo các phương pháp kiểm tra trong báo cáo.
 
-### 6、我说话很慢，停顿时小智老是抢话 🗣️
+### 6. Tôi nói rất chậm và Xiaozhi luôn tóm lấy lời khi tôi tạm dừng 🗣️
 
-建议：在配置文件中找到如下部分，将 `min_silence_duration_ms` 的值调大（例如改为 `1000`）：
+Gợi ý: Tìm phần sau trong tệp cấu hình và tăng giá trị của `min_silence_duration_ms` (ví dụ: thay đổi thành `1000`):
 
 ```yaml
 VAD:
@@ -59,47 +59,47 @@ VAD:
     min_silence_duration_ms: 700  # 如果说话停顿较长，可将此值调大
 ```
 
-### 7、部署相关教程
-1、[如何进行最简化部署](./Deployment.md)<br/>
-2、[如何进行全模块部署](./Deployment_all.md)<br/>
-3、[如何部署MQTT网关开启MQTT+UDP协议](./mqtt-gateway-integration.md)<br/>
-4、[如何自动拉取本项目最新代码自动编译和启动](./dev-ops-integration.md)<br/>
-5、[如何与Nginx集成](https://github.com/xinnan-tech/xiaozhi-esp32-server/issues/791)<br/>
+### 7. Hướng dẫn liên quan đến triển khai
+1. [Cách thực hiện triển khai đơn giản nhất](./Deployment.md)<br/>
+2. [Cách triển khai mô-đun đầy đủ](./Deployment_all.md)<br/>
+3. [Cách triển khai cổng MQTT để kích hoạt giao thức MQTT+UDP](./mqtt-gateway-integration.md)<br/>
+4. [Cách tự động lấy mã mới nhất của dự án này và tự động biên dịch và khởi động nó](./dev-ops-integration.md)<br/>
+5. [Cách tích hợp với Nginx](https://github.com/xinnan-tech/xiaozhi-esp32-server/issues/791)<br/>
 
-### 8、编译固件相关教程
-1、[如何自己编译小智固件](./firmware-build.md)<br/>
-2、[如何基于虾哥编译好的固件修改OTA地址](./firmware-setting.md)<br/>
-3、[单模块部署如何配置固件OTA自动升级](./ota-upgrade-guide.md)<br/>
+### 8. Hướng dẫn liên quan đến biên dịch firmware
+1. [Cách tự biên dịch firmware Xiaozhi](./firmware-build.md)<br/>
+2. [Cách sửa đổi địa chỉ OTA dựa trên chương trình cơ sở do  biên soạn](./firmware-setting.md)<br/>
+3. [Cách định cấu hình nâng cấp OTA chương trình cơ sở tự động để triển khai một mô-đun](./OTA-upgrade-guide.md)<br/>
 
-### 9、拓展相关教程
-1、[如何开启手机号码注册智控台](./ali-sms-integration.md)<br/>
-2、[如何集成HomeAssistant实现智能家居控制](./homeassistant-integration.md)<br/>
-3、[如何开启视觉模型实现拍照识物](./mcp-vision-integration.md)<br/>
-4、[如何部署MCP接入点](./mcp-endpoint-enable.md)<br/>
-5、[如何接入MCP接入点](./mcp-endpoint-integration.md)<br/>
-6、[MCP方法如何获取设备信息](./mcp-get-device-info.md)<br/>
-7、[如何开启声纹识别](./voiceprint-integration.md)<br/>
-8、[新闻插件源配置指南](./newsnow_plugin_config.md)<br/>
-9、[知识库ragflow集成指南](./ragflow-integration.md)<br/>
-10、[如何部署上下文源](./context-provider-integration.md)<br/>
-11、[如何集成PowerMem智能记忆](./powermem-integration.md)<br/>
-12、[如何配置天气插件查询天气](./weather-integration.md)<br/>
-13、[如何开启设备呼叫插件](./device-call-guide.md)<br/>
+### 9. Mở rộng các hướng dẫn liên quan
+1. [Cách bật bảng điều khiển thông minh đăng ký số điện thoại di động](./ali-sms-integration.md)<br/>
+2. [Cách tích hợp HomeAssistant để điều khiển nhà thông minh](./homeassistant-integration.md)<br/>
+3. [Cách bật mô hình trực quan để nhận dạng vật thể bằng cách chụp ảnh](./mcp-vision-integration.md)<br/>
+4. [Cách triển khai điểm truy cập MCP](./mcp-endpoint-enable.md)<br/>
+5. [Cách truy cập điểm truy cập MCP](./mcp-endpoint-integration.md)<br/>
+6. [Cách lấy thông tin thiết bị bằng phương pháp MCP](./mcp-get-device-info.md)<br/>
+7. [Cách bật nhận dạng giọng nói](./voiceprint-integration.md)<br/>
+8. [Hướng dẫn cấu hình nguồn plug-in tin tức](./newsnow_plugin_config.md)<br/>
+9. [Hướng dẫn tích hợp Ragflow cơ sở kiến thức](./ragflow-integration.md)<br/>
+10. [Cách triển khai nguồn ngữ cảnh](./context-provider-integration.md)<br/>
+11. [Cách tích hợp bộ nhớ thông minh PowerMem](./powermem-integration.md)<br/>
+12. [Cách định cấu hình plug-in thời tiết để truy vấn thời tiết](./weather-integration.md)<br/>
+13. [Cách bật plug-in gọi điện trên thiết bị](./device-call-guide.md)<br/>
 
-### 10、数字人相关教程
-1、[数字人digital-human启动方法](./digital-human-wakeword.md)<br/>
-2、[如何在N100迷你主机上部署数字人digital-human](./all-in-one-digital-human-setup.md)<br/>
+### 10. Hướng dẫn liên quan đến dân số
+1. [phương pháp khởi động kỹ thuật số-con người](./digital-human-wakeword.md)<br/>
+2. [Cách triển khai con người kỹ thuật số trên máy chủ mini N100](./all-in-one-digital-human-setup.md)<br/>
 
-### 11、语音克隆、本地语音部署相关教程
-1、[如何在智控台克隆音色](./huoshan-streamTTS-voice-cloning.md)<br/>
-2、[如何部署集成index-tts本地语音](./index-stream-integration.md)<br/>
-3、[如何部署集成fish-speech本地语音](./fish-speech-integration.md)<br/>
-4、[如何部署集成PaddleSpeech本地语音](./paddlespeech-deploy.md)<br/>
+### 11. Hướng dẫn liên quan đến nhân bản giọng nói và triển khai giọng nói cục bộ
+1. [Cách sao chép âm thanh trên bảng điều khiển thông minh](./huoshan-streamTTS-voice-cloning.md)<br/>
+2. [Cách triển khai chỉ mục tích hợp-tts giọng nói cục bộ](./index-stream-integration.md)<br/>
+3. [Cách triển khai giọng nói địa phương tích hợp giọng nói cá](./fish-speech-integration.md)<br/>
+4. [Cách triển khai và tích hợp giọng nói cục bộ PaddleSpeech](./paddlespeech-deploy.md)<br/>
 
-### 12、性能测试教程
-1、[各组件速度测试指南](./performance_tester.md)<br/>
-2、[定期公开测试结果](https://github.com/xinnan-tech/xiaozhi-performance-research)<br/>
+### 12. Hướng dẫn kiểm tra hiệu năng
+1. [Hướng dẫn kiểm tra tốc độ của từng thành phần](./performance_tester.md)<br/>
+2. [Kết quả kiểm tra công khai định kỳ](https://github.com/xinnan-tech/xiaozhi-performance-research)<br/>
 
-### 13、更多问题，可联系我们反馈 💬
+### 13. Mọi thắc mắc vui lòng liên hệ với chúng tôi để được phản hồi 💬
 
-可以在[issues](https://github.com/xinnan-tech/xiaozhi-esp32-server/issues)提交您的问题。
+Bạn có thể gửi vấn đề của mình tại [issues](https://github.com/xinnan-tech/xiaozhi-esp32-server/issues).

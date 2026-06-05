@@ -1,58 +1,58 @@
-# 天气插件使用指南
+# Hướng dẫn sử dụng plugin thời tiết
 
-## 概述
+## Tổng quan
 
-天气插件 `get_weather` 是小智ESP32语音助手的核心功能之一，支持通过语音查询全国各地的天气信息。插件基于和风天气API，提供实时天气和7天天气预报功能。
+Plug-in thời tiết `get_weather` là một trong những chức năng cốt lõi của trợ lý giọng nói Xiaozhi ESP32, hỗ trợ truy vấn thông tin thời tiết trên toàn quốc thông qua giọng nói. Plug-in này dựa trên API thời tiết Zephyr và cung cấp các chức năng dự báo thời tiết theo thời gian thực và thời tiết trong 7 ngày.
 
-## API Key 申请指南
+## Hướng dẫn ứng dụng khóa API
 
-### 1. 注册和风天气账号
+### 1. Đăng ký tài khoản Zefeng Weather
 
-1. 访问 [和风天气控制台](https://console.qweather.com/)
-2. 注册账号并完成邮箱验证
-3. 登录控制台
+1. Truy cập [Bảng điều khiển thời tiết Nhật Bản](https://console.qweather.com/)
+2. Đăng ký tài khoản và hoàn tất xác minh email
+3. Đăng nhập vào bảng điều khiển
 
-### 2. 创建应用获取API Key
+### 2. Tạo ứng dụng lấy API Key
 
-1. 进入控制台后，点击右侧["项目管理"](https://console.qweather.com/project?lang=zh) → "创建项目"
-2. 填写项目信息：
-   - **项目名称**：如"小智语音助手"
-3. 点击保存
-4. 项目创建完成后，在该项目中点击"创建凭据"
-5. 填写凭据信息：
-    - **凭据名称**：如"小智语音助手"
-    - **身份认证方式**：选择"API Key"
-6. 点击保存
-7. 在凭据中复制`API Key`，这是第一个关键的配置信息
+1. Sau khi vào bảng điều khiển, nhấp vào ["Quản lý dự án"](https://console.qweather.com/project?lang=zh) → "Tạo dự án" ở bên phải
+2. Điền thông tin dự án:
+   - **Tên dự án**: chẳng hạn như "Trợ lý giọng nói Xiao Zhi"
+3. Nhấp vào Lưu
+4. Sau khi dự án được tạo, hãy nhấp vào "Tạo thông tin xác thực" trong dự án
+5. Điền thông tin xác thực:
+    - **Tên thông tin xác thực**: Chẳng hạn như "Trợ lý giọng nói Xiao Zhi"
+    - **Phương thức xác thực danh tính**: Chọn "API Key"
+6. Nhấp vào Lưu
+7. Sao chép `API Key` trong thông tin đăng nhập, đây là thông tin cấu hình key đầu tiên
 
-### 3. 获取API Host
+### 3. Nhận máy chủ API
 
-1. 在控制台中点击["设置"](https://console.qweather.com/setting?lang=zh) → "API Host"
-2. 查看分配给你的专属`API Host`地址，这个是第二个关键的配置信息
+1. Nhấp vào ["Cài đặt"](https://console.qweather.com/setting?lang=zh) → "Máy chủ API" trong bảng điều khiển
+2. Xem địa chỉ `API Host` độc quyền được chỉ định cho bạn. Đây là thông tin cấu hình quan trọng thứ hai.
 
-以上操作，会得到两个重要的配置信息:`API Key`和`API Host`
+Thao tác trên sẽ nhận được 2 thông tin cấu hình quan trọng: `API Key` và `API Host`
 
-## 配置方式(任选一种)
+## Phương thức cấu hình (chọn một phương thức bất kỳ)
 
-### 方式1. 如果你使用了智控台部署（推荐）
+### Phương pháp 1. Nếu bạn sử dụng triển khai bảng điều khiển thông minh (được khuyến nghị)
 
-1. 登录智控台
-2. 进入"角色配置"页面
-3. 选择要配置的智能体
-4. 点击"编辑功能"按钮
-5. 在右侧参数配置区域找到"天气查询"插件
-6. 勾选"天气查询"
-7. 将复制过来的第一个关键配置`API Key`,填入到`天气插件 API 密钥`里
-8. 将复制过来的第二个关键配置`API Host`,填入到`开发者 API Host`里
-9. 保存配置，再保存智能体配置
+1. Đăng nhập vào bảng điều khiển thông minh
+2. Nhập trang "Cấu hình vai trò"
+3. Chọn tác nhân để cấu hình
+4. Nhấp vào nút "Chỉnh sửa tính năng"
+5. Tìm plug-in "Weather Query" trong khu vực cấu hình tham số ở bên phải
+6. Kiểm tra "Truy vấn thời tiết"
+7. Điền cấu hình key đầu tiên đã sao chép `API Key` vào `天气插件 API 密钥`
+8. Điền cấu hình khóa thứ hai đã sao chép `API Host` vào `开发者 API Host`
+9. Lưu cấu hình, sau đó lưu cấu hình tác nhân
 
-### 方式2. 如果你只是单模块xiaozhi-server部署
+### Cách 2. Nếu bạn chỉ triển khai một module xiaozhi-server
 
-在 `data/.config.yaml` 中配置：
+Định cấu hình trong `data/.config.yaml`:
 
-1. 将复制过来的第一个关键配置`API Key`,填入到`api_key`里
-2. 将复制过来的第二个关键配置`API Host`,填入到`api_host`里
-3. 将你所在的城市填入到`default_location`里，例如`广州`
+1. Điền cấu hình khóa đầu tiên đã sao chép `API Key` vào `api_key`
+2. Điền cấu hình khóa thứ hai đã sao chép `API Host` vào `api_host`
+3. Điền thành phố của bạn vào `default_location`, ví dụ `广州`
 
 ```yaml
 plugins:

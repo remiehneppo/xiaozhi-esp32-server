@@ -1,51 +1,51 @@
-## 智控台移动版（manager-mobile）
-基于 uni-app v3 + Vue 3 + Vite 的跨端移动管理端，支持 App（Android & iOS）和微信小程序。
+## Phiên bản di động bảng điều khiển thông minh (manager-mobile)
+Thiết bị đầu cuối quản lý thiết bị di động đa năng dựa trên uni-app v3 + Vue 3 + Vite, hỗ trợ các chương trình nhỏ Ứng dụng (Android & iOS) và WeChat.
 
-### 平台兼容性
+### Khả năng tương thích nền tảng
 
-| H5 | iOS | Android | 微信小程序 |
-| -- | --- | ------- | ---------- | 
-| √  | √   | √       | √          | 
+| H5 | iOS | Android | Chương trình nhỏ WeChat |
+| -- | --- | ------- | ---------- |
+| √ | √ | √ | √ |
 
-提示：不同 UI 组件在不同平台的适配度略有差异，请以对应组件库文档为准。
+Mẹo: Khả năng thích ứng của các thành phần UI khác nhau trên các nền tảng khác nhau hơi khác nhau, vui lòng tham khảo tài liệu thư viện thành phần tương ứng.
 
-### 开发环境要求
-- Node >= 18
-- pnpm >= 7.30（建议使用项目中声明的 `pnpm@10.x`）
-- 可选：HBuilderX（App 调试/打包）、微信开发者工具（微信小程序）
+### Yêu cầu về môi trường phát triển
+- Nút >= 18
+- pnpm >= 7.30 (nên sử dụng `pnpm@10.x` khai báo trong project)
+- Tùy chọn: HBuilderX (Gỡ lỗi/đóng gói ứng dụng), Công cụ dành cho nhà phát triển WeChat (applet WeChat)
 
-### 快速开始
-1) 配置环境变量
-   - 复制 `env/.env.example` 为 `env/.env.development`
-   - 根据实际情况修改配置项（特别是 `VITE_SERVER_BASEURL`、`VITE_UNI_APPID`、`VITE_WX_APPID`）
+### Bắt đầu nhanh
+1) Cấu hình các biến môi trường
+   - Sao chép `env/.env.example` vào `env/.env.development`
+   - Sửa đổi các mục cấu hình theo điều kiện thực tế (đặc biệt `VITE_SERVER_BASEURL`, `VITE_UNI_APPID`, `VITE_WX_APPID`)
 
-2) 安装依赖
+2) Cài đặt phụ thuộc
 
 ```bash
 pnpm i
 ```
 
-3) 本地开发（热更新）
-- h5: `pnpm dev:h5`，然后观察启动日志显示的ip端口号
-- 微信小程序：`pnpm dev:mp` 或 `pnpm dev:mp-weixin`，然后用微信开发者工具导入 `dist/dev/mp-weixin`
-- App：用 HBuilderX 导入 `manager-mobile`，然后参考下面的教程就能运行了
+3) Phát triển địa phương (cập nhật nóng)
+- h5: `pnpm dev:h5`, sau đó quan sát số cổng ip hiển thị trong nhật ký khởi động
+- Chương trình WeChat mini: `pnpm dev:mp` hoặc `pnpm dev:mp-weixin`, sau đó sử dụng công cụ dành cho nhà phát triển WeChat để nhập `dist/dev/mp-weixin`
+- Ứng dụng: Sử dụng HBuilderX để nhập `manager-mobile`, sau đó tham khảo hướng dẫn bên dưới để chạy nó
 
-### 环境变量与配置
-项目使用自定义 `env` 目录存放环境文件，按 Vite 规范命名：`.env.development`、`.env.production` 等。
+### Biến môi trường và cấu hình
+Dự án sử dụng thư mục `env` tùy chỉnh để lưu trữ các tệp môi trường, được đặt tên theo thông số kỹ thuật của Vite: `.env.development`, `.env.production`, v.v.
 
-关键变量（部分）：
-- VITE_APP_TITLE：应用名称（写入 `manifest.config.ts`）
-- VITE_UNI_APPID：uni-app 应用 appid（App）
-- VITE_WX_APPID：微信小程序 appid（mp-weixin）
-- VITE_FALLBACK_LOCALE：默认语言，如 `zh-Hans`
-- VITE_SERVER_BASEURL：服务端基础地址（HTTP 请求 baseURL）
-- VITE_DELETE_CONSOLE：构建时是否移除 console（`true`/`false`）
-- VITE_SHOW_SOURCEMAP：是否生成 sourcemap（默认关闭）
-- VITE_LOGIN_URL：未登录跳转的登录页路径（路由拦截器使用）
+Các biến chính (một phần):
+- VITE_APP_TITLE: Tên ứng dụng (ghi `manifest.config.ts`)
+- VITE_UNI_APPID: appid ứng dụng uni-app (App)
+- VITE_WX_APPID: Ứng dụng ứng dụng WeChat (mp-weixin)
+- VITE_FALLBACK_LOCALE: ngôn ngữ mặc định, chẳng hạn như `zh-Hans`
+- VITE_SERVER_BASEURL: Địa chỉ cơ sở máy chủ (URL cơ sở yêu cầu HTTP)
+- VITE_DELETE_CONSOLE: Có nên tháo console khi build hay không (`true`/`false`)
+- VITE_SHOW_SOURCEMAP: có tạo sơ đồ nguồn hay không (mặc định tắt)
+- VITE_LOGIN_URL: Đường dẫn trang đăng nhập cho bước nhảy không đăng nhập (được sử dụng bởi bộ chặn định tuyến)
 
-示例（`env/.env.development`）：
+Ví dụ (`env/.env.development`):
 ```env
-VITE_APP_TITLE=小智
+VITE_APP_TITLE=Xiao Zhi
 VITE_FALLBACK_LOCALE=zh-Hans
 VITE_UNI_APPID=
 VITE_WX_APPID=
@@ -57,113 +57,113 @@ VITE_SHOW_SOURCEMAP=false
 VITE_LOGIN_URL=/pages/login/index
 ```
 
-说明：
-- `manifest.config.ts` 会从 `env` 读取标题、appid、语言等配置。
+Mô tả:
+- `manifest.config.ts` sẽ đọc tiêu đề, ứng dụng, ngôn ngữ và các cấu hình khác từ `env`.
 
-### 重要注意事项
-⚠️ **部署前必须修改的配置项：**
+### Lưu ý quan trọng
+⚠️ **Các mục cấu hình phải được sửa đổi trước khi triển khai:**
 
-1. **应用 ID 配置**
-   - `VITE_UNI_APPID`：需要在 [DCloud 开发者中心](https://dev.dcloud.net.cn/) 创建应用并获取 AppID
-   - `VITE_WX_APPID`：需要在 [微信公众平台](https://mp.weixin.qq.com/) 注册小程序并获取 AppID
+1. **Cấu hình ID ứng dụng**
+   - `VITE_UNI_APPID`: Bạn cần tạo một ứng dụng và lấy AppID trong [Trung tâm nhà phát triển DCloud](https://dev.dcloud.net.cn/)
+   - `VITE_WX_APPID`: Bạn cần đăng ký chương trình mini trên [Nền tảng công cộng WeChat](https://mp.weixin.qq.com/) và lấy AppID
 
-2. **服务端地址**
-   - `VITE_SERVER_BASEURL`：修改为您的实际服务端地址
+2. **Địa chỉ máy chủ**
+   - `VITE_SERVER_BASEURL`: Thay đổi địa chỉ máy chủ thực của bạn
 
-3. **应用信息**
-   - `VITE_APP_TITLE`：修改为您的应用名称
-   - 更新 `src/static/logo.png` 等图标资源
+3. **Thông tin ứng tuyển**
+   - `VITE_APP_TITLE`: Thay đổi tên ứng dụng của bạn
+   - Cập nhật tài nguyên biểu tượng như `src/static/logo.png`
 
-4. **其他配置**
-   - 检查 `manifest.config.ts` 中的应用配置信息
-   - 根据需要修改 `src/layouts/fg-tabbar/tabbarList.ts` 中的 tabbar 配置
+4. **Cấu hình khác**
+   - Kiểm tra thông tin cấu hình ứng dụng trong `manifest.config.ts`
+   - Sửa đổi cấu hình thanh tab trong `src/layouts/fg-tabbar/tabbarList.ts` nếu cần
 
-### 详细操作指南
+###Hướng dẫn thao tác chi tiết
 
-#### 1. 获取 uni-app AppID
-![生成AppID](../../docs/images/manager-mobile/生成appid.png)
-- 复制生成的 AppID 到环境变量 `VITE_UNI_APPID` 中
+#### 1. Nhận AppID đơn ứng dụng
+![Tạo ID ứng dụng](../../docs/images/manager-mobile/生成appid.png)
+- Sao chép AppID đã tạo vào biến môi trường `VITE_UNI_APPID`
 
-#### 2. 本地运行步骤
-![本地运行](../../docs/images/manager-mobile/本地运行.png)
+#### 2. Các bước chạy cục bộ
+![Chạy cục bộ](../../docs/images/manager-mobile/本地运行.png)
 
-**App 本地调试：**
-1. 用 HBuilderX 导入 `manager-mobile` 目录
-2. 重新识别项目
-3. 连接手机或使用模拟器进行真机调试
+**Gỡ lỗi cục bộ ứng dụng:**
+1. Sử dụng HBuilderX để nhập thư mục `manager-mobile`
+2. Xác định lại dự án
+3. Kết nối với điện thoại di động hoặc sử dụng trình giả lập để gỡ lỗi thiết bị thực
 
-**项目识别问题解决：**
-![重新识别项目](../../docs/images/manager-mobile/重新识别项目.png)
+**Giải quyết vấn đề xác định dự án:**
+![Xác định lại các mục](../../docs/images/manager-mobile/重新识别项目.png)
 
-如果 HBuilderX 无法正确识别项目类型：
-- 在项目根目录右键选择"重新识别项目类型"
-- 确保项目被识别为 "uni-app" 项目
+Nếu HBuilderX không nhận dạng chính xác loại dự án:
+- Nhấp chuột phải vào thư mục gốc của dự án và chọn "Xác định lại loại dự án"
+- Đảm bảo dự án được công nhận là dự án "uni-app"
 
-### 路由与鉴权
-- 在 `src/main.ts` 中注册了路由拦截插件 `routeInterceptor`。
-- 黑名单拦截：仅对配置为需要登录的页面进行校验（来源 `@/utils` 的 `getNeedLoginPages`）。
-- 登录判断：基于用户信息（`pinia` 的 `useUserStore`），未登录将跳转到 `VITE_LOGIN_URL`，并附带重定向回原页面的参数。
+### Định tuyến và xác thực
+- Plug-in chặn tuyến đường `routeInterceptor` được đăng ký trong `src/main.ts`.
+- Chặn danh sách đen: Chỉ xác minh các trang được định cấu hình để yêu cầu đăng nhập (nguồn `getNeedLoginPages` của `@/utils`).
+- Phán quyết đăng nhập: Dựa trên thông tin người dùng (`pinia` đến `useUserStore`), nếu bạn chưa đăng nhập, bạn sẽ được chuyển hướng đến `VITE_LOGIN_URL` với các thông số để chuyển hướng trở lại trang gốc.
 
-### 网络请求
-- 基于 `alova` + `@alova/adapter-uniapp`，统一在 `src/http/request/alova.ts` 创建实例。
-- `baseURL` 读取环境配置（`getEnvBaseUrl`），可通过 `method.config.meta.domain` 动态切换域名。
-- 认证：默认从本地 `token`（`uni.getStorageSync('token')`）注入 `Authorization` 头，缺失则重定向登录。
-- 响应：统一处理 `statusCode !== 200` 的 HTTP 错误与业务 `code !== 0` 的错误；`401` 会清除 token 并跳转登录。
+### Yêu cầu mạng
+- Dựa trên `alova` + `@alova/adapter-uniapp`, tạo các thể hiện trong `src/http/request/alova.ts`.
+- `baseURL` đọc cấu hình môi trường (`getEnvBaseUrl`) và có thể tự động chuyển đổi tên miền thông qua `method.config.meta.domain`.
+- Xác thực: Theo mặc định, tiêu đề `Authorization` được chèn từ `token` (`uni.getStorageSync('token')`) cục bộ. Nếu thiếu, thông tin đăng nhập sẽ được chuyển hướng.
+- Phản hồi: Xử lý thống nhất các lỗi HTTP `statusCode !== 200` và lỗi `code !== 0` nghiệp vụ; `401` sẽ xóa mã thông báo và chuyển sang đăng nhập.
 
-### 构建与发布
+### Xây dựng và phát hành
 
-**微信小程序：**
-1. 确保已配置正确的 `VITE_WX_APPID`
-2. 运行 `pnpm build:mp`，产物在 `dist/build/mp-weixin`
-3. 用微信开发者工具导入项目目录，并上传代码
-4. 在微信公众平台提交审核
+**Chương trình nhỏ WeChat:**
+1. Đảm bảo `VITE_WX_APPID` được định cấu hình đúng
+2. Chạy `pnpm build:mp`, sản phẩm nằm trong `dist/build/mp-weixin`
+3. Sử dụng công cụ dành cho nhà phát triển WeChat để nhập thư mục dự án và tải mã lên
+4. Gửi để xem xét trên nền tảng công cộng WeChat
 
 **Android & iOS App：**
 
-#### 3. App 打包发行步骤
+#### 3. Các bước đóng gói và phân phối ứng dụng
 
-**步骤一：准备打包**
-![打包发行步骤1](../../docs/images/manager-mobile/打包发行步骤1.png)
+**Bước 1: Chuẩn bị đóng gói**
+![Bước đóng gói và phân phối 1](../../docs/images/manager-mobile/打包发行步骤1.png)
 
-1. 确保已配置正确的 `VITE_UNI_APPID`
-2. 运行 `pnpm build:app`，产物在 `dist/build/app`
-3. 用 HBuilderX 导入项目目录
-4. 在 HBuilderX 中点击"发行" → "原生App-云打包"
+1. Đảm bảo `VITE_UNI_APPID` được định cấu hình đúng
+2. Chạy `pnpm build:app`, sản phẩm nằm trong `dist/build/app`
+3. Sử dụng HBuilderX để nhập thư mục dự án
+4. Nhấp vào "Phát hành" → "Bao bì đám mây ứng dụng gốc" trong HBuilderX
 
-**步骤二：配置打包参数**
-![打包发行步骤2](../../docs/images/manager-mobile/打包发行步骤2.png)
+**Bước 2: Cấu hình các thông số đóng gói**
+![Bước đóng gói và phân phối 2](../../docs/images/manager-mobile/打包发行步骤2.png)
 
-1. **应用图标和启动图**：上传应用图标和启动页面图片
-2. **应用版本号**：设置版本号和版本名称
-3. **签名证书**：
-   - Android：上传 keystore 证书文件
-   - iOS：配置开发者证书和描述文件
-4. **包名配置**：设置应用的包名（Bundle ID）
-5. **打包类型**：选择测试包或正式包
-6. 点击"打包"开始云打包流程
+1. **Biểu tượng ứng dụng và images khởi động**: Tải lên biểu tượng ứng dụng và images trang khởi động
+2. **Số phiên bản ứng dụng**: Đặt số phiên bản và tên phiên bản
+3. **Chứng nhận chữ ký**:
+   - Android: Tải lên tệp chứng chỉ kho khóa
+   - iOS: Định cấu hình chứng chỉ và hồ sơ nhà phát triển
+4. **Cấu hình tên gói**: Đặt tên gói ứng dụng (ID gói)
+5. **Loại bao bì**: Chọn gói thử nghiệm hoặc gói chính thức
+6. Nhấp vào "Gói" để bắt đầu quá trình đóng gói trên đám mây
 
-**发布到应用商店：**
-- **Android**：将生成的 APK 文件上传到各大 Android 应用市场
-- **iOS**：将生成的 IPA 文件通过 App Store Connect 上传到 App Store（需要 Apple 开发者账号）
+**Xuất bản lên App Store:**
+- **Android**: Tải tệp APK đã tạo lên các thị trường ứng dụng Android lớn
+- **iOS**: Tải tệp IPA đã tạo lên App Store thông qua App Store Connect (yêu cầu tài khoản nhà phát triển Apple)
 
-### 约定与工程化
-- 页面与分包：由 `@uni-helper/vite-plugin-uni-pages` 与 `pages.config.ts` 统一生成；tabbar 配置在 `src/layouts/fg-tabbar/tabbarList.ts`。
-- 组件与 hooks 自动导入：见 `vite.config.ts` 中 `unplugin-auto-import` 与 `@uni-helper/vite-plugin-uni-components`。
-- 样式：使用 UnoCSS 与 `src/style/index.scss`。
-- 状态管理：`pinia` + `pinia-plugin-persistedstate`。
-- 代码规范：内置 `eslint`、`husky`、`lint-staged`，提交前自动格式化（`lint-staged`）。
+### Quy ước và Kỹ thuật
+- Trang và hợp đồng phụ: được tạo thống nhất bởi `@uni-helper/vite-plugin-uni-pages` và `pages.config.ts`; thanh tab được định cấu hình trong `src/layouts/fg-tabbar/tabbarList.ts`.
+- Tự động nhập linh kiện và hook: xem `unplugin-auto-import` và `@uni-helper/vite-plugin-uni-components` trong `vite.config.ts`.
+- Tạo kiểu: sử dụng UnoCSS với `src/style/index.scss`.
+- Quản lý trạng thái: `pinia` + `pinia-plugin-persistedstate`.
+- Thông số mã: tích hợp sẵn `eslint`, `husky`, `lint-staged`, được định dạng tự động trước khi gửi (`lint-staged`).
 
-### 常用脚本
-```bash
-# 开发
-pnpm dev:mp        # 等价 dev:mp-weixin
+### Các tập lệnh thường dùng
+``` bash
+# phát triển
+pnpm dev:mp # Tương đương với dev:mp-weixin
 
-# 构建
-pnpm build:mp      # 等价 build:mp-weixin
+# xây dựng
+pnpm build:mp # Tương đương với build:mp-weixin
 
-# 其他
-pnpm type-check
-pnpm lint && pnpm lint:fix
+# Khác
+kiểm tra kiểu pnpm
+pnpm lint && pnpm lint:sửa
 ```
 
 ### License

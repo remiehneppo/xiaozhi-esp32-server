@@ -1,121 +1,121 @@
-# PowerMem 记忆组件集成指南
+# Hướng dẫn tích hợp thành phần bộ nhớ PowerMem
 
-## 简介
+## Giới thiệu
 
-[PowerMem](https://www.powermem.ai/) 是由 OceanBase 开源的 Agent 记忆组件，通过本地 LLM 进行记忆总结和智能检索，为 AI 代理提供高效的记忆管理功能。
+[PowerMem](https://www.powermem.ai/) là thành phần bộ nhớ Tác nhân có nguồn mở bởi OceanBase. Nó thực hiện tóm tắt bộ nhớ và truy xuất thông minh thông qua LLM cục bộ, cung cấp các chức năng quản lý bộ nhớ hiệu quả cho các tác nhân AI.
 
-费用说明：PowerMem 本身开源免费，实际费用取决于您选择的 LLM 和数据库：
-- 使用 SQLite + 免费 LLM（如智谱 glm-4-flash）= **完全免费**
-- 使用云端 LLM 或云端数据库 = 按对应服务收费
+Mô tả chi phí: Bản thân PowerMem là nguồn mở và miễn phí, chi phí thực tế phụ thuộc vào LLM và cơ sở dữ liệu bạn chọn:
+- Sử dụng SQLite + LLM miễn phí (chẳng hạn như glm-4-flash) = **hoàn toàn miễn phí**
+- Sử dụng LLM đám mây hoặc cơ sở dữ liệu đám mây = tính phí theo dịch vụ tương ứng
 
-> 💡 **最佳性能提示**：PowerMem 配合 OceanBase 使用可实现最大性能释放，SQLite 仅建议在资源不足的情况下使用。
+> 💡 **Mẹo về hiệu suất tốt nhất**: PowerMem có thể được sử dụng với OceanBase để đạt được hiệu suất tối đa. SQLite chỉ được khuyến nghị sử dụng khi tài nguyên không đủ.
 
 - **GitHub**: https://github.com/oceanbase/powermem
-- **官网**: https://www.powermem.ai/
-- **使用示例**: https://github.com/oceanbase/powermem/tree/main/examples
+- **Trang web chính thức**: https://www.powermem.ai/
+- **Ví dụ sử dụng**: https://github.com/oceanbase/powermem/tree/main/examples
 
-## 功能特性
+## Đặc trưng
 
-- **本地总结**：通过 LLM 在本地进行记忆总结和提取
-- **用户画像**：通过 `UserMemory` 自动提取用户信息（姓名、职业、兴趣等），持续更新用户画像
-- **智能遗忘**：基于艾宾浩斯遗忘曲线，自动"遗忘"过时噪声信息
-- **多种存储后端**：支持 OceanBase（推荐，最佳性能）、SeekDB（推荐，AI应用存储一体）、PostgreSQL、SQLite（轻量备选）
-- **多种 LLM 支持**：通义千问、智谱（glm-4-flash 免费）、OpenAI 等
-- **智能检索**：基于向量搜索的语义检索能力
-- **私有部署**：完全支持本地私有化部署
-- **异步操作**：高效的异步记忆管理
+- **Tóm tắt cục bộ**: Tóm tắt và trích xuất bộ nhớ cục bộ thông qua LLM
+- **Chân dung người dùng**: Tự động trích xuất thông tin người dùng (tên, nghề nghiệp, sở thích, v.v.) thông qua `UserMemory` và cập nhật liên tục chân dung người dùng
+- **Quên thông minh**: Dựa trên đường cong quên Ebbinghaus, tự động "quên" thông tin tiếng ồn lỗi thời
+- **Nhiều phụ trợ lưu trữ**: Hỗ trợ OceanBase (được khuyến nghị, hiệu suất tốt nhất), SeekDB (được khuyến nghị, lưu trữ ứng dụng AI tích hợp), PostgreSQL, SQLite (thay thế nhẹ)
+- **Hỗ trợ nhiều LLM**: Tongyi Qianwen, Zhipu (glm-4-flash free), OpenAI, v.v.
+- **Truy xuất thông minh**: Khả năng truy xuất ngữ nghĩa dựa trên tìm kiếm vectơ
+- **Triển khai riêng tư**: Hỗ trợ đầy đủ việc triển khai tư nhân hóa tại địa phương
+- **Hoạt động không đồng bộ**: Quản lý bộ nhớ không đồng bộ hiệu quả
 
-## 安装
+## Cài đặt
 
-PowerMem 已添加到项目依赖中，如果需要手动安装：
+PowerMem đã được thêm vào phần phụ thuộc của dự án, nếu bạn cần cài đặt thủ công:
 
 ```bash
 pip install powermem
 ```
 
-## 配置说明
+## Hướng dẫn cấu hình
 
-### 基础配置
+###Cấu hình cơ bản
 
-在 `config.yaml` 中配置 PowerMem：
+Định cấu hình PowerMem trong `config.yaml`:
 
 ```yaml
 selected_module:
   Memory: powermem
 
-Memory:
-  powermem:
-    type: powermem
-    # 是否启用用户画像功能
-    # 用户画像支持: oceanbase、seekdb、sqlite (powermem 0.3.0+)
-    enable_user_profile: true
+Bộ nhớ:
+  quyền lực:
+    Kiểu: powermem
+    # Có bật chức năng chân dung người dùng hay không
+    # Hỗ trợ chân dung người dùng: Oceanbase, seekdb, sqlite (powermem 0.3.0+)
+    Enable_user_profile: đúng
     
-    # ========== LLM 配置 ==========
-    llm:
-      provider: openai  # 可选: qwen, openai, zhipu 等
-      config:
-        api_key: 你的LLM API密钥
-        model: qwen-plus
-        # openai_base_url: https://api.openai.com/v1  # 可选，自定义服务地址
+    # ========== Cấu hình LLM ===========
+    ừm:
+      nhà cung cấp: openai # Tùy chọn: qwen, openai, zhipu, v.v.
+      cấu hình:
+        api_key: khóa API LLM của bạn
+        mô hình: qwen-plus
+        # openai_base_url: https://api.openai.com/v1 # Tùy chọn, địa chỉ dịch vụ tùy chỉnh
     
-    # ========== Embedding 配置 ==========
-    embedder:
-      provider: openai  # 可选: qwen, openai 等
-      config:
-        api_key: 你的嵌入模型API密钥
-        model: text-embedding-v4
-        openai_base_url: https://dashscope.aliyuncs.com/compatible-mode/v1
-        # embedding_dims: 1024  # 向量维度，非1536时需配置
+    # ========== Cấu hình nhúng ===========
+    trình nhúng:
+      nhà cung cấp: openai # Tùy chọn: qwen, openai, v.v.
+      cấu hình:
+        api_key: Khóa API mô hình được nhúng của bạn
+        mô hình: nhúng văn bản-v4
+        openai_base_url: https://dashscope.aliyuncs.com/compix-mode/v1
+        # embedding_dims: 1024 # Kích thước vectơ, cần được cấu hình nếu không phải là 1536
     
-    # ========== Database 配置 ==========
+    # ========== Cấu hình cơ sở dữ liệu ==========
     vector_store:
-      provider: sqlite  # 可选: oceanbase(推荐), seekdb(推荐), postgres, sqlite(轻量)
-      config: {}  # SQLite 无需额外配置
+      nhà cung cấp: sqlite # Tùy chọn: Oceanbase (được khuyến nghị), seekdb (được khuyến nghị), postgres, sqlite (nhẹ)
+      config: {} # SQLite không yêu cầu cấu hình bổ sung
 ```
 
-### 配置参数详解
+###Giải thích chi tiết các thông số cấu hình
 
-#### LLM 配置
+#### Cấu hình LLM
 
-| 参数 | 说明 | 可选值 |
+| Thông số | Mô tả | Giá trị tùy chọn |
 |------|------|--------|
-| `llm.provider` | LLM 提供商 | `qwen`, `openai`, `zhipu` 等 |
-| `llm.config.api_key` | API 密钥 | - |
-| `llm.config.model` | 模型名称 | 根据提供商选择 |
-| `llm.config.openai_base_url` | 自定义服务地址（可选） | - |
+| `llm.provider` | Nhà cung cấp LLM | `qwen`, `openai`, `zhipu`, v.v. |
+| `llm.config.api_key` | Khóa API | - |
+| `llm.config.model` | Tên mẫu | Dựa trên lựa chọn nhà cung cấp |
+| `llm.config.openai_base_url` | Địa chỉ dịch vụ tùy chỉnh (tùy chọn) | - |
 
-#### Embedding 配置
+#### Cấu hình nhúng
 
-| 参数 | 说明 | 可选值 |
+| Thông số | Mô tả | Giá trị tùy chọn |
 |------|------|--------|
-| `embedder.provider` | 嵌入模型提供商 | `qwen`, `openai` 等 |
-| `embedder.config.api_key` | API 密钥 | - |
-| `embedder.config.model` | 模型名称 | 根据提供商选择 |
-| `embedder.config.openai_base_url` | 自定义服务地址（可选） | - |
+| `embedder.provider` | Nhà cung cấp mô hình nhúng | `qwen`, `openai`, v.v. |
+| `embedder.config.api_key` | Khóa API | - |
+| `embedder.config.model` | Tên mẫu | Dựa trên lựa chọn nhà cung cấp |
+| `embedder.config.openai_base_url` | Địa chỉ dịch vụ tùy chỉnh (tùy chọn) | - |
 
-#### Database 配置
+#### Cấu hình cơ sở dữ liệu
 
-| 参数 | 说明 | 可选值 |
+| Thông số | Mô tả | Giá trị tùy chọn |
 |------|------|--------|
-| `vector_store.provider` | 存储后端类型 | `oceanbase`(推荐), `seekdb`(推荐), `postgres`, `sqlite`(轻量) |
-| `vector_store.config` | 数据库连接配置 | 根据 provider 设置 |
+| `vector_store.provider` | Loại phụ trợ lưu trữ | `oceanbase`(khuyên dùng), `seekdb`(khuyên dùng), `postgres`, `sqlite`(nhẹ) |
+| `vector_store.config` | Cấu hình kết nối cơ sở dữ liệu | Đặt theo nhà cung cấp |
 
-### 记忆模式说明
+### Mô tả chế độ bộ nhớ
 
-PowerMem 支持两种记忆模式：
+PowerMem hỗ trợ hai chế độ bộ nhớ:
 
-| 模式 | 配置 | 功能 | 存储要求 |
+| Chế độ | Cấu hình | Tính năng | Yêu cầu lưu trữ |
 |------|------|------|----------|
-| **普通记忆** | `enable_user_profile: false` | 对话记忆存储与检索 | 支持所有数据库 |
-| **用户画像** | `enable_user_profile: true` | 记忆 + 自动提取用户画像 | oceanbase、seekdb、sqlite |
+| **Bộ nhớ bình thường** | `enable_user_profile: false` | Lưu trữ và truy xuất bộ nhớ hộp thoại | Hỗ trợ tất cả cơ sở dữ liệu |
+| **Chân dung người dùng** | `enable_user_profile: true` | Bộ nhớ + tự động trích xuất chân dung người dùng | Oceanbase, seekdb, sqlite |
 
-> 📌 **版本说明**：PowerMem 0.3.0+ 版本，用户画像功能支持 OceanBase、SeekDB、SQLite 三种存储后端。
+> ** **Ghi chú phiên bản**: PowerMem phiên bản 0.3.0+, chức năng chân dung người dùng hỗ trợ ba chương trình phụ trợ lưu trữ: OceanBase, SeekDB và SQLite.
 
-### 使用通义千问（推荐）
+### Sử dụng Tongyi Qianwen (được khuyến nghị)
 
-1. 访问 [阿里云百炼平台](https://bailian.console.aliyun.com/) 注册账号
-2. 在 [API Key 管理](https://bailian.console.aliyun.com/?apiKey=1#/api-key) 页面获取 API 密钥
-3. 配置如下：
+1. Truy cập [Nền tảng Bailian đám mây của Alibaba](https://bailian.console.aliyun.com/) để đăng ký tài khoản
+2. Lấy khóa API trên trang [Quản lý khóa API](https://bailian.console.aliyun.com/?apiKey=1#/api-key)
+3. Cấu hình như sau:
 
 ```yaml
 Memory:
@@ -138,13 +138,13 @@ Memory:
       config: {}
 ```
 
-### 使用智谱免费 LLM（完全免费方案）
+### Sử dụng Zhipu LLM miễn phí (gói hoàn toàn miễn phí)
 
-智谱提供免费的 glm-4-flash 模型，配合 SQLite 可实现完全免费使用：
+Zhipu cung cấp mô hình glm-4-flash miễn phí, có thể được sử dụng hoàn toàn miễn phí với SQLite:
 
-1. 访问 [智谱AI开放平台](https://bigmodel.cn/) 注册账号
-2. 在 [API Keys](https://bigmodel.cn/usercenter/proj-mgmt/apikeys) 页面获取 API 密钥
-3. 配置如下：
+1. Truy cập [Nền tảng mở Zhipu AI](https://bigmodel.cn/) để đăng ký tài khoản
+2. Lấy khóa API trên trang [Khóa API](https://bigmodel.cn/usercenter/proj-mgmt/apikeys)
+3. Cấu hình như sau:
 
 ```yaml
 Memory:
@@ -168,7 +168,7 @@ Memory:
       config: {}
 ```
 
-### 使用 OpenAI
+### Sử dụng OpenAI
 
 ```yaml
 Memory:
@@ -192,14 +192,14 @@ Memory:
       config: {}
 ```
 
-### 使用 OceanBase（最佳性能方案）
+### Sử dụng OceanBase (giải pháp hiệu suất tốt nhất)
 
-OceanBase 是 PowerMem 的最佳搭档，可实现最大性能释放：
+OceanBase là đối tác tốt nhất của PowerMem để đạt được hiệu suất tối đa:
 
-1. 部署 OceanBase 数据库（支持开源本地部署或使用云服务）
-   - 开源部署：https://github.com/oceanbase/oceanbase
-   - 云服务：https://www.oceanbase.com/
-2. 配置如下：
+1. Triển khai cơ sở dữ liệu OceanBase (hỗ trợ triển khai cục bộ nguồn mở hoặc sử dụng dịch vụ đám mây)
+   - Triển khai mã nguồn mở: https://github.com/oceanbase/oceanbase
+   - Dịch vụ đám mây: https://www.oceanbase.com/
+2. Cấu hình như sau:
 
 ```yaml
 Memory:
@@ -229,23 +229,23 @@ Memory:
         embedding_model_dims: 1536  # 嵌入向量维度，必需参数
 ```
 
-## 设备记忆隔离
+## Cách ly bộ nhớ thiết bị
 
-PowerMem 会自动使用设备 ID（`device_id`）作为 `user_id` 进行记忆隔离。这意味着：
+PowerMem sẽ tự động sử dụng ID thiết bị (`device_id`) làm `user_id` để cách ly bộ nhớ. Điều này có nghĩa là:
 
-- 每个设备拥有独立的记忆空间
-- 不同设备之间的记忆完全隔离
-- 同一设备的多次对话可以共享记忆上下文
+-Mỗi thiết bị có không gian bộ nhớ độc lập riêng
+- Cách ly bộ nhớ hoàn toàn giữa các thiết bị khác nhau
+- Nhiều cuộc hội thoại trên cùng một thiết bị có thể chia sẻ bối cảnh bộ nhớ
 
-## 用户画像（UserMemory）
+## Chân dung người dùng (UserMemory)
 
-PowerMem 提供 `UserMemory` 类，可自动从对话中提取用户画像信息。
+PowerMem cung cấp lớp `UserMemory`, lớp này có thể tự động trích xuất thông tin hồ sơ người dùng từ các cuộc hội thoại.
 
-> 📌 **版本说明**：PowerMem 0.3.0+ 版本，用户画像功能支持 OceanBase、SeekDB、SQLite 三种存储后端。
+> ** **Ghi chú phiên bản**: PowerMem phiên bản 0.3.0+, chức năng chân dung người dùng hỗ trợ ba chương trình phụ trợ lưu trữ: OceanBase, SeekDB và SQLite.
 
-### 启用用户画像
+### Bật chân dung người dùng
 
-在配置中设置 `enable_user_profile: true` 即可启用：
+Kích hoạt nó bằng cách cài đặt `enable_user_profile: true` trong cấu hình:
 
 ```yaml
 Memory:
@@ -268,78 +268,78 @@ Memory:
       config: {}
 ```
 
-### 用户画像能力
+### Khả năng chụp chân dung người dùng
 
-| 能力 | 说明 |
+| Khả năng | Mô tả |
 |------|------|
-| **信息提取** | 自动从对话中提取姓名、年龄、职业、兴趣等 |
-| **持续更新** | 随着对话进行，不断完善用户画像 |
-| **画像检索** | 将用户画像与记忆搜索结合，提升检索相关性 |
-| **智能遗忘** | 基于艾宾浩斯遗忘曲线，淡化过时信息 |
+| **Khai thác thông tin** | Tự động trích xuất tên, tuổi, nghề nghiệp, sở thích, v.v. từ các cuộc hội thoại |
+| **Cập nhật liên tục** | Liên tục cải thiện chân dung người dùng khi cuộc trò chuyện diễn ra |
+| **Truy xuất chân dung** | Kết hợp chân dung người dùng với tìm kiếm bộ nhớ để cải thiện mức độ liên quan của việc truy xuất |
+| **Quên thông minh** | Dựa trên đường cong quên Ebbinghaus, hạ thấp thông tin lỗi thời |
 
-### 工作原理
+### Nguyên tắc làm việc
 
-启用用户画像后，小智在查询记忆时会自动返回：
-1. **用户画像**：用户的基本信息、兴趣爱好等
-2. **相关记忆**：与当前对话相关的历史记忆
+Sau khi kích hoạt chân dung người dùng, Xiaozhi sẽ tự động quay lại:
+1. **Chân dung người dùng**: thông tin cơ bản, sở thích và sở thích của người dùng, v.v.
+2. **Ký ức liên quan**: Ký ức lịch sử liên quan đến cuộc trò chuyện hiện tại
 
-> ✅ **版本说明**：PowerMem 0.3.0+ 版本，用户画像功能支持 OceanBase、SeekDB、SQLite 三种存储后端。
+> ✅ **Ghi chú phiên bản**: PowerMem phiên bản 0.3.0+, chức năng chân dung người dùng hỗ trợ ba chương trình phụ trợ lưu trữ: OceanBase, SeekDB và SQLite.
 
-## 与其他记忆组件的对比
+## So sánh với các thành phần bộ nhớ khác
 
-| 特性 | PowerMem | mem0ai | mem_local_short |
-|------|----------|--------|-----------------|
-| 工作方式 | 本地总结 | 云端接口 | 本地总结 |
-| 存储位置 | 本地/云端DB | 云端 | 本地YAML |
-| 费用 | 取决于LLM和DB | 1000次/月免费 | 完全免费 |
-| 智能检索 | ✅ 向量搜索 | ✅ 向量搜索 | ❌ 全量返回 |
-| 用户画像 | ✅ UserMemory | ❌ | ❌ |
-| 智能遗忘 | ✅ 遗忘曲线 | ❌ | ❌ |
-| 私有部署 | ✅ 支持 | ❌ 仅云端 | ✅ 支持 |
-| 数据库支持 | OceanBase(推荐)/SeekDB/PostgreSQL/SQLite | - | YAML 文件 |
+| Tính năng | PowerMem | mem0ai | mem_local_short |
+|------|----------|--------|-------------------|
+| Phương pháp làm việc | Tóm tắt địa phương | Giao diện đám mây | Tóm tắt địa phương |
+| Vị trí lưu trữ | DB cục bộ/đám mây | Đám mây | YAML địa phương |
+| Chi phí | Phụ thuộc vào LLM và DB | 1000 lần/tháng miễn phí | Hoàn toàn miễn phí |
+| Tìm kiếm thông minh | ✅ Tìm kiếm vectơ | ✅ Tìm kiếm vectơ | ❌ Hoàn trả đầy đủ |
+| Chân dung người dùng | ✅ Bộ nhớ người dùng | ❌ | ❌ |
+| Quên thông minh | ✅ Đường cong quên lãng | ❌ | ❌ |
+| Triển khai riêng tư | ✅ Hỗ trợ | ❌ Chỉ trên đám mây | ✅ Hỗ trợ |
+| Hỗ trợ cơ sở dữ liệu | OceanBase(được khuyến nghị)/SeekDB/PostgreSQL/SQLite | - | Tệp YAML |
 
-## 常见问题
+## Câu hỏi thường gặp
 
-### 1. API 密钥错误
+### 1. Lỗi khóa API
 
-如果出现 `API key is required` 错误，请检查：
-- `llm_api_key` 和 `embedding_api_key` 是否正确填写
-- API 密钥是否有效
+Nếu bạn gặp lỗi `API key is required`, hãy kiểm tra:
+- `llm_api_key` và `embedding_api_key` được điền đúng chưa?
+- Khóa API có hợp lệ không
 
-### 2. 模型不存在
+### 2. Model không tồn tại
 
-如果出现模型不存在的错误，请确认：
-- `llm_model` 和 `embedding_model` 名称是否正确
-- 对应的模型服务是否已开通
+Nếu bạn gặp lỗi mô hình không tồn tại, vui lòng xác nhận:
+- Tên `llm_model` và `embedding_model` có đúng không?
+- Dịch vụ mẫu tương ứng đã được kích hoạt chưa
 
-### 3. 连接超时
+### 3. Hết thời gian kết nối
 
-如果出现连接超时，可以尝试：
-- 检查网络连接
-- 如果使用代理，配置 `llm_base_url` 和 `embedding_base_url`
+Nếu xảy ra thời gian chờ kết nối, bạn có thể thử:
+- Kiểm tra kết nối mạng
+- Nếu sử dụng proxy, hãy định cấu hình `llm_base_url` và `embedding_base_url`
 
-## 测试验证
+## Kiểm tra xác minh
 
-可以在虚拟环境中测试 PowerMem 是否正常工作：
+Bạn có thể kiểm tra xem PowerMem có hoạt động bình thường trong môi trường ảo hay không:
 
-```bash
-# 激活虚拟环境
-source .venv/bin/activate
+``` bash
+# Kích hoạt môi trường ảo
+nguồn .venv/bin/kích hoạt
 
-# 测试 PowerMem 导入
-python -c "from powermem import AsyncMemory; print('PowerMem 导入成功')"
+# Kiểm tra nhập PowerMem
+python -c "from powermem import AsyncMemory; print('PowerMem đã nhập thành công')"
 
-# 测试 UserMemory 导入（用户画像功能）
-python -c "from powermem import UserMemory; print('UserMemory 导入成功')"
+# Kiểm tra nhập UserMemory (chức năng chân dung người dùng)
+python -c "from powermem import UserMemory; print('UserMemory đã nhập thành công')"
 ```
 
-## 更多资源
+## Nhiều tài nguyên hơn
 
-- [PowerMem 官方文档](https://www.powermem.ai/)
-- [PowerMem GitHub 仓库](https://github.com/oceanbase/powermem)
-- [PowerMem 使用示例](https://github.com/oceanbase/powermem/tree/main/examples)
-- [OceanBase 官网](https://www.oceanbase.com/)
+- [Tài liệu chính thức của PowerMem](https://www.powermem.ai/)
+- [Kho lưu trữ PowerMem GitHub](https://github.com/oceanbase/powermem)
+- [Ví dụ về cách sử dụng PowerMem](https://github.com/oceanbase/powermem/tree/main/examples)
+- [Trang web chính thức của OceanBase](https://www.oceanbase.com/)
 - [OceanBase GitHub](https://github.com/oceanbase/oceanbase)
-- [SeekDB GitHub](https://github.com/oceanbase/seekdb)（AI原生搜索数据库）
-- [阿里云百炼平台](https://bailian.console.aliyun.com/)
+- [SeekDB GitHub](https://github.com/oceanbase/seekdb) (cơ sở dữ liệu tìm kiếm gốc AI)
+- [Nền tảng Bailian đám mây của Alibaba](https://bailian.console.aliyun.com/)
 

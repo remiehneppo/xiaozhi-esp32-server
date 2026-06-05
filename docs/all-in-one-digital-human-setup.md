@@ -1,32 +1,32 @@
-# 一体机数字人配置指南
+# Hướng dẫn cấu hình con người kỹ thuật số tất cả trong một
 
-本项目用于在 x86 架构设备（如迷你主机、工控机、普通电脑等）上部署一套完整的数字人展示系统，实现以下功能：
-- 开机自动进入 Kiosk 全屏浏览器，展示指定网页
-- 后台运行唤醒词检测服务，支持语音交互
+Dự án này được sử dụng để triển khai hệ thống hiển thị con người kỹ thuật số hoàn chỉnh trên các thiết bị kiến trúc x86 (như máy chủ mini, máy tính công nghiệp, máy tính thông thường, v.v.) nhằm đạt được các chức năng sau:
+- Tự động vào trình duyệt toàn màn hình Kiosk khi khởi động, hiển thị trang web được chỉ định
+- Chạy dịch vụ phát hiện từ đánh thức ở chế độ nền và hỗ trợ tương tác bằng giọng nói
 
-> **说明**：本文档以 **Intel N100 迷你主机（天虹 QN10-100B4）** 为例进行部署演示，其他 x86 设备可参考调整（注意网络配置和声卡设备差异）。
+> **Lưu ý**: Tài liệu này sử dụng **Máy chủ mini Intel N100 (Texhong QN10-100B4)** làm ví dụ cho minh họa triển khai. Các thiết bị x86 khác có thể được điều chỉnh làm tài liệu tham khảo (lưu ý sự khác biệt về cấu hình mạng và thiết bị card âm thanh).
 
-## 适用环境
+## Môi trường áp dụng
 
-| 项目 | 说明 |
+| Dự án | Mô tả |
 |------|------|
-| 示例硬件 | 天虹 QN10-100B4（Intel N100） |
-| 操作系统 | Ubuntu 24.04 LTS (Noble Numbat) |
-| 示例用户 | xz（请根据实际情况替换） |
-| 网络 | Wi-Fi 连接，固定 IP（可按需改为有线） |
+| Phần cứng mẫu | Cầu vồng QN10-100B4 (Intel N100) |
+| Hệ điều hành | Ubuntu 24.04 LTS (Numbat cao quý) |
+| Người dùng mẫu | xz (vui lòng thay thế theo tình hình thực tế) |
+| Mạng | Kết nối Wi-Fi, IP cố định (có thể đổi sang có dây nếu cần) |
 
-## 部署流程
+##Quy trình triển khai
 
-1. 系统初始化（换源、连网）
-2. 安装图形组件与 Kiosk 浏览器
-3. 配置自动登录与图形界面
-4. 部署唤醒词服务（Python 环境 + 麦克风）
-5. 优化开机速度与隐藏启动信息
+1. Khởi tạo hệ thống (đổi nguồn, kết nối mạng)
+2. Cài đặt các thành phần đồ họa và trình duyệt Kiosk
+3. Cấu hình đăng nhập tự động và giao diện đồ họa
+4. Triển khai dịch vụ Wake Word (Môi trường Python + micrô)
+5. Tối ưu tốc độ khởi động và ẩn thông tin khởi động
 
 ---
 
 
-### 系统初始化（换源、连网）
+### Khởi tạo hệ thống (đổi nguồn, kết nối mạng)
 
 ```
 sudo cp /etc/apt/sources.list /etc/apt/sources.list.bak
@@ -52,7 +52,7 @@ echo 'Acquire::ForceIPv4 "true";' | sudo tee /etc/apt/apt.conf.d/99force-ipv4
 ```
 
 
-安装网络管理工具（若已存在可忽略）
+Cài đặt các công cụ quản lý mạng (bỏ qua nếu chúng đã tồn tại)
 
 Bash
 
@@ -64,9 +64,9 @@ sudo systemctl enable NetworkManager
 ```
 
 
-设置wifi密码，固定ip
+Đặt mật khẩu wifi và sửa ip
 
-> **提醒**：以下命令中的 Wi-Fi 名称、密码、IP 地址均为示例，请务必替换为你自己的实际信息。
+> **Nhắc nhở**: Tên Wi-Fi, mật khẩu và địa chỉ IP trong các lệnh sau chỉ là ví dụ, vui lòng đảm bảo thay thế chúng bằng thông tin thực tế của riêng bạn.
 
 Bash
 
@@ -79,9 +79,9 @@ sudo nmcli connection up "MERCURY_1812"
 ```
 
 
-### 第一步：安装核心图形组件与浏览器
+### Bước 1: Cài đặt các thành phần đồ họa cốt lõi và trình duyệt
 
-这里我们坚持“极简主义”，坚决不装多余的桌面环境（如 GNOME/KDE），只装底层驱动、最轻量的窗口管理器（Openbox）、隐藏鼠标工具以及 Chromium 浏览器。
+Ở đây chúng tôi tuân thủ "chủ nghĩa tối giản" và kiên quyết không cài đặt các môi trường máy tính để bàn dư thừa (chẳng hạn như Gnome/KDE). Chúng tôi chỉ cài đặt trình điều khiển cấp thấp, trình quản lý cửa sổ nhẹ nhất (Openbox), công cụ chuột ẩn và trình duyệt Chrome.
 
 Bash
 
@@ -100,11 +100,11 @@ sudo apt purge snapd -y
 
 ```
 
-### 第二步：配置 TTY1 开机免密自动登录
+### Bước 2: Cấu hình TTY1 tự động đăng nhập không cần mật khẩu khi khởi động
 
-为了避免手动输入账号密码的尴尬，我们通过修改 systemd 服务，让系统一开机就自动以 `xz` 的身份登录。这里使用一键写入命令，彻底避开由于 `nano` 或 `vi` 操作不当导致的保存失败问题。
+Để tránh bối rối khi nhập mật khẩu tài khoản theo cách thủ công, chúng tôi đã sửa đổi dịch vụ systemd để hệ thống tự động đăng nhập với tên `xz` ngay khi bật nguồn. Lệnh ghi bằng một cú nhấp chuột được sử dụng ở đây để tránh hoàn toàn vấn đề lưu không thành công do hoạt động không đúng của `nano` hoặc `vi`.
 
-**1. 创建配置目录：**
+**1. Tạo thư mục cấu hình:**
 
 Bash
 
@@ -112,7 +112,7 @@ Bash
 sudo mkdir -p /etc/systemd/system/getty@tty1.service.d/
 ```
 
-**2. 写入自动登录规则：**
+**2. Viết quy tắc đăng nhập tự động:**
 
 Bash
 
@@ -120,7 +120,7 @@ Bash
 echo -e "[Service]\nExecStart=\nExecStart=-/sbin/agetty --autologin xz --noclear %I \$TERM" | sudo tee /etc/systemd/system/getty@tty1.service.d/override.conf
 ```
 
-**3. 重载服务并设置默认启动目标：**
+**3. Tải lại dịch vụ và đặt mục tiêu khởi động mặc định:**
 
 Bash
 
@@ -129,13 +129,13 @@ sudo systemctl daemon-reload
 sudo systemctl set-default multi-user.target
 ```
 
-### 第三步：配置登录后自动启动图形界面
+### Bước 3: Cấu hình giao diện đồ họa tự động khởi động sau khi đăng nhập
 
-系统自动登录后默认停留在黑底白字的命令行，我们需要配置脚本，让它一旦登录立马启动 X11 图形环境。
+Hệ thống sau khi tự động đăng nhập sẽ mặc định ở dòng lệnh với ký tự màu trắng trên nền đen. Chúng ta cần định cấu hình tập lệnh để nó khởi động môi trường đồ họa X11 ngay sau khi đăng nhập.
 
-**1. 触发 `startx` 的启动逻辑：**
+**1. Kích hoạt logic khởi động của `startx`: **
 
-直接将触发代码追加写入你的个人环境配置文件中：
+Nối trực tiếp mã kích hoạt vào tệp cấu hình môi trường cá nhân của bạn:
 
 Bash
 
@@ -147,7 +147,7 @@ fi
 EOF
 ```
 
-**2. 告诉 `startx` 去启动 Openbox：**
+**2. Yêu cầu `startx` khởi động Openbox: **
 
 Bash
 
@@ -155,11 +155,11 @@ Bash
 echo "exec openbox-session" > ~/.xinitrc
 ```
 
-### 第四步：配置“铜墙铁壁”的 Openbox 与浏览器
+### Bước 4: Cấu hình Openbox và trình duyệt “bức tường sắt”
 
-这是最核心的一步：关闭屏幕休眠、隐藏鼠标、全屏锁定浏览器，并写一个“死循环”保证浏览器被意外关闭后也能瞬间复活。
+Đây là bước cốt lõi: tắt chế độ ngủ màn hình, ẩn chuột, khóa trình duyệt ở chế độ toàn màn hình và viết "vòng lặp vô hạn" để đảm bảo trình duyệt có thể được phục hồi ngay lập tức sau khi vô tình bị đóng.
 
-**1. 创建 Openbox 配置目录：**
+**1. Tạo thư mục cấu hình Openbox:**
 
 Bash
 
@@ -167,43 +167,43 @@ Bash
 mkdir -p ~/.config/openbox
 ```
 
-**2. 写入自启动脚本 (`autostart`)：**
+**2. Viết đoạn script tự khởi động (`autostart`): **
 
-复制以下整段代码并回车（这会自动把所有保护规则写进文件里）：
+Sao chép toàn bộ mã bên dưới và nhấn Enter (điều này sẽ tự động ghi tất cả các quy tắc bảo vệ vào tệp):
 
 Bash
 
 ```
-cat << 'EOF' > ~/.config/openbox/autostart
-# 关闭屏幕保护
-xset -dpms
+mèo << 'EOF' > ~/.config/openbox/autostart
+# Tắt trình bảo vệ màn hình
+xset-dpms
 xset s noblank
-xset s off
+xsetsoff
 
-# 隐藏鼠标
-unclutter -idle 0.1 -root &
+# Ẩn chuột
+dọn dẹp -nhàn rỗi 0,1 -root &
 
-# 死循环启动 Chromium（崩溃或被关也能秒重启）
-while true; do
-    google-chrome \
-        --kiosk \
-        --no-first-run \
-        --no-default-browser-check \
+# Khởi động Chrome theo vòng lặp vô hạn (có thể khởi động lại sau vài giây ngay cả khi nó gặp sự cố hoặc bị tắt)
+trong khi đúng; làm
+    google-chrome\
+        --kiosk\
+        --không chạy lần đầu \
+        --no-mặc định-kiểm tra trình duyệt \
         --disable-infobars \
         --disable-session-crashed-bubble \
-        --disable-translate \
+        --disable-dịch \
         --disable-external-intent-requests \
         --autoplay-policy=no-user-gesture-required \
         --use-fake-ui-for-media-stream \
         "https://www.douyin.com"
-    sleep 2
-done &
+    ngủ 2
+xong &
 EOF
 ```
 
-**3. 屏蔽 `Alt+F4` 退出快捷键：**
+**3. Phím tắt thoát Shield `Alt+F4`: **
 
-为了防止别人插上键盘强行关掉窗口，我们把 Openbox 默认的系统快捷键干掉。
+Để ngăn người khác cắm bàn phím và buộc đóng cửa sổ, chúng tôi đã loại bỏ các phím tắt hệ thống mặc định của Openbox.
 
 Bash
 
@@ -212,9 +212,9 @@ cp /etc/xdg/openbox/rc.xml ~/.config/openbox/
 sed -i '/<keybind key="A-F4">/,/<\/keybind>/d' ~/.config/openbox/rc.xml
 ```
 
-### 第五步：重启验收成果
+### Bước 5: Khởi động lại kết quả nghiệm thu
 
-如果拔掉网线或不需要等待所有网络上线，可禁用网络等待服务，避免开机卡顿
+Nếu bạn rút cáp mạng hoặc không cần đợi tất cả các mạng trực tuyến, bạn có thể tắt dịch vụ chờ mạng để tránh tình trạng khởi động chậm.
 
 Bash
 
@@ -223,7 +223,7 @@ sudo systemctl mask systemd-networkd-wait-online.service
 sudo systemctl mask NetworkManager-wait-online.service
 ```
 
-隐藏开机信息（GRUB）
+Ẩn thông tin khởi động (GRUB)
 
 Bash
 
@@ -236,7 +236,7 @@ echo 'GRUB_RECORDFAIL_TIMEOUT=0' | sudo tee -a /etc/default/grub
 sudo update-grub
 ```
 
-声音设置成100%，然后 重启：
+Đặt âm thanh thành 100%, sau đó khởi động lại:
 
 Bash
 
@@ -245,11 +245,11 @@ amixer -q sset Master 100% unmute
 sudo reboot
 ```
 
-### 部署唤醒词服务
+### Triển khai dịch vụ Wake Word
 
-在一体机上部署唤醒词检测服务，需要安装 Python 环境、上传项目文件、配置 Camera 麦克风和开机自启。
+Để triển khai dịch vụ phát hiện từ đánh thức trên máy đa năng, bạn cần cài đặt môi trường Python, tải tệp dự án lên, định cấu hình micrô camera và tự động khởi động sau khi khởi động.
 
-#### 1. 安装 Miniconda
+#### 1. Cài đặt Miniconda
 
 ```bash
 wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
@@ -260,7 +260,7 @@ rm Miniconda3-latest-Linux-x86_64.sh
 ```
 
 
-确保登录时自动进入conda环境
+Đảm bảo rằng bạn tự động vào môi trường conda khi đăng nhập
 
 ```bash
 if ! grep -q '.bashrc' ~/.bash_profile; then
@@ -274,38 +274,38 @@ fi
 ```
 
 
-#### 2. 创建 Python 虚拟环境
+#### 2. Tạo môi trường ảo Python
 
 ```bash
 conda create -n test python=3.10 -y
 conda activate test
 ```
 
-若出现 Terms of Service have not been accepted 错误，执行：
+Nếu xuất hiện lỗi "Điều khoản dịch vụ chưa được chấp nhận", hãy thực hiện:
 
 ```bash
 conda tos accept --override-channels --channel https://repo.anaconda.com/pkgs/main
 conda tos accept --override-channels --channel https://repo.anaconda.com/pkgs/r
 ```
 
-#### 3. 上传项目文件
+#### 3. Tải file dự án lên
 
-将开发机上的 `main/digital-human/` 整个目录上传到一体机的 `~/digital-human/` 目录：
+Tải toàn bộ thư mục `main/digital-human/` trên máy phát triển lên thư mục `~/digital-human/` trên máy đa năng:
 
 ```bash
 # 在开发机上执行（将 <一体机IP> 替换为实际 IP）
 scp -r main/digital-human/ xz@<一体机IP>:~/digital-human/
 ```
 
-#### 4. 安装系统依赖
+#### 4. Cài đặt các phụ thuộc hệ thống
 
-唤醒词服务需要音频采集库和 ALSA PulseAudio 插件：
+Dịch vụ Wake Word yêu cầu thư viện ghi âm và plug-in ALSA PulseAudio:
 
 ```bash
 sudo apt install libportaudio2 portaudio19-dev libasound2-plugins -y
 ```
 
-#### 5. 安装 Python 依赖
+#### 5. Cài đặt các phụ thuộc Python
 
 ```bash
 cd ~/digital-human/wakeword_runtime
@@ -313,86 +313,86 @@ pip install numpy
 pip install -r requirements.txt
 ```
 
-#### 6. 下载唤醒词模型
+#### 6. Tải mô hình từ đánh thức
 
-模型文件不包含在项目中，需要单独下载配置，详见 [docs/digital-human-wakeword.md](digital-human-wakeword.md) 中的“模型下载”章节。
+Tệp mô hình không được bao gồm trong dự án và cấu hình cần phải được tải xuống riêng. Để biết chi tiết, hãy xem chương "Tải xuống mô hình" trong [docs/digit-human-wakeword.md](digital-human-wakeword.md).
 
-#### 7. 修改 Openbox 自启动脚本
+#### 7. Sửa đổi script tự khởi động Openbox
 
-需要在 autostart 中加上 PulseAudio 和 Camera 麦克风配置，并将 Chrome 地址改为测试页面。
+Bạn cần thêm cấu hình micrô PulseAudio và Camera để tự động khởi động và thay đổi địa chỉ Chrome thành trang thử nghiệm.
 
-先确认 Camera 麦克风在 PulseAudio 中的设备名：
+Đầu tiên hãy xác nhận tên thiết bị của Microphone Camera trong PulseAudio:
 
 ```bash
 pulseaudio --start
 pactl list sources short
 ```
 
-找到包含 `USB_Camera` 的那一行，记下完整名称，例如：
+Tìm dòng chứa `USB_Camera` và ghi chú tên đầy đủ, ví dụ:
 
 ```
 alsa_input.usb-SN0002_2K_USB_Camera_46435000_P030D00_SN0002-02.mono-fallback
 ```
 
-然后用完整内容覆盖 autostart（将 `TARGET_MIC` 替换为你的实际设备名）：
+Sau đó ghi đè tự động khởi động bằng toàn bộ nội dung (thay thế `TARGET_MIC` bằng tên thiết bị thực của bạn):
 
-```bash
-cat << 'EOF' > ~/.config/openbox/autostart
-# 1. 启动声音服务并稍作等待
-pulseaudio --start
-sleep 1
+``` bash
+mèo << 'EOF' > ~/.config/openbox/autostart
+# 1. Khởi động dịch vụ âm thanh và đợi một lát
+xungaudio --bắt đầu
+ngủ 1
 
-# 2. 锁定 Camera 的麦克风（请替换为你的实际设备名）
-TARGET_MIC="alsa_input.usb-SN0002_2K_USB_Camera_46435000_P030D00_SN0002-02.mono-fallback"
+#2. Khóa micro của Camera (vui lòng thay bằng tên thiết bị thật của bạn)
+TARGET_MIC="alsa_input.usb-SN0002_2K_USB_Camera_46435000_P030D00_SN0002-02.mono-dự phòng"
 
-# 3. 设为系统默认麦克风
-pactl set-default-source "$TARGET_MIC"
+#3. Đặt làm micro mặc định của hệ thống
+Pactl set-default-source "$TARGET_MIC"
 
-# 4. 解除静音
-pactl set-source-mute "$TARGET_MIC" 0
+# 4. Bật tiếng
+Pactl set-source-mute "$TARGET_MIC" 0
 
-# 5. 音量拉到 100%
-pactl set-source-volume "$TARGET_MIC" 100%
+#5. Bật âm lượng lên 100%
+Pactl set-source-volume "$TARGET_MIC" 100%
 
-# --- 极简桌面与浏览器环境配置 ---
+# --- Cấu hình môi trường trình duyệt và máy tính để bàn tối giản ---
 
-# 关闭屏幕保护
-xset -dpms
+# Tắt trình bảo vệ màn hình
+xset-dpms
 xset s noblank
-xset s off
+xsetsoff
 
-# 隐藏鼠标
-unclutter -idle 0.1 -root &
+# Ẩn chuột
+dọn dẹp -nhàn rỗi 0,1 -root &
 
-# 死循环启动浏览器（崩溃或被关也能秒重启）
-while true; do
-    google-chrome \
-        --kiosk \
-        --no-first-run \
-        --no-default-browser-check \
+# Khởi động trình duyệt theo vòng lặp vô hạn (nó có thể được khởi động lại sau vài giây ngay cả khi nó gặp sự cố hoặc bị tắt)
+trong khi đúng; làm
+    google-chrome\
+        --kiosk\
+        --không chạy lần đầu \
+        --no-mặc định-kiểm tra trình duyệt \
         --disable-infobars \
         --disable-session-crashed-bubble \
-        --disable-translate \
+        --disable-dịch \
         --disable-external-intent-requests \
         --autoplay-policy=no-user-gesture-required \
         --use-fake-ui-for-media-stream \
         "http://127.0.0.1:8006/index.html"
-    sleep 2
-done &
+    ngủ 2
+xong &
 EOF
 ```
 
-#### 8. 配置唤醒词服务开机自启
+#### 8. Cấu hình dịch vụ Wake Word tự động khởi động khi khởi động
 
-创建 systemd 服务文件，让唤醒词服务开机自动运行。
+Tạo tệp dịch vụ systemd để cho phép dịch vụ Wake Word tự động chạy khi khởi động.
 
-先确认当前用户的 UID：
+Đầu tiên hãy xác nhận UID của người dùng hiện tại:
 
 ```bash
 id -u $(whoami)
 ```
 
-然后用查到的 UID 替换下面 `1000`（通常第一个用户就是 1000）：
+Sau đó thay thế `1000` sau bằng UID tìm thấy (thường người dùng đầu tiên là 1000):
 
 ```bash
 sudo tee /etc/systemd/system/digital-human.service << 'EOF'
@@ -416,13 +416,13 @@ WantedBy=multi-user.target
 EOF
 ```
 
-> **重要说明**：
-> - `User=xz` — 替换为你的实际用户名
-> - `/run/user/1000` — 替换为你实际的 UID
-> - `WorkingDirectory` 和 `ExecStart` 中的路径 — 替换为你的实际部署路径
-> - `Environment` 中的 PulseAudio 环境变量**必须保留**，否则唤醒词服务和浏览器无法同时使用 Camera 麦克风
+> **Lưu ý quan trọng**:
+> - `User=xz` — thay thế bằng tên người dùng thực tế của bạn
+> - `/run/user/1000` — thay thế bằng UID thực tế của bạn
+> - Đường dẫn trong `WorkingDirectory` và `ExecStart` — thay thế bằng đường dẫn triển khai thực tế của bạn
+> - Biến môi trường PulseAudio trong `Environment` phải được giữ nguyên, nếu không dịch vụ Wake Word và trình duyệt không thể sử dụng Micrô máy ảnh cùng một lúc
 
-启用并启动服务：
+Kích hoạt và bắt đầu dịch vụ:
 
 ```bash
 sudo systemctl daemon-reload
@@ -430,7 +430,7 @@ sudo systemctl enable digital-human
 sudo systemctl start digital-human
 ```
 
-#### 9. 常用服务管理命令
+#### 9. Các lệnh quản lý dịch vụ thông dụng
 
 ```bash
 sudo systemctl start digital-human     # 立即启动

@@ -1,36 +1,36 @@
-# 请求库
+#Yêu cầu thư viện
 
-当前项目使用 Alova 作为唯一的 HTTP 请求库：
+Dự án hiện tại sử dụng Alova làm thư viện yêu cầu HTTP duy nhất:
 
-## 使用方式
+## Cách sử dụng
 
-- **Alova HTTP**：路径（src/http/request/alova.ts）
-- **示例代码**：src/api/foo-alova.ts 和 src/api/foo.ts
-- **API文档**：https://alova.js.org/
+- **Alova HTTP**: đường dẫn (src/http/request/alova.ts)
+- **Mã ví dụ**: src/api/foo-alova.ts và src/api/foo.ts
+- **Tài liệu API**: https://alova.js.org/
 
-## 配置说明
+## Hướng dẫn cấu hình
 
-Alova 实例已配置：
-- 自动 Token 认证和刷新
-- 统一错误处理和提示
-- 支持动态域名切换
-- 内置请求/响应拦截器
+Phiên bản Alova được cấu hình:
+- Xác thực và làm mới mã thông báo tự động
+- Thống nhất xử lý lỗi và nhắc nhở
+- Hỗ trợ chuyển đổi tên miền động
+- Trình chặn yêu cầu/phản hồi tích hợp
 
-## 使用示例
+## Ví dụ sử dụng
 
 ```typescript
 import { http } from '@/http/request/alova'
 
-// GET 请求
+// NHẬN yêu cầu
 http.Get<ResponseType>('/api/path', {
-  params: { id: 1 },
-  headers: { 'Custom-Header': 'value' },
-  meta: { toast: false } // 关闭错误提示
+  thông số: { id: 1 },
+  tiêu đề: { 'Custom-Header': 'value' },
+  meta: { toast: false } // Đóng dấu nhắc lỗi
 })
 
-// POST 请求  
-http.Post<ResponseType>('/api/path', data, {
-  params: { query: 'param' },
-  headers: { 'Content-Type': 'application/json' }
+// ĐĂNG yêu cầu
+http.Post<ResponseType>('/api/path', dữ liệu, {
+  thông số: { truy vấn: 'param' },
+  tiêu đề: { 'Content-Type': 'application/json' }
 })
 ```

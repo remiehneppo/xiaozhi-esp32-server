@@ -1,49 +1,49 @@
-# MCP 接入点使用指南
+Hướng dẫn sử dụng điểm truy cập #MCP
 
-本教程以虾哥开源的mcp计算器功能为示例，介绍如何将自己自定义的mcp服务接入到自己的接入点里。
+Hướng dẫn này sử dụng chức năng máy tính mcp mã nguồn mở của Xiago làm ví dụ để giới thiệu cách kết nối dịch vụ mcp tùy chỉnh của riêng bạn với điểm truy cập của riêng bạn.
 
-本教程的前提是，你的`xiaozhi-server`已经启用了mcp接入点功能，如果你还没启用，可以先根据[这个教程](./mcp-endpoint-enable.md)启用。
+Tiền đề của hướng dẫn này là `xiaozhi-server` của bạn đã kích hoạt chức năng điểm truy cập mcp. Nếu bạn chưa kích hoạt nó, bạn có thể kích hoạt nó trước theo [hướng dẫn này](./mcp-endpoint-enable.md).
 
-# 如何为智能体接入一个简单的mcp功能，如计算器功能
+# Cách kết nối hàm mcp đơn giản với tác nhân, chẳng hạn như hàm máy tính
 
-### 如果你是全模块部署
-如果你是全模块部署，你可以进入智控台，智能体管理，点击`配置角色`，在`意图识别`的右边，有一个`编辑功能`的按钮。
+### Nếu bạn triển khai một mô-đun đầy đủ
+Nếu triển khai một mô-đun đầy đủ, bạn có thể vào bảng điều khiển thông minh, quản lý tác nhân, nhấp vào `配置角色` và có nút `编辑功能` ở bên phải `意图识别`.
 
-点击这个按钮。在弹出的页面里，位于底部，会有`MCP接入点`，正常来说，会显示这个智能体的`MCP接入点地址`，接下来，我们来给这个智能体扩展一个基于MCP技术的计算器的功能。
+Bấm vào nút này. Trong trang bật lên, ở phía dưới cùng, sẽ có `MCP接入点`. Thông thường, `MCP接入点地址` của tác nhân này sẽ được hiển thị. Tiếp theo, chúng tôi sẽ mở rộng chức năng của máy tính dựa trên công nghệ MCP cho tác nhân này.
 
-这个`MCP接入点地址`很重要，你等一下会用到。
+`MCP接入点地址` này rất quan trọng, bạn sẽ sử dụng nó sau.
 
-### 如果你是单模块部署
-如果你是单模块部署，且你已经在配置文件里配置了MCP接入点地址，那么正常来说，单模块部署启动的时候，会输出如下的日志。
+### Nếu bạn đang triển khai một mô-đun duy nhất
+Nếu bạn đang triển khai một mô-đun duy nhất và đã định cấu hình địa chỉ điểm truy cập MCP trong tệp cấu hình thì thông thường, khi bắt đầu triển khai mô-đun đơn lẻ, nhật ký sau sẽ được xuất ra.
 ```
 250705[__main__]-INFO-初始化组件: vad成功 SileroVAD
 250705[__main__]-INFO-初始化组件: asr成功 FunASRServer
-250705[__main__]-INFO-OTA接口是          http://192.168.1.25:8002/xiaozhi/ota/
+250705[__main__]-INFO-OTA接口是          http://192.168.1.25:8002/xiaozhi/OTA/
 250705[__main__]-INFO-视觉分析接口是     http://192.168.1.25:8002/mcp/vision/explain
 250705[__main__]-INFO-mcp接入点是        ws://192.168.1.25:8004/mcp_endpoint/mcp/?token=abc
-250705[__main__]-INFO-Websocket地址是    ws://192.168.1.25:8000/xiaozhi/v1/
-250705[__main__]-INFO-=======上面的地址是websocket协议地址，请勿用浏览器访问=======
-250705[__main__]-INFO-如想测试websocket请启动digital-human模块，打开浏览器交互测试
+250705[__main__]-INFO-WebSocket地址是    ws://192.168.1.25:8000/xiaozhi/v1/
+250705[__main__]-INFO-=======上面的地址是WebSocket协议地址，请勿用浏览器访问=======
+250705[__main__]-INFO-如想测试WebSocket请启动digital-human模块，打开浏览器交互测试
 250705[__main__]-INFO-=============================================================
 ```
 
-如上，输出`mcp接入点是`中`ws://192.168.1.25:8004/mcp_endpoint/mcp/?token=abc`就是你的`MCP接入点地址`。
+Như trên, `ws://192.168.1.25:8004/mcp_endpoint/mcp/?token=abc` ở đầu ra `mcp接入点是` là `MCP接入点地址` của bạn.
 
-这个`MCP接入点地址`很重要，你等一下会用到。
+`MCP接入点地址` này rất quan trọng, bạn sẽ sử dụng nó sau.
 
-## 第一步 下载虾哥MCP计算器项目代码
+## Bước đầu tiên là tải xuống mã dự án máy tính Xia Ge MCP
 
-浏览器打开虾哥写的[计算器项目](https://github.com/78/mcp-calculator)，
+Trình duyệt mở [dự án máy tính](https://github.com/78/mcp-calculator) do Anh Xia viết,
 
-打开完，找到页面中一个绿色的按钮，写着`Code`的按钮，点开它，然后你就看到`Download ZIP`的按钮。
+Sau khi mở nó, hãy tìm một nút màu xanh lục trên trang có nội dung `Code`, nhấp vào nút đó và sau đó bạn sẽ thấy nút `Download ZIP`.
 
-点击它，下载本项目源码压缩包。下载到你电脑后，解压它，此时它的名字可能叫`mcp-calculatorr-main`
-你需要把它重命名成`mcp-calculator`。接下来，我们用命令行进入项目目录即安装依赖
+Nhấp vào nó để tải xuống gói nén mã nguồn của dự án này. Sau khi tải về máy tính, hãy giải nén nó. Lúc này tên của nó có thể là `mcp-calculatorr-main`
+Bạn cần đổi tên nó thành `mcp-calculator`. Tiếp theo, chúng ta sử dụng dòng lệnh để vào thư mục dự án và cài đặt các phần phụ thuộc.
 
 
-```bash
-# 进入项目目录
-cd mcp-calculator
+``` bash
+# Nhập thư mục dự án
+máy tính cd mcp
 
 conda remove -n mcp-calculator --all -y
 conda create -n mcp-calculator python=3.10 -y
@@ -52,32 +52,32 @@ conda activate mcp-calculator
 pip install -r requirements.txt
 ```
 
-## 第二步 启动
+## Bước 2 Bắt đầu
 
-启动前，先从你的智控台的智能体里，复制到了MCP接入点的地址。
+Trước khi bắt đầu, hãy sao chép địa chỉ của điểm truy cập MCP từ phần thân thông minh của bảng điều khiển thông minh của bạn.
 
-例如我的智能体的mcp地址是
+Ví dụ: địa chỉ mcp của đại lý của tôi là
 ```
 ws://192.168.1.25:8004/mcp_endpoint/mcp/?token=abc
 ```
 
-开始输入命令
+Bắt đầu gõ lệnh
 
 ```bash
 export MCP_ENDPOINT=ws://192.168.1.25:8004/mcp_endpoint/mcp/?token=abc
 ```
 
-输入完后，启动程序
+Sau khi nhập xong, khởi động chương trình
 
 ```bash
 python mcp_pipe.py calculator.py
 ```
 
-### 如果你是智控台部署
-如果你是智控台部署，启动完后，你再进入智控台，点击刷新MCP的接入状态，就会看到你扩展的功能列表了。
+### Nếu bạn đang triển khai bảng điều khiển thông minh
+Nếu bạn đang triển khai bảng điều khiển thông minh, sau khi khởi động nó, bạn có thể vào lại bảng điều khiển thông minh, nhấp vào Làm mới trạng thái truy cập MCP và bạn sẽ thấy danh sách chức năng mở rộng của mình.
 
-### 如果你是单模块部署
-如果你是单模块部署，当设备连接后，会输出类似的日志，说明成功了
+### Nếu bạn đang triển khai một mô-đun duy nhất
+Nếu bạn triển khai một mô-đun duy nhất, khi thiết bị được kết nối, một nhật ký tương tự sẽ được xuất ra, cho biết thành công.
 
 ```
 250705 -INFO-正在初始化MCP接入点: wss://2662r3426b.vicp.fun/mcp_e 
@@ -91,4 +91,4 @@ python mcp_pipe.py calculator.py
 250705 -INFO-工具缓存已刷新
 250705 -INFO-当前支持的函数列表: [ 'get_time', 'get_lunar', 'play_music', 'get_weather', 'handle_exit_intent', 'calculator']
 ```
-如果包含了 `'calculator'`，说明设备将可以根据意图识别，调用计算器这个工具。
+Nếu bao gồm `'calculator'`, điều đó có nghĩa là thiết bị sẽ có thể nhận dạng và gọi công cụ máy tính dựa trên mục đích.

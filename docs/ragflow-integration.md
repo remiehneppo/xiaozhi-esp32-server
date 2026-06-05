@@ -1,32 +1,32 @@
-# ragflow 集成指南
+# hướng dẫn tích hợp ragflow
 
-本教程主要是是两部分
+Hướng dẫn này chủ yếu được chia thành hai phần
 
-- 一、如何部署ragflow
-- 二、如何在智控台配置ragflow接口
+- 1. Cách triển khai ragflow
+- 2. Cách cấu hình giao diện ragflow trên bảng điều khiển thông minh
 
-如果您对ragflow很熟悉，且已经部署了ragflow，可直接跳过第一部分，直接进入第二部分。但是如果你希望有人指导你部署ragflow，让它能够和`xiaozhi-esp32-server`共同使用`mysql`、`redis`基础服务，以减少资源成本，你需要从第一部分开始。
+Nếu bạn đã quen với ragflow và đã triển khai ragflow, bạn có thể bỏ qua phần đầu tiên và chuyển thẳng sang phần thứ hai. Nhưng nếu bạn muốn ai đó hướng dẫn bạn triển khai ragflow để có thể sử dụng các dịch vụ cơ bản `mysql` và `redis` cùng với `xiaozhi-esp32-server` để giảm chi phí tài nguyên, bạn cần bắt đầu từ phần đầu tiên.
 
-# 第一部分 如何部署ragflow
-## 第一步， 确认mysql、redis是否可用
+# Phần 1 Cách triển khai ragflow
+## Bước đầu tiên là xác nhận xem mysql và redis có sẵn hay không.
 
-ragflow需要依赖`mysql`数据库。如果你之前已经部署`智控台`，说明你已经安装了`mysql`。你可以共用它。
+ragflow cần dựa vào cơ sở dữ liệu `mysql`. Nếu bạn đã triển khai `智控台` trước đó thì bạn đã cài đặt `mysql`. Bạn có thể chia sẻ nó.
 
-你可以你试一下在宿主机使用`telnet`命令，看看能不能正常访问`mysql`的`3306`端口。
-``` shell
+Bạn có thể thử sử dụng lệnh `telnet` trên máy chủ để xem liệu bạn có thể truy cập cổng `3306` của `mysql` một cách bình thường hay không.
+``` vỏ
 telnet 127.0.0.1 3306
 
 telnet 127.0.0.1 6379
-```
-如果能访问到`3306`端口和`6379`端口，请忽略以下的内容，直接进入第二步。
+Cổng ```
+如果能访问到`3306`端口和`6379`, vui lòng bỏ qua nội dung sau và chuyển thẳng sang bước thứ hai.
 
-如果不能访问，你需要回忆一下，你的`mysql`是怎么安装的。
+Nếu bạn không thể truy cập nó, bạn cần nhớ lại cách cài đặt `mysql` của bạn.
 
-如果你的mysql是通过自己使用安装包安装的，说明你的`mysql`做了网络隔离。你可能先解决访问`mysql`的`3306`端口这个问题。
+Nếu mysql của bạn được cài đặt bằng cách sử dụng gói cài đặt, điều đó có nghĩa là `mysql` của bạn đã bị cô lập mạng. Trước tiên, bạn có thể giải quyết vấn đề truy cập vào cổng `3306` của `mysql`.
 
-如果你`mysql`是通过本项目的`docker-compose_all.yml`安装的。你需要找一下你当时创建数据库的`docker-compose_all.yml`文件，修改以下的内容
+Nếu bạn đã cài đặt `mysql` đến `docker-compose_all.yml` của dự án này. Bạn cần tìm tệp `docker-compose_all.yml` nơi bạn đã tạo cơ sở dữ liệu và sửa đổi nội dung sau
 
-修改前
+Trước khi sửa đổi
 ``` yaml
   xiaozhi-esp32-server-db:
     ...
@@ -40,7 +40,7 @@ telnet 127.0.0.1 6379
       - 6379
 ```
 
-修改后
+Sau khi sửa đổi
 ``` yaml
   xiaozhi-esp32-server-db:
     ...
@@ -54,7 +54,7 @@ telnet 127.0.0.1 6379
       - "6379:6379"
 ```
 
-注意是将`xiaozhi-esp32-server-db`和`xiaozhi-esp32-server-redis`下面的`expose`改成`ports`。改完后，需要重新启动。以下是重启mysql的命令：
+Lưu ý rằng `expose` trong `xiaozhi-esp32-server-db` và `xiaozhi-esp32-server-redis` được đổi thành `ports`. Sau khi sửa đổi, bạn cần phải khởi động lại. Sau đây là lệnh khởi động lại mysql:
 
 ``` shell
 # 进入你docker-compose_all.yml所在的文件夹，例如我的是xiaozhi-server
@@ -63,46 +63,46 @@ docker compose -f docker-compose_all.yml down
 docker compose -f docker-compose.yml up -d
 ```
 
-启动完后，在宿主机再使用`telnet`命令，看看能不能正常访问`mysql`的`3306`端口。
-``` shell
+Sau khi khởi động, hãy sử dụng lệnh `telnet` trên máy chủ để xem bạn có thể truy cập cổng `3306` của `mysql` bình thường hay không.
+``` vỏ
 telnet 127.0.0.1 3306
 
 telnet 127.0.0.1 6379
 ```
-正常来说这样就可以访问的了。
+Thông thường bạn có thể truy cập nó theo cách này.
 
-## 第二步， 创建数据库和表
-如果你的宿主机，能正常访问mysql数据库，那就在mysql上创建一个名字为`rag_flow`的数据库和`rag_flow`用户，密码为`infini_rag_flow`。
+## Bước thứ hai là tạo cơ sở dữ liệu và bảng
+Nếu máy chủ của bạn có thể truy cập cơ sở dữ liệu mysql một cách bình thường thì hãy tạo cơ sở dữ liệu có tên `rag_flow` và người dùng `rag_flow` trên mysql bằng mật khẩu `infini_rag_flow`.
 
 ``` sql
--- 创建数据库
-CREATE DATABASE IF NOT EXISTS rag_flow CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+--Tạo cơ sở dữ liệu
+TẠO CƠ SỞ DỮ LIỆU NẾU KHÔNG TỒN TẠI rag_flow CHARACTER SET utf8mb4 THU THẬP utf8mb4_unicode_ci;
 
--- 创建用户并授权
-CREATE USER IF NOT EXISTS 'rag_flow'@'%' IDENTIFIED BY 'infini_rag_flow';
-GRANT ALL PRIVILEGES ON rag_flow.* TO 'rag_flow'@'%';
+--Tạo người dùng và ủy quyền
+TẠO NGƯỜI DÙNG NẾU KHÔNG TỒN TẠI 'rag_flow'@'%' ĐƯỢC XÁC ĐỊNH BỞI 'infini_rag_flow';
+CẤP TẤT CẢ CÁC ĐẶC QUYỀN TRÊN rag_flow.* CHO 'rag_flow'@'%';
 
--- 刷新权限
-FLUSH PRIVILEGES;
+-- Làm mới quyền
+ĐẶC QUYỀN FLUSH;
 ```
 
-## 第三步， 下载ragflow项目
+## Bước thứ ba là tải xuống dự án ragflow
 
-你需要在你电脑找一个文件夹，用来存放ragflow项目。例如我在`/home/system/xiaozhi`文件夹。
+Bạn cần tìm một thư mục trên máy tính để lưu trữ dự án ragflow. Ví dụ tôi đang ở thư mục `/home/system/xiaozhi`.
 
-你可以使用`git`命令，将ragflow项目下载到这个文件夹，本教程使用的是`v0.22.0`版本进行安装部署。
+Bạn có thể sử dụng lệnh `git` để tải dự án ragflow xuống thư mục này. Hướng dẫn này sử dụng phiên bản `v0.22.0` để cài đặt và triển khai.
 ```
 git clone https://ghfast.top/https://github.com/infiniflow/ragflow.git
 cd ragflow
 git checkout v0.22.0
 ```
-下载完后，进入`docker`文件夹。
+Sau khi tải xuống, hãy chuyển đến thư mục `docker`.
 ``` shell
 cd docker
 ```
-修改`ragflow/docker`文件夹下的`docker-compose.yml`文件，将`ragflow-cpu`和`ragflow-gpu`服务的`depends_on`配置去掉，用于解除`ragflow-cpu`服务对`mysql`的依赖。
+Sửa đổi tệp `docker-compose.yml` trong thư mục `ragflow/docker` và xóa cấu hình `depends_on` của dịch vụ `ragflow-cpu` và `ragflow-gpu` để xóa sự phụ thuộc của dịch vụ `ragflow-cpu` vào `mysql`.
 
-这是修改前：
+Đây là trước khi sửa đổi:
 ``` yaml
   ragflow-cpu:
     depends_on:
@@ -118,7 +118,7 @@ cd docker
     profiles:
       - gpu
 ```
-这是修改后：
+Đây là sau khi sửa đổi:
 ``` yaml
   ragflow-cpu:
     profiles:
@@ -129,9 +129,9 @@ cd docker
       - gpu
 ```
 
-接着，修改`ragflow/docker`文件夹下的`docker-compose-base.yml`文件，去掉`mysql`和`redis`的配置。
+Tiếp theo, sửa đổi tệp `docker-compose-base.yml` trong thư mục `ragflow/docker` và xóa cấu hình của `mysql` và `redis`.
 
-例如，删除前：
+Ví dụ: trước khi xóa:
 ``` yaml
 services:
   minio:
@@ -145,52 +145,52 @@ services:
     ...
 ```
 
-删除后
+Sau khi xóa
 ``` yaml
 services:
   minio:
     image: quay.io/minio/minio:RELEASE.2025-06-13T11-33-47Z
     ...
 ```
-## 第四步，修改环境变量配置
+## Bước thứ tư là sửa đổi cấu hình biến môi trường
 
-编辑`ragflow/docker`文件夹下的`.env`文件,找到以下配置，逐个搜索，逐个修改！逐个搜索，逐个修改！
+Chỉnh sửa tệp `.env` trong thư mục `ragflow/docker`, tìm các cấu hình sau, tìm kiếm từng cái một và sửa đổi từng cái một! Tìm kiếm từng cái một và sửa đổi từng cái một!
 
-下面对于`.env`文件的修改，60%的人会忽略`MYSQL_USER`配置导致ragflow启动不成功，因此，需要强调三次：
+Về việc sửa đổi tệp `.env` bên dưới, 60% mọi người sẽ bỏ qua cấu hình `MYSQL_USER` và khiến ragflow không khởi động được. Vì vậy, cần phải nhấn mạnh ba lần:
 
-强调第一次：如果你的`.env`文件如果没有`MYSQL_USER`配置，请在配置文件增加这项！
+Nhấn mạnh lần đầu tiên: Nếu tệp `.env` của bạn không có cấu hình `MYSQL_USER`, vui lòng thêm tệp này vào tệp cấu hình!
 
-强调第二次：如果你的`.env`文件如果没有`MYSQL_USER`配置，请在配置文件增加这项！
+Nhấn mạnh lần thứ hai: Nếu tệp `.env` của bạn không có cấu hình `MYSQL_USER`, vui lòng thêm tệp này vào tệp cấu hình!
 
-强调第三次：如果你的`.env`文件如果没有`MYSQL_USER`配置，请在配置文件增加这项！
+Nhấn mạnh lần thứ ba: Nếu tệp `.env` của bạn không có cấu hình `MYSQL_USER`, vui lòng thêm tệp này vào tệp cấu hình!
 
 ``` env
-# 端口设置
-SVR_WEB_HTTP_PORT=8008           # HTTP端口
-SVR_WEB_HTTPS_PORT=8009          # HTTPS端口
-# MySQL配置 - 修改为您本地MySQL的信息
-MYSQL_HOST=host.docker.internal  # 使用host.docker.internal让容器访问主机服务
-MYSQL_PORT=3306                  # 本地MySQL端口
-MYSQL_USER=rag_flow              # 上面创建的用户名，如果没有这项就增加这一项
-MYSQL_PASSWORD=infini_rag_flow   # 上面设置的密码
-MYSQL_DBNAME=rag_flow            # 数据库名称
+# Cài đặt cổng
+SVR_WEB_HTTP_PORT=8008 # cổng HTTP
+SVR_WEB_HTTPS_PORT=8009 # Cổng HTTPS
+Cấu hình #MySQL - sửa đổi thông tin MySQL cục bộ của bạn
+MYSQL_HOST=host.docker.internal # Sử dụng Host.docker.internal để cho phép container truy cập dịch vụ máy chủ
+MYSQL_PORT=3306 # Cổng MySQL cục bộ
+MYSQL_USER=rag_flow # Tên người dùng đã tạo ở trên, nếu không có mục đó, hãy thêm mục này
+MYSQL_PASSWORD=infini_rag_flow # Mật khẩu đã đặt ở trên
+MYSQL_DBNAME=rag_flow # Tên cơ sở dữ liệu
 
-# Redis配置 - 修改为您本地Redis的信息
-REDIS_HOST=host.docker.internal  # 使用host.docker.internal让容器访问主机服务
-REDIS_PORT=6379                  # 本地Redis端口
-REDIS_PASSWORD=                  # 如果你的Redis没有设置密码，就按这样子填写，否则填写密码
+# Cấu hình Redis - sửa đổi nó thành thông tin Redis cục bộ của bạn
+REDIS_HOST=host.docker.internal # Sử dụng Host.docker.internal để cho phép container truy cập dịch vụ máy chủ
+REDIS_PORT=6379 # Cổng Redis cục bộ
+REDIS_PASSWORD= # Nếu Redis của bạn chưa đặt mật khẩu thì điền như thế này, nếu không thì điền mật khẩu
 ```
 
-注意，如果你的Redis没有设置密码，还要修改`ragflow/docker`文件夹下`service_conf.yaml.template`，将`infini_rag_flow`替换成空字符串。
+Lưu ý rằng nếu Redis của bạn không đặt mật khẩu, bạn cũng phải sửa đổi `service_conf.yaml.template` trong thư mục `ragflow/docker` và thay thế `infini_rag_flow` bằng một chuỗi trống.
 
-修改前
+Trước khi sửa đổi
 ``` shell
 redis:
   db: 1
   password: '${REDIS_PASSWORD:-infini_rag_flow}'
   host: '${REDIS_HOST:-redis}:6379'
 ```
-修改后
+Sau khi sửa đổi
 ``` shell
 redis:
   db: 1
@@ -198,72 +198,72 @@ redis:
   host: '${REDIS_HOST:-redis}:6379'
 ```
 
-## 第五步，启动ragflow服务
-执行命令：
+## Bước thứ năm là khởi động dịch vụ ragflow
+Thực hiện lệnh:
 ``` shell
 docker-compose -f docker-compose.yml up -d
 ```
-执行成功后，你可以使用`docker logs -n 20 -f docker-ragflow-cpu-1`命令，查看`docker-ragflow-cpu-1`服务的日志。
+Sau khi thực hiện thành công, bạn có thể sử dụng lệnh `docker logs -n 20 -f docker-ragflow-cpu-1` để xem nhật ký của dịch vụ `docker-ragflow-cpu-1`.
 
-如果日志中没有报错，说明ragflow服务启动成功。
+Nếu không có lỗi trong nhật ký, điều đó có nghĩa là dịch vụ ragflow đã được khởi động thành công.
 
-# 第五步，注册账号
-你可以在浏览器中访问`http://127.0.0.1:8008`，点击`Sign Up`，注册一个账号。
+# Bước 5, đăng ký tài khoản
+Bạn có thể truy cập `http://127.0.0.1:8008` trong trình duyệt của mình, nhấp vào `Sign Up` và đăng ký tài khoản.
 
-注册成功后，你可以点击`Sign In`，登录到ragflow服务。如果你想关闭ragflow服务的注册服务，不想让其他人注册账号，你可以在`ragflow/docker`文件夹下的`.env`文件中，将`REGISTER_ENABLED`配置项设置为`0`。
+Sau khi đăng ký thành công, bạn có thể nhấp vào `Sign In` để đăng nhập vào dịch vụ ragflow. Nếu bạn muốn tắt dịch vụ đăng ký dịch vụ ragflow và không muốn người khác đăng ký tài khoản, bạn có thể đặt mục cấu hình `REGISTER_ENABLED` thành `0` trong tệp `.env` trong thư mục `ragflow/docker`.
 
 ``` dotenv
 REGISTER_ENABLED=0
 ```
-修改后，重启启动ragflow服务。
+Sau khi sửa đổi, khởi động lại dịch vụ ragflow.
 ``` shell
 docker-compose -f docker-compose.yml down
 docker-compose -f docker-compose.yml up -d
 ```
 
-# 第六步，配置ragflow服务的模型
-你可以在浏览器中访问`http://127.0.0.1:8008`，点击`Sign In`，登录到ragflow服务。点击页面右上角的`头像`，进入设置页面。
-首先，在左侧导航栏中，点击`模型供应商`，进入到模型配置页面。在右侧的`可选模型`搜索框下，选择`LLM`，在列表选择你使用的模型供应商，点击`添加`，输入你的密钥；
-然后，选择`TEXT EMBEDDING`，在列表选择你使用的模型供应商，点击`添加`，输入你的密钥。
-最后，刷新一下页面，分别点击`设置默认模型`列表的LLM和Embedding，选择你使用的模型即可。请确认你的密钥开通了相应的服务，比如我是用的Embedding模型是xxx供应商的，需要去这个供应商官网查看这个模型是否需要购买资源包才能使用。
+# Bước thứ sáu là định cấu hình mô hình dịch vụ ragflow.
+Bạn có thể truy cập `http://127.0.0.1:8008` trong trình duyệt, nhấp vào `Sign In` và đăng nhập vào dịch vụ ragflow. Nhấp vào `头像` ở góc trên bên phải của trang để vào trang cài đặt.
+Đầu tiên, nhấp vào `模型供应商` ở thanh điều hướng bên trái để vào trang cấu hình mô hình. Trong hộp tìm kiếm `可选模型` ở bên phải, chọn `LLM`, chọn nhà cung cấp mẫu bạn sử dụng trong danh sách, nhấp vào `添加` và nhập khóa của bạn;
+Sau đó, chọn `TEXT EMBEDDING`, chọn nhà cung cấp mô hình bạn đang sử dụng từ danh sách, nhấp vào `添加` và nhập khóa của bạn.
+Cuối cùng, làm mới trang, nhấp vào LLM và Nhúng trong danh sách `设置默认模型` rồi chọn mô hình bạn sử dụng. Vui lòng xác nhận rằng chìa khóa của bạn đã kích hoạt dịch vụ tương ứng. Ví dụ: mô hình Nhúng tôi đang sử dụng là của nhà cung cấp xxx. Bạn cần truy cập trang web chính thức của nhà cung cấp này để kiểm tra xem mô hình này có yêu cầu mua gói tài nguyên trước khi có thể sử dụng hay không.
 
 
-# 第二部分 配置ragflow服务
+# Phần 2 Cấu hình dịch vụ ragflow
 
-# 第一步 登录ragflow服务
-你可以在浏览器中访问`http://127.0.0.1:8008`，点击`Sign In`，登录到ragflow服务。
+# Bước đầu tiên là đăng nhập vào dịch vụ ragflow
+Bạn có thể truy cập `http://127.0.0.1:8008` trong trình duyệt, nhấp vào `Sign In` và đăng nhập vào dịch vụ ragflow.
 
-然后点击右上角的`头像`，进入设置页面。在左侧导航栏中，点击`API`功能，然后点击"API Key"按钮。出现一个弹框，
+Sau đó nhấp vào `头像` ở góc trên bên phải để vào trang cài đặt. Trong thanh điều hướng bên trái, hãy nhấp vào chức năng `API`, sau đó nhấp vào nút "Khóa API". Một hộp bật lên xuất hiện.
 
-在弹框中，点击"Create new Key"按钮，生成一个API Key。复制这个`API Key`，你稍后会用到。
+Trong hộp bật lên, hãy nhấp vào nút "Tạo khóa mới" để tạo Khóa API. Sao chép `API Key` này, sau này bạn sẽ cần nó.
 
-# 第二步 配置到智控台
-确保你的智控台版本是`0.8.7`或以上。使用超级管理员账号登录到智控台。
+# Bước thứ hai là định cấu hình cho bảng điều khiển thông minh
+Đảm bảo phiên bản bảng điều khiển thông minh của bạn là `0.8.7` trở lên. Đăng nhập vào bảng điều khiển thông minh bằng tài khoản quản trị viên cấp cao.
 
-首先，你要先开启知识库功能。在顶部导航栏中，点击`参数字典`，在下拉菜单中，点击`系统功能配置`页面。在页面上勾选`知识库`，点击`保存配置`。即可在导航栏看到`知识库`功能。
+Đầu tiên, bạn cần kích hoạt chức năng cơ sở kiến ​​thức. Trong thanh điều hướng trên cùng, hãy nhấp vào `参数字典` và trong menu thả xuống, hãy nhấp vào trang `系统功能配置`. Kiểm tra `知识库` trên trang và nhấp vào `保存配置`. Bạn có thể thấy hàm `知识库` trong thanh điều hướng.
 
-在顶部导航栏中，点击`模型配置`，在左侧导航栏中，点击`知识库`。在列表中找到`RAG_RAGFlow`，点击`编辑`按钮。
+Trong thanh điều hướng trên cùng, hãy nhấp vào `模型配置` và trong thanh điều hướng bên trái, hãy nhấp vào `知识库`. Tìm `RAG_RAGFlow` trong danh sách và nhấp vào nút `编辑`.
 
-在`服务地址`中，填写`http://你的ragflow服务的局域网IP:8008`，例如我的ragflow服务的局域网IP是`192.168.1.100`，那么我就填写`http://192.168.1.100:8008`。
+Tại `服务地址`, điền `http://你的ragflow服务的局域网IP:8008`. Ví dụ IP LAN của dịch vụ ragflow của tôi là `192.168.1.100` thì tôi sẽ điền `http://192.168.1.100:8008`.
 
-在`API密钥`中，填写之前复制的`API Key`。
+Trong `API密钥`, điền vào `API Key` đã sao chép trước đó.
 
-最后点击保存按钮。
+Cuối cùng bấm vào nút lưu.
 
-# 第二步 创建一个知识库
-使用超级管理员账号登录到智控台。在顶部导航栏中，点击`知识库`，在列表左下脚，点击`新增`按钮。填写一个知识库的名字和描述。点击保存。
+# Bước 2 Tạo cơ sở tri thức
+Đăng nhập vào bảng điều khiển thông minh bằng tài khoản quản trị viên cấp cao. Trong thanh điều hướng trên cùng, hãy nhấp vào `知识库` và ở góc dưới bên trái của danh sách, hãy nhấp vào nút `新增`. Điền tên và mô tả của cơ sở kiến ​​thức. Nhấp vào Lưu.
 
-为了提高大模型对知识库的理解和召回能力，建议在创建知识库时，填写一个有意义的名字和描述。例如，如果你要创建一个关于`公司介绍`的知识库，那么知识库的名字可以是`公司介绍`，描述可以是`关于公司的相关信息例如公司基本信息、服务项目、联系电话、地址等。`。
+Để nâng cao khả năng hiểu và nhớ lại cơ sở tri thức bằng các mô hình lớn, nên điền tên và mô tả có ý nghĩa khi tạo cơ sở tri thức. Ví dụ: nếu bạn đang tạo cơ sở tri thức về `公司介绍`, tên của cơ sở tri thức có thể là `公司介绍` và mô tả có thể là `关于公司的相关信息例如公司基本信息、服务项目、联系电话、地址等。`.
 
-保存后，你可以在知识库列表中看到这个知识库。点击刚才创建的知识库的`查看`按钮，进入知识库详情页面。
+Sau khi lưu, bạn có thể xem cơ sở kiến ​​thức trong danh sách cơ sở kiến ​​thức. Nhấp vào nút `查看` của cơ sở tri thức bạn vừa tạo để vào trang chi tiết cơ sở tri thức.
 
-在知识库详情页面中，左下角点击`新增`按钮，可以上传文档到知识库。
+Trong trang chi tiết cơ sở tri thức, nhấp vào nút `新增` ở góc dưới bên trái để tải tài liệu lên cơ sở tri thức.
 
-上传后，你可以在知识库详情页面中，看到上传的文档。此时可以点击文档的`解析`按钮，解析文档。
+Sau khi tải lên, bạn có thể xem tài liệu đã tải lên trên trang chi tiết cơ sở kiến ​​thức. Tại thời điểm này, bạn có thể nhấp vào nút `解析` của tài liệu để phân tích tài liệu.
 
-解析完成后，你可以查看解析后的切片信息。你可以在知识库详情页面中，点击`召回测试`按钮，可以测试知识库的召回/检索功能。
+Sau khi phân tích cú pháp hoàn tất, bạn có thể xem thông tin lát cắt được phân tích cú pháp. Bạn có thể kiểm tra chức năng thu hồi/truy xuất của cơ sở tri thức bằng cách nhấp vào nút `召回测试` trên trang chi tiết cơ sở tri thức.
 
-# 第三步 让小智使用ragflow知识库
-登录到智控台。在顶部导航栏中，点击`智能体`，找到你要配置的智能体，点击`配置角色`按钮。
+# Bước thứ ba là để Xiaozhi sử dụng nền tảng kiến thức ragflow
+Đăng nhập vào bảng điều khiển thông minh. Trong thanh điều hướng trên cùng, hãy nhấp vào `智能体`, tìm tác nhân bạn muốn định cấu hình và nhấp vào nút `配置角色`.
 
-在意图识别左侧，点击`编辑功能`按钮，弹出一个弹框。在弹框中选择你要添加的知识库。保存即可。
+Ở phía bên trái của nhận dạng ý định, hãy nhấp vào nút `编辑功能` và một hộp bật lên sẽ bật lên. Chọn cơ sở kiến ​​thức bạn muốn thêm vào trong hộp bật lên. Chỉ cần lưu nó.

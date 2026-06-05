@@ -1,54 +1,54 @@
-# 基于虾哥编译好的固件配置自定义服务器
+# Định cấu hình máy chủ tùy chỉnh dựa trên phần sụn do Xiago biên soạn
 
-## 第1步 确认版本
-烧录虾哥已经编译好的[1.6.1版本以上固件](https://github.com/78/xiaozhi-esp32/releases)
+## Bước 1 Xác nhận phiên bản
+Ghi phiên bản đã biên dịch của Xia Ge [phiên bản firmware 1.6.1 trở lên](https://github.com/78/xiaozhi-esp32/releases)
 
-## 第2步 准备你的ota地址
-如果你按照教程使用的是全模块部署，就应该会有ota地址。
+## Bước 2 Chuẩn bị địa chỉ OTA của bạn
+Nếu bạn làm theo hướng dẫn và sử dụng triển khai mô-đun đầy đủ thì sẽ có địa chỉ OTA.
 
-此刻，请你用浏览器打开你的ota地址，例如我的ota地址
+Tại thời điểm này, vui lòng sử dụng trình duyệt của bạn để mở địa chỉ OTA của bạn, ví dụ: địa chỉ OTA của tôi
 ```
-https://2662r3426b.vicp.fun/xiaozhi/ota/
+https://2662r3426b.vicp.fun/xiaozhi/OTA/
 ```
 
-如果显示“OTA接口运行正常，websocket集群数量：X”。那就往下。
+Nếu "Giao diện OTA đang chạy bình thường, số cụm WebSocket: X" được hiển thị. Sau đó đi xuống.
 
-如果显示“OTA接口运行不正常”，大概是你还没在`智控台`配置`Websocket`地址。那就：
+Nếu thông báo "Giao diện OTA không hoạt động bình thường" thì có thể là do bạn chưa định cấu hình địa chỉ `WebSocket` trong `智控台`. Sau đó:
 
-- 1、使用超级管理员登录智控台
+- 1. Sử dụng quản trị viên cấp cao để đăng nhập vào bảng điều khiển thông minh
 
-- 2、顶部菜单点击`参数管理`
+- 2. Nhấp vào `参数管理` ở menu trên cùng
 
-- 3、在列表中找到`server.websocket`项目，输入你的`Websocket`地址。例如我的就是
+- 3. Tìm mục `server.WebSocket` trong danh sách và nhập địa chỉ `WebSocket` của bạn. Ví dụ, của tôi là
 
 ```
 wss://2662r3426b.vicp.fun/xiaozhi/v1/
 ```
 
-配置完后，再使用浏览器刷新你的ota接口地址，看看是不是正常了。如果还不正常就，就再次确认一下Websocket是否正常启动，是否配置了Websocket地址。
+Sau khi cấu hình xong, bạn dùng trình duyệt để làm mới địa chỉ giao diện OTA của mình xem có bình thường không. Nếu vẫn không bình thường, hãy kiểm tra lại xem WebSocket có khởi động bình thường không và địa chỉ WebSocket đã được định cấu hình chưa.
 
-## 第3步 进入配网模式
-进入机器的配网模式，在页面顶部，点击“高级选项”，在里面输入你服务器的`ota`地址，点击保存。重启设备
-![请参考-OTA地址设置](../docs/images/firmware-setting-ota.png)
+## Bước 3 Vào chế độ phân phối mạng
+Nhập chế độ cấu hình mạng của máy, nhấp vào "Tùy chọn nâng cao" ở đầu trang, nhập địa chỉ `OTA` máy chủ của bạn và nhấp vào Lưu. Khởi động lại thiết bị
+![Vui lòng tham khảo cài đặt địa chỉ-OTA](../docs/images/firmware-setting-OTA.png)
 
-## 第4步 唤醒小智，查看日志输出
+## Bước 4 Đánh thức Xiaozhi và kiểm tra đầu ra nhật ký
 
-唤醒小智，看看日志是不是正常输出。
+Hãy đánh thức Xiaozhi và xem nhật ký có xuất ra bình thường không.
 
 
-## 常见问题
-以下是一些常见问题，供参考：
+## Câu hỏi thường gặp
+Dưới đây là một số câu hỏi thường gặp để tham khảo:
 
-[1、为什么我说的话，小智识别出来很多韩文、日文、英文](./FAQ.md)
+[1. Tại sao Xiaozhi nhận ra nhiều tiếng Hàn, tiếng Nhật và tiếng Anh khi tôi nói](./FAQ.md)
 
-[2、为什么会出现“TTS 任务出错 文件不存在”？](./FAQ.md)
+[2. Tại sao lại xuất hiện thông báo "Tệp lỗi tác vụ TTS không tồn tại"? ](./FAQ.md)
 
-[3、TTS 经常失败，经常超时](./FAQ.md)
+[3. TTS thường bị lỗi và hết thời gian chờ](./FAQ.md)
 
-[4、使用Wifi能连接自建服务器，但是4G模式却接不上](./FAQ.md)
+[4. Bạn có thể kết nối với máy chủ tự xây dựng bằng Wifi, nhưng không thể kết nối ở chế độ 4G](./FAQ.md)
 
-[5、如何提高小智对话响应速度？](./FAQ.md)
+[5. Làm cách nào để cải thiện tốc độ phản hồi đối thoại của Xiaozhi? ](./FAQ.md)
 
-[6、我说话很慢，停顿时小智老是抢话](./FAQ.md)
+[6. Tôi nói rất chậm và Xiaozhi luôn nắm bắt được cuộc trò chuyện khi tôi tạm dừng](./FAQ.md)
 
-[7、我想通过小智控制电灯、空调、远程开关机等操作](./FAQ.md)
+[7. Tôi muốn điều khiển đèn, điều hòa, bật/tắt từ xa và các hoạt động khác thông qua Xiaozhi](./FAQ.md)

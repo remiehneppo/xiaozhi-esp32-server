@@ -1,19 +1,19 @@
-# 语音识别、大语言模型、非流式语音合成、流式语音合成、视觉模型的性能测试工具使用指南
+# Hướng dẫn sử dụng các công cụ kiểm tra hiệu suất để nhận dạng giọng nói, mô hình ngôn ngữ lớn, tổng hợp giọng nói không phát trực tuyến, tổng hợp giọng nói phát trực tuyến và mô hình trực quan
 
-1.在main/xiaozhi-server目录下创建data目录
-2.在data目录下创建.config.yaml文件
-3.在.data/config.yaml中，写入你的语音识别、大语言模型、流式语音合成、视觉模型的参数
-例如：
+1. Tạo thư mục dữ liệu trong thư mục main/xiaozhi-server
+2. Tạo file .config.yaml trong thư mục data
+3. Trong .data/config.yaml, viết các tham số nhận dạng giọng nói, mô hình ngôn ngữ lớn, tổng hợp giọng nói trực tuyến và mô hình trực quan
+Ví dụ:
 ```
 LLM:
-  ChatGLMLLM:
-    # 定义LLM API类型
-    type: openai
-    # glm-4-flash 是免费的，但是还是需要注册填写api_key的
-    # 可在这里找到你的api key https://bigmodel.cn/usercenter/proj-mgmt/apikeys
+  Trò chuyệnGLMLLM:
+    # Xác định loại API LLM
+    Kiểu: openai
+    # glm-4-flash miễn phí nhưng bạn vẫn cần đăng ký và điền api_key
+    # Bạn có thể tìm thấy khóa api của mình tại đây https://bigmodel.cn/usercenter/proj-mgmt/apikeys
     model_name: glm-4-flash
     url: https://open.bigmodel.cn/api/paas/v4/
-    api_key: 你的chat-glm web key
+    api_key: khóa web chat-glm của bạn
 
 TTS:
 

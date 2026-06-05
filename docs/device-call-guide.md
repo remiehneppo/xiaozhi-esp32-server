@@ -1,64 +1,64 @@
-# 设备间相互呼叫插件使用指南
+# Hướng dẫn sử dụng plug-in gọi nhau giữa các thiết bị
 
-## 概述
+## Tổng quan
 
-设备呼叫功能允许两个已配置设备之间通过语音/数据通道进行双向通信。设备A呼叫设备B时，系统通过以下流程实现：
+Tính năng gọi điện của thiết bị cho phép liên lạc hai chiều giữa hai thiết bị được định cấu hình qua kênh thoại/dữ liệu. Khi thiết bị A gọi thiết bị B, hệ thống sẽ thực hiện quy trình sau:
 
 ```
 设备A → 授权校验 → MQTT网关 → 设备B远程唤醒 → 建立连接 → 通话建立
 ```
-## 使用这个功能的前提条件
-1. 你必须要有至少两个设备，每个设备型号必须是`ESP32-S3`，因为只有`ESP32-S3`才支持远程唤醒功能。
-2. 你的设备必须要有`两个麦克风`。但是如果你的设备只有`单个麦克风`，你只是想体验一下这个功能，也是可以的，但是会有强烈的卡顿感。
-3. 你必须使用[全模块部署](Deployment_all.md)本项目，因为你需要`智控台`来管理设备的权限和通信。
-4. 你必须安装并配置好`2026年5月27日`以后的[MQTT网关服务](mqtt-gateway-integration.md)，如果你已经部署了MQTT网关服务，请确认代码的版本是`2026年5月27日`之后的版本。
+## Điều kiện tiên quyết để sử dụng chức năng này
+1. Bạn phải có ít nhất hai thiết bị và mỗi kiểu thiết bị phải là `ESP32-S3`, vì chỉ `ESP32-S3` hỗ trợ chức năng đánh thức từ xa.
+2. Thiết bị của bạn phải có `两个麦克风`. Nhưng nếu thiết bị của bạn chỉ có `单个麦克风` và bạn chỉ muốn trải nghiệm chức năng này thì không sao, tuy nhiên sẽ có cảm giác lag rất mạnh.
+3. Bạn phải sử dụng [Triển khai mô-đun đầy đủ](Deployment_all.md) cho dự án này vì bạn cần `智控台` để quản lý quyền và liên lạc của thiết bị.
+4. Bạn phải cài đặt và định cấu hình [dịch vụ cổng MQTT](mqtt-gateway-integration.md) sau `2026年5月27日`. Nếu bạn đã triển khai dịch vụ cổng MQTT, vui lòng xác nhận rằng phiên bản mã nằm sau `2026年5月27日`.
 
-以上是使用这个功能的硬性条件，接下来会详细介绍。
+Trên đây là những điều kiện khó khăn để sử dụng chức năng này, sẽ được giới thiệu chi tiết ở phần tiếp theo.
 
-## 配置步骤
+## Các bước cấu hình
 
-### 第一步：开启通讯录功能
+### Bước 1: Bật chức năng sổ địa chỉ
 
-1. 确认你的智控台版本是`0.9.4`或以上版本。
-2. 登录智控台后台
-3. 进入 **系统功能配置**
-4. 在左侧功能列表中勾选 **通讯录**
-5. 点击 **保存配置** 确认
+1. Xác nhận rằng phiên bản bảng điều khiển thông minh của bạn là `0.9.4` trở lên.
+2. Đăng nhập vào phần phụ trợ của bảng điều khiển thông minh
+3. Nhập **Cấu hình chức năng hệ thống**
+4. Kiểm tra **Sổ địa chỉ** trong danh sách chức năng bên trái
+5. Nhấp vào **Lưu cấu hình** để xác nhận
 
-### 第二步：配置设备间呼叫权限
+### Bước 2: Định cấu hình quyền gọi giữa các thiết bị
 
-1. 在智控台顶部菜单点击 **通讯录**
-2. 在左侧智能体下，设备列表中选择你的设备A（支持按 MAC地址 或 备注名 搜索）
-3. 在右侧详情面板中，找到目标设备B的称呼设置，例如 **"小王"**
-4. 勾选设备B的 **呼叫权限** 复选框
-5. 点击 **保存**
+1. Nhấp vào **Sổ liên hệ** trên menu trên cùng của bảng điều khiển thông minh
+2. Trong tác nhân bên trái, chọn thiết bị A của bạn trong danh sách thiết bị (hỗ trợ tìm kiếm theo địa chỉ MAC hoặc tên nhận xét)
+3. Trong bảng chi tiết ở bên phải, tìm cài đặt tiêu đề của thiết bị mục tiêu B, ví dụ **"小王"**
+4. Chọn hộp kiểm **Quyền gọi** của thiết bị B
+5. Nhấp vào **Lưu**
 
-**双向授权说明：** 如需设备A和设备B互相通信，必须在两侧智控台分别配置对方权限。例如：
+**Hướng dẫn ủy quyền hai chiều:** Nếu thiết bị A và thiết bị B cần liên lạc với nhau thì quyền của nhau phải được định cấu hình trên cả hai mặt của bảng điều khiển thông minh. Ví dụ:
 
-- 在设备A的配置中勾选设备B → 设备A可与设备B通信
-- 在设备B的配置中勾选设备A → 设备B可与设备A通信
+- Kiểm tra thiết bị B trong cấu hình của thiết bị A → Thiết bị A có thể giao tiếp với thiết bị B
+- Kiểm tra thiết bị A trong cấu hình của thiết bị B → Thiết bị B có thể giao tiếp với thiết bị A
 
-### 第三步：在智能体配置添加呼叫工具
+### Bước 3: Thêm công cụ gọi điện vào cấu hình tổng đài viên
 
-1. 在智控台顶部菜单点击 **智能体管理**
-2. 在刚刚配置设备联系人的相关智能体中点击 **编辑角色**
-3. 在右侧详情面板中，点击 **编辑功能**
-4. 勾选 **设备呼叫设备** 工具
-5. 点击 **保存配置** 确认
-6. 在外侧再次点击 **保存配置** ，随即重启设备
+1. Nhấp vào **Quản lý đại lý** trên menu trên cùng của bảng điều khiển thông minh
+2. Nhấp vào **Chỉnh sửa vai trò** trong tác nhân liên quan mà liên hệ thiết bị vừa được định cấu hình.
+3. Trong bảng chi tiết ở bên phải, nhấp vào **Chỉnh sửa chức năng**
+4. Kiểm tra công cụ **Device Call Device**
+5. Nhấp vào **Lưu cấu hình** để xác nhận
+6. Nhấp vào **Save Configuration** lần nữa ở bên ngoài, sau đó khởi động lại thiết bị
 
-### 第四步：固件端添加远程唤醒工具
+### Bước 4: Thêm công cụ đánh thức từ xa vào phía firmware
 
-1. 在[xiaozhi-esp32](https://github.com/78/xiaozhi-esp32) 代码的基础上增加远程唤醒工具MCP，版本支持为2.1.0至2.2.6（2026年5月29日的版本）
-2. 在application.h文件中添加远程唤醒函数声明
+1. Thêm công cụ đánh thức từ xa MCP dựa trên mã [xiaozhi-esp32](https://github.com/78/xiaozhi-esp32), phiên bản hỗ trợ là 2.1.0 đến 2.2.6 (phiên bản ngày 29 tháng 5 năm 2026)
+2. Thêm khai báo hàm đánh thức từ xa trong tệp application.h
     ```cpp
     void RemoteWakeup(const std::string& reason);
     ```
-3. 在application.cc文件中添加远程唤醒函数
+3. Thêm chức năng đánh thức từ xa trong file application.cc
     ```cpp
-    void Application::RemoteWakeup(const std::string& reason){
-        if (!protocol_) {
-            return;
+    void Application::RemoteWakeup(const std::string& Reason){
+        nếu (!protocol_) {
+            trở lại;
         }
 
         auto state = GetDeviceState();
@@ -66,26 +66,26 @@
         if (state == kDeviceStateIdle) {
             audio_service_.EncodeWakeWord();
 
-            if (!protocol_->IsAudioChannelOpened()) {
+if (!protocol_->IsAudioChannelOpened()) {
                 SetDeviceState(kDeviceStateConnecting);
-                if (!protocol_->OpenAudioChannel()) {
+                if (!protocol_->OpenAudioChanel()) {
                     audio_service_.EnableWakeWordDetection(true);
-                    return;
+                    trở lại;
                 }
             }
-            std::string wake_word = reason;
+            std::string Wake_word = lý do;
     #if CONFIG_USE_AFE_WAKE_WORD || CONFIG_USE_CUSTOM_WAKE_WORD
-            // Encode and send the wake word data to the server
-            while (auto packet = audio_service_.PopWakeWordPacket()) {
-                protocol_->SendAudio(std::move(packet));
+            // Mã hóa và gửi dữ liệu từ đánh thức đến máy chủ
+            while (gói tự động = audio_service_.PopWakeWordPacket()) {
+                giao thức_->SendAudio(std::move(packet));
             }
-            // Set the chat state to wake word detected
-            protocol_->SendWakeWordDetected(wake_word);
+            // Đặt trạng thái trò chuyện để đánh thức từ được phát hiện
+            giao thức_->SendWakeWordDetected(wake_word);
             SetListeningMode(aec_mode_ == kAecOff ? kListeningModeAutoStop : kListeningModeRealtime);
-    #else
-            // Set flag to play popup sound after state changes to listening
-            // (PlaySound here would be cleared by ResetDecoder in EnableVoiceProcessing)
-            play_popup_on_listening_ = true;
+    #khác
+            // Đặt cờ để phát âm thanh bật lên sau khi thay đổi trạng thái sang nghe
+            // (PlaySound ở đây sẽ bị xóa bởi ResetDecode trong EnableVoiceProcessing)
+            play_popup_on_listening_ = đúng;
             SetListeningMode(aec_mode_ == kAecOff ? kListeningModeAutoStop : kListeningModeRealtime);
     #endif
         } else if (state == kDeviceStateSpeaking) {
@@ -98,51 +98,51 @@
     ```
 4. 在mcp_server.cc文件中添加远程唤醒工具
     ```cpp
-    AddUserOnlyTool("self.remote_wakeup", "Remote wakeup function with configurable parameters",
-        PropertyList({
-            Property("reason", kPropertyTypeString, "Wakeup reason"),
+    AddUserOnlyTool("self.remote_wakeup", "Chức năng đánh thức từ xa với các tham số có thể định cấu hình",
+        Danh sách thuộc tính({
+            Thuộc tính("lý do", kPropertyTypeString, "Lý do đánh thức"),
         }),
-        [this](const PropertyList& properties) -> ReturnValue {
-            std::string reason = properties["reason"].value<std::string>();
-            ESP_LOGI(TAG, "Wakeup reason=%s", reason.c_str());
-            auto& app = Application::GetInstance();
-            app.RemoteWakeup(reason);
-            return true;
+        [cái này](const PropertyList& properties) -> ReturnValue {
+            std::string Reason = Properties["reason"].value<std::string>();
+            ESP_LOGI(TAG, "Lý do đánh thức=%s", Reason.c_str());
+            auto& app = Ứng dụng::GetInstance();
+            app.RemoteWakeup(lý do);
+            trả về sự thật;
     ```
-5. 按照 [固件编译烧录指南](firmware-build.md) 完成固件烧录
-6. 无论你的设备是单麦还是双麦，请在编译环节，勾选开启AEC功能!
-7. 无论你的设备是单麦还是双麦，请在编译环节，勾选开启AEC功能!
-8. 无论你的设备是单麦还是双麦，请在编译环节，勾选开启AEC功能!
+5. Làm theo [Hướng dẫn biên dịch và ghi chương trình cơ sở](firmware-build.md) để hoàn tất quá trình ghi chương trình cơ sở
+6. Cho dù thiết bị của bạn là micrô đơn hay micrô kép, vui lòng kiểm tra để bật chức năng AEC trong quá trình biên dịch!
+7. Cho dù thiết bị của bạn là micrô đơn hay micrô kép, vui lòng kiểm tra để bật chức năng AEC trong quá trình biên dịch!
+8. Cho dù thiết bị của bạn là micrô đơn hay micrô kép, vui lòng kiểm tra để bật chức năng AEC trong quá trình biên dịch!
 
-### 第五步：配置MQTT网关服务
+### Bước 5: Cấu hình dịch vụ cổng MQTT
 
-1. 部署MQTT网关服务，参考 [MQTT网关集成文档](mqtt-gateway-integration.md)
-2. 如果已经部署请确认代码的版本是2026年5月27日的版本
+1. Triển khai dịch vụ cổng MQTT, tham khảo [Tài liệu tích hợp cổng MQTT](mqtt-gateway-integration.md)
+2. Nếu đã triển khai vui lòng xác nhận phiên bản của mã là phiên bản ngày 27/05/2026
 
-## 呼叫流程说明
+## Mô tả luồng cuộc gọi
 
-准备两个设备，在智控台上面配置好通讯权限和在智能体中添加呼叫工具之后，在其中一个小智对话那里对他说：”呼叫XXX“，观察设备B是否响应。
+Chuẩn bị hai thiết bị, định cấu hình quyền liên lạc trên bảng điều khiển thông minh và thêm công cụ gọi điện vào tổng đài viên. Trong một trong những cuộc đối thoại của Xiaozhi, hãy nói với anh ấy: "Gọi XXX" và quan sát xem thiết bị B có phản hồi hay không.
 
-## 常见问题
+## Câu hỏi thường gặp
 
-### Q: 设备B没有响应呼叫？
+### Hỏi: Máy B không phản hồi cuộc gọi?
 
-- 检查设备B是否在线（智控台设备状态）
-- 确认设备B的固件已正确集成远程唤醒工具
-- 检查MQTT网关连接是否正常
-- 验证双向权限配置是否完整
+- Kiểm tra xem thiết bị B có trực tuyến hay không (trạng thái thiết bị bảng điều khiển thông minh)
+- Xác nhận firmware của thiết bị B đã tích hợp chính xác công cụ đánh thức từ xa
+- Kiểm tra kết nối cổng MQTT có bình thường không
+- Xác minh xem cấu hình quyền hai chiều đã hoàn tất chưa
 
-### Q: 提示"无呼叫权限"？
+### Hỏi: Nhắc "Không được phép gọi"?
 
-- 在智控台确认设备A已勾选设备B的呼叫权限
-- 确认配置已保存（非仅修改未保存）
+- Xác nhận thiết bị A đã kiểm tra quyền gọi của thiết bị B trên bảng điều khiển thông minh
+- Xác nhận cấu hình đã được lưu (không chỉ sửa đổi mà còn chưa lưu)
 
-### Q: 如何确认通讯录功能已开启？
+### Hỏi: Làm thế nào để xác nhận rằng chức năng sổ địa chỉ đã được bật?
 
-- 智控台顶部菜单如显示"通讯录"入口，则表示已开启
+- Nếu mục "Sổ địa chỉ" hiển thị trên menu trên cùng của bảng điều khiển thông minh, điều đó có nghĩa là nó đã được bật.
 
-### Q: 我叫他呼叫"张山"，但是他老是识别成"张三"，怎么办？
-- 可以查阅你使用的asr服务的文档，确认是否支持热词识别。
-- 如果你用的是`FunASRServer`,可以在容器里的`热词文件`里添加"张山"，然后重启容器。
-- 如果你用的是`火山引擎`的服务，可以在`火山引擎的控制台`里添加`热词文件`，然后回到智控台的`模型配置页面`，把`热词文件名称`配置在`火山引擎的tts`上去。
+### Hỏi: Tôi bảo anh ấy gọi là "Trương Sơn", nhưng anh ấy luôn nhận ra là "Trương San", tôi phải làm sao?
+- Bạn có thể kiểm tra tài liệu của dịch vụ asr bạn đang sử dụng để xác nhận xem nó có hỗ trợ nhận dạng từ nóng hay không.
+- Nếu bạn đang sử dụng `FunASRServer`, bạn có thể thêm "Zhang Shan" vào `热词文件` trong vùng chứa, sau đó khởi động lại vùng chứa.
+- Nếu bạn đang sử dụng dịch vụ của `火山引擎`, bạn có thể thêm `热词文件` vào `火山引擎的控制台`, sau đó quay lại `模型配置页面` của bảng điều khiển thông minh và định cấu hình `热词文件名称` trên `火山引擎的tts`.
 

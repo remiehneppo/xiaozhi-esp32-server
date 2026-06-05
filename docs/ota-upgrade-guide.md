@@ -1,142 +1,142 @@
-# 单模块部署固件OTA自动升级配置指南
+# Hướng dẫn cấu hình nâng cấp tự động OTA chương trình cơ sở triển khai mô-đun đơn
 
-本教程将指导你如何在**单模块部署**场景下配置固件OTA自动升级功能，实现设备固件的自动更新。
+Hướng dẫn này sẽ hướng dẫn bạn cách định cấu hình chức năng nâng cấp tự động OTA chương trình cơ sở trong kịch bản **triển khai mô-đun đơn** để đạt được cập nhật tự động chương trình cơ sở của thiết bị.
 
-如果你已经使用**全模块部署**，请忽略本教程。
+Nếu bạn đang sử dụng **Triển khai mô-đun đầy đủ**, vui lòng bỏ qua hướng dẫn này.
 
-## 功能介绍
+## Giới thiệu chức năng
 
-在单模块部署中，xiaozhi-server内置了OTA固件管理功能，可以自动检测设备版本并下发升级固件。系统会根据设备型号和当前版本，自动匹配并推送最新的固件版本。
+Khi triển khai một mô-đun, máy chủ xiaozhi có chức năng quản lý chương trình cơ sở OTA tích hợp, có thể tự động phát hiện phiên bản thiết bị và phát hành chương trình cơ sở được nâng cấp. Hệ thống sẽ tự động khớp và đẩy phiên bản phần sụn mới nhất dựa trên kiểu máy và phiên bản hiện tại.
 
-## 前提条件
+## Điều kiện tiên quyết
 
-- 你已经成功进行**单模块部署**并运行xiaozhi-server
-- 设备能够正常连接到服务器
+- Bạn đã thực hiện thành công **triển khai mô-đun đơn** và chạy xiaozhi-server
+- Thiết bị có thể kết nối với máy chủ bình thường
 
-## 第一步 准备固件文件
+## Bước 1: Chuẩn bị file firmware
 
-### 1. 创建固件存放目录
+### 1. Tạo thư mục lưu trữ firmware
 
-固件文件需要放在`data/bin/`目录下。如果该目录不存在，请手动创建：
+Các tập tin chương trình cơ sở cần phải được đặt trong thư mục `data/bin/`. Nếu thư mục không tồn tại, hãy tạo nó theo cách thủ công:
 
 ```bash
 mkdir -p data/bin
 ```
 
-### 2. 固件文件命名规则
+### 2. Quy tắc đặt tên file firmware
 
-固件文件必须遵循以下命名格式：
+Các tệp chương trình cơ sở phải tuân theo định dạng đặt tên sau:
 
 ```
 {设备型号}_{版本号}.bin
 ```
 
-**命名规则说明：**
-- `设备型号`：设备的型号名称，例如 `lichuang-dev`、`bread-compact-wifi` 等
-- `版本号`：固件版本号，必须以数字开头，支持数字、字母、点号、下划线和短横线，例如 `1.6.6`、`2.0.0` 等
-- 文件扩展名必须是 `.bin`
+**Mô tả quy tắc đặt tên:**
+- `设备型号`: tên model của thiết bị, chẳng hạn như `lichuang-dev`, `bread-compact-wifi`, v.v.
+- `版本号`: Số phiên bản firmware, phải bắt đầu bằng số, hỗ trợ số, chữ cái, dấu chấm, dấu gạch dưới và dấu gạch ngang, chẳng hạn như `1.6.6`, `2.0.0`, v.v.
+- Đuôi file phải là `.bin`
 
-**命名示例：**
+**Ví dụ đặt tên:**
 ```
 bread-compact-wifi_1.6.6.bin
 lichuang-dev_2.0.0.bin
 ```
 
-### 3. 放置固件文件
+### 3. Đặt file firmware
 
-将准备好的固件文件（.bin文件）复制到`data/bin/`目录下：
+Sao chép tệp chương trình cơ sở đã chuẩn bị (tệp .bin) vào thư mục `data/bin/`:
 
-重要的事情说三遍：升级的bin文件是`xiaozhi.bin`，不是全量固件文件`merged-binary.bin`!
+Điều quan trọng cần nói ba lần: tệp bin được nâng cấp là `xiaozhi.bin`, không phải tệp chương trình cơ sở đầy đủ `merged-binary.bin`!
 
-重要的事情说三遍：升级的bin文件是`xiaozhi.bin`，不是全量固件文件`merged-binary.bin`!
+Điều quan trọng cần nói ba lần: tệp bin được nâng cấp là `xiaozhi.bin`, không phải tệp chương trình cơ sở đầy đủ `merged-binary.bin`!
 
-重要的事情说三遍：升级的bin文件是`xiaozhi.bin`，不是全量固件文件`merged-binary.bin`!
+Điều quan trọng cần nói ba lần: tệp bin được nâng cấp là `xiaozhi.bin`, không phải tệp chương trình cơ sở đầy đủ `merged-binary.bin`!
 
 ```bash
 cp xiaozhi.bin data/bin/设备型号_版本号.bin
 ```
 
-例如：
+Ví dụ:
 ```bash
 cp xiaozhi.bin data/bin/bread-compact-wifi_1.6.6.bin
 ```
 
-## 第二步 配置公网访问地址（仅公网部署需要）
+## Bước 2 Cấu hình địa chỉ truy cập mạng công cộng (chỉ bắt buộc khi triển khai mạng công cộng)
 
-**注意：此步骤仅适用于单模块公网部署的场景。**
+**Lưu ý: Bước này chỉ áp dụng cho các tình huống triển khai mạng công cộng một mô-đun. **
 
-如果你的xiaozhi-server是公网部署（使用公网IP或域名），**必须**配置`server.vision_explain`参数，因为OTA固件下载地址会使用该配置的域名和端口。
+Nếu máy chủ xiaozhi của bạn được triển khai trên mạng công cộng (sử dụng IP công cộng hoặc tên miền), bạn phải định cấu hình tham số `server.vision_explain`, vì địa chỉ tải xuống chương trình cơ sở OTA sẽ sử dụng tên miền và cổng được định cấu hình.
 
-如果你是局域网部署，可以跳过此步骤。
+Nếu bạn đang triển khai trên mạng LAN, bạn có thể bỏ qua bước này.
 
-### 为什么要配置这个参数？
+### Tại sao phải cấu hình tham số này?
 
-在单模块部署中，系统生成固件下载地址时，会使用`vision_explain`配置的域名和端口作为基础地址。如果不配置或配置错误，设备将无法访问固件下载地址。
+Khi triển khai một mô-đun, khi hệ thống tạo địa chỉ tải xuống chương trình cơ sở, hệ thống sẽ sử dụng tên miền và cổng được định cấu hình trong `vision_explain` làm địa chỉ cơ sở. Nếu không cấu hình hoặc cấu hình sai, thiết bị sẽ không thể truy cập vào địa chỉ tải firmware.
 
-### 配置方法
+### Phương thức cấu hình
 
-打开`data/.config.yaml`文件，找到`server`配置段，设置`vision_explain`参数：
+Mở tệp `data/.config.yaml`, tìm phần cấu hình `server` và đặt tham số `vision_explain`:
 
 ```yaml
 server:
   vision_explain: http://你的域名或IP:端口号/mcp/vision/explain
 ```
 
-**配置示例：**
+**Ví dụ về cấu hình:**
 
-局域网部署（默认）：
+Triển khai mạng LAN (mặc định):
 ```yaml
 server:
   vision_explain: http://192.168.1.100:8003/mcp/vision/explain
 ```
 
-公网域名部署：
+Triển khai tên miền công cộng:
 ```yaml
 server:
   vision_explain: http://yourdomain.com:8003/mcp/vision/explain
 ```
 
-### 注意事项
+### Ghi chú
 
-- 域名或IP必须是设备能够访问的地址
-- 如果使用Docker部署，不能使用Docker内部地址（如127.0.0.1或localhost）
-- 如果你使用了nginx反向代理，请填写对外的地址和端口号，不是本项目运行的端口号
+- Tên miền hoặc IP phải là địa chỉ mà thiết bị có thể truy cập
+- Nếu bạn sử dụng triển khai Docker, bạn không thể sử dụng địa chỉ nội bộ Docker (chẳng hạn như 127.0.0.1 hoặc localhost)
+- Nếu bạn sử dụng proxy ngược nginx, vui lòng điền địa chỉ bên ngoài và số cổng, không phải số cổng nơi dự án này chạy.
 
 
-## 常见问题
+## Câu hỏi thường gặp
 
-### 1. 设备收不到固件更新
+### 1. Máy không nhận được bản cập nhật firmware
 
-**可能原因和解决方法：**
+**Nguyên nhân và giải pháp có thể:**
 
-- 检查固件文件命名是否符合规则：`{型号}_{版本号}.bin`
-- 检查固件文件是否正确放置在`data/bin/`目录
-- 检查设备型号是否与固件文件名中的型号匹配
-- 检查固件版本号是否高于设备当前版本
-- 查看服务器日志，确认OTA请求是否正常处理
+- Kiểm tra việc đặt tên file firmware có đúng quy định không: `{型号}_{版本号}.bin`
+- Kiểm tra xem tệp chương trình cơ sở có được đặt chính xác trong thư mục `data/bin/` không
+- Kiểm tra xem model thiết bị có khớp với model trong tên file firmware không
+- Kiểm tra xem số phiên bản firmware có cao hơn phiên bản hiện tại của thiết bị không
+- Kiểm tra nhật ký máy chủ để xác nhận xem yêu cầu OTA có được xử lý bình thường không
 
-### 2. 设备报告下载地址无法访问
+### 2. Máy báo không truy cập được địa chỉ download
 
-**可能原因和解决方法：**
+**Nguyên nhân và giải pháp có thể:**
 
-- 检查`server.vision_explain`配置的域名或IP是否正确
-- 确认端口号配置正确（默认8003）
-- 如果是公网部署，确保设备能够访问该公网地址
-- 如果是Docker部署，确保不是使用了内部地址（127.0.0.1）
-- 检查防火墙是否开放了对应端口
-- 如果你使用了nginx反向代理，请填写对外的地址和端口号，不是本项目运行的端口号
+- Kiểm tra tên miền hoặc IP được cấu hình trong `server.vision_explain` có đúng không
+- Xác nhận số cổng đã được cấu hình đúng (mặc định 8003)
+- Nếu nó được triển khai trên mạng công cộng, hãy đảm bảo rằng thiết bị có thể truy cập địa chỉ mạng công cộng.
+- Nếu triển khai qua Docker, hãy đảm bảo bạn không sử dụng địa chỉ nội bộ (127.0.0.1)
+- Kiểm tra xem tường lửa đã mở cổng tương ứng chưa
+- Nếu bạn sử dụng proxy ngược nginx, vui lòng điền địa chỉ bên ngoài và số cổng, không phải số cổng nơi dự án này chạy.
 
-### 3. 如何确认设备当前版本
+### 3. Cách xác nhận phiên bản hiện tại của thiết bị
 
-查看OTA请求日志，日志中会显示设备上报的版本号：
+Kiểm tra nhật ký yêu cầu OTA. Số phiên bản được thiết bị báo cáo sẽ được hiển thị trong nhật ký:
 
 ```
-[ota_handler] - 设备 AA:BB:CC:DD:EE:FF 固件已是最新: 1.6.6
+[OTA_handler] - 设备 AA:BB:CC:DD:EE:FF 固件已是最新: 1.6.6
 ```
 
-### 4. 固件文件放置后没有生效
+### 4. File firmware không có hiệu lực sau khi được đặt.
 
-系统有30秒的缓存时间（默认），可以：
-- 等待30秒后再让设备发起OTA请求
-- 重启xiaozhi-server服务
-- 调整`firmware_cache_ttl`配置为更短的时间
+Hệ thống có thời gian lưu vào bộ đệm là 30 giây (mặc định) và có thể:
+- Đợi 30 giây trước khi cho phép thiết bị thực hiện yêu cầu OTA
+- Khởi động lại dịch vụ máy chủ xiaozhi
+- Điều chỉnh cấu hình `firmware_cache_ttl` với thời gian ngắn hơn

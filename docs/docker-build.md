@@ -1,21 +1,21 @@
-# 本地编译docker镜像方法
+# Cách biên dịch images docker cục bộ
 
-现在本项目已经使用github自动编译docker功能，本文档是提供给有本地编译docker镜像需求的朋友准备的。
+Bây giờ dự án này đã sử dụng chức năng biên dịch docker tự động của github. Tài liệu này được cung cấp cho những người bạn cần biên dịch images docker cục bộ.
 
-1、安装docker
+1. Cài đặt docker
 ```
 sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
 ```
-2、编译docker镜像
+2. Biên dịch images docker
 ```
-#进入项目根目录
-# 编译server
+#Nhập thư mục gốc của dự án
+#Máy chủ biên dịch
 docker build -t xiaozhi-esp32-server:server_latest -f ./Dockerfile-server .
-# 编译web
+#Biên dịch web
 docker build -t xiaozhi-esp32-server:web_latest -f ./Dockerfile-web .
 
-# 编译完成后，可以使用docker-compose启动项目
-# docker-compose.yml你需要修改成自己编译的镜像版本
-cd main/xiaozhi-server
-docker compose up -d
+# Sau khi biên dịch xong, bạn có thể sử dụng docker-compose để bắt đầu dự án
+# docker-compose.yml Bạn cần sửa nó thành phiên bản image do chính bạn biên dịch
+cd chính/máy chủ xiaozhi
+docker soạn thảo -d
 ```

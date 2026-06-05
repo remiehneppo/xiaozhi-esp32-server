@@ -1,10 +1,10 @@
-# 语音盒子主题自定义
+# Tùy chỉnh chủ đề hộp thoại
 
-## 项目概述
+## Tổng quan dự án
 
-本目录包含从 [xiaozhi-assets-generator](https://github.com/xinnan-tech/xiaozhi-assets-generator) 项目打包的静态文件，用于语音盒子主题的在线自定义与生成。用户可以通过此工具配置唤醒词、字体、表情和聊天背景等元素，并导出为 `assets.bin` 文件。
+Thư mục này chứa các tệp tĩnh được đóng gói từ dự án [xiaozhi-assets-generator](https://github.com/xinnan-tech/xiaozhi-assets-generator), được sử dụng để tùy chỉnh trực tuyến và tạo chủ đề hộp thoại. Người dùng có thể định cấu hình các thành phần như từ đánh thức, phông chữ, biểu tượng cảm xúc và hình nền trò chuyện thông qua công cụ này và xuất chúng sang tệp `assets.bin`.
 
-## 目录结构
+## Cấu trúc thư mục
 
 ```
 generator/
@@ -43,47 +43,47 @@ generator/
 └── README.md            # 项目说明文档
 ```
 
-## 主要功能
+##Chức năng chính
 
-### 1. 芯片与屏幕配置
-- 支持多种芯片型号：ESP32-S3、ESP32-C3、ESP32-P4、ESP32-C6
-- 灵活的屏幕分辨率设置
-- 支持 RGB565 颜色格式
+### 1. Cấu hình chip và màn hình
+- Hỗ trợ nhiều model chip: ESP32-S3, ESP32-C3, ESP32-P4, ESP32-C6
+- Cài đặt độ phân giải màn hình linh hoạt
+-Hỗ trợ định dạng màu RGB565
 
-### 2. 唤醒词配置
-- **预设唤醒词**：基于不同芯片支持的 WakeNet 模型
-- **自定义唤醒词**：支持中文和英文命令词，可配置阈值和超时时间
+### 2. Đánh thức cấu hình word
+- **Từ Wake mặc định**: Dựa trên các mô hình WakeNet được hỗ trợ bởi các chip khác nhau
+- **Từ đánh thức tùy chỉnh**: Hỗ trợ các từ lệnh tiếng Trung và tiếng Anh, ngưỡng có thể định cấu hình và thời gian chờ
 
-### 3. 字体配置
-- 预设多种字体：阿里巴巴普惠体、Noto Qwen 等
-- 支持上传自定义 TTF/WOFF 字体文件
-- 可配置字号和颜色深度（bpp）
+### 3. Cấu hình phông chữ
+- Nhiều phông chữ cài sẵn: Alibaba Puhui, Noto Qwen, v.v.
+- Hỗ trợ tải lên các tệp phông chữ TTF/WOFF tùy chỉnh
+- Kích thước phông chữ có thể cấu hình và độ sâu màu (bpp)
 
-### 4. 表情集合
-- 提供 21 种基础表情的预设方案（32x32 和 64x64 两种尺寸）
-- 支持自定义表情上传
+### 4. Tập hợp biểu thức
+- Cung cấp 21 sơ đồ cài sẵn cho các biểu thức cơ bản (hai kích thước: 32x32 và 64x64)
+- Hỗ trợ tải lên các biểu thức tùy chỉnh
 
-### 5. 聊天背景
-- 支持浅色/深色模式切换
-- 可配置纯色背景或图片背景
-- 自动适配屏幕分辨率
+### 5. Nền trò chuyện
+-Hỗ trợ chuyển đổi chế độ sáng/tối
+- Nền màu hoặc nền images có thể định cấu hình
+- Tự động thích ứng với độ phân giải màn hình
 
-## 使用方法
+## Cách sử dụng
 
-1. 以服务方式启动 `index.html` 文件
-2. 选择芯片型号和屏幕配置
-3. 通过不同标签页配置主题元素
-4. 点击生成按钮查看资源清单
-5. 确认后生成并下载 `assets.bin` 文件
+1. Khởi động tệp `index.html` dưới dạng dịch vụ
+2. Chọn model chip và cấu hình màn hình
+3. Định cấu hình các thành phần chủ đề thông qua các tab khác nhau
+4. Nhấp vào nút Tạo để xem danh sách tài nguyên
+5. Sau khi xác nhận, hãy tạo và tải xuống tệp `assets.bin`
 
-## 技术说明
+## Mô tả kỹ thuật
 
-- 构建后的静态资源位于 `assets/` 目录
-- 原始模型和资源文件位于 `static/` 目录
-- 支持离线使用，无需额外依赖
+- Các tài nguyên tĩnh được xây dựng nằm trong thư mục `assets/`
+- Các tệp tài nguyên và mô hình gốc được đặt trong thư mục `static/`
+- Hỗ trợ sử dụng ngoại tuyến, không cần phụ thuộc thêm
 
-## 注意事项
+## Ghi chú
 
-- 本工具为离线使用设计，所有资源已包含在目录中
-- 生成的 `assets.bin` 文件需要与语音盒子硬件配合使用
-- 自定义资源需注意文件格式和大小限制，以确保兼容
+- Công cụ này được thiết kế để sử dụng ngoại tuyến và tất cả tài nguyên đều có trong thư mục
+- Tệp `assets.bin` được tạo cần được sử dụng với phần cứng hộp thoại
+- Tài nguyên tùy chỉnh cần chú ý đến các hạn chế về định dạng và kích thước tệp để đảm bảo khả năng tương thích

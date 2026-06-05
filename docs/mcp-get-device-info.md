@@ -1,17 +1,17 @@
-# MCP 方法如何获取设备信息
+#Phương pháp MCP lấy thông tin thiết bị như thế nào?
 
-本教程将指导你如何使用MCP方法获取设备信息。
+Hướng dẫn này sẽ hướng dẫn bạn cách lấy thông tin thiết bị bằng phương pháp MCP.
 
-第一步：自定义你的`agent-base-prompt.txt`文件
+Bước 1: Tùy chỉnh tệp `agent-base-prompt.txt` của bạn
 
-把xiaozhi-server目录的`agent-base-prompt.txt`文件内容复制到你的`data`目录下，并重命名为`.agent-base-prompt.txt`。
+Sao chép nội dung của tệp `agent-base-prompt.txt` trong thư mục xiaozhi-server vào thư mục `data` của bạn và đổi tên thành `.agent-base-prompt.txt`.
 
-第二步：修改`data/.agent-base-prompt.txt`文件，找到`<context>`标签，在标签内容中添加以下代码内容：
+Bước 2: Sửa đổi tệp `data/.agent-base-prompt.txt`, tìm thẻ `<context>` và thêm nội dung mã sau vào nội dung thẻ:
 ```
 - **设备ID：** {{device_id}}
 ```
 
-添加完成后，你的`data/.agent-base-prompt.txt`文件的`<context>`标签内容大致如下：
+Sau khi việc bổ sung hoàn tất, nội dung của thẻ `<context>` trong tệp `data/.agent-base-prompt.txt` của bạn đại khái như sau:
 ```
 <context>
 【重要！以下信息已实时提供，无需调用工具查询，请直接使用：】
@@ -24,17 +24,17 @@
 </context>
 ```
 
-第三步：修改`data/.config.yaml`文件，找到`agent-base-prompt`配置，修改前内容如下：
+Bước 3: Sửa đổi tệp `data/.config.yaml` và tìm cấu hình `agent-base-prompt`. Nội dung trước khi sửa đổi như sau:
 ```
 prompt_template: agent-base-prompt.txt
 ```
-修改成
+Sửa đổi thành
 ```
 prompt_template: data/.agent-base-prompt.txt
 ```
 
-第四步：重启你的xiaozhi-server服务。
+Bước 4: Khởi động lại dịch vụ máy chủ xiaozhi của bạn.
 
-第五步：在你的mcp方法增加名称为`device_id`,类型为`string`,描述为`设备ID`的参数。
+Bước 5: Thêm tham số có tên `device_id`, nhập `string` và mô tả `设备ID` vào phương thức mcp của bạn.
 
-第六步：重新唤醒小智，让他调用mcp方法，查看你的mcp方法是否可以获取`设备ID`。
+Bước 6: Đánh thức lại Xiaozhi và để anh ấy gọi phương thức mcp để xem liệu phương thức mcp của bạn có thể nhận được `设备ID` hay không.

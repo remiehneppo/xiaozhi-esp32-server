@@ -1,28 +1,28 @@
-# PaddleSpeechTTS集成xiaozhi服务
+# PaddleSpeechTTS tích hợp dịch vụ xiaozhi
 
-## 重点说明
-- 优点：本地离线部署、速度快
-- 缺点：截止2025年9月25日，默认的模型是中文模型，不支持英文转语音。如果含英文会发不出声音，如需同时支持中英文需要自己训练。
+## Những điểm chính
+- Ưu điểm: triển khai offline cục bộ, nhanh chóng
+- Nhược điểm: Kể từ ngày 25/09/2025, model mặc định là model Trung Quốc và không hỗ trợ tiếng Anh để nói. Nếu nó chứa tiếng Anh, sẽ không có âm thanh. Nếu cần hỗ trợ cả tiếng Trung và tiếng Anh thì bạn cần phải tự rèn luyện.
 
-## 一、基础环境要求
-操作系统：Windows / Linux / WSL 2
+## 1. Yêu cầu cơ bản về môi trường
+Hệ điều hành: Windows/Linux/WSL 2
 
-Python 版本：3.9以上（请根据Paddle官方教程调整）
+Phiên bản Python: 3.9 trở lên (vui lòng điều chỉnh theo hướng dẫn chính thức của Paddle)
 
-Paddle 版本：官方最新版本   ```https://www.paddlepaddle.org.cn/install```
+Phiên bản mái chèo: phiên bản mới nhất chính thức ```https://www.paddlepaddle.org.cn/install```
 
-依赖管理工具：conda 或 venv
+Công cụ quản lý phụ thuộc: conda hoặc venv
 
-## 二、启动paddlespeech服务
-### 1.从paddlespeech官方仓库拉取源码
+## 2. Bắt đầu dịch vụ chèo thuyền
+### 1. Lấy mã nguồn từ kho padspeech chính thức
 ```bash 
 git clone https://github.com/PaddlePaddle/PaddleSpeech.git
 ```
-### 2.建立虚拟环境
-```bash
+### 2. Tạo môi trường ảo
+``` bash
 
-conda create -n paddle_env python=3.10 -y
-conda activate paddle_env
+conda tạo -n chèo_env python=3.10 -y
+conda kích hoạt mái chèo_env
 ```
 ### 3.安装paddle
 因CPU架构、GPU架构不同，请根据Paddle官方支持的python版本建立环境  
@@ -30,35 +30,35 @@ conda activate paddle_env
 https://www.paddlepaddle.org.cn/install
 ```
 
-### 4.进入paddlespeech目录
+### 4. Vào thư mục câu nói mái chèo
 ```bash
 cd PaddleSpeech
 ```
-### 5.安装paddlespeech
-```bash
-pip install pytest-runner -i https://pypi.tuna.tsinghua.edu.cn/simple
+### 5. Cài đặt mái chèo
+``` bash
+pip cài đặt pytest-runner -i https://pypi.tuna.tsinghua.edu.cn/simple
 
-#以下命令使用任意一个
-pip install paddlepaddle -i https://mirror.baidu.com/pypi/simple
-pip install paddlespeech -i https://pypi.tuna.tsinghua.edu.cn/simple
+#Sử dụng bất kỳ lệnh nào sau đây
+pip cài đặt mái chèo -i https://mirror.baidu.com/pypi/simple
+pip cài đặt mái chèo -i https://pypi.tuna.tsinghua.edu.cn/simple
 ```
 ### 6.使用命令自动下载语音模型
 ```bash
-paddlespeech tts --input "你好，这是一次测试"
+mái chèo tts --input "Xin chào, đây là bài kiểm tra"
 ```
-此步骤会自动下载模型缓存至本地 .paddlespeech/models 目录
+Bước này sẽ tự động tải bộ đệm mô hình xuống thư mục .paddlespeech/models cục bộ
 
-### 7.修改tts_online_application.yaml配置
-参考目录 ```"PaddleSpeech\demos\streaming_tts_server\conf\tts_online_application.yaml"```
-选择```tts_online_application.yaml```文件用编辑器打开，设置```protocol```为```websocket```
+### 7. Sửa đổi cấu hình tts_online_application.yaml
+Danh mục tham khảo ```"PaddleSpeech\demos\streaming_tts_server\conf\tts_online_application.yaml"```
+Chọn tệp ```tts_online_application.yaml``` để mở bằng trình chỉnh sửa và đặt ```protocol``` thành ```WebSocket```
 
-### 8.启动服务
+### 8. Khởi động dịch vụ
 ```yaml
 paddlespeech_server start --config_file ./demos/streaming_tts_server/conf/tts_online_application.yaml
 #官方默认启动命令：
 paddlespeech_server start --config_file ./conf/tts_online_application.yaml
 ```
-请根据你的```tts_online_application.yaml```的实际目录来启动命令，看到如下日志即启动成功
+Vui lòng bắt đầu lệnh theo thư mục thực tế của ```tts_online_application.yaml``` của bạn. Khi bạn nhìn thấy nhật ký sau, quá trình khởi động đã thành công.
 ```
 Prefix dict has been built successfully.
 [2025-08-07 10:03:11,312] [   DEBUG] __init__.py:166 - Prefix dict has been built successfully.
@@ -68,42 +68,42 @@ INFO:     Application startup complete.
 INFO:     Uvicorn running on http://0.0.0.0:8092 (Press CTRL+C to quit)
 ```
 
-## 三、修改小智的配置文件
+## 3. Sửa file cấu hình của Xiaozhi
 ### 1.```main/xiaozhi-server/core/providers/tts/paddle_speech.py```
 
 ### 2.```main/xiaozhi-server/data/.config.yaml```
-使用单模块部署
+Triển khai bằng một mô-đun duy nhất
 ```yaml
 selected_module:
   TTS: PaddleSpeechTTS
 TTS:
   PaddleSpeechTTS:
       type: paddle_speech
-      protocol: websocket 
-      url:  ws://127.0.0.1:8092/paddlespeech/tts/streaming  # TTS 服务的 URL 地址，指向本地服务器 [websocket默认ws://127.0.0.1:8092/paddlespeech/tts/streaming]
+      protocol: WebSocket
+      url:  ws://127.0.0.1:8092/paddlespeech/tts/streaming  # TTS 服务的 URL 地址，指向本地服务器 [WebSocket默认ws://127.0.0.1:8092/paddlespeech/tts/streaming]
       spk_id: 0  # 发音人 ID，0 通常表示默认的发音人
-      sample_rate: 24000  # 采样率 [websocket默认24000，http默认0 自动选择]
+      sample_rate: 24000  # 采样率 [WebSocket默认24000，http默认0 自动选择]
       speed: 1.0  # 语速，1.0 表示正常语速，>1 表示加快，<1 表示减慢
       volume: 1.0  # 音量，1.0 表示正常音量，>1 表示增大，<1 表示减小
       save_path:   # 保存路径
 ```
-### 3.启动xiaozhi服务
+### 3. Bắt đầu dịch vụ xiaozhi
 ```py
 python app.py
 ```
-启动`main/digital-human`下的`python start.py`后，打开`http://127.0.0.1:8006/index.html`，测试连接和发送消息时paddlespeech端是否有输出日志
+Sau khi khởi động `python start.py` trong `main/digital-human`, hãy mở `http://127.0.0.1:8006/index.html` và kiểm tra xem có nhật ký đầu ra ở cuối giọng nói mái chèo khi kết nối và gửi tin nhắn hay không.
 
-输出日志参考：
+Tham chiếu nhật ký đầu ra:
 ```
-INFO:     127.0.0.1:44312 - "WebSocket /paddlespeech/tts/streaming" [accepted]
-INFO:     connection open
-[2025-08-07 11:16:33,355] [    INFO] - sentence: 哈哈，怎么突然找我聊天啦？
-[2025-08-07 11:16:33,356] [    INFO] - The durations of audio is: 2.4625 s
-[2025-08-07 11:16:33,356] [    INFO] - first response time: 0.1143045425415039 s
-[2025-08-07 11:16:33,356] [    INFO] - final response time: 0.4777836799621582 s
-[2025-08-07 11:16:33,356] [    INFO] - RTF: 0.19402382942625715
-[2025-08-07 11:16:33,356] [    INFO] - Other info: front time: 0.06514096260070801 s, first am infer time: 0.008037090301513672 s, first voc infer time: 0.04112648963928223 s,
-[2025-08-07 11:16:33,356] [    INFO] - Complete the synthesis of the audio streams
-INFO:     connection closed
+THÔNG TIN: 127.0.0.1:44312 - "WebSocket/paddlespeech/tts/streaming" [được chấp nhận]
+THÔNG TIN: kết nối mở
+[2025-08-07 11:16:33,355] [ INFO] - câu: Haha, sao tự nhiên lại chat với mình thế?
+[2025-08-07 11:16:33,356] [ INFO] - Thời lượng của âm thanh là: 2,4625 s
+[2025-08-07 11:16:33,356] [ THÔNG TIN] - thời gian phản hồi đầu tiên: 0,1143045425415039 s
+[2025-08-07 11:16:33,356] [ THÔNG TIN] - thời gian phản hồi cuối cùng: 0,4777836799621582 s
+[2025-08-07 11:16:33,356] [ THÔNG TIN] - RTF: 0.19402382942625715
+[2025-08-07 11:16:33,356] [ INFO] - Thông tin khác: thời gian trước: 0,06514096260070801 s, thời gian suy luận sáng đầu tiên: 0,008037090301513672 s, thời gian suy luận giọng nói đầu tiên: 0,04112648963928223 s,
+[2025-08-07 11:16:33,356] [ INFO] - Hoàn thành việc tổng hợp các luồng âm thanh
+THÔNG TIN: kết nối đã đóng
 
 ```

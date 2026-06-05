@@ -1,23 +1,23 @@
-# get_news_from_newsnow 插件新闻源配置指南
+# get_news_from_newsnow Hướng dẫn cấu hình nguồn tin tức Plug-in
 
-## 概述
+## Tổng quan
 
-`get_news_from_newsnow` 插件现在支持通过Web管理界面动态配置新闻源，不再需要修改代码。用户可以在智控台中为每个智能体配置不同的新闻源。
+`get_news_from_newsnow` Plug-in hiện hỗ trợ cấu hình động các nguồn tin tức thông qua giao diện quản lý web, không còn yêu cầu sửa đổi mã. Người dùng có thể định cấu hình các nguồn tin tức khác nhau cho từng tác nhân trong bảng điều khiển thông minh.
 
-## 配置方式
+## Phương thức cấu hình
 
-### 1. 通过Web管理界面配置（推荐）
+### 1. Cấu hình thông qua giao diện quản lý web (khuyến nghị)
 
-1. 登录智控台
-2. 进入"角色配置"页面
-3. 选择要配置的智能体
-4. 点击"编辑功能"按钮
-5. 在右侧参数配置区域找到"newsnow新闻聚合"插件
-6. 在"新闻源配置"字段中输入分号分隔的中文名称
+1. Đăng nhập vào bảng điều khiển thông minh
+2. Nhập trang "Cấu hình vai trò"
+3. Chọn tác nhân để cấu hình
+4. Nhấp vào nút "Chỉnh sửa tính năng"
+5. Tìm plug-in "newsnow tổng hợp tin tức" trong khu vực cấu hình tham số bên phải
+6. Nhập tên tiếng Trung cách nhau bằng dấu chấm phẩy vào trường "Cấu hình nguồn tin tức"
 
-### 2. 配置文件方式
+### 2. Phương thức file cấu hình
 
-在 `config.yaml` 中配置：
+Định cấu hình trong `config.yaml`:
 
 ```yaml
 plugins:
@@ -26,80 +26,80 @@ plugins:
     news_sources: "澎湃新闻;百度热搜;财联社;微博;抖音"
 ```
 
-## 新闻源配置格式
+## Định dạng cấu hình nguồn tin tức
 
-新闻源配置使用分号分隔的中文名称，格式为：
+Cấu hình nguồn tin tức sử dụng tên tiếng Trung được phân tách bằng dấu chấm phẩy theo định dạng:
 
 ```
 中文名称1;中文名称2;中文名称3
 ```
 
-### 配置示例
+### Ví dụ về cấu hình
 
 ```
 澎湃新闻;百度热搜;财联社;微博;抖音;知乎;36氪
 ```
 
-## 支持的新闻源
+## Nguồn tin được hỗ trợ
 
-插件支持以下新闻源的中文名称：
+Plug-in hỗ trợ tên tiếng Trung của các nguồn tin tức sau:
 
-- 澎湃新闻
-- 百度热搜
-- 财联社
-- 微博
-- 抖音
-- 知乎
-- 36氪
-- 华尔街见闻
-- IT之家
-- 今日头条
-- 虎扑
-- 哔哩哔哩
-- 快手
-- 雪球
-- 格隆汇
-- 法布财经
-- 金十数据
-- 牛客
-- 少数派
-- 稀土掘金
-- 凤凰网
-- 虫部落
-- 联合早报
-- 酷安
-- 远景论坛
-- 参考消息
-- 卫星通讯社
-- 百度贴吧
-- 靠谱新闻
-- 以及更多...
+- Giấy
+- Tìm kiếm nóng của Baidu
+- Báo chí liên kết tài chính
+-Weibo
+- TikTok
+- Chí hổ
+- 36 krypton
+- Thông tin chi tiết về Phố Wall
+- Trang chủ CNTT
+- Tiêu đề của ngày hôm nay
+- Hủu
+- Mật độ
+- Kuaishou
+- Quả cầu tuyết
+- Gelonghui
+- Tài chính Fab
+- Dữ liệu Thập Vàng
+- Niuke
+- thiểu số
+- Cốm đất hiếm
+-ifeng.com
+- Bộ lạc lỗi
+- Liên Hà Zaobao
+- Làm mát
+- Diễn đàn tầm nhìn
+- Thông báo tham khảo
+- Thông tấn xã vệ tinh
+- Baidu Tieba
+- Tin tức đáng tin cậy
+- và hơn thế nữa...
 
-## 默认配置
+##Cấu hình mặc định
 
-如果未配置新闻源，插件将使用以下默认配置：
+Nếu nguồn tin tức không được định cấu hình, plugin sẽ sử dụng cấu hình mặc định sau:
 
 ```
 澎湃新闻;百度热搜;财联社
 ```
 
-## 使用说明
+##Hướng dẫn sử dụng
 
-1. **配置新闻源**：在Web界面或配置文件中设置新闻源的中文名称，用分号分隔
-2. **调用插件**：用户可以说"播报新闻"或"获取新闻"
-3. **指定新闻源**：用户可以说"播报澎湃新闻"或"获取百度热搜"
-4. **获取详情**：用户可以说"详细介绍这条新闻"
+1. **Cấu hình nguồn tin**: Đặt tên tiếng Trung của nguồn tin trong giao diện web hoặc file cấu hình, phân cách bằng dấu chấm phẩy
+2. **Gọi plug-in**: Người dùng có thể nói "báo cáo tin tức" hoặc "nhận tin tức"
+3. **Chỉ định nguồn tin tức**: Người dùng có thể nói "Báo cáo bài báo" hoặc "Nhận các tìm kiếm nóng trên Baidu"
+4. **Nhận thông tin chi tiết**: Người dùng có thể nói "Thông tin chi tiết về tin tức này"
 
-## 工作原理
+## Nguyên tắc làm việc
 
-1. 插件接受中文名称作为参数（如"澎湃新闻"）
-2. 根据配置的新闻源列表，将中文名称转换为对应的英文ID（如"thepaper"）
-3. 使用英文ID调用API获取新闻数据
-4. 返回新闻内容给用户
+1. Plug-in chấp nhận tên tiếng Trung làm tham số (chẳng hạn như "The Paper")
+2. Theo danh sách nguồn tin tức đã định cấu hình, chuyển đổi tên tiếng Trung thành ID tiếng Anh tương ứng (chẳng hạn như "thepaper")
+3. Sử dụng ID tiếng Anh để gọi API lấy dữ liệu tin tức
+4. Trả lại nội dung tin tức cho người dùng
 
-## 注意事项
+## Ghi chú
 
-1. 配置的中文名称必须与 CHANNEL_MAP 中定义的名称完全一致
-2. 配置更改后需要重启服务或重新加载配置
-3. 如果配置的新闻源无效，插件会自动使用默认新闻源
-4. 多个新闻源之间使用英文分号(;)分隔，不要使用中文分号(；)
+1. Tên tiếng Trung được định cấu hình phải giống hệt với tên được xác định trong CHANNEL_MAP
+2. Sau khi thay đổi cấu hình, bạn cần khởi động lại dịch vụ hoặc tải lại cấu hình.
+3. Nếu nguồn tin tức được định cấu hình không hợp lệ, plug-in sẽ tự động sử dụng nguồn tin tức mặc định
+4. Sử dụng dấu chấm phẩy tiếng Anh (;) để phân tách nhiều nguồn tin, không sử dụng dấu chấm phẩy tiếng Trung (;)

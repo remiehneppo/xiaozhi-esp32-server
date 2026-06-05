@@ -1,63 +1,63 @@
-登录AutoDL，租赁镜像
-选择镜像:
+Đăng nhập vào AutoDL và thuê images
+Chọn images:
 ```
 PyTorch / 2.1.0 / 3.10(ubuntu22.04) / cuda 12.1
 ```
 
-机器开机后，设置学术加速
+Sau khi bật máy, thiết lập tăng tốc học tập
 ```
 source /etc/network_turbo
 ```
 
-进入工作目录
+Nhập thư mục làm việc
 ```
 cd autodl-tmp/
 ```
 
-拉取项目
+Kéo vật phẩm
 ```
 git clone https://gitclone.com/github.com/fishaudio/fish-speech.git ; cd fish-speech
 ```
 
-安装依赖
+Cài đặt phụ thuộc
 ```
 pip install -e.
 ```
 
-如果报错，安装portaudio
+Nếu báo lỗi thì cài đặt portaudio
 ```
 apt-get install portaudio19-dev -y
 ```
 
-安装后执行
+Thực hiện sau khi cài đặt
 ```
 pip install torch==2.3.1 torchvision==0.18.1 torchaudio==2.3.1 --index-url https://download.pytorch.org/whl/cu121
 ```
 
-下载模型
+Tải xuống mô hình
 ```
 cd tools
 python download_models.py 
 ```
 
-下载完模型后运行接口
+Sau khi tải model về, chạy giao diện
 ```
 python -m tools.api_server --listen 0.0.0.0:6006 
 ```
 
-然后用浏览器去到aotodl实例页面
+Sau đó sử dụng trình duyệt để truy cập trang phiên bản aotodl
 ```
 https://autodl.com/console/instance/list
 ```
 
-如下图点击你刚才机器的`自定义服务`按钮，开启端口转发服务
-![自定义服务](images/fishspeech/autodl-01.png)
+Như được hiển thị bên dưới, hãy nhấp vào nút `自定义服务` trên máy của bạn ngay bây giờ để bật dịch vụ chuyển tiếp cổng.
+![Dịch vụ tùy chỉnh](images/fishspeech/autodl-01.png)
 
-端口转发服务设置完成后，你本地电脑打开网址`http://localhost:6006/`，就可以访问fish-speech的接口了
-![服务预览](images/fishspeech/autodl-02.png)
+Sau khi thiết lập dịch vụ chuyển tiếp cổng, hãy mở URL `http://localhost:6006/` trên máy tính cục bộ của bạn để truy cập giao diện tiếng cá.
+![Xem trước dịch vụ](images/fishspeech/autodl-02.png)
 
 
-如果你是单模块部署，核心配置如下
+Nếu bạn đang triển khai một mô-đun duy nhất, cấu hình cốt lõi như sau
 ```
 selected_module:
   TTS: FishSpeech
@@ -69,4 +69,4 @@ TTS:
     api_url: "http://127.0.0.1:6006/v1/tts"
 ```
 
-然后重启服务
+Sau đó khởi động lại dịch vụ

@@ -1,10 +1,10 @@
-本文档是开发类文档，如需部署小智服务端，[点击这里查看部署教程](../../README.md#%E9%83%A8%E7%BD%B2%E6%96%87%E6%A1%A3)
+Tài liệu này là một tài liệu phát triển. Nếu bạn cần triển khai máy chủ Xiaozhi, [bấm vào đây để xem hướng dẫn triển khai](../../README.md#%E9%83%A8%E7%BD%B2%E6%96%87%E6%A1%A3)
 
 # xiaozhi
 
 ## Project setup
 
-开发使用代码编辑器，导入项目时，选择`manager-web`文件夹作为项目目录
+Sử dụng trình soạn thảo mã để phát triển. Khi nhập dự án, chọn thư mục `manager-web` làm thư mục dự án.
 
 ```
 npm install
