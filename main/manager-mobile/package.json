@@ -69,6 +69,7 @@
     "build:quickapp-webview-huawei": "uni build -p quickapp-webview-huawei",
     "build:quickapp-webview-union": "uni build -p quickapp-webview-union",
     "type-check": "vue-tsc --noEmit",
+    "validate:vi-locales": "node ../scripts/validate-vi-locales.mjs",
     "openapi-ts-request": "openapi-ts",
     "prepare": "git init && husky",
     "lint": "eslint",
