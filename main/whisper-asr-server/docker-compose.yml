@@ -1,0 +1,19 @@
+services:
+  whisper-asr-server:
+    build: .
+    container_name: whisper-asr-server
+    restart: unless-stopped
+    ports:
+      - "8001:8001"
+    environment:
+      WHISPER_MODEL: medium
+      WHISPER_DEVICE: cpu
+      WHISPER_COMPUTE_TYPE: int8
+      WHISPER_LANGUAGE: vi
+      WHISPER_BEAM_SIZE: "5"
+      WHISPER_MODEL_DIR: /models
+      # Set ASR_API_KEY and use the same value in xiaozhi-server ASR.OpenaiASR.api_key
+      ASR_API_KEY: ""
+    volumes:
+      - ./models:/models
+

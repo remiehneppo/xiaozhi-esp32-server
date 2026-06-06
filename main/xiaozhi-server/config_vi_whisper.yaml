@@ -1,0 +1,118 @@
+# Vietnamese-friendly config template for local Whisper ASR.
+# Copy this file to data/.config.yaml and adjust IP/API keys before running.
+
+server:
+  ip: 0.0.0.0
+  port: 8000
+  http_port: 8003
+  # Change these to your LAN IP or public domain when testing from an ESP32 device.
+  websocket: ws://127.0.0.1:8000/xiaozhi/v1/
+  vision_explain: http://127.0.0.1:8003/mcp/vision/explain
+  timezone_offset: +7
+
+log:
+  log_level: INFO
+
+delete_audio: true
+close_connection_no_voice_time: 180
+tts_timeout: 15
+tool_call_timeout: 20
+enable_wakeup_words_response_cache: true
+enable_greeting: true
+enable_stop_tts_notify: false
+enable_websocket_ping: false
+tts_audio_send_delay: 0
+
+exit_commands:
+  - "thoát"
+  - "tạm biệt"
+  - "dừng lại"
+  - "ngủ đi"
+
+xiaozhi:
+  type: hello
+  version: 1
+  transport: websocket
+  audio_params:
+    format: opus
+    sample_rate: 24000
+    channels: 1
+    frame_duration: 60
+
+wakeup_words:
+  - "xin chào"
+  - "chào bạn"
+  - "ơi trợ lý"
+  - "này bạn"
+  - "hello"
+
+prompt: |
+  Bạn là trợ lý giọng nói tiếng Việt cho người dùng ở Việt Nam.
+  Trả lời ngắn gọn, tự nhiên, lịch sự, như đang trò chuyện trực tiếp.
+  Nếu người dùng không nói rõ địa điểm hoặc quốc gia, mặc định ngữ cảnh là Việt Nam.
+  Khi đọc ngày giờ, số điện thoại, địa chỉ, tiền tệ, hãy đọc theo cách người Việt thường nói.
+  Nếu câu hỏi cần thông tin mới như tin tức, giá cả, thời tiết, địa điểm hoặc quy định, hãy dùng công cụ tìm kiếm/thời tiết nếu có.
+  Không dùng tiếng Trung. Chỉ dùng tiếng Anh khi người dùng yêu cầu hoặc thuật ngữ đó phổ biến hơn bằng tiếng Anh.
+
+system_error_response: "Mình đang gặp chút trục trặc, bạn thử lại sau một lát nhé."
+
+end_prompt:
+  enable: true
+  prompt: |
+    Hãy kết thúc cuộc trò chuyện bằng một câu tiếng Việt ngắn gọn, thân thiện, tự nhiên.
+
+selected_module:
+  VAD: SileroVAD
+  ASR: OpenaiASR
+  LLM: ChatGLMLLM
+  VLLM: ChatGLMVLLM
+  TTS: EdgeTTS
+  Memory: nomem
+  Intent: function_call
+
+ASR:
+  OpenaiASR:
+    type: openai
+    api_key: local
+    base_url: http://127.0.0.1:8001/v1/audio/transcriptions
+    model_name: medium
+    output_dir: tmp/
+
+TTS:
+  EdgeTTS:
+    type: edge
+    voice: vi-VN-HoaiMyNeural
+    output_dir: tmp/
+    language: "Tiếng Việt"
+
+VAD:
+  SileroVAD:
+    type: silero
+    threshold: 0.55
+    threshold_low: 0.35
+    model_dir: models/snakers4_silero-vad
+    min_silence_duration_ms: 300
+
+Intent:
+  function_call:
+    type: function_call
+    functions:
+      - web_search
+      - get_weather
+      - play_music
+
+plugins:
+  get_weather:
+    default_location: "Hà Nội"
+  web_search:
+    provider: "tavily"
+    description: "Tìm kiếm web khi người dùng hỏi tin tức, địa điểm, dịch vụ, quy định, giá cả hoặc thông tin mới tại Việt Nam."
+    max_results: 5
+    api_key: "tvly-xxx"
+  play_music:
+    music_dir: "./music"
+    music_ext:
+      - ".mp3"
+      - ".wav"
+      - ".p3"
+    refresh_time: 300
