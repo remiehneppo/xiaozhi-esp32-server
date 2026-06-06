@@ -7,7 +7,7 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
 WORKDIR /app
 
 RUN apt-get update \
-    && apt-get install -y --no-install-recommends ffmpeg libgomp1 \
+    && apt-get install -y --no-install-recommends libgomp1 \
     && rm -rf /var/lib/apt/lists/*
 
 COPY requirements.txt .
@@ -18,4 +18,3 @@ COPY app.py .
 EXPOSE 8001
 
 CMD ["uvicorn", "app:app", "--host", "0.0.0.0", "--port", "8001"]
-

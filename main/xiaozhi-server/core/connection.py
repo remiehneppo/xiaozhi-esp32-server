@@ -269,7 +269,7 @@ class ConnectionHandler:
         """保存记忆并关闭连接"""
         try:
             # 守护线程1：独立生成标题（不依赖记忆模型）
-            if self.session_id:
+            if self.read_config_from_api and self.session_id:
                 def generate_title_task():
                     try:
                         loop = asyncio.new_event_loop()

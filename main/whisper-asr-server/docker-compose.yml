@@ -6,7 +6,7 @@ services:
     ports:
       - "8001:8001"
     environment:
-      WHISPER_MODEL: medium
+      WHISPER_MODEL: tiny
       WHISPER_DEVICE: cpu
       WHISPER_COMPUTE_TYPE: int8
       WHISPER_LANGUAGE: vi
@@ -16,4 +16,3 @@ services:
       ASR_API_KEY: ""
     volumes:
       - ./models:/models
-

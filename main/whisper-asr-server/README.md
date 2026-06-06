@@ -29,7 +29,7 @@ Useful environment variables:
 
 | Variable | Default | Meaning |
 | --- | --- | --- |
-| `WHISPER_MODEL` | `medium` | faster-whisper model name or local model path. |
+| `WHISPER_MODEL` | `tiny` | faster-whisper model name or local model path. Use `small`, `medium`, or `large-v3` after the pipeline is stable. |
 | `WHISPER_DEVICE` | `cpu` | `cpu`, `cuda`, or `auto`. |
 | `WHISPER_COMPUTE_TYPE` | `int8` | Common CPU value: `int8`; common CUDA values: `float16`, `int8_float16`. |
 | `WHISPER_LANGUAGE` | `vi` | Default transcription language. Use empty value for auto-detect. |
@@ -59,10 +59,9 @@ ASR:
     type: openai
     api_key: local
     base_url: http://127.0.0.1:8001/v1/audio/transcriptions
-    model_name: medium
+    model_name: tiny
     output_dir: tmp/
 ```
 
 If `ASR_API_KEY` is set on the Whisper service, use the same value in
 `api_key`.
-
