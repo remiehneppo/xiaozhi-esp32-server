@@ -29,8 +29,8 @@ async def wait_for_exit() -> None:
             loop.add_signal_handler(sig, stop_event.set)
         await stop_event.wait()
     else:
-        # Windows：await一个永远pending的fut，
-        # 让 KeyboardInterrupt 冒泡到 asyncio.run，以此消除遗留普通线程导致进程退出阻塞的问题
+        # Windows: chờ một Future luôn pending,
+        # để KeyboardInterrupt nổi lên tới asyncio.run và tránh tiến trình bị chặn khi còn thread thường tồn tại
         try:
             await asyncio.Future()
         except KeyboardInterrupt:  # Ctrl‑C
@@ -38,9 +38,9 @@ async def wait_for_exit() -> None:
 
 
 async def monitor_stdin():
-    """监控标准输入，消费回车键"""
+    """Theo dõi stdin, chỉ để tiêu thụ phím Enter"""
     while True:
-        await ainput()  # 异步等待输入，消费回车
+        await ainput()  # Chờ input bất đồng bộ, chỉ để tiêu thụ Enter
 
 
 async def main():
@@ -53,10 +53,10 @@ async def main():
     auth_key = config["server"].get("auth_key", "")
     
     # Kiểm tra auth_key, nếu không hợp lệ thì thử dùng manager-api.secret
-    if not auth_key or len(auth_key) == 0 or "你" in auth_key:
+    if not auth_key or len(auth_key) == 0 or "giá_trị_server.secret_của_bạn" in auth_key:
         auth_key = config.get("manager-api", {}).get("secret", "")
         # Kiểm tra secret, nếu không hợp lệ thì sinh khóa ngẫu nhiên
-        if not auth_key or len(auth_key) == 0 or "你" in auth_key:
+        if not auth_key or len(auth_key) == 0 or "giá_trị_server.secret_của_bạn" in auth_key:
             auth_key = str(uuid.uuid4().hex)
     
     config["server"]["auth_key"] = auth_key
@@ -89,7 +89,7 @@ async def main():
         port,
     )
     mcp_endpoint = config.get("mcp_endpoint", None)
-    if mcp_endpoint is not None and "你" not in mcp_endpoint:
+    if mcp_endpoint is not None and "Địa chỉ WebSocket của điểm truy cập MCP" not in mcp_endpoint:
         # Kiểm tra định dạng điểm truy cập MCP
         if validate_mcp_endpoint(mcp_endpoint):
             logger.bind(tag=TAG).info("Điểm truy cập MCP là\t{}", mcp_endpoint)
@@ -100,7 +100,7 @@ async def main():
             logger.bind(tag=TAG).error("Điểm truy cập MCP không đúng định dạng")
             config["mcp_endpoint"] = "Địa chỉ WebSocket của điểm truy cập MCP"
 
-    # 获取WebSocket配置，使用安全的默认值
+    # Lấy cấu hình WebSocket, dùng giá trị mặc định an toàn
     websocket_port = 8000
     server_config = config.get("server", {})
     if isinstance(server_config, dict):
@@ -123,20 +123,20 @@ async def main():
     )
 
     try:
-        await wait_for_exit()  # 阻塞直到收到退出信号
+        await wait_for_exit()  # Chặn đến khi nhận tín hiệu thoát
     except asyncio.CancelledError:
         print("Tác vụ đã bị hủy, đang dọn dẹp tài nguyên...")
     finally:
-        # 停止全局GC管理器
+        # Dừng trình quản lý GC toàn cục
         await gc_manager.stop()
 
-        # 取消所有任务（关键修复点）
+        # Hủy tất cả tác vụ (điểm sửa quan trọng)
         stdin_task.cancel()
         ws_task.cancel()
         if ota_task:
             ota_task.cancel()
 
-        # 等待任务终止（必须加超时）
+        # Chờ tác vụ kết thúc (phải có timeout)
         await asyncio.wait(
             [stdin_task, ws_task, ota_task] if ota_task else [stdin_task, ws_task],
             timeout=3.0,
