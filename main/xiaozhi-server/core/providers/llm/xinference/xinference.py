@@ -11,13 +11,13 @@ class LLMProvider(LLMProviderBase):
     def __init__(self, config):
         self.model_name = config.get("model_name")
         self.base_url = config.get("base_url", "http://localhost:9997")
-        # Initialize OpenAI client with Xinference base URL
+        # Khởi tạo OpenAI client với base URL Xinference
         # 如果没有v1，增加v1
         if not self.base_url.endswith("/v1"):
             self.base_url = f"{self.base_url}/v1"
 
         logger.bind(tag=TAG).info(
-            f"Initializing Xinference LLM provider with model: {self.model_name}, base_url: {self.base_url}"
+            f"Khởi tạo provider LLM Xinference với model: {self.model_name}, base_url: {self.base_url}"
         )
 
         try:
@@ -25,14 +25,14 @@ class LLMProvider(LLMProviderBase):
                 base_url=self.base_url,
                 api_key="xinference",  # Xinference has a similar setup to Ollama where it doesn't need an actual key
             )
-            logger.bind(tag=TAG).info("Xinference client initialized successfully")
+            logger.bind(tag=TAG).info("Đã khởi tạo client Xinference thành công")
         except Exception as e:
-            logger.bind(tag=TAG).error(f"Error initializing Xinference client: {e}")
+            logger.bind(tag=TAG).error(f"Lỗi khi khởi tạo client Xinference: {e}")
             raise
 
     def response(self, session_id, dialogue, **kwargs):
         logger.bind(tag=TAG).debug(
-            f"Sending request to Xinference with model: {self.model_name}, dialogue length: {len(dialogue)}"
+            f"Gửi yêu cầu tới Xinference với model: {self.model_name}, độ dài hội thoại: {len(dialogue)}"
         )
         responses = self.client.chat.completions.create(
             model=self.model_name, messages=dialogue, stream=True
@@ -56,15 +56,15 @@ class LLMProvider(LLMProviderBase):
                     if is_active:
                         yield content
             except Exception as e:
-                logger.bind(tag=TAG).error(f"Error processing chunk: {e}")
+                logger.bind(tag=TAG).error(f"Lỗi khi xử lý chunk: {e}")
 
     def response_with_functions(self, session_id, dialogue, functions=None):
         logger.bind(tag=TAG).debug(
-            f"Sending function call request to Xinference with model: {self.model_name}, dialogue length: {len(dialogue)}"
+            f"Gửi yêu cầu function call tới Xinference với model: {self.model_name}, độ dài hội thoại: {len(dialogue)}"
         )
         if functions:
             logger.bind(tag=TAG).debug(
-                f"Function calls enabled with: {[f.get('function', {}).get('name') for f in functions]}"
+                f"Đã bật function call với: {[f.get('function', {}).get('name') for f in functions]}"
             )
 
         stream = self.client.chat.completions.create(

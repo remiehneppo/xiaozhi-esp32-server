@@ -6,7 +6,7 @@ from config.logger import setup_logging
 
 
 class SuppressInvalidHandshakeFilter(logging.Filter):
-    """过滤掉无效握手错误日志（如HTTPS访问WS端口）"""
+    """Lọc log lỗi bắt tay không hợp lệ (ví dụ truy cập HTTPS vào cổng WS)"""
 
     def filter(self, record):
         msg = record.getMessage()
@@ -20,7 +20,7 @@ class SuppressInvalidHandshakeFilter(logging.Filter):
 
 
 def _setup_websockets_logger():
-    """配置 websockets 相关的所有 logger，过滤无效握手错误"""
+    """Cấu hình toàn bộ logger liên quan đến websockets, lọc lỗi bắt tay không hợp lệ"""
     filter_instance = SuppressInvalidHandshakeFilter()
     for logger_name in ["websockets", "websockets.server", "websockets.client"]:
         logger = logging.getLogger(logger_name)
@@ -87,13 +87,13 @@ class WebSocketServer:
             # 从 WebSocket 请求中获取路径
             request_path = websocket.request.path
             if not request_path:
-                self.logger.bind(tag=TAG).error("无法获取请求路径")
+                self.logger.bind(tag=TAG).error("Không thể lấy đường dẫn yêu cầu")
                 await websocket.close()
                 return
             parsed_url = urlparse(request_path)
             query_params = parse_qs(parsed_url.query)
             if "device-id" not in query_params:
-                await websocket.send("端口正常，如需测试连接，请启动digital-human测试")
+                await websocket.send("Cổng hoạt động bình thường, nếu muốn kiểm tra kết nối hãy khởi động digital-human")
                 await websocket.close()
                 return
             else:
@@ -110,7 +110,7 @@ class WebSocketServer:
         try:
             await self._handle_auth(websocket)
         except AuthenticationError:
-            await websocket.send("认证失败")
+            await websocket.send("Xác thực thất bại")
             await websocket.close()
             return
         # 创建ConnectionHandler时传入当前server实例
@@ -126,7 +126,7 @@ class WebSocketServer:
         try:
             await handler.handle_connection(websocket)
         except Exception as e:
-            self.logger.bind(tag=TAG).error(f"处理连接时出错: {e}")
+            self.logger.bind(tag=TAG).error(f"Lỗi khi xử lý kết nối: {e}")
         finally:
             # 强制关闭连接（如果还没有关闭的话）
             try:
@@ -140,7 +140,7 @@ class WebSocketServer:
                     await websocket.close()
             except Exception as close_error:
                 self.logger.bind(tag=TAG).error(
-                    f"服务器端强制关闭连接时出错: {close_error}"
+                    f"Lỗi khi máy chủ buộc đóng kết nối: {close_error}"
                 )
 
     async def _http_response(self, websocket, request_headers):
@@ -149,8 +149,8 @@ class WebSocketServer:
             # 如果是 WebSocket 请求，返回 None 允许握手继续
             return None
         else:
-            # 如果是普通 HTTP 请求，返回 "server is running"
-            return websocket.respond(200, "Server is running\n")
+            # Nếu là yêu cầu HTTP bình thường, trả về "máy chủ đang chạy"
+            return websocket.respond(200, "Máy chủ đang chạy\n")
 
     async def update_config(self) -> bool:
         """更新服务器配置并重新初始化组件
@@ -163,14 +163,14 @@ class WebSocketServer:
                 # 重新获取配置（使用异步版本）
                 new_config = await get_config_from_api_async(self.config)
                 if new_config is None:
-                    self.logger.bind(tag=TAG).error("获取新配置失败")
+                    self.logger.bind(tag=TAG).error("Không lấy được cấu hình mới")
                     return False
-                self.logger.bind(tag=TAG).info(f"获取新配置成功")
+                self.logger.bind(tag=TAG).info("Lấy cấu hình mới thành công")
                 # 检查 VAD 和 ASR 类型是否需要更新
                 update_vad = check_vad_update(self.config, new_config)
                 update_asr = check_asr_update(self.config, new_config)
                 self.logger.bind(tag=TAG).info(
-                    f"检查VAD和ASR类型是否需要更新: {update_vad} {update_asr}"
+                    f"Kiểm tra VAD và ASR có cần cập nhật không: {update_vad} {update_asr}"
                 )
                 # 更新配置
                 self.config = new_config
@@ -197,10 +197,10 @@ class WebSocketServer:
                     self._intent = modules["intent"]
                 if "memory" in modules:
                     self._memory = modules["memory"]
-                self.logger.bind(tag=TAG).info(f"更新配置任务执行完毕")
+                self.logger.bind(tag=TAG).info("Tác vụ cập nhật cấu hình đã hoàn tất")
                 return True
         except Exception as e:
-            self.logger.bind(tag=TAG).error(f"更新服务器配置失败: {str(e)}")
+            self.logger.bind(tag=TAG).error(f"Cập nhật cấu hình máy chủ thất bại: {str(e)}")
             return False
 
     async def _handle_auth(self, websocket: websockets.ServerConnection):
@@ -218,10 +218,10 @@ class WebSocketServer:
                 if token.startswith("Bearer "):
                     token = token[7:]  # 移除'Bearer '前缀
                 else:
-                    raise AuthenticationError("Missing or invalid Authorization header")
+                    raise AuthenticationError("Thiếu hoặc không hợp lệ header Authorization")
                 # 进行认证
                 auth_success = self.auth.verify_token(
                     token, client_id=client_id, username=device_id
                 )
                 if not auth_success:
-                    raise AuthenticationError("Invalid token")
+                    raise AuthenticationError("Token không hợp lệ")

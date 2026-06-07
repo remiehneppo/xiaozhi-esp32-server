@@ -119,18 +119,18 @@ class OTAHandler(BaseHandler):
             signature = hmac_obj.digest()
             return base64.b64encode(signature).decode("utf-8")
         except Exception as e:
-            self.logger.bind(tag=TAG).error(f"生成MQTT密码签名失败: {e}")
+            self.logger.bind(tag=TAG).error(f"Tạo chữ ký mật khẩu MQTT thất bại: {e}")
             return ""
 
     def _get_websocket_url(self, local_ip: str, port: int) -> str:
-        """获取websocket地址
+        """Lấy địa chỉ WebSocket
 
         Args:
-            local_ip: 本地IP地址
-            port: 端口号
+            local_ip: Địa chỉ IP cục bộ
+            port: Số cổng
 
         Returns:
-            str: websocket地址
+            str: Địa chỉ WebSocket
         """
         server_config = self.config["server"]
         websocket_config = server_config.get("websocket", "")
@@ -141,31 +141,31 @@ class OTAHandler(BaseHandler):
             return f"ws://{local_ip}:{port}/xiaozhi/v1/"
 
     async def handle_post(self, request):
-        """处理 OTA POST 请求
+        """Xử lý yêu cầu OTA POST
 
-        This handler will:
-        - read device id/client id (as before)
-        - attempt to determine device model and current firmware version (prefer headers, fallback to body)
-        - check data/bin for newer firmware for that model
-        - if found a newer firmware, set firmware.url to the download endpoint
+        Trình xử lý này sẽ:
+        - đọc device id/client id như trước
+        - cố xác định model thiết bị và firmware hiện tại (ưu tiên header, fallback sang body)
+        - kiểm tra `data/bin` xem có firmware mới cho model đó không
+        - nếu có firmware mới thì đặt `firmware.url` sang endpoint tải xuống
         """
         try:
             data = await request.text()
-            self.logger.bind(tag=TAG).debug(f"OTA请求方法: {request.method}")
-            self.logger.bind(tag=TAG).debug(f"OTA请求头: {request.headers}")
-            self.logger.bind(tag=TAG).debug(f"OTA请求数据: {data}")
+            self.logger.bind(tag=TAG).debug(f"Phương thức yêu cầu OTA: {request.method}")
+            self.logger.bind(tag=TAG).debug(f"Header yêu cầu OTA: {request.headers}")
+            self.logger.bind(tag=TAG).debug(f"Dữ liệu yêu cầu OTA: {data}")
 
             device_id = request.headers.get("device-id", "")
             if device_id:
-                self.logger.bind(tag=TAG).info(f"OTA请求设备ID: {device_id}")
+                self.logger.bind(tag=TAG).info(f"Device ID yêu cầu OTA: {device_id}")
             else:
-                raise Exception("OTA请求设备ID为空")
+                raise Exception("Device ID của yêu cầu OTA trống")
 
             client_id = request.headers.get("client-id", "")
             if client_id:
-                self.logger.bind(tag=TAG).info(f"OTA请求ClientID: {client_id}")
+                self.logger.bind(tag=TAG).info(f"Client ID yêu cầu OTA: {client_id}")
             else:
-                raise Exception("OTA请求ClientID为空")
+                raise Exception("Client ID của yêu cầu OTA trống")
 
             data_json = {}
             try:
@@ -174,21 +174,21 @@ class OTAHandler(BaseHandler):
                 data_json = {}
 
             server_config = self.config["server"]
-            # Distinguish ports:
-            # - websocket_port is used to construct websocket URL (server["port"])
-            # - http_port is used to construct OTA download URLs (server["http_port"])
+            # Phân biệt cổng:
+            # - websocket_port dùng để dựng URL WebSocket (server["port"])
+            # - http_port dùng để dựng URL tải firmware OTA (server["http_port"])
             websocket_port = int(server_config.get("port", 8000))
             http_port = int(server_config.get("http_port", 8003))
             local_ip = get_local_ip()
 
-            # Determine device model (prefer headers)
+            # Xác định model thiết bị (ưu tiên header)
             device_model = ""
-            # header candidates
+            # Các header có thể chứa model
             for h in ("device-model", "device_model", "model"):
                 if h in request.headers:
                     device_model = request.headers.get(h, "").strip()
                     break
-            # body fallback
+            # Fallback sang body
             if not device_model:
                 try:
                     if "board" in data_json and isinstance(data_json["board"], dict):
@@ -200,7 +200,7 @@ class OTAHandler(BaseHandler):
             if not device_model:
                 device_model = "default"
 
-            # Determine device current version (prefer headers)
+            # Xác định phiên bản hiện tại của thiết bị (ưu tiên header)
             device_version = ""
             for h in (
                 "device-version",
@@ -234,12 +234,12 @@ class OTAHandler(BaseHandler):
             # existing mqtt/websocket logic (unchanged)
             mqtt_gateway_endpoint = server_config.get("mqtt_gateway")
 
-            if mqtt_gateway_endpoint:  # 如果配置了非空字符串
-                # 尝试从请求数据中获取设备型号（已解析 above）
+            if mqtt_gateway_endpoint:  # Nếu cấu hình một chuỗi không rỗng
+                # Cố lấy model thiết bị từ dữ liệu yêu cầu (đã phân tích ở trên)
                 try:
                     group_id = f"GID_{device_model}".replace(":", "_").replace(" ", "_")
                 except Exception as e:
-                    self.logger.bind(tag=TAG).error(f"获取设备型号失败: {e}")
+                    self.logger.bind(tag=TAG).error(f"Lấy model thiết bị thất bại: {e}")
                     group_id = "GID_default"
 
                 mac_address_safe = device_id.replace(":", "_")
@@ -253,7 +253,7 @@ class OTAHandler(BaseHandler):
                         "utf-8"
                     )
                 except Exception as e:
-                    self.logger.bind(tag=TAG).error(f"生成用户名失败: {e}")
+                    self.logger.bind(tag=TAG).error(f"Tạo username thất bại: {e}")
                     username = ""
 
                 # 生成密码
@@ -264,9 +264,9 @@ class OTAHandler(BaseHandler):
                         mqtt_client_id + "|" + username, signature_key
                     )
                     if not password:
-                        password = ""  # 签名失败则留空，由设备决定是否允许无密码
+                        password = ""  # Nếu ký thất bại thì để trống, do thiết bị quyết định có cho phép không mật khẩu hay không
                 else:
-                    self.logger.bind(tag=TAG).warning("缺少MQTT签名密钥，密码留空")
+                    self.logger.bind(tag=TAG).warning("Thiếu khóa ký MQTT, mật khẩu sẽ để trống")
 
                 # 构建MQTT配置（直接使用 mqtt_gateway 字符串）
                 return_json["mqtt"] = {
@@ -277,10 +277,10 @@ class OTAHandler(BaseHandler):
                     "publish_topic": "device-server",
                     "subscribe_topic": f"devices/p2p/{mac_address_safe}",
                 }
-                self.logger.bind(tag=TAG).info(f"为设备 {device_id} 下发MQTT网关配置")
+                self.logger.bind(tag=TAG).info(f"Cấp cấu hình MQTT gateway cho thiết bị {device_id}")
 
-            else:  # 未配置 mqtt_gateway，下发 WebSocket
-                # 如果开启了认证，则进行认证校验
+            else:  # Chưa cấu hình mqtt_gateway, cấp WebSocket
+                # Nếu bật xác thực thì kiểm tra token
                 token = ""
                 if self.auth_enable:
                     if self.allowed_devices:
@@ -294,7 +294,7 @@ class OTAHandler(BaseHandler):
                     "token": token,
                 }
                 self.logger.bind(tag=TAG).info(
-                    f"未配置MQTT网关，为设备 {device_id} 下发WebSocket配置"
+                    f"Chưa cấu hình MQTT gateway, cấp cấu hình WebSocket cho thiết bị {device_id}"
                 )
 
             # Now check firmware files for updates
@@ -304,7 +304,7 @@ class OTAHandler(BaseHandler):
                 candidates = files_by_model.get(device_model, [])
 
                 self.logger.bind(tag=TAG).info(
-                    f"查找型号 {device_model} 的固件，找到 {len(candidates)} 个候选"
+                    f"Tìm firmware cho model {device_model}, tìm thấy {len(candidates)} bản ứng viên"
                 )
 
                 chosen_url = ""
@@ -327,23 +327,23 @@ class OTAHandler(BaseHandler):
                     return_json["firmware"]["version"] = chosen_version
                     return_json["firmware"]["url"] = chosen_url
                     self.logger.bind(tag=TAG).info(
-                        f"为设备 {device_id} 下发固件 {chosen_version} [如果地址前缀有误，请检查配置文件中的server.vision_explain]-> {chosen_url} "
+                        f"Cấp firmware {chosen_version} cho thiết bị {device_id} [nếu tiền tố địa chỉ sai, hãy kiểm tra server.vision_explain trong file cấu hình] -> {chosen_url} "
                     )
                 else:
                     self.logger.bind(tag=TAG).info(
-                        f"设备 {device_id} 固件已是最新: {device_version}"
+                        f"Firmware của thiết bị {device_id} đã là mới nhất: {device_version}"
                     )
 
             except Exception as e:
-                self.logger.bind(tag=TAG).error(f"检查固件版本时出错: {e}")
+                self.logger.bind(tag=TAG).error(f"Lỗi khi kiểm tra phiên bản firmware: {e}")
 
             response = web.Response(
                 text=json.dumps(return_json, separators=(",", ":")),
                 content_type="application/json",
             )
         except Exception as e:
-            self.logger.bind(tag=TAG).error(f"OTA POST处理异常: {e}")
-            return_json = {"success": False, "message": "request error."}
+            self.logger.bind(tag=TAG).error(f"Xử lý OTA POST gặp lỗi: {e}")
+            return_json = {"success": False, "message": "lỗi yêu cầu."}
             response = web.Response(
                 text=json.dumps(return_json, separators=(",", ":")),
                 content_type="application/json",
@@ -353,39 +353,39 @@ class OTAHandler(BaseHandler):
             return response
 
     async def handle_get(self, request):
-        """处理 OTA GET 请求"""
+        """Xử lý yêu cầu OTA GET"""
         try:
             server_config = self.config["server"]
             local_ip = get_local_ip()
             # use websocket port for websocket URL
             websocket_port = int(server_config.get("port", 8000))
             websocket_url = self._get_websocket_url(local_ip, websocket_port)
-            message = f"OTA接口运行正常，向设备发送的websocket地址是：{websocket_url}"
+            message = f"Giao diện OTA đang hoạt động bình thường, địa chỉ WebSocket gửi cho thiết bị là: {websocket_url}"
             response = web.Response(text=message, content_type="text/plain")
         except Exception as e:
-            self.logger.bind(tag=TAG).error(f"OTA GET请求异常: {e}")
-            response = web.Response(text="OTA接口异常", content_type="text/plain")
+            self.logger.bind(tag=TAG).error(f"Yêu cầu GET OTA gặp lỗi: {e}")
+            response = web.Response(text="Giao diện OTA gặp lỗi", content_type="text/plain")
         finally:
             self._add_cors_headers(response)
             return response
 
     async def handle_download(self, request):
         """
-        下载固件接口
+        Giao diện tải firmware
         URL: /xiaozhi/ota/download/{filename}
-        - 只允许下载 data/bin 目录下的 .bin 文件
-        - filename 必须是 basename 且匹配安全的模式
+        - Chỉ cho phép tải file .bin trong thư mục `data/bin`
+        - filename phải là basename và khớp mẫu an toàn
         """
         try:
             fname = request.match_info.get("filename", "")
             if not fname:
-                raise web.HTTPBadRequest(text="filename required")
+                raise web.HTTPBadRequest(text="cần filename")
 
             # sanitize
             fname = _safe_basename(fname)
             # pattern: allow letters, numbers, dot, underscore, dash
             if not re.match(r"^[A-Za-z0-9\.\-_]+\.bin$", fname):
-                raise web.HTTPBadRequest(text="invalid filename")
+                raise web.HTTPBadRequest(text="filename không hợp lệ")
 
             file_path = os.path.join(self.bin_dir, fname)
             # ensure realpath is under bin_dir
@@ -395,18 +395,18 @@ class OTAHandler(BaseHandler):
                 not file_real.startswith(bin_dir_real + os.sep)
                 and file_real != bin_dir_real
             ):
-                raise web.HTTPForbidden(text="forbidden")
+                raise web.HTTPForbidden(text="bị từ chối")
 
             if not os.path.isfile(file_real):
-                raise web.HTTPNotFound(text="file not found")
+                raise web.HTTPNotFound(text="không tìm thấy file")
 
             # use FileResponse to stream file
             resp = web.FileResponse(path=file_real)
         except web.HTTPError as e:
             resp = e
         except Exception as e:
-            self.logger.bind(tag=TAG).error(f"固件下载异常: {e}")
-            resp = web.Response(text="download error", status=500)
+            self.logger.bind(tag=TAG).error(f"Lỗi tải firmware: {e}")
+            resp = web.Response(text="lỗi tải xuống", status=500)
         finally:
             try:
                 self._add_cors_headers(resp)

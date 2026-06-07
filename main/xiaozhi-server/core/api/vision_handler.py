@@ -24,16 +24,16 @@ class VisionHandler(BaseHandler):
         self.auth = AuthToken(config["server"]["auth_key"])
 
     def _create_error_response(self, message: str) -> dict:
-        """创建统一的错误响应格式"""
+        """Tạo định dạng phản hồi lỗi thống nhất"""
         return {"success": False, "message": message}
 
     def _verify_auth_token(self, request) -> Tuple[bool, Optional[str]]:
-        """验证认证token"""
-        # 测试模式：允许特定测试令牌或跳过验证
+        """Xác thực token"""
+        # Chế độ kiểm thử: cho phép token thử nghiệm hoặc bỏ qua kiểm tra
         auth_header = request.headers.get("Authorization", "")
         client_id = request.headers.get("Client-Id", "")
 
-        # 允许测试客户端跳过认证
+        # Cho phép client thử nghiệm bỏ qua xác thực
         if client_id == "web_test_client":
             device_id = request.headers.get("Device-Id", "test_device")
             return True, device_id
@@ -45,7 +45,7 @@ class VisionHandler(BaseHandler):
         return self.auth.verify_token(token)
 
     async def handle_post(self, request):
-        """处理 MCP Vision POST 请求"""
+        """Xử lý yêu cầu POST của MCP Vision"""
         response = None  # 初始化response变量
         try:
             # 验证token
@@ -53,7 +53,7 @@ class VisionHandler(BaseHandler):
             if not is_valid:
                 response = web.Response(
                     text=json.dumps(
-                        self._create_error_response("无效的认证token或token已过期")
+                        self._create_error_response("Token xác thực không hợp lệ hoặc đã hết hạn")
                     ),
                     content_type="application/json",
                     status=401,
@@ -64,43 +64,43 @@ class VisionHandler(BaseHandler):
             device_id = request.headers.get("Device-Id", "")
             client_id = request.headers.get("Client-Id", "")
             if device_id != token_device_id:
-                raise ValueError("设备ID与token不匹配")
-            # 解析multipart/form-data请求
+                raise ValueError("Device ID không khớp với token")
+            # Phân tích yêu cầu multipart/form-data
             reader = await request.multipart()
 
-            # 读取question字段
+            # Đọc trường question
             question_field = await reader.next()
             if question_field is None:
-                raise ValueError("缺少问题字段")
+                raise ValueError("Thiếu trường câu hỏi")
             question = await question_field.text()
-            self.logger.bind(tag=TAG).debug(f"Question: {question}")
+            self.logger.bind(tag=TAG).debug(f"Câu hỏi: {question}")
 
-            # 读取图片文件
+            # Đọc file ảnh
             image_field = await reader.next()
             if image_field is None:
-                raise ValueError("缺少图片文件")
+                raise ValueError("Thiếu file ảnh")
 
-            # 读取图片数据
+            # Đọc dữ liệu ảnh
             image_data = await image_field.read()
             if not image_data:
-                raise ValueError("图片数据为空")
+                raise ValueError("Dữ liệu ảnh trống")
 
-            # 检查文件大小
+            # Kiểm tra kích thước file
             if len(image_data) > MAX_FILE_SIZE:
                 raise ValueError(
-                    f"图片大小超过限制，最大允许{MAX_FILE_SIZE/1024/1024}MB"
+                    f"Kích thước ảnh vượt giới hạn, tối đa cho phép {MAX_FILE_SIZE/1024/1024}MB"
                 )
 
-            # 检查文件格式
+            # Kiểm tra định dạng file
             if not is_valid_image_file(image_data):
                 raise ValueError(
-                    "不支持的文件格式，请上传有效的图片文件（支持JPEG、PNG、GIF、BMP、TIFF、WEBP格式）"
+                    "Định dạng file không được hỗ trợ, hãy tải lên ảnh hợp lệ (hỗ trợ JPEG, PNG, GIF, BMP, TIFF, WEBP)"
                 )
 
-            # 将图片转换为base64编码
+            # Chuyển ảnh sang base64
             image_base64 = base64.b64encode(image_data).decode("utf-8")
 
-            # 如果开启了智控台，则从智控台获取模型配置
+            # Nếu bật chế độ đọc cấu hình từ API thì lấy cấu hình mô hình từ đó
             current_config = copy.deepcopy(self.config)
             read_config_from_api = current_config.get("read_config_from_api", False)
             if read_config_from_api:
@@ -112,7 +112,7 @@ class VisionHandler(BaseHandler):
 
             select_vllm_module = current_config["selected_module"].get("VLLM")
             if not select_vllm_module:
-                raise ValueError("您还未设置默认的视觉分析模块")
+                raise ValueError("Bạn chưa cấu hình module phân tích ảnh mặc định")
 
             vllm_type = (
                 select_vllm_module
@@ -121,7 +121,7 @@ class VisionHandler(BaseHandler):
             )
 
             if not vllm_type:
-                raise ValueError(f"无法找到VLLM模块对应的供应器{vllm_type}")
+                raise ValueError(f"Không tìm thấy provider tương ứng của module VLLM {vllm_type}")
 
             vllm = create_instance(
                 vllm_type, current_config["VLLM"][select_vllm_module]
@@ -140,15 +140,15 @@ class VisionHandler(BaseHandler):
                 content_type="application/json",
             )
         except ValueError as e:
-            self.logger.bind(tag=TAG).error(f"MCP Vision POST请求异常: {e}")
+            self.logger.bind(tag=TAG).error(f"Yêu cầu POST MCP Vision gặp lỗi: {e}")
             return_json = self._create_error_response(str(e))
             response = web.Response(
                 text=json.dumps(return_json, separators=(",", ":")),
                 content_type="application/json",
             )
         except Exception as e:
-            self.logger.bind(tag=TAG).error(f"MCP Vision POST请求异常: {e}")
-            return_json = self._create_error_response("处理请求时发生错误")
+            self.logger.bind(tag=TAG).error(f"Yêu cầu POST MCP Vision gặp lỗi: {e}")
+            return_json = self._create_error_response("Đã xảy ra lỗi khi xử lý yêu cầu")
             response = web.Response(
                 text=json.dumps(return_json, separators=(",", ":")),
                 content_type="application/json",
@@ -159,20 +159,20 @@ class VisionHandler(BaseHandler):
             return response
 
     async def handle_get(self, request):
-        """处理 MCP Vision GET 请求"""
+        """Xử lý yêu cầu GET của MCP Vision"""
         try:
             vision_explain = get_vision_url(self.config)
             if vision_explain and len(vision_explain) > 0 and "null" != vision_explain:
                 message = (
-                    f"MCP Vision 接口运行正常，视觉解释接口地址是：{vision_explain}"
+                    f"Giao diện MCP Vision đang hoạt động bình thường, địa chỉ giải thích ảnh là: {vision_explain}"
                 )
             else:
-                message = "MCP Vision 接口运行不正常，请打开data目录下的.config.yaml文件，找到【server.vision_explain】，设置好地址"
+                message = "Giao diện MCP Vision chưa hoạt động đúng, hãy mở file `.config.yaml` trong thư mục `data` và đặt `server.vision_explain` cho đúng"
 
             response = web.Response(text=message, content_type="text/plain")
         except Exception as e:
-            self.logger.bind(tag=TAG).error(f"MCP Vision GET请求异常: {e}")
-            return_json = self._create_error_response("服务器内部错误")
+            self.logger.bind(tag=TAG).error(f"Yêu cầu GET MCP Vision gặp lỗi: {e}")
+            return_json = self._create_error_response("Lỗi nội bộ máy chủ")
             response = web.Response(
                 text=json.dumps(return_json, separators=(",", ":")),
                 content_type="application/json",

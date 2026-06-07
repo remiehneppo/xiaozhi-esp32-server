@@ -22,7 +22,7 @@ INITIAL_PROMPT = os.getenv(
 )
 API_KEY = os.getenv("ASR_API_KEY", "")
 
-app = FastAPI(title="Whisper ASR Server", version="1.0.0")
+app = FastAPI(title="Máy chủ Whisper ASR", version="1.0.0")
 model: Optional[WhisperModel] = None
 
 
@@ -35,7 +35,7 @@ def require_auth(authorization: Optional[str]) -> None:
         return
     expected = f"Bearer {API_KEY}"
     if authorization != expected:
-        raise HTTPException(status_code=401, detail="Invalid bearer token")
+        raise HTTPException(status_code=401, detail="Token bearer không hợp lệ")
 
 
 def get_model() -> WhisperModel:
@@ -110,8 +110,8 @@ async def transcriptions(
         text = "".join(segment.text for segment in segments).strip()
         elapsed = time.time() - start
         print(
-            f"transcribed file={file.filename} request_model={model_name or MODEL_NAME} "
-            f"chars={len(text)} elapsed={elapsed:.3f}s",
+            f"Đã chuyển giọng nói thành văn bản file={file.filename} model_yêu_cầu={model_name or MODEL_NAME} "
+            f"số_ký_tự={len(text)} thời_gian={elapsed:.3f}s",
             flush=True,
         )
         return TranscriptionResponse(text=text)
@@ -120,4 +120,3 @@ async def transcriptions(
             os.unlink(tmp_path)
         except OSError:
             pass
-

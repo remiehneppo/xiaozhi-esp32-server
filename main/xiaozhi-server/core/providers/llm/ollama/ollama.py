@@ -11,7 +11,7 @@ class LLMProvider(LLMProviderBase):
     def __init__(self, config):
         self.model_name = config.get("model_name")
         self.base_url = config.get("base_url", "http://localhost:11434")
-        # Initialize OpenAI client with Ollama base URL
+        # Khởi tạo OpenAI client với base URL Ollama
         # 如果没有v1，增加v1
         if not self.base_url.endswith("/v1"):
             self.base_url = f"{self.base_url}/v1"
@@ -21,26 +21,26 @@ class LLMProvider(LLMProviderBase):
             api_key="ollama",  # Ollama doesn't need an API key but OpenAI client requires one
         )
 
-        # 检查是否是qwen3模型
+        # Kiểm tra xem có phải model qwen3 không
         self.is_qwen3 = self.model_name and self.model_name.lower().startswith("qwen3")
 
     def response(self, session_id, dialogue, **kwargs):
-        # 如果是qwen3模型，在用户最后一条消息中添加/no_think指令
+        # Nếu là model qwen3, thêm lệnh /no_think vào tin nhắn người dùng cuối cùng
         if self.is_qwen3:
-            # 复制对话列表，避免修改原始对话
+            # Sao chép danh sách hội thoại để tránh sửa dữ liệu gốc
             dialogue_copy = dialogue.copy()
 
-            # 找到最后一条用户消息
+            # Tìm tin nhắn người dùng cuối cùng
             for i in range(len(dialogue_copy) - 1, -1, -1):
                 if dialogue_copy[i]["role"] == "user":
-                    # 在用户消息前添加/no_think指令
+                    # Thêm lệnh /no_think trước nội dung người dùng
                     dialogue_copy[i]["content"] = (
                         "/no_think " + dialogue_copy[i]["content"]
                     )
-                    logger.bind(tag=TAG).debug(f"为qwen3模型添加/no_think指令")
+                    logger.bind(tag=TAG).debug("Đã thêm chỉ dẫn /no_think cho model qwen3")
                     break
 
-            # 使用修改后的对话
+            # Dùng hội thoại đã chỉnh sửa
             dialogue = dialogue_copy
 
         responses = self.client.chat.completions.create(
@@ -61,53 +61,53 @@ class LLMProvider(LLMProviderBase):
                     content = delta.content if hasattr(delta, "content") else ""
 
                     if content:
-                        # 将内容添加到缓冲区
+                        # Thêm nội dung vào bộ đệm
                         buffer += content
 
-                        # 处理缓冲区中的标签
+                        # Xử lý thẻ trong bộ đệm
                         while "<think>" in buffer and "</think>" in buffer:
-                            # 找到完整的<think></think>标签并移除
+                            # Tìm thẻ <think></think> đầy đủ và loại bỏ
                             pre = buffer.split("<think>", 1)[0]
                             post = buffer.split("</think>", 1)[1]
                             buffer = pre + post
 
-                        # 处理只有开始标签的情况
+                        # Xử lý trường hợp chỉ có thẻ mở
                         if "<think>" in buffer:
                             is_active = False
                             buffer = buffer.split("<think>", 1)[0]
 
-                        # 处理只有结束标签的情况
+                        # Xử lý trường hợp chỉ có thẻ đóng
                         if "</think>" in buffer:
                             is_active = True
                             buffer = buffer.split("</think>", 1)[1]
 
-                        # 如果当前处于活动状态且缓冲区有内容，则输出
+                        # Nếu đang ở trạng thái hoạt động và bộ đệm có nội dung thì xuất ra
                         if is_active and buffer:
                             yield buffer
-                            buffer = ""  # 清空缓冲区
+                            buffer = ""  # Xóa bộ đệm
 
                 except Exception as e:
-                    logger.bind(tag=TAG).error(f"Error processing chunk: {e}")
+                    logger.bind(tag=TAG).error(f"Lỗi khi xử lý chunk: {e}")
         finally:
             responses.close()
 
     def response_with_functions(self, session_id, dialogue, functions=None):
-        # 如果是qwen3模型，在用户最后一条消息中添加/no_think指令
+        # Nếu là model qwen3, thêm lệnh /no_think vào tin nhắn người dùng cuối cùng
         if self.is_qwen3:
-            # 复制对话列表，避免修改原始对话
+            # Sao chép danh sách hội thoại để tránh sửa dữ liệu gốc
             dialogue_copy = dialogue.copy()
 
-            # 找到最后一条用户消息
+            # Tìm tin nhắn người dùng cuối cùng
             for i in range(len(dialogue_copy) - 1, -1, -1):
                 if dialogue_copy[i]["role"] == "user":
-                    # 在用户消息前添加/no_think指令
+                    # Thêm lệnh /no_think trước nội dung người dùng
                     dialogue_copy[i]["content"] = (
                         "/no_think " + dialogue_copy[i]["content"]
                     )
-                    logger.bind(tag=TAG).debug(f"为qwen3模型添加/no_think指令")
+                    logger.bind(tag=TAG).debug("Đã thêm chỉ dẫn /no_think cho model qwen3")
                     break
 
-            # 使用修改后的对话
+            # Dùng hội thoại đã chỉnh sửa
             dialogue = dialogue_copy
 
         stream = self.client.chat.completions.create(
@@ -165,7 +165,7 @@ class LLMProvider(LLMProviderBase):
                             yield buffer, None
                             buffer = ""  # 清空缓冲区
                 except Exception as e:
-                    logger.bind(tag=TAG).error(f"Error processing function chunk: {e}")
+                    logger.bind(tag=TAG).error(f"Lỗi khi xử lý function chunk: {e}")
                     continue
         finally:
             stream.close()

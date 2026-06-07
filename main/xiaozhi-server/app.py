@@ -17,9 +17,9 @@ logger = setup_logging()
 
 async def wait_for_exit() -> None:
     """
-    阻塞直到收到 Ctrl‑C / SIGTERM。
-    - Unix: 使用 add_signal_handler
-    - Windows: 依赖 KeyboardInterrupt
+    Chặn đến khi nhận Ctrl-C / SIGTERM.
+    - Unix: dùng `add_signal_handler`
+    - Windows: dựa vào `KeyboardInterrupt`
     """
     loop = asyncio.get_running_loop()
     stop_event = asyncio.Event()
@@ -47,31 +47,31 @@ async def main():
     check_ffmpeg_installed()
     config = load_config()
 
-    # auth_key优先级：配置文件server.auth_key > manager-api.secret > 自动生成
-    # auth_key用于jwt认证，比如视觉分析接口的jwt认证、ota接口的token生成与websocket认证
-    # 获取配置文件中的auth_key
+    # Độ ưu tiên của auth_key: server.auth_key trong config > manager-api.secret > tự sinh
+    # auth_key dùng cho xác thực JWT, ví dụ JWT cho API phân tích ảnh, token OTA và xác thực WebSocket
+    # Lấy auth_key từ file config
     auth_key = config["server"].get("auth_key", "")
     
-    # 验证auth_key，无效则尝试使用manager-api.secret
+    # Kiểm tra auth_key, nếu không hợp lệ thì thử dùng manager-api.secret
     if not auth_key or len(auth_key) == 0 or "你" in auth_key:
         auth_key = config.get("manager-api", {}).get("secret", "")
-        # 验证secret，无效则生成随机密钥
+        # Kiểm tra secret, nếu không hợp lệ thì sinh khóa ngẫu nhiên
         if not auth_key or len(auth_key) == 0 or "你" in auth_key:
             auth_key = str(uuid.uuid4().hex)
     
     config["server"]["auth_key"] = auth_key
 
-    # 添加 stdin 监控任务
+    # Thêm tác vụ theo dõi stdin
     stdin_task = asyncio.create_task(monitor_stdin())
 
-    # 启动全局GC管理器（5分钟清理一次）
+    # Khởi động trình quản lý GC toàn cục (dọn dẹp mỗi 5 phút)
     gc_manager = get_gc_manager(interval_seconds=300)
     await gc_manager.start()
 
-    # 启动 WebSocket 服务器
+    # Khởi động server WebSocket
     ws_server = WebSocketServer(config)
     ws_task = asyncio.create_task(ws_server.start())
-    # 启动 Simple http 服务器
+    # Khởi động server HTTP đơn giản
     ota_server = SimpleHttpServer(config)
     ota_task = asyncio.create_task(ota_server.start())
 
@@ -79,26 +79,26 @@ async def main():
     port = int(config["server"].get("http_port", 8003))
     if not read_config_from_api:
         logger.bind(tag=TAG).info(
-            "OTA接口是\t\thttp://{}:{}/xiaozhi/ota/",
+            "Địa chỉ OTA là\t\thttp://{}:{}/xiaozhi/ota/",
             get_local_ip(),
             port,
         )
     logger.bind(tag=TAG).info(
-        "视觉分析接口是\thttp://{}:{}/mcp/vision/explain",
+        "Địa chỉ phân tích ảnh là\thttp://{}:{}/mcp/vision/explain",
         get_local_ip(),
         port,
     )
     mcp_endpoint = config.get("mcp_endpoint", None)
     if mcp_endpoint is not None and "你" not in mcp_endpoint:
-        # 校验MCP接入点格式
+        # Kiểm tra định dạng điểm truy cập MCP
         if validate_mcp_endpoint(mcp_endpoint):
-            logger.bind(tag=TAG).info("mcp接入点是\t{}", mcp_endpoint)
-            # 将mcp计入点地址转成调用点
+            logger.bind(tag=TAG).info("Điểm truy cập MCP là\t{}", mcp_endpoint)
+            # Chuyển địa chỉ MCP từ điểm truy cập sang điểm gọi
             mcp_endpoint = mcp_endpoint.replace("/mcp/", "/call/")
             config["mcp_endpoint"] = mcp_endpoint
         else:
-            logger.bind(tag=TAG).error("mcp接入点不符合规范")
-            config["mcp_endpoint"] = "你的接入点 websocket地址"
+            logger.bind(tag=TAG).error("Điểm truy cập MCP không đúng định dạng")
+            config["mcp_endpoint"] = "Địa chỉ WebSocket của điểm truy cập MCP"
 
     # 获取WebSocket配置，使用安全的默认值
     websocket_port = 8000
@@ -107,16 +107,16 @@ async def main():
         websocket_port = int(server_config.get("port", 8000))
 
     logger.bind(tag=TAG).info(
-        "Websocket地址是\tws://{}:{}/xiaozhi/v1/",
+        "Địa chỉ WebSocket là\tws://{}:{}/xiaozhi/v1/",
         get_local_ip(),
         websocket_port,
     )
 
     logger.bind(tag=TAG).info(
-        "=======上面的地址是websocket协议地址，请勿用浏览器访问======="
+        "=======Địa chỉ trên là địa chỉ giao thức WebSocket, không mở bằng trình duyệt======="
     )
     logger.bind(tag=TAG).info(
-        "如想测试websocket请启动digital-human模块，打开浏览器交互测试"
+        "Nếu muốn kiểm tra WebSocket, hãy khởi động module digital-human và mở trình duyệt để thử tương tác"
     )
     logger.bind(tag=TAG).info(
         "=============================================================\n"
@@ -125,7 +125,7 @@ async def main():
     try:
         await wait_for_exit()  # 阻塞直到收到退出信号
     except asyncio.CancelledError:
-        print("任务被取消，清理资源中...")
+        print("Tác vụ đã bị hủy, đang dọn dẹp tài nguyên...")
     finally:
         # 停止全局GC管理器
         await gc_manager.stop()
@@ -142,11 +142,11 @@ async def main():
             timeout=3.0,
             return_when=asyncio.ALL_COMPLETED,
         )
-        print("服务器已关闭，程序退出。")
+        print("Máy chủ đã tắt, chương trình thoát.")
 
 
 if __name__ == "__main__":
     try:
         asyncio.run(main())
     except KeyboardInterrupt:
-        print("手动中断，程序终止。")
+        print("Đã ngắt thủ công, chương trình dừng.")
