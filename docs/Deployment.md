@@ -2,7 +2,7 @@
 ![Vui lòng tham khảo sơ đồ kiến trúc đơn giản hóa](../docs/images/deploy1.png)
 # Cách 1: Docker chỉ chạy Server
 
-Bắt đầu từ phiên bản `0.8.2`, images docker do dự án này phát hành chỉ hỗ trợ `x86架构`. Nếu bạn cần triển khai nó trên CPU của `arm64架构`, bạn có thể làm theo [hướng dẫn này](docker-build.md) để biên dịch `arm64的镜像` cục bộ.
+Bắt đầu từ phiên bản `0.8.2`, image Docker do dự án này phát hành chỉ hỗ trợ kiến trúc `x86`. Nếu bạn cần triển khai trên CPU `arm64`, hãy làm theo [hướng dẫn này](docker-build.md) để tự biên dịch image `arm64` cục bộ.
 
 ## 1. Cài đặt docker
 
@@ -30,7 +30,7 @@ xiaozhi-server
 #### 1.1.2 Tải file mô hình nhận dạng giọng nói
 
 Bạn cần tải xuống tệp mô hình nhận dạng giọng nói vì tính năng nhận dạng giọng nói mặc định của dự án này sử dụng giải pháp nhận dạng giọng nói ngoại tuyến cục bộ. Bạn có thể tải nó theo cách này
-[Chuyển để tải xuống tệp mô hình nhận dạng giọng nói](#模型文件)
+[Đi tới phần tải xuống tệp mô hình nhận dạng giọng nói](#tai-file-mo-hinh-nhan-dang-giong-noi)
 
 Sau khi tải xuống, hãy quay lại hướng dẫn này.
 
@@ -71,13 +71,13 @@ Nếu cấu trúc thư mục tệp của bạn cũng như trên, hãy tiếp t�
 ## 2. Cấu hình file dự án
 
 Tiếp theo, chương trình không thể chạy trực tiếp. Bạn cần cấu hình model bạn đang sử dụng. Bạn có thể xem hướng dẫn này:
-[Chuyển tới tệp dự án cấu hình](#配置项目)
+[Đi tới tệp cấu hình dự án](#cau-hinh-file-du-an)
 
 Sau khi định cấu hình tệp dự án, hãy quay lại hướng dẫn này và tiếp tục.
 
 ## 3. Thực thi lệnh docker
 
-Mở công cụ dòng lệnh, sử dụng công cụ `终端` hoặc `命令行` để nhập `xiaozhi-server` của bạn và thực hiện lệnh sau
+Mở công cụ dòng lệnh, sử dụng `Terminal` hoặc `Command Line` để vào thư mục `xiaozhi-server` và chạy lệnh sau
 
 ```
 docker compose up -d
@@ -89,7 +89,7 @@ Sau khi thực hiện, thực hiện lại lệnh sau để xem thông tin nhậ
 docker logs -f xiaozhi-esp32-server
 ```
 
-Lúc này, bạn nên chú ý đến thông tin nhật ký và có thể đánh giá xem nó có thành công hay không theo hướng dẫn này. [Chuyển đến xác nhận trạng thái đang chạy](#运行状态确认)
+Lúc này, hãy chú ý đến log và đánh giá xem nó đã chạy thành công hay chưa theo hướng dẫn này. [Đi tới phần xác nhận trạng thái đang chạy](#xac-nhan-trang-thai-dang-chay)
 
 ## 5. Thao tác nâng cấp phiên bản
 
@@ -118,7 +118,7 @@ docker rmi ghcr.nju.edu.cn/xinnan-tech/xiaozhi-esp32-server:web_latest
 Dự án này sử dụng `conda` để quản lý các môi trường phụ thuộc. Nếu cài đặt `conda` không thuận tiện, bạn cần cài đặt `libopus` và `ffmpeg` theo hệ điều hành thực tế.
 Nếu bạn chắc chắn sử dụng `conda`, sau khi cài đặt, hãy bắt đầu thực hiện lệnh sau.
 
-Mẹo quan trọng! Người dùng Windows có thể quản lý môi trường bằng cách cài đặt `Anaconda`. Sau khi cài đặt `Anaconda`, hãy tìm kiếm các từ khóa liên quan đến `anaconda` trong `开始`.
+Mẹo quan trọng! Người dùng Windows có thể quản lý môi trường bằng cách cài đặt `Anaconda`. Sau khi cài đặt `Anaconda`, hãy tìm các từ khóa liên quan tới `anaconda` trong menu `Start`.
 Tìm `Anaconda Prpmpt` và chạy nó với tư cách quản trị viên. Như hình dưới đây.
 
 ![conda_prompt](./images/conda_env_1.png)
@@ -158,9 +158,9 @@ Nhấp vào nó để tải xuống gói nén mã nguồn của dự án này. S
 Bạn cần đổi tên nó thành `xiaozhi-esp32-server`. Trong tệp này, hãy chuyển đến thư mục `main` rồi chuyển đến `xiaozhi-server`. Hãy nhớ thư mục này `xiaozhi-server`.
 
 ```
-# 继续使用conda环境
+# Tiếp tục dùng môi trường conda
 conda activate xiaozhi-esp32-server
-# 进入到你的项目根目录，再进入main/xiaozhi-server
+# Vào thư mục gốc của dự án, rồi vào `main/xiaozhi-server`
 cd main/xiaozhi-server
 pip config set global.index-url https://mirrors.aliyun.com/pypi/simple/
 pip install -r requirements.txt
@@ -169,23 +169,23 @@ pip install -r requirements.txt
 ## 3. Tải file mô hình nhận dạng giọng nói
 
 Bạn cần tải xuống tệp mô hình nhận dạng giọng nói vì tính năng nhận dạng giọng nói mặc định của dự án này sử dụng giải pháp nhận dạng giọng nói ngoại tuyến cục bộ. Bạn có thể tải nó theo cách này
-[Chuyển để tải xuống tệp mô hình nhận dạng giọng nói](#模型文件)
+[Đi tới phần tải xuống tệp mô hình nhận dạng giọng nói](#tai-file-mo-hinh-nhan-dang-giong-noi)
 
 Sau khi tải xuống, hãy quay lại hướng dẫn này.
 
 ## 4. Cấu hình file dự án
 
 Tiếp theo, chương trình không thể chạy trực tiếp. Bạn cần cấu hình model bạn đang sử dụng. Bạn có thể xem hướng dẫn này:
-[Chuyển tới tệp dự án cấu hình](#配置项目)
+[Đi tới tệp cấu hình dự án](#cau-hinh-file-du-an)
 
 ## 5. Chạy dự án
 
 ```
-# 确保在xiaozhi-server目录下执行
+# Đảm bảo chạy trong thư mục `xiaozhi-server`
 conda activate xiaozhi-esp32-server
 python app.py
 ```
-Lúc này, bạn nên chú ý đến thông tin nhật ký và có thể đánh giá xem nó có thành công hay không theo hướng dẫn này. [Chuyển đến xác nhận trạng thái đang chạy](#运行状态确认)
+Lúc này, hãy chú ý đến log và đánh giá xem nó đã chạy thành công hay chưa theo hướng dẫn này. [Đi tới phần xác nhận trạng thái đang chạy](#xac-nhan-trang-thai-dang-chay)
 
 
 # Bản tóm tắt
@@ -238,10 +238,10 @@ thư mục. Chọn một trong hai con đường tải xuống bên dưới.
 Nếu bạn thấy nhật ký tương tự như sau thì đó là dấu hiệu cho thấy dịch vụ dự án đã được khởi động thành công.
 
 ```
-250427 13:04:20[0.3.11_SiFuChTTnofu][__main__]-INFO-OTA接口是           http://192.168.4.123:8003/xiaozhi/OTA/
-250427 13:04:20[0.3.11_SiFuChTTnofu][__main__]-INFO-WebSocket地址是     ws://192.168.4.123:8000/xiaozhi/v1/
-250427 13:04:20[0.3.11_SiFuChTTnofu][__main__]-INFO-=======上面的地址是WebSocket协议地址，请勿用浏览器访问=======
-250427 13:04:20[0.3.11_SiFuChTTnofu][__main__]-INFO-如想测试WebSocket请启动digital-human模块，打开浏览器交互测试
+250427 13:04:20[0.3.11_SiFuChTTnofu][__main__]-INFO-Địa chỉ OTA là           http://192.168.4.123:8003/xiaozhi/OTA/
+250427 13:04:20[0.3.11_SiFuChTTnofu][__main__]-INFO-Địa chỉ WebSocket là      ws://192.168.4.123:8000/xiaozhi/v1/
+250427 13:04:20[0.3.11_SiFuChTTnofu][__main__]-INFO-=======Địa chỉ bên trên là địa chỉ giao thức WebSocket, không dùng trình duyệt để truy cập=======
+250427 13:04:20[0.3.11_SiFuChTTnofu][__main__]-INFO-Nếu muốn kiểm tra WebSocket, hãy khởi động mô-đun digital-human và mở trình duyệt để kiểm tra tương tác
 250427 13:04:20[0.3.11_SiFuChTTnofu][__main__]-INFO-=======================================================
 ```
 
@@ -251,9 +251,9 @@ Nhưng nếu bạn sử dụng docker để triển khai, thông tin địa ch�
 Phương pháp đúng nhất là xác định địa chỉ giao diện của bạn dựa trên IP LAN của máy tính.
 Ví dụ: nếu IP LAN của máy tính của bạn là `192.168.1.25` thì địa chỉ giao diện của bạn là: `ws://192.168.1.25:8000/xiaozhi/v1/` và địa chỉ OTA tương ứng là: `http://192.168.1.25:8003/xiaozhi/OTA/`.
 
-Thông tin này rất hữu ích và sẽ được sử dụng sau này trong `编译esp32固件`.
+Thông tin này rất hữu ích và sẽ được dùng sau này trong phần `biên dịch firmware ESP32`.
 
-Tiếp theo, bạn có thể bắt đầu vận hành thiết bị ESP32 của mình. Bạn có thể `自行编译esp32固件` hoặc định cấu hình nó để sử dụng `虾哥编译好的1.6.1以上版本的固件`. Chọn một trong hai
+Tiếp theo, bạn có thể bắt đầu vận hành thiết bị ESP32 của mình. Bạn có thể tự biên dịch firmware ESP32 hoặc cấu hình để dùng bản firmware do dự án đã biên dịch sẵn. Chọn một trong hai cách.
 
 1. [Biên dịch phần mềm ESP32 của riêng bạn](firmware-build.md).
 

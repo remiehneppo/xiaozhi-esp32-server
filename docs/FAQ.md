@@ -3,7 +3,7 @@
 ### 1. Tại sao Xiaozhi nhận ra nhiều tiếng Hàn, tiếng Nhật và tiếng Anh khi tôi nói? 🇰🇷
 
 Gợi ý: Kiểm tra xem `models/SenseVoiceSmall` đã có `model.pt` chưa
-File, nếu chưa có thì tải về, check tại đây [Tải file mô hình nhận dạng giọng nói](Deployment.md#模型文件)
+Nếu chưa có file thì hãy tải về, xem tại đây [Tải file mô hình nhận dạng giọng nói](Deployment.md)
 
 ### 2. Tại sao lại xuất hiện thông báo "tệp lỗi tác vụ TTS không tồn tại"? 📁
 
@@ -34,7 +34,7 @@ Giải pháp: Hiện nay có 2 cách giải quyết. Chọn bất kỳ một:
 ### 5. Làm cách nào để cải thiện tốc độ phản hồi hội thoại của Xiaozhi? ⚡
 
 Cấu hình mặc định của dự án này là một giải pháp chi phí thấp. Người mới bắt đầu nên sử dụng mô hình miễn phí mặc định trước để giải quyết vấn đề "chạy nhanh" và sau đó tối ưu hóa "chạy nhanh".
-Nếu bạn cần cải thiện tốc độ phản hồi, bạn có thể thử thay thế từng thành phần. Bắt đầu từ phiên bản `0.5.2`, dự án hỗ trợ cấu hình phát trực tuyến. So với các phiên bản trước, tốc độ phản hồi tăng lên khoảng `2.5秒`, cải thiện đáng kể trải nghiệm người dùng.
+Nếu bạn cần cải thiện tốc độ phản hồi, bạn có thể thử thay thế từng thành phần. Bắt đầu từ phiên bản `0.5.2`, dự án hỗ trợ cấu hình phát trực tuyến. So với các phiên bản trước, tốc độ phản hồi tăng lên khoảng `2.5 giây`, cải thiện đáng kể trải nghiệm người dùng.
 
 | Tên mô-đun | Thiết lập cấp đầu vào miễn phí | Cấu hình phát trực tuyến |
 |:---:|:---:|:---:|
@@ -56,7 +56,7 @@ VAD:
   SileroVAD:
     threshold: 0.5
     model_dir: models/snakers4_silero-vad
-    min_silence_duration_ms: 700  # 如果说话停顿较长，可将此值调大
+    min_silence_duration_ms: 700  # Nếu người nói dừng lâu hơn, có thể tăng giá trị này
 ```
 
 ### 7. Hướng dẫn liên quan đến triển khai

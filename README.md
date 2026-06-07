@@ -12,12 +12,12 @@ Hỗ trợ giao thức MQTT+UDP, giao thức WebSocket, điểm truy cập MCP, 
 <p align="center">
 <a href="./docs/FAQ.md">Câu hỏi thường gặp</a>
 · <a href="https://github.com/xinnan-tech/xiaozhi-esp32-server/issues">Câu hỏi phản hồi</a>
-· <a href="./README.md#%E9%83%A8%E7%BD%B2%E6%96%87%E6%A1%A3"> Tài liệu triển khai </a>
+· <a href="./docs/Deployment.md">Tài liệu triển khai</a>
 · <a href="https://github.com/xinnan-tech/xiaozhi-esp32-server/releases">Nhật ký cập nhật</a>
 </p>
 
 <p align="center">
-<a href="./README.md"><img alt="Bản tự giới thiệu tiếng Trung giản thể" src="https://img.shields.io/badge/简体中文-DBEDFA"></a>
+<a href="./README.md"><img alt="Bản giới thiệu tiếng Trung giản thể" src="https://img.shields.io/badge/zh--CN-DBEDFA"></a>
   <a href="./docs/readme/README_en.md"><img alt="README in English" src="https://img.shields.io/badge/English-DFE0E5"></a>
   <a href="./docs/readme/README_vi.md"><img alt="Tiếng Việt" src="https://img.shields.io/badge/Tiếng Việt-DFE0E5"></a>
   <a href="./docs/readme/README_de.md"><img alt="Deutsch" src="https://img.shields.io/badge/Deutsch-DFE0E5"></a>
@@ -177,23 +177,23 @@ Dự án này cung cấp hai phương pháp triển khai, vui lòng chọn theo 
 > 💡 Mẹo: Sau đây là nền tảng thử nghiệm sau khi triển khai theo code mới nhất. Nếu cần, bạn có thể ghi bài kiểm tra. Đồng thời là 6. Dữ liệu sẽ bị xóa mỗi ngày.
 
 ```
-智控台地址: https://2662r3426b.vicp.fun
-智控台(h5版): https://2662r3426b.vicp.fun/h5/index.html
+Địa chỉ bảng điều khiển thông minh: https://2662r3426b.vicp.fun
+Bảng điều khiển thông minh (bản h5): https://2662r3426b.vicp.fun/h5/index.html
 
-服务测试工具： https://2662r3426b.vicp.fun/test/
-OTA接口地址: https://2662r3426b.vicp.fun/xiaozhi/ota/
-Websocket接口地址: wss://2662r3426b.vicp.fun/xiaozhi/v1/
+Công cụ kiểm tra dịch vụ: https://2662r3426b.vicp.fun/test/
+Địa chỉ giao diện OTA: https://2662r3426b.vicp.fun/xiaozhi/ota/
+Địa chỉ giao diện WebSocket: wss://2662r3426b.vicp.fun/xiaozhi/v1/
 ```
 
 #### 🚩 Hướng dẫn cấu hình và khuyến nghị
 > [!Note]
 > Dự án này cung cấp hai tùy chọn cấu hình:
 > 
-> 1. Cấu hình `入门全免费`: phù hợp cho nhu cầu sử dụng cá nhân tại nhà, tất cả các thành phần đều là gói miễn phí, không cần thanh toán thêm.
+> 1. Cấu hình `nhập môn miễn phí`: phù hợp cho nhu cầu sử dụng cá nhân tại nhà, tất cả các thành phần đều là gói miễn phí, không cần thanh toán thêm.
 > 
-> 2. `流式配置`: Thích hợp cho các cuộc trình diễn, đào tạo, hơn 2 kịch bản đồng thời, v.v., sử dụng công nghệ xử lý phát trực tuyến, phản hồi nhanh hơn và trải nghiệm tốt hơn.
+> 2. `cấu hình phát trực tuyến`: Thích hợp cho các buổi trình diễn, đào tạo, nhiều kịch bản đồng thời, v.v., sử dụng công nghệ xử lý streaming, phản hồi nhanh hơn và trải nghiệm tốt hơn.
 > 
-> Bắt đầu từ phiên bản `0.5.2`, dự án hỗ trợ cấu hình phát trực tuyến. So với các phiên bản trước, tốc độ phản hồi tăng lên khoảng `2.5秒`, cải thiện đáng kể trải nghiệm người dùng.
+> Bắt đầu từ phiên bản `0.5.2`, dự án hỗ trợ cấu hình phát trực tuyến. So với các phiên bản trước, tốc độ phản hồi tăng lên khoảng `2.5 giây`, cải thiện đáng kể trải nghiệm người dùng.
 
 | Tên mô-đun | Thiết lập cấp đầu vào miễn phí | Cấu hình phát trực tuyến |
 |:---:|:---:|:---:|
@@ -211,8 +211,8 @@ Dự án này cung cấp các công cụ kiểm tra sau để giúp bạn xác m
 
 | Tên công cụ | Vị trí | Cách sử dụng | Mô tả chức năng |
 |:---:|:---|:---:|:---:|
-| Công cụ kiểm tra tương tác âm thanh | main》digital-human》index.html | Truy cập `http://127.0.0.1:8006/index.html` sau khi thực thi `python start.py` trong `main/digital-human` | Kiểm tra chức năng phát và nhận âm thanh cũng như xác minh xem quá trình xử lý âm thanh ở phía Python có bình thường hay không |
-| Công cụ kiểm tra phản hồi mô hình | main》xiaozhi-server》performance_tester.py | Thực thi `python performance_tester.py` | Kiểm tra tốc độ phản hồi của ba mô-đun cốt lõi là ASR (nhận dạng giọng nói), LLM (mô hình lớn), VLLM (mô hình trực quan) và TTS (tổng hợp giọng nói) |
+| Công cụ kiểm tra tương tác âm thanh | `main/digital-human/index.html` | Truy cập `http://127.0.0.1:8006/index.html` sau khi thực thi `python start.py` trong `main/digital-human` | Kiểm tra chức năng phát và nhận âm thanh cũng như xác minh xem quá trình xử lý âm thanh ở phía Python có bình thường hay không |
+| Công cụ kiểm tra phản hồi mô hình | `main/xiaozhi-server/performance_tester.py` | Thực thi `python performance_tester.py` | Kiểm tra tốc độ phản hồi của ba mô-đun cốt lõi là ASR (nhận dạng giọng nói), LLM (mô hình lớn), VLLM (mô hình trực quan) và TTS (tổng hợp giọng nói) |
 
 > 💡 Mẹo: Khi kiểm tra tốc độ của model, chỉ những model được cấu hình bằng phím mới được kiểm tra.
 
@@ -347,7 +347,7 @@ Trên thực tế, bất kỳ VLLM nào hỗ trợ cuộc gọi giao diện open
 | <img src="./docs/images/logo_bailing.png" width="160"> | [Robot trò chuyện bằng giọng nói Bailing](https://github.com/wwbin2017/bailing) | Dự án này được lấy cảm hứng từ [Robot hội thoại bằng giọng nói Bailing](https://github.com/wwbin2017/bailing) và được triển khai trên cơ sở nó |
 | <img src="./docs/images/logo_tenclass.png" width="160"> | [Shifangronghai](https://www.tenclass.com/) | Cảm ơn [Shifangronghai](https://www.tenclass.com/) đã xây dựng các giao thức truyền thông tiêu chuẩn, giải pháp tương thích đa thiết bị và trình diễn thực hành kịch bản đồng thời cao cho Hệ sinh thái Xiaozhi; cung cấp hỗ trợ tài liệu kỹ thuật liên kết đầy đủ cho dự án này |
 | <img src="./docs/images/logo_xuanfeng.png" width="160"> | [Công nghệ Huyền Phong](https://github.com/Eric0308) | Cảm ơn [Xuanfeng Technology](https://github.com/Eric0308) đã đóng góp mã triển khai của khung gọi hàm, giao thức truyền thông MCP và cơ chế gọi plug-in. Thông qua hệ thống lập kế hoạch hướng dẫn được tiêu chuẩn hóa và khả năng mở rộng động, nó đã cải thiện đáng kể hiệu quả tương tác và khả năng mở rộng chức năng của thiết bị đầu cuối (IoT) |
-| <img src="./docs/images/logo_junsen.png" width="160"> | [huangjunsen](https://github.com/huangjunsen0406) | Cảm ơn [huangjunsen](https://github.com/huangjunsen0406) đã đóng góp mô-đun `智控台移动端`, cho phép kiểm soát hiệu quả và tương tác theo thời gian thực của các thiết bị di động đa nền tảng, cải thiện đáng kể sự thuận tiện trong vận hành và hiệu quả quản lý của hệ thống trong các tình huống di động |
+| <img src="./docs/images/logo_junsen.png" width="160"> | [huangjunsen](https://github.com/huangjunsen0406) | Cảm ơn [huangjunsen](https://github.com/huangjunsen0406) đã đóng góp mô-đun `bản di động của bảng điều khiển thông minh`, cho phép kiểm soát hiệu quả và tương tác theo thời gian thực của các thiết bị di động đa nền tảng, cải thiện đáng kể sự thuận tiện trong vận hành và hiệu quả quản lý của hệ thống trong các tình huống di động |
 | <img src="./docs/images/logo_huiyuan.png" width="160"> | [Thiết kế Huiyuan](http://ui.kwd988.net/) | Cảm ơn [Huiyuan Design](http://ui.kwd988.net/) đã cung cấp các giải pháp trực quan chuyên nghiệp cho dự án này, sử dụng kinh nghiệm thiết kế thực tế của mình để phục vụ hơn một nghìn công ty nhằm nâng cao trải nghiệm người dùng đối với các sản phẩm của dự án này |
 | <img src="./docs/images/logo_qinren.png" width="160"> | [Công nghệ thông tin Qinren Tây An](https://www.029app.com/) | Cảm ơn [Xi'an Qinren Information Technology](https://www.029app.com/) đã đào sâu hệ thống trực quan của dự án này và đảm bảo tính nhất quán cũng như khả năng mở rộng của phong cách thiết kế tổng thể trong các ứng dụng đa kịch bản |
 | <img src="./docs/images/logo_contributors.png" width="160"> | [Người đóng góp mã](https://github.com/xinnan-tech/xiaozhi-esp32-server/graphs/contributors) | Nhờ những người đóng góp [Tất cả người đóng góp mã](https://github.com/xinnan-tech/xiaozhi-esp32-server/graphs/contributors), những nỗ lực của bạn đã làm cho dự án trở nên mạnh mẽ và hiệu quả hơn. |
