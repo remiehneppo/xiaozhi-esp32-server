@@ -20,7 +20,7 @@ from core.providers.tts.dto.dto import ContentType, TTSMessageDTO, SentenceType
 TAG = __name__
 
 class ListenTextMessageHandler(TextMessageHandler):
-    """Listen消息处理器"""
+    """Listentin nhắnxử lý"""
 
     @property
     def message_type(self) -> TextMessageType:
@@ -30,18 +30,18 @@ class ListenTextMessageHandler(TextMessageHandler):
         if "mode" in msg_json:
             conn.client_listen_mode = msg_json["mode"]
             conn.logger.bind(tag=TAG).debug(
-                f"客户端拾音模式：{conn.client_listen_mode}"
+                f"máy kháchchế độ：{conn.client_listen_mode}"
             )
         if msg_json["state"] == "start":
-            # 设备从播放模式切回录音模式,清除所有音频状态和缓冲区
+            # chế độchế độ,xóacóâm thanhtrạng tháivà
             conn.reset_audio_states()
         elif msg_json["state"] == "stop":
             conn.client_voice_stop = True
             if conn.asr.interface_type == InterfaceType.STREAM:
-                # 流式模式下，发送结束请求
+                # luồngchế độ，gửikết thúcyêu cầu
                 asyncio.create_task(conn.asr._send_stop_request())
             else:
-                # 非流式模式：直接触发ASR识别
+                # luồngchế độ：ASRnhận dạng
                 if len(conn.asr_audio) > 0:
                     asr_audio_task = conn.asr_audio.copy()
                     conn.reset_audio_states()
@@ -53,18 +53,18 @@ class ListenTextMessageHandler(TextMessageHandler):
             conn.reset_audio_states()
             if "text" in msg_json:
                 conn.last_activity_time = time.time() * 1000
-                original_text = msg_json["text"]  # 保留原始文本
+                original_text = msg_json["text"]  # giữ lạiban đầuvăn bản
                 filtered_len, filtered_text = remove_punctuation_and_length(
                     original_text
                 )
 
-                # 检查是否是设备呼叫指令 [device_call]
+                # kiểm tracó [device_call]
                 if original_text.startswith("[device_call]"):
-                    # 提取 tag 后的文本
+                    #  tag sauvăn bản
                     call_text = original_text[len("[device_call]"):].strip()
-                    conn.logger.bind(tag=TAG).info(f"收到设备呼叫指令: {call_text}")
+                    conn.logger.bind(tag=TAG).info(f"nhận được: {call_text}")
 
-                    # 准备开始新会话
+                    # bắt đầuphiên
                     conn.sentence_id = uuid.uuid4().hex
 
                     await send_stt_message(conn, call_text)
@@ -73,28 +73,28 @@ class ListenTextMessageHandler(TextMessageHandler):
                     conn.tts.tts_one_sentence(conn, ContentType.TEXT, content_detail=call_text)
                     conn.tts.tts_text_queue.put(TTSMessageDTO(sentence_id=conn.sentence_id, sentence_type=SentenceType.LAST, content_type=ContentType.ACTION))
 
-                    # 添加到对话历史，让模型理解上下文
+                    # thêmđếnhội thoại，chomô hìnhngữ cảnh
                     conn.dialogue.put(Message(role="assistant", content=call_text))
                     return
 
-                # 识别是否是唤醒词
+                # nhận dạngcó
                 is_wakeup_words = filtered_text in conn.config.get("wakeup_words")
-                # 是否开启唤醒词回复
+                # có
                 enable_greeting = conn.config.get("enable_greeting", True)
 
                 if is_wakeup_words and not enable_greeting:
-                    # 如果是唤醒词，且关闭了唤醒词回复，就不用回答
+                    # như，vàđóng，thìkhôngsử dụng
                     await send_stt_message(conn, original_text)
                     await send_tts_message(conn, "stop", None)
                     conn.client_is_speaking = False
                 elif is_wakeup_words:
                     conn.just_woken_up = True
-                    # 上报纯文字数据（复用ASR上报功能，但不提供音频数据）
-                    enqueue_asr_report(conn, "嘿，你好呀", [])
-                    await startToChat(conn, "嘿，你好呀")
+                    # báo cáodữ liệu（sử dụngASRbáo cáocó thể，nhưngkhôngdữ liệu âm thanh）
+                    enqueue_asr_report(conn, "，", [])
+                    await startToChat(conn, "，")
                 else:
                     conn.just_woken_up = True
-                    # 上报纯文字数据（复用ASR上报功能，但不提供音频数据）
+                    # báo cáodữ liệu（sử dụngASRbáo cáocó thể，nhưngkhôngdữ liệu âm thanh）
                     enqueue_asr_report(conn, original_text, [])
-                    # 否则需要LLM对文字内容进行答复
+                    # cầnLLMvớinội dungtiến hành
                     await startToChat(conn, original_text)

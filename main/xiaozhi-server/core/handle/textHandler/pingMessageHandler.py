@@ -9,7 +9,7 @@ TAG = __name__
 
 
 class PingMessageHandler(TextMessageHandler):
-    """Ping消息处理器，用于保持WebSocket连接"""
+    """Pingtin nhắnxử lý，dùng choWebSocketkết nối"""
 
     @property
     def message_type(self) -> TextMessageType:
@@ -17,29 +17,29 @@ class PingMessageHandler(TextMessageHandler):
 
     async def handle(self, conn, msg_json: Dict[str, Any]) -> None:
         """
-        处理PING消息，发送PONG响应
-        消息格式：{"type": "ping"}
+        xử lýPINGtin nhắn，gửiPONGphản hồi
+        tin nhắnđịnh dạng：{"type": "ping"}
         Args:
-            conn: WebSocket连接对象
-            msg_json: PING消息的JSON数据
+            conn: WebSocketkết nốivới
+            msg_json: PINGtin nhắnJSONdữ liệu
         """
-        # 检查是否启用了WebSocket心跳功能
+        # kiểm tracókích hoạtWebSocketcó thể
         enable_websocket_ping = conn.config.get("enable_websocket_ping", False)
         if not enable_websocket_ping:
-            conn.logger.debug(f"WebSocket心跳功能未启用，忽略PING消息")
+            conn.logger.debug(f"WebSocketcó thểkích hoạt，PINGtin nhắn")
             return
 
         try:
-            conn.logger.debug(f"收到PING消息，发送PONG响应")
+            conn.logger.debug(f"nhận đượcPINGtin nhắn，gửiPONGphản hồi")
             conn.last_activity_time = time.time() * 1000
-            # 构造PONG响应消息
+            # PONGphản hồitin nhắn
             pong_message = {
                 "type": "pong",
                 "timestamp": time.strftime("%Y-%m-%d %H:%M:%S", time.localtime()),
             }
 
-            # 发送PONG响应
+            # gửiPONGphản hồi
             await conn.websocket.send(json.dumps(pong_message))
 
         except Exception as e:
-            conn.logger.error(f"处理PING消息时发生错误: {e}")
+            conn.logger.error(f"xử lýPINGtin nhắnthờilỗi: {e}")

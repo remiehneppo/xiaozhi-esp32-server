@@ -62,7 +62,7 @@ class WebSocketServer:
 
         auth_config = self.config["server"].get("auth", {})
         self.auth_enable = auth_config.get("enabled", False)
-        # 设备白名单
+        # 
         self.allowed_devices = set(auth_config.get("allowed_devices", []))
         secret_key = self.config["server"]["auth_key"]
         expire_seconds = auth_config.get("expire_seconds", None)
@@ -81,10 +81,10 @@ class WebSocketServer:
     async def _handle_connection(self, websocket: websockets.ServerConnection):
         headers = dict(websocket.request.headers)
         if headers.get("device-id", None) is None:
-            # 尝试从 URL 的查询参数中获取 device-id
+            # thử URL tham sốtronglấy device-id
             from urllib.parse import parse_qs, urlparse
 
-            # 从 WebSocket 请求中获取路径
+            #  WebSocket yêu cầutronglấyđường dẫn
             request_path = websocket.request.path
             if not request_path:
                 self.logger.bind(tag=TAG).error("Không thể lấy đường dẫn yêu cầu")
@@ -105,15 +105,15 @@ class WebSocketServer:
                     "authorization"
                 ][0]
 
-        """处理新连接，每次创建独立的ConnectionHandler"""
-        # 先认证，后建立连接
+        """xử lýkết nối，lầntạoConnectionHandler"""
+        # xác thực，saukết nối
         try:
             await self._handle_auth(websocket)
         except AuthenticationError:
             await websocket.send("Xác thực thất bại")
             await websocket.close()
             return
-        # 创建ConnectionHandler时传入当前server实例
+        # tạoConnectionHandlerthờivàohiện tạiserver
         handler = ConnectionHandler(
             self.config,
             self._vad,
@@ -121,22 +121,22 @@ class WebSocketServer:
             self._llm,
             self._memory,
             self._intent,
-            self,  # 传入server实例
+            self,  # vàoserver
         )
         try:
             await handler.handle_connection(websocket)
         except Exception as e:
             self.logger.bind(tag=TAG).error(f"Lỗi khi xử lý kết nối: {e}")
         finally:
-            # 强制关闭连接（如果还没有关闭的话）
+            # đóngkết nối（nhưcũngkhông cóđóng）
             try:
-                # 安全地检查WebSocket状态并关闭
+                # Kiểm tra an toàn trạng thái WebSocket rồi đóng
                 if hasattr(websocket, "closed") and not websocket.closed:
                     await websocket.close()
                 elif hasattr(websocket, "state") and websocket.state.name != "CLOSED":
                     await websocket.close()
                 else:
-                    # 如果没有closed属性，直接尝试关闭
+                    # Nếu không có thuộc tính closed thì thử đóng trực tiếp
                     await websocket.close()
             except Exception as close_error:
                 self.logger.bind(tag=TAG).error(
@@ -144,37 +144,37 @@ class WebSocketServer:
                 )
 
     async def _http_response(self, websocket, request_headers):
-        # 检查是否为 WebSocket 升级请求
+        # kiểm tracócho WebSocket yêu cầu
         if request_headers.headers.get("connection", "").lower() == "upgrade":
-            # 如果是 WebSocket 请求，返回 None 允许握手继续
+            # như WebSocket yêu cầu，trả về None tiếp tục
             return None
         else:
             # Nếu là yêu cầu HTTP bình thường, trả về "máy chủ đang chạy"
             return websocket.respond(200, "Máy chủ đang chạy\n")
 
     async def update_config(self) -> bool:
-        """更新服务器配置并重新初始化组件
+        """cập nhậtmáy chủcấu hìnhvàkhởi tạo
 
         Returns:
-            bool: 更新是否成功
+            bool: cập nhậtcóthành công
         """
         try:
             async with self.config_lock:
-                # 重新获取配置（使用异步版本）
+                # lấycấu hình（làm chosử dụng）
                 new_config = await get_config_from_api_async(self.config)
                 if new_config is None:
                     self.logger.bind(tag=TAG).error("Không lấy được cấu hình mới")
                     return False
                 self.logger.bind(tag=TAG).info("Lấy cấu hình mới thành công")
-                # 检查 VAD 和 ASR 类型是否需要更新
+                # kiểm tra VAD và ASR cócầncập nhật
                 update_vad = check_vad_update(self.config, new_config)
                 update_asr = check_asr_update(self.config, new_config)
                 self.logger.bind(tag=TAG).info(
                     f"Kiểm tra VAD và ASR có cần cập nhật không: {update_vad} {update_asr}"
                 )
-                # 更新配置
+                # cập nhậtcấu hình
                 self.config = new_config
-                # 重新初始化组件
+                # khởi tạo
                 modules = initialize_modules(
                     self.logger,
                     new_config,
@@ -186,7 +186,7 @@ class WebSocketServer:
                     "Intent" in new_config["selected_module"],
                 )
 
-                # 更新组件实例
+                # cập nhật
                 if "vad" in modules:
                     self._vad = modules["vad"]
                 if "asr" in modules:
@@ -204,22 +204,22 @@ class WebSocketServer:
             return False
 
     async def _handle_auth(self, websocket: websockets.ServerConnection):
-        # 先认证，后建立连接
+        # xác thực，saukết nối
         if self.auth_enable:
             headers = dict(websocket.request.headers)
             device_id = headers.get("device-id", None)
             client_id = headers.get("client-id", None)
             if self.allowed_devices and device_id in self.allowed_devices:
-                # 如果属于白名单内的设备，不校验token，直接放行
+                # nhưtạitrong，khôngkiểm tratoken，
                 return
             else:
-                # 否则校验token
+                # kiểm tratoken
                 token = headers.get("authorization", "")
                 if token.startswith("Bearer "):
-                    token = token[7:]  # 移除'Bearer '前缀
+                    token = token[7:]  # loại bỏ'Bearer 'tiền tố
                 else:
                     raise AuthenticationError("Thiếu hoặc không hợp lệ header Authorization")
-                # 进行认证
+                # tiến hànhxác thực
                 auth_success = self.auth.verify_token(
                     token, client_id=client_id, username=device_id
                 )

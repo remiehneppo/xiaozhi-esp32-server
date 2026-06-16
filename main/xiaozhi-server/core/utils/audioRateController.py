@@ -9,104 +9,104 @@ logger = setup_logging()
 
 class AudioRateController:
     """
-    音频速率控制器 - 按照60ms帧时长精确控制音频发送
-    解决高并发下的时间累积误差问题
+    âm thanh - theo60mskhungkhi/thờiâm thanhgửi
+    vàcủkhi/thờitích lũy
     """
 
     def __init__(self, frame_duration=60):
         """
         Args:
-            frame_duration: 单个音频帧时长（毫秒），默认60ms
+            frame_duration: âm thanhkhungkhi/thời（），mặc định60ms
         """
         self.frame_duration = frame_duration
         self.queue = deque()
-        self.play_position = 0  # 虚拟播放位置（毫秒）
-        self.start_timestamp = None  # 开始时间戳（只读，不修改）
+        self.play_position = 0  # vị trí（）
+        self.start_timestamp = None  # bắt đầukhi/thời（chỉ，khôngsửa đổi）
         self.pending_send_task = None
         self.logger = logger
-        self.queue_empty_event = asyncio.Event()  # 队列清空事件
-        self.queue_empty_event.set()  # 初始为空状态
-        self.queue_has_data_event = asyncio.Event()  # 队列数据事件
-        self._last_queue_empty_time = 0  # 上次队列清空的时间（秒）
+        self.queue_empty_event = asyncio.Event()  # hàng đợi
+        self.queue_empty_event.set()  # chotrạng thái
+        self.queue_has_data_event = asyncio.Event()  # hàng đợidữ liệu
+        self._last_queue_empty_time = 0  # trênlầnhàng đợicủkhi/thời（）
 
     def reset(self):
-        """重置控制器状态"""
+        """đặt lạitrạng thái"""
         if self.pending_send_task and not self.pending_send_task.done():
             self.pending_send_task.cancel()
-            # 取消任务后，任务会在下次事件循环时清理，无需阻塞等待
+            # hủynhiệm vụsau，nhiệm vụsẽtại/tronglầnkhi/thờidọn dẹp，chờ
 
         self.queue.clear()
         self.play_position = 0
-        self.start_timestamp = None  # 由首个音频包设置
-        self._last_queue_empty_time = 0  # 重置时间
-        # 相关事件处理
+        self.start_timestamp = None  # âm thanhđặt
+        self._last_queue_empty_time = 0  # đặt lạikhi/thời
+        # xử lý
         self.queue_empty_event.set()
         self.queue_has_data_event.clear()
 
     def add_audio(self, opus_packet):
-        """添加音频包到队列"""
-        # 如果队列之前为空，需要调整时间戳以保持播放时间连续
-        # 这样工具调用等待期间，新加入的音频不会提前播放
-        # 如果间隔很短（<1帧），说明是正常的流式传输，不需要重置
+        """thêmâm thanhđếnhàng đợi"""
+        # nhưhàng đợicho，cầnkhi/thờibằngkhi/thời
+        # nàycông cụsử dụngchờ，vàocủâm thanhkhôngsẽ
+        # như（<1khung），nóilàcủluồng，khôngcầnđặt lại
         if len(self.queue) == 0 and self.play_position > 0:
             elapsed_since_empty = (time.monotonic() - self._last_queue_empty_time) * 1000
-            # 只有间隔超过1帧时长，才认为是真正的"暂停恢复"
+            # chỉcóqua1khungkhi/thời，cholàcủ"tạm dừngtiếp tục"
             if elapsed_since_empty >= self.frame_duration:
                 self.start_timestamp = time.monotonic() - (self.play_position / 1000)
                 self.logger.bind(tag=TAG).debug(
-                    f"队列从空恢复，重置时间戳，当前播放位置: {self.play_position}ms，间隔: {elapsed_since_empty:.0f}ms"
+                    f"hàng đợitừtiếp tục，đặt lạikhi/thời，hiện tạivị trí: {self.play_position}ms，: {elapsed_since_empty:.0f}ms"
                 )
 
         self.queue.append(("audio", opus_packet))
-        # 相关事件处理
+        # xử lý
         self.queue_empty_event.clear()
         self.queue_has_data_event.set()
 
     def add_message(self, message_callback):
         """
-        添加消息到队列（立即发送，不占用播放时间）
+        thêmtin nhắnđếnhàng đợi（gửi，khôngsử dụngkhi/thời）
 
         Args:
-            message_callback: 消息发送回调函数 async def()
+            message_callback: tin nhắngửihàm async def()
         """
         if len(self.queue) == 0 and self.play_position > 0:
             elapsed_since_empty = (time.monotonic() - self._last_queue_empty_time) * 1000
             if elapsed_since_empty >= self.frame_duration:
                 self.start_timestamp = time.monotonic() - (self.play_position / 1000)
                 self.logger.bind(tag=TAG).debug(
-                    f"队列从空恢复，重置时间戳，当前播放位置: {self.play_position}ms，间隔: {elapsed_since_empty:.0f}ms"
+                    f"hàng đợitừtiếp tục，đặt lạikhi/thời，hiện tạivị trí: {self.play_position}ms，: {elapsed_since_empty:.0f}ms"
                 )
 
         self.queue.append(("message", message_callback))
-        # 相关事件处理
+        # xử lý
         self.queue_empty_event.clear()
         self.queue_has_data_event.set()
 
     def _get_elapsed_ms(self):
-        """获取已经过的时间（毫秒）"""
+        """lấyđãquacủkhi/thời（）"""
         if self.start_timestamp is None:
             return 0
         return (time.monotonic() - self.start_timestamp) * 1000
 
     async def check_queue(self, send_audio_callback):
         """
-        检查队列并按时发送音频/消息
+        kiểm trahàng đợivàtheokhi/thờigửiâm thanh/tin nhắn
 
         Args:
-            send_audio_callback: 发送音频的回调函数 async def(opus_packet)
+            send_audio_callback: gửiâm thanhcủhàm async def(opus_packet)
         """
         while self.queue:
             item = self.queue[0]
             item_type = item[0]
 
             if item_type == "message":
-                # 消息类型：立即发送，不占用播放时间
+                # tin nhắn：gửi，khôngsử dụngkhi/thời
                 _, message_callback = item
                 self.queue.popleft()
                 try:
                     await message_callback()
                 except Exception as e:
-                    self.logger.bind(tag=TAG).error(f"发送消息失败: {e}")
+                    self.logger.bind(tag=TAG).error(f"gửitin nhắnthất bại: {e}")
                     raise
 
             elif item_type == "audio":
@@ -115,69 +115,69 @@ class AudioRateController:
 
                 _, opus_packet = item
 
-                # 循环等待直到时间到达
+                # chờđếnkhi/thờiđến
                 while True:
-                    # 计算时间差
+                    # tính toánkhi/thời
                     elapsed_ms = self._get_elapsed_ms()
                     output_ms = self.play_position
 
                     if elapsed_ms < output_ms:
-                        # 还不到发送时间，计算等待时长
+                        # cũngkhôngđếngửikhi/thời，tính toánchờkhi/thời
                         wait_ms = output_ms - elapsed_ms
 
-                        # 等待后继续检查（允许被中断）
+                        # chờsautiếp tụckiểm tra（bịtrong）
                         try:
                             await asyncio.sleep(wait_ms / 1000)
                         except asyncio.CancelledError:
-                            self.logger.bind(tag=TAG).debug("音频发送任务被取消")
+                            self.logger.bind(tag=TAG).debug("âm thanhgửinhiệm vụbịhủy")
                             raise
-                        # 等待结束后重新检查时间（循环回到 while True）
+                        # chờkết thúcsaukiểm trakhi/thời（đến while True）
                     else:
-                        # 时间已到，跳出等待循环
+                        # khi/thờiđãđến，rachờ
                         break
 
-                # 时间已到，从队列移除并发送
+                # khi/thờiđãđến，từhàng đợiloại bỏvàgửi
                 self.queue.popleft()
                 self.play_position += self.frame_duration
                 try:
                     await send_audio_callback(opus_packet)
                 except Exception as e:
-                    self.logger.bind(tag=TAG).error(f"发送音频失败: {e}")
+                    self.logger.bind(tag=TAG).error(f"gửiâm thanhthất bại: {e}")
                     raise
 
-        # 队列处理完后清除事件
+        # hàng đợixử lýsauxóa
         self.queue_empty_event.set()
         self.queue_has_data_event.clear()
-        self._last_queue_empty_time = time.monotonic()  # 记录队列清空时间
+        self._last_queue_empty_time = time.monotonic()  # ghi lạihàng đợikhi/thời
 
     def start_sending(self, send_audio_callback):
         """
-        启动异步发送任务
+        khởi độnggửinhiệm vụ
 
         Args:
-            send_audio_callback: 发送音频的回调函数
+            send_audio_callback: gửiâm thanhcủhàm
 
         Returns:
-            asyncio.Task: 发送任务
+            asyncio.Task: gửinhiệm vụ
         """
 
         async def _send_loop():
             try:
                 while True:
-                    # 等待队列数据事件，不轮询等待占用CPU
+                    # chờhàng đợidữ liệu，khôngchờsử dụngCPU
                     await self.queue_has_data_event.wait()
 
                     await self.check_queue(send_audio_callback)
             except asyncio.CancelledError:
-                self.logger.bind(tag=TAG).debug("音频发送循环已停止")
+                self.logger.bind(tag=TAG).debug("âm thanhgửiđãdừng")
             except Exception as e:
-                self.logger.bind(tag=TAG).error(f"音频发送循环异常: {e}")
+                self.logger.bind(tag=TAG).error(f"âm thanhgửingoại lệ: {e}")
 
         self.pending_send_task = asyncio.create_task(_send_loop())
         return self.pending_send_task
 
     def stop_sending(self):
-        """停止发送任务"""
+        """dừnggửinhiệm vụ"""
         if self.pending_send_task and not self.pending_send_task.done():
             self.pending_send_task.cancel()
-            self.logger.bind(tag=TAG).debug("已取消音频发送任务")
+            self.logger.bind(tag=TAG).debug("đãhủyâm thanhgửinhiệm vụ")

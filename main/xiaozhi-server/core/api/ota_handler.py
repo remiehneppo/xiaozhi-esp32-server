@@ -48,7 +48,7 @@ class OTAHandler(BaseHandler):
         super().__init__(config)
         auth_config = config["server"].get("auth", {})
         self.auth_enable = auth_config.get("enabled", False)
-        # 设备白名单
+        # 
         self.allowed_devices = set(auth_config.get("allowed_devices", []))
         secret_key = config["server"]["auth_key"]
         expire_seconds = auth_config.get("expire_seconds")
@@ -99,18 +99,18 @@ class OTAHandler(BaseHandler):
                 f"Firmware cache refreshed: {len(files_by_model)} models"
             )
         except Exception as e:
-            self.logger.bind(tag=TAG).error(f"刷新固件缓存失败: {e}")
+            self.logger.bind(tag=TAG).error(f"làm mớibộ nhớ đệmthất bại: {e}")
             # keep previous cache if any
 
     def generate_password_signature(self, content: str, secret_key: str) -> str:
-        """生成MQTT密码签名
+        """tạoMQTTchữ ký
 
         Args:
-            content: 签名内容 (clientId + '|' + username)
-            secret_key: 密钥
+            content: chữ kýnội dung (clientId + '|' + username)
+            secret_key: 
 
         Returns:
-            str: Base64编码的HMAC-SHA256签名
+            str: Base64mã hóaHMAC-SHA256chữ ký
         """
         try:
             hmac_obj = hmac.new(
@@ -135,7 +135,7 @@ class OTAHandler(BaseHandler):
         server_config = self.config["server"]
         websocket_config = server_config.get("websocket", "")
 
-        if "你的" not in websocket_config:
+        if "" not in websocket_config:
             return websocket_config
         else:
             return f"ws://{local_ip}:{port}/xiaozhi/v1/"
@@ -245,7 +245,7 @@ class OTAHandler(BaseHandler):
                 mac_address_safe = device_id.replace(":", "_")
                 mqtt_client_id = f"{group_id}@@@{mac_address_safe}@@@{mac_address_safe}"
 
-                # 构建用户数据
+                # xây dựngsử dụngdữ liệu
                 user_data = {"ip": "unknown"}
                 try:
                     user_data_json = json.dumps(user_data)
@@ -256,7 +256,7 @@ class OTAHandler(BaseHandler):
                     self.logger.bind(tag=TAG).error(f"Tạo username thất bại: {e}")
                     username = ""
 
-                # 生成密码
+                # tạo
                 password = ""
                 signature_key = server_config.get("mqtt_signature_key", "")
                 if signature_key:
@@ -268,7 +268,7 @@ class OTAHandler(BaseHandler):
                 else:
                     self.logger.bind(tag=TAG).warning("Thiếu khóa ký MQTT, mật khẩu sẽ để trống")
 
-                # 构建MQTT配置（直接使用 mqtt_gateway 字符串）
+                # xây dựngMQTTcấu hình（làm chosử dụng mqtt_gateway ký tự）
                 return_json["mqtt"] = {
                     "endpoint": mqtt_gateway_endpoint,
                     "client_id": mqtt_client_id,

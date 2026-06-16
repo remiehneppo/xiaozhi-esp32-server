@@ -7,13 +7,13 @@ from core.handle.textMessageProcessor import TextMessageProcessor
 
 TAG = __name__
 
-# 全局处理器注册表
+# toàn cụcxử lý
 message_registry = TextMessageHandlerRegistry()
 
-# 创建全局消息处理器实例
+# tạotoàn cụctin nhắnxử lý
 message_processor = TextMessageProcessor(message_registry)
 
 
 async def handleTextMessage(conn: "ConnectionHandler", message):
-    """处理文本消息"""
+    """xử lývăn bảntin nhắn"""
     await message_processor.process_message(conn, message)

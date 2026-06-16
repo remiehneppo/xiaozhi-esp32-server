@@ -1,4 +1,4 @@
-"""服务端MCP客户端"""
+"""dịch vụMCPmáy khách"""
 
 from __future__ import annotations
 
@@ -24,13 +24,13 @@ TAG = __name__
 
 
 class ServerMCPClient:
-    """服务端MCP客户端，用于连接和管理MCP服务"""
+    """dịch vụMCPmáy khách，dùng chokết nốivàMCPdịch vụ"""
 
     def __init__(self, config: Dict[str, Any]):
-        """初始化服务端MCP客户端
+        """khởi tạodịch vụMCPmáy khách
 
         Args:
-            config: MCP服务配置字典
+            config: MCPdịch vụcấu hình
         """
         self.logger = setup_logging()
         self.config = config
@@ -40,7 +40,7 @@ class ServerMCPClient:
         self._shutdown_evt = asyncio.Event()
 
         self.session: Optional[ClientSession] = None
-        self.tools: List = []  # 原始工具对象
+        self.tools: List = []  # ban đầucông cụvới
         self.tools_dict: Dict[str, Any] = {}
         self.name_mapping: Dict[str, str] = {}
 
@@ -51,7 +51,7 @@ class ServerMCPClient:
              logging_callback: LoggingFnT | None = None,
              message_handler: MessageHandlerFnT | None = None,
              client_info: Implementation | None = None):
-        """初始化MCP客户端连接"""
+        """khởi tạoMCPmáy kháchkết nối"""
         if self._worker_task:
             return
 
@@ -67,11 +67,11 @@ class ServerMCPClient:
         await self._ready_evt.wait()
 
         self.logger.bind(tag=TAG).info(
-            f"服务端MCP客户端已连接，可用工具: {[name for name in self.name_mapping.values()]}"
+            f"dịch vụMCPmáy kháchđã kết nối，khả dụngcông cụ: {[name for name in self.name_mapping.values()]}"
         )
 
     async def cleanup(self):
-        """清理MCP客户端资源"""
+        """dọn dẹpMCPmáy kháchtài nguyên"""
         if not self._worker_task:
             return
 
@@ -79,26 +79,26 @@ class ServerMCPClient:
         try:
             await asyncio.wait_for(self._worker_task, timeout=20)
         except (asyncio.TimeoutError, Exception) as e:
-            self.logger.bind(tag=TAG).error(f"服务端MCP客户端关闭错误: {e}")
+            self.logger.bind(tag=TAG).error(f"dịch vụMCPmáy kháchđónglỗi: {e}")
         finally:
             self._worker_task = None
 
     def has_tool(self, name: str) -> bool:
-        """检查是否包含指定工具
+        """kiểm tracóchỉ địnhcông cụ
 
         Args:
-            name: 工具名称
+            name: công cụ
 
         Returns:
-            bool: 是否包含该工具
+            bool: cócông cụ
         """
         return name in self.tools_dict
 
     def get_available_tools(self) -> List[Dict[str, Any]]:
-        """获取所有可用工具的定义
+        """lấycókhả dụngcông cụđịnh nghĩa
 
         Returns:
-            List[Dict[str, Any]]: 工具定义列表
+            List[Dict[str, Any]]: công cụđịnh nghĩa
         """
         return [
             {
@@ -113,23 +113,23 @@ class ServerMCPClient:
         ]
 
     async def call_tool(self, name: str, arguments: dict, read_timeout_seconds: timedelta | None = None, progress_callback: ProgressFnT | None = None, *, meta: dict[str, Any] | None = None) -> Any:
-        """调用指定工具
+        """sử dụngchỉ địnhcông cụ
 
         Args:
-            name: 工具名称
-            arguments: 工具参数
+            name: công cụ
+            arguments: công cụtham số
             read_timeout_seconds:
-            progress_callback: 进度回调函数
+            progress_callback: hàm
             meta:
 
         Returns:
-            Any: 工具执行结果
+            Any: công cụkết quả
 
         Raises:
-            RuntimeError: 客户端未初始化时抛出
+            RuntimeError: máy kháchkhởi tạothờira
         """
         if not self.session:
-            raise RuntimeError("服务端MCP客户端未初始化")
+            raise RuntimeError("dịch vụMCPmáy kháchkhởi tạo")
 
         real_name = self.name_mapping.get(name, name)
         loop = self._worker_task.get_loop()
@@ -142,24 +142,24 @@ class ServerMCPClient:
         return await asyncio.wrap_future(fut)
 
     def is_connected(self) -> bool:
-        """检查MCP客户端是否连接正常
+        """kiểm traMCPmáy kháchcókết nối
 
         Returns:
-            bool: 如果客户端已连接并正常工作，返回True，否则返回False
+            bool: nhưmáy kháchđã kết nốivà，trả vềTrue，trả vềFalse
         """
-        # 检查工作任务是否存在
+        # kiểm tranhiệm vụcótại
         if self._worker_task is None:
             return False
 
-        # 检查工作任务是否已经完成或取消
+        # kiểm tranhiệm vụcóđãhoàn thànhhoặchủy
         if self._worker_task.done():
             return False
 
-        # 检查会话是否存在
+        # kiểm traphiêncótại
         if self.session is None:
             return False
 
-        # 所有检查都通过，连接正常
+        # cókiểm trathông qua，kết nối
         return True
 
     async def _worker(self, read_timeout_seconds: timedelta | None = None,
@@ -169,10 +169,10 @@ class ServerMCPClient:
              logging_callback: LoggingFnT | None = None,
              message_handler: MessageHandlerFnT | None = None,
              client_info: Implementation | None = None):
-        """MCP客户端工作协程"""
+        """MCPmáy khách"""
         async with AsyncExitStack() as stack:
             try:
-                # 建立 StdioClient
+                #  StdioClient
                 if "command" in self.config:
                     cmd = (
                         shutil.which("npx")
@@ -190,19 +190,19 @@ class ServerMCPClient:
                     )
                     read_stream, write_stream = stdio_r, stdio_w
 
-                # 建立SSEClient
+                # SSEClient
                 elif "url" in self.config:
                     headers = dict(self.config.get("headers", {}))
-                    # TODO 兼容旧版本
+                    # TODO cũ
                     if "API_ACCESS_TOKEN" in self.config:
                         headers["Authorization"] = f"Bearer {self.config['API_ACCESS_TOKEN']}"
-                        self.logger.bind(tag=TAG).warning(f"你正在使用旧过时的配置 API_ACCESS_TOKEN ，请在.mcp_server_settings.json中将API_ACCESS_TOKEN直接设置在headers中，例如 'Authorization': 'Bearer API_ACCESS_TOKEN'")
+                        self.logger.bind(tag=TAG).warning(f"tạilàm chosử dụngcũquathờicấu hình API_ACCESS_TOKEN ，tại.mcp_server_settings.jsontrongsẽAPI_ACCESS_TOKENđặttạiheaderstrong，như 'Authorization': 'Bearer API_ACCESS_TOKEN'")
                    
-                    # 根据transport类型选择不同的客户端，默认为SSE
+                    # theotransportkhôngmáy khách，mặc địnhchoSSE
                     transport_type = self.config.get("transport", "sse")
 
                     if transport_type == "streamable-http" or transport_type == "http":
-                        # 使用 Streamable HTTP 传输
+                        # làm chosử dụng Streamable HTTP 
                         http_r, http_w, get_session_id = await stack.enter_async_context(
                             streamablehttp_client(
                                 url=self.config["url"],
@@ -214,7 +214,7 @@ class ServerMCPClient:
                         )
                         read_stream, write_stream = http_r, http_w
                     else:
-                        # 使用传统的 SSE 传输
+                        # làm chosử dụng SSE 
                         sse_r, sse_w = await stack.enter_async_context(
                             sse_client(
                                 url=self.config["url"],
@@ -226,7 +226,7 @@ class ServerMCPClient:
                         read_stream, write_stream = sse_r, sse_w
 
                 else:
-                    raise ValueError("MCP客户端配置必须包含'command'或'url'")
+                    raise ValueError("MCPmáy kháchcấu hình'command'hoặc'url'")
 
                 self.session = await stack.enter_async_context(
                     ClientSession(
@@ -243,7 +243,7 @@ class ServerMCPClient:
                 )
                 await self.session.initialize()
 
-                # 获取工具
+                # lấycông cụ
                 self.tools = (await self.session.list_tools()).tools
                 for t in self.tools:
                     sanitized = sanitize_tool_name(t.name)
@@ -252,10 +252,10 @@ class ServerMCPClient:
 
                 self._ready_evt.set()
 
-                # 挂起等待关闭
+                # chờđóng
                 await self._shutdown_evt.wait()
 
             except Exception as e:
-                self.logger.bind(tag=TAG).error(f"服务端MCP客户端工作协程错误: {e}")
+                self.logger.bind(tag=TAG).error(f"dịch vụMCPmáy kháchlỗi: {e}")
                 self._ready_evt.set()
                 raise

@@ -7,15 +7,15 @@ TAG = __name__
 
 
 class TextMessageHandler(ABC):
-    """消息处理器抽象基类"""
+    """tin nhắnxử lý"""
 
     @abstractmethod
     async def handle(self, conn, msg_json: Dict[str, Any]) -> None:
-        """处理消息的抽象方法"""
+        """xử lýtin nhắnphương pháp"""
         pass
 
     @property
     @abstractmethod
     def message_type(self) -> TextMessageType:
-        """返回处理的消息类型"""
+        """trả vềxử lýtin nhắn"""
         pass

@@ -12,7 +12,7 @@ class LLMProvider(LLMProviderBase):
         self.model_name = config.get("model_name")
         self.base_url = config.get("base_url", "http://localhost:11434")
         # Khởi tạo OpenAI client với base URL Ollama
-        # 如果没有v1，增加v1
+        # nhưkhông cóv1，v1
         if not self.base_url.endswith("/v1"):
             self.base_url = f"{self.base_url}/v1"
 
@@ -47,7 +47,7 @@ class LLMProvider(LLMProviderBase):
             model=self.model_name, messages=dialogue, stream=True
         )
         is_active = True
-        # 用于处理跨chunk的标签
+        # dùng choxử lýchunk
         buffer = ""
 
         try:
@@ -133,37 +133,37 @@ class LLMProvider(LLMProviderBase):
                         delta.tool_calls if hasattr(delta, "tool_calls") else None
                     )
 
-                    # 如果是工具调用，直接传递
+                    # nhưcông cụsử dụng，
                     if tool_calls:
                         yield None, tool_calls
                         continue
 
-                    # 处理文本内容
+                    # xử lývăn bảnnội dung
                     if content:
-                        # 将内容添加到缓冲区
+                        # sẽnội dungthêmđến
                         buffer += content
 
-                        # 处理缓冲区中的标签
+                        # xử lýtrong
                         while "<think>" in buffer and "</think>" in buffer:
-                            # 找到完整的<think></think>标签并移除
+                            # đếnhoàn chỉnh<think></think>vàloại bỏ
                             pre = buffer.split("<think>", 1)[0]
                             post = buffer.split("</think>", 1)[1]
                             buffer = pre + post
 
-                        # 处理只有开始标签的情况
+                        # xử lýchỉcóbắt đầu
                         if "<think>" in buffer:
                             is_active = False
                             buffer = buffer.split("<think>", 1)[0]
 
-                        # 处理只有结束标签的情况
+                        # xử lýchỉcókết thúc
                         if "</think>" in buffer:
                             is_active = True
                             buffer = buffer.split("</think>", 1)[1]
 
-                        # 如果当前处于活动状态且缓冲区有内容，则输出
+                        # nhưhiện tạitạitrạng tháivàcónội dung，ra
                         if is_active and buffer:
                             yield buffer, None
-                            buffer = ""  # 清空缓冲区
+                            buffer = ""  # 
                 except Exception as e:
                     logger.bind(tag=TAG).error(f"Lỗi khi xử lý function chunk: {e}")
                     continue

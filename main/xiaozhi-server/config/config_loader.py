@@ -14,7 +14,7 @@ from config.manage_api_client import (
 
 
 def get_project_dir():
-    """获取项目根目录"""
+    """lấythư mục"""
     return os.path.dirname(os.path.dirname(os.path.abspath(__file__))) + "/"
 
 
@@ -25,10 +25,10 @@ def read_config(config_path):
 
 
 def load_config():
-    """加载配置文件"""
+    """tảicấu hìnhtệp"""
     from core.utils.cache.manager import cache_manager, CacheType
 
-    # 检查缓存
+    # kiểm trabộ nhớ đệm
     cached_config = cache_manager.get(CacheType.CONFIG, "main_config")
     if cached_config is not None:
         return cached_config
@@ -36,7 +36,7 @@ def load_config():
     default_config_path = get_project_dir() + "config.yaml"
     custom_config_path = get_project_dir() + "data/.config.yaml"
 
-    # 加载默认配置
+    # tảimặc địnhcấu hình
     default_config = read_config(default_config_path)
     custom_config = read_config(custom_config_path)
 
@@ -44,30 +44,30 @@ def load_config():
         import asyncio
         try:
             loop = asyncio.get_running_loop()
-            # 如果已经在事件循环中，使用异步版本
+            # nhưđãtạitrong，làm chosử dụng
             config = asyncio.run_coroutine_threadsafe(
                 get_config_from_api_async(custom_config), loop
             ).result()
         except RuntimeError:
-            # 如果不在事件循环中（启动时），创建新的事件循环
+            # nhưkhôngtạitrong（khởi độngthời），tạo
             config = asyncio.run(get_config_from_api_async(custom_config))
     else:
-        # 合并配置
+        # vàcấu hình
         config = merge_configs(default_config, custom_config)
-    # 初始化目录
+    # khởi tạothư mục
     ensure_directories(config)
 
-    # 缓存配置
+    # bộ nhớ đệmcấu hình
     cache_manager.set(CacheType.CONFIG, "main_config", config)
     return config
 
 
 async def get_config_from_api_async(config):
-    """从Java API获取配置（异步版本）"""
-    # 初始化API客户端
+    """Java APIlấycấu hình（）"""
+    # khởi tạoAPImáy khách
     init_service(config)
 
-    # 获取服务器配置
+    # lấymáy chủcấu hình
     config_data = await get_server_config()
     if config_data is None:
         raise Exception("Failed to fetch server config from API")
@@ -78,7 +78,7 @@ async def get_config_from_api_async(config):
         "secret": config["manager-api"].get("secret", ""),
     }
     auth_enabled = config_data.get("server", {}).get("auth", {}).get("enabled", False)
-    # server的配置以本地为准
+    # servercấu hìnhbằngcục bộcho
     if config.get("server"):
         config_data["server"] = {
             "ip": config["server"].get("ip", ""),
@@ -88,14 +88,14 @@ async def get_config_from_api_async(config):
             "auth_key": config["server"].get("auth_key", ""),
         }
     config_data["server"]["auth"] = {"enabled": auth_enabled}
-    # 如果服务器没有prompt_template，则从本地配置读取
+    # nhưmáy chủkhông cóprompt_template，cục bộcấu hìnhđọc
     if not config_data.get("prompt_template"):
         config_data["prompt_template"] = config.get("prompt_template")
     return config_data
 
 
 async def get_private_config_from_api(config, device_id, client_id):
-    """从Java API获取私有配置"""
+    """Java APIlấycócấu hình"""
     results = await asyncio.gather(
         get_agent_models(device_id, client_id, config["selected_module"]),
         get_correct_words(device_id),
@@ -104,7 +104,7 @@ async def get_private_config_from_api(config, device_id, client_id):
     agent_result = results[0]
     correct_words = results[1] if not isinstance(results[1], Exception) else None
 
-    # 抛出业务异常
+    # rangoại lệ
     if isinstance(agent_result, DeviceNotFoundException):
         raise agent_result
     if isinstance(agent_result, DeviceBindException):
@@ -117,14 +117,14 @@ async def get_private_config_from_api(config, device_id, client_id):
 
 
 def ensure_directories(config):
-    """确保所有配置路径存在"""
+    """đảm bảocócấu hìnhđường dẫntại"""
     dirs_to_create = set()
-    project_dir = get_project_dir()  # 获取项目根目录
-    # 日志文件目录
+    project_dir = get_project_dir()  # lấythư mục
+    # nhật kýtệpthư mục
     log_dir = config.get("log", {}).get("log_dir", "tmp")
     dirs_to_create.add(os.path.join(project_dir, log_dir))
 
-    # ASR/TTS模块输出目录
+    # ASR/TTSrathư mục
     for module in ["ASR", "TTS"]:
         if config.get(module) is None:
             continue
@@ -133,7 +133,7 @@ def ensure_directories(config):
             if output_dir:
                 dirs_to_create.add(output_dir)
 
-    # 根据selected_module创建模型目录
+    # theoselected_moduletạomô hìnhthư mục
     selected_modules = config.get("selected_module", {})
     for module_type in ["ASR", "LLM", "TTS"]:
         selected_provider = selected_modules.get(module_type)
@@ -149,24 +149,24 @@ def ensure_directories(config):
             full_model_dir = os.path.join(project_dir, output_dir)
             dirs_to_create.add(full_model_dir)
 
-    # 统一创建目录（保留原data目录创建）
+    # thống nhấttạothư mục（giữ lạidatathư mụctạo）
     for dir_path in dirs_to_create:
         try:
             os.makedirs(dir_path, exist_ok=True)
         except PermissionError:
-            print(f"警告：无法创建目录 {dir_path}，请检查写入权限")
+            print(f"cảnh báo：tạothư mục {dir_path}，kiểm traghi")
 
 
 def merge_configs(default_config, custom_config):
     """
-    递归合并配置，custom_config优先级更高
+    vàcấu hình，custom_configưu tiênhơn
 
     Args:
-        default_config: 默认配置
-        custom_config: 用户自定义配置
+        default_config: mặc địnhcấu hình
+        custom_config: sử dụngđịnh nghĩacấu hình
 
     Returns:
-        合并后的配置
+        vàsaucấu hình
     """
     if not isinstance(default_config, Mapping) or not isinstance(
         custom_config, Mapping

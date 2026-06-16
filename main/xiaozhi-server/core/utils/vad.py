@@ -9,11 +9,11 @@ logger = setup_logging()
 
 
 def create_instance(class_name: str, *args, **kwargs) -> VADProviderBase:
-    """工厂方法创建VAD实例"""
+    """phương pháptạoVAD"""
     if os.path.exists(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "providers", "vad", f"{class_name}.py")):
         lib_name = f"core.providers.vad.{class_name}"
         if lib_name not in sys.modules:
             sys.modules[lib_name] = importlib.import_module(f"{lib_name}")
         return sys.modules[lib_name].VADProvider(*args, **kwargs)
 
-    raise ValueError(f"不支持的VAD类型: {class_name}，请检查该配置的type是否设置正确")
+    raise ValueError(f"khôngVAD: {class_name}，kiểm tracấu hìnhtypecóđặtđúng")

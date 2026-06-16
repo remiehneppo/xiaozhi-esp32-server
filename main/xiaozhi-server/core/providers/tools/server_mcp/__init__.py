@@ -1,4 +1,4 @@
-"""服务端MCP工具模块"""
+"""dịch vụMCPcông cụ"""
 
 from .mcp_manager import ServerMCPManager
 from .mcp_executor import ServerMCPExecutor

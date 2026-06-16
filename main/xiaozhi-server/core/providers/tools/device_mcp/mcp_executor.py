@@ -1,4 +1,4 @@
-"""设备端MCP工具执行器"""
+"""MCPcông cụ"""
 
 from typing import Dict, Any, TYPE_CHECKING
 
@@ -10,7 +10,7 @@ from .mcp_handler import call_mcp_tool
 
 
 class DeviceMCPExecutor(ToolExecutor):
-    """设备端MCP工具执行器"""
+    """MCPcông cụ"""
 
     def __init__(self, conn):
         self.conn = conn
@@ -18,26 +18,26 @@ class DeviceMCPExecutor(ToolExecutor):
     async def execute(
         self, conn: "ConnectionHandler", tool_name: str, arguments: Dict[str, Any]
     ) -> ActionResponse:
-        """执行设备端MCP工具"""
+        """MCPcông cụ"""
         if not hasattr(conn, "mcp_client") or not conn.mcp_client:
             return ActionResponse(
                 action=Action.ERROR,
-                response="设备端MCP客户端未初始化",
+                response="MCPmáy kháchkhởi tạo",
             )
 
         if not await conn.mcp_client.is_ready():
             return ActionResponse(
                 action=Action.ERROR,
-                response="设备端MCP客户端未准备就绪",
+                response="MCPmáy kháchthì",
             )
 
         try:
-            # 转换参数为JSON字符串
+            # chuyển đổitham sốchoJSONký tự
             import json
 
             args_str = json.dumps(arguments) if arguments else "{}"
 
-            # 调用设备端MCP工具
+            # sử dụngMCPcông cụ
             result = await call_mcp_tool(conn, conn.mcp_client, tool_name, args_str)
 
             resultJson = None
@@ -47,7 +47,7 @@ class DeviceMCPExecutor(ToolExecutor):
                 except Exception as e:
                     pass
 
-            # 视觉大模型不经过二次LLM处理
+            # mô hìnhkhôngqualầnLLMxử lý
             if (
                 resultJson is not None
                 and isinstance(resultJson, dict)
@@ -66,7 +66,7 @@ class DeviceMCPExecutor(ToolExecutor):
             return ActionResponse(action=Action.ERROR, response=str(e))
 
     def get_tools(self) -> Dict[str, ToolDefinition]:
-        """获取所有设备端MCP工具"""
+        """lấycóMCPcông cụ"""
         if not hasattr(self.conn, "mcp_client") or not self.conn.mcp_client:
             return {}
 
@@ -85,7 +85,7 @@ class DeviceMCPExecutor(ToolExecutor):
         return tools
 
     def has_tool(self, tool_name: str) -> bool:
-        """检查是否有指定的设备端MCP工具"""
+        """kiểm tracócóchỉ địnhMCPcông cụ"""
         if not hasattr(self.conn, "mcp_client") or not self.conn.mcp_client:
             return False
 

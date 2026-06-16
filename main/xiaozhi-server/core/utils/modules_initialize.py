@@ -17,23 +17,23 @@ def initialize_modules(
     init_intent=False,
 ) -> Dict[str, Any]:
     """
-    初始化所有模块组件
+    khởi tạocó
 
     Args:
-        config: 配置字典
+        config: cấu hình
 
     Returns:
-        Dict[str, Any]: 包含所有初始化后的模块的字典
+        Dict[str, Any]: cókhởi tạosau
     """
     modules = {}
 
-    # 初始化TTS模块
+    # khởi tạoTTS
     if init_tts:
         select_tts_module = config["selected_module"]["TTS"]
         modules["tts"] = initialize_tts(config)
-        logger.bind(tag=TAG).info(f"初始化组件: tts成功 {select_tts_module}")
+        logger.bind(tag=TAG).info(f"khởi tạo: ttsthành công {select_tts_module}")
 
-    # 初始化LLM模块
+    # khởi tạoLLM
     if init_llm:
         select_llm_module = config["selected_module"]["LLM"]
         llm_type = (
@@ -45,9 +45,9 @@ def initialize_modules(
             llm_type,
             config["LLM"][select_llm_module],
         )
-        logger.bind(tag=TAG).info(f"初始化组件: llm成功 {select_llm_module}")
+        logger.bind(tag=TAG).info(f"khởi tạo: llmthành công {select_llm_module}")
 
-    # 初始化Intent模块
+    # khởi tạoIntent
     if init_intent:
         select_intent_module = config["selected_module"]["Intent"]
         intent_type = (
@@ -59,9 +59,9 @@ def initialize_modules(
             intent_type,
             config["Intent"][select_intent_module],
         )
-        logger.bind(tag=TAG).info(f"初始化组件: intent成功 {select_intent_module}")
+        logger.bind(tag=TAG).info(f"khởi tạo: intentthành công {select_intent_module}")
 
-    # 初始化Memory模块
+    # khởi tạoMemory
     if init_memory:
         select_memory_module = config["selected_module"]["Memory"]
         memory_type = (
@@ -74,9 +74,9 @@ def initialize_modules(
             config["Memory"][select_memory_module],
             config.get("summaryMemory", None),
         )
-        logger.bind(tag=TAG).info(f"初始化组件: memory成功 {select_memory_module}")
+        logger.bind(tag=TAG).info(f"khởi tạo: memorythành công {select_memory_module}")
 
-    # 初始化VAD模块
+    # khởi tạoVAD
     if init_vad:
         select_vad_module = config["selected_module"]["VAD"]
         vad_type = (
@@ -88,13 +88,13 @@ def initialize_modules(
             vad_type,
             config["VAD"][select_vad_module],
         )
-        logger.bind(tag=TAG).info(f"初始化组件: vad成功 {select_vad_module}")
+        logger.bind(tag=TAG).info(f"khởi tạo: vadthành công {select_vad_module}")
 
-    # 初始化ASR模块
+    # khởi tạoASR
     if init_asr:
         select_asr_module = config["selected_module"]["ASR"]
         modules["asr"] = initialize_asr(config)
-        logger.bind(tag=TAG).info(f"初始化组件: asr成功 {select_asr_module}")
+        logger.bind(tag=TAG).info(f"khởi tạo: asrthành công {select_asr_module}")
     return modules
 
 
@@ -125,27 +125,27 @@ def initialize_asr(config):
         config["ASR"][select_asr_module],
         str(config.get("delete_audio", True)).lower() in ("true", "1", "yes"),
     )
-    logger.bind(tag=TAG).info("ASR模块初始化完成")
+    logger.bind(tag=TAG).info("ASRkhởi tạohoàn thành")
     return new_asr
 
 
 def initialize_voiceprint(asr_instance, config):
-    """初始化声纹识别功能"""
+    """khởi tạonhận dạngcó thể"""
     voiceprint_config = config.get("voiceprint")
     if not voiceprint_config:
         return False  
 
-    # 应用配置
+    # áp dụngcấu hình
     if not voiceprint_config.get("url") or not voiceprint_config.get("speakers"):
-        logger.bind(tag=TAG).warning("声纹识别配置不完整")
+        logger.bind(tag=TAG).warning("nhận dạngcấu hìnhkhônghoàn chỉnh")
         return False
         
     try:
         asr_instance.init_voiceprint(voiceprint_config)
-        logger.bind(tag=TAG).info("ASR模块声纹识别功能已动态启用")
-        logger.bind(tag=TAG).info(f"配置说话人数量: {len(voiceprint_config['speakers'])}")
+        logger.bind(tag=TAG).info("ASRnhận dạngcó thểđãkích hoạt")
+        logger.bind(tag=TAG).info(f"cấu hìnhnói: {len(voiceprint_config['speakers'])}")
         return True
     except Exception as e:
-        logger.bind(tag=TAG).error(f"动态初始化声纹识别功能失败: {str(e)}")
+        logger.bind(tag=TAG).error(f"khởi tạonhận dạngcó thểthất bại: {str(e)}")
         return False
 

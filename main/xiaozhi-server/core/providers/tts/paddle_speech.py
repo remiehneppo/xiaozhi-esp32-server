@@ -39,7 +39,7 @@ class TTSProvider(TTSProviderBase):
         
         self.delete_audio_file = config.get("delete_audio", True)
 
-        # 应用百分比调整（如果存在），否则使用公有化配置
+        # áp dụngphần trăm（nhưtại），làm chosử dụngcócấu hình
         self._apply_percentage_params(config)
 
         if not self.delete_audio_file:
@@ -60,14 +60,14 @@ class TTSProvider(TTSProviderBase):
     async def pcm_to_wav(self, pcm_data: bytes, sample_rate: int = 24000, num_channels: int = 1,
                          bits_per_sample: int = 16) -> bytes:
         """
-        将 PCM 数据转换为 WAV 文件并返回字节数据
-        :param pcm_data: PCM 数据（原始字节流）
-        :param sample_rate: 音频采样率，默认为24000
-        :param num_channels: 声道数，默认为单声道
-        :param bits_per_sample: 每个样本的位数，默认为16
-        :return: WAV 格式的字节数据
+        sẽ PCM dữ liệuchuyển đổicho WAV tệpvàtrả vềdữ liệu
+        :param pcm_data: PCM dữ liệu（ban đầu）
+        :param sample_rate: âm thanhtần số lấy mẫu，mặc địnhcho24000
+        :param num_channels: ，mặc địnhcho
+        :param bits_per_sample: mỗi，mặc địnhcho16
+        :return: WAV định dạngdữ liệu
         """
-        byte_data = np.frombuffer(pcm_data, dtype=np.int16)  # 16位PCM
+        byte_data = np.frombuffer(pcm_data, dtype=np.int16)  # 16PCM
         wav_io = io.BytesIO()
 
         with wave.open(wav_io, "wb") as wav_file:
@@ -86,24 +86,24 @@ class TTSProvider(TTSProviderBase):
 
     async def text_streaming(self, text, output_file):
         try:
-            # 使用 websockets 异步连接到 WebSocket 服务器
+            # làm chosử dụng websockets kết nốiđến WebSocket máy chủ
             async with websockets.connect(self.url) as ws:
-                # 发送开始请求
+                # gửibắt đầuyêu cầu
                 start_request = {
                     "task": "tts",
                     "signal": "start"
                 }
                 await ws.send(json.dumps(start_request))
 
-                # 接收开始响应并提取 session_id
+                # nhậnbắt đầuphản hồivà session_id
                 start_response = await ws.recv()
-                start_response = json.loads(start_response)  # 解析 JSON 响应
+                start_response = json.loads(start_response)  # phân tích JSON phản hồi
                 if start_response.get("status") != 0:
-                    raise Exception(f"连接失败: {start_response.get('signal')}")
+                    raise Exception(f"kết nối thất bại: {start_response.get('signal')}")
 
                 session_id = start_response.get("session")
 
-                # 发送待合成的文本数据
+                # gửivăn bảndữ liệu
                 data_request = {
                     "text": text,
                     "spk_id": self.spk_id,
@@ -111,42 +111,42 @@ class TTSProvider(TTSProviderBase):
                 await ws.send(json.dumps(data_request))
 
                 audio_chunks = b""
-                timeout_seconds = 60  # 设置超时
+                timeout_seconds = 60  # đặtquá thời gian
                 try:
                     while True:
                         response = await asyncio.wait_for(ws.recv(), timeout=timeout_seconds)
-                        response = json.loads(response)  # 解析 JSON 响应
+                        response = json.loads(response)  # phân tích JSON phản hồi
                         status = response.get("status")
 
-                        if status == 2:  # 最后一个数据包
+                        if status == 2:  # saumộtdữ liệu
                             break
                         else:
-                            # 拼接音频数据（base64 编码的 PCM 数据）
+                            # nốidữ liệu âm thanh（base64 mã hóa PCM dữ liệu）
                             audio_chunks += base64.b64decode(response.get("audio"))
                 except asyncio.TimeoutError:
-                    raise Exception(f"WebSocket 超时：等待音频数据超过 {timeout_seconds} 秒")
+                    raise Exception(f"WebSocket quá thời gian：chờdữ liệu âm thanhvượt quá {timeout_seconds} ")
 
-                # 将拼接后的 PCM 数据转换为 WAV 格式
+                # sẽnốisau PCM dữ liệuchuyển đổicho WAV định dạng
                 wav_data = await self.pcm_to_wav(audio_chunks)
 
-                # 结束请求
+                # kết thúcyêu cầu
                 end_request = {
                     "task": "tts",
                     "signal": "end",
-                    "session": session_id  # 会话 ID 必须与开始请求中的一致
+                    "session": session_id  # phiên ID vớibắt đầuyêu cầutrong
                 }
                 await ws.send(json.dumps(end_request))
 
-                # 接收结束响应避免服务抛出异常
+                # nhậnkết thúcphản hồidịch vụrangoại lệ
                 await ws.recv()
 
-                # 根据配置决定是否保存文件
+                # theocấu hìnhcólưutệp
                 if not self.delete_audio_file and self.save_path:
                     with open(self.save_path, "wb") as f:
                         f.write(wav_data)
-                    logger.bind(tag=TAG).info(f"音频文件已保存到: {self.save_path}")
+                    logger.bind(tag=TAG).info(f"tệp âm thanhđãlưuđến: {self.save_path}")
                 
-                # 返回或保存音频数据
+                # trả vềhoặclưudữ liệu âm thanh
                 if output_file:
                     with open(output_file, "wb") as file_to_save:
                         file_to_save.write(wav_data)

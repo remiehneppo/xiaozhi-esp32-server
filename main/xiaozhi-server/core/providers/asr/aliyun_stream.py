@@ -78,19 +78,19 @@ class ASRProvider(ASRProviderBase):
         self.asr_ws = None
         self.forward_task = None
         self.is_processing = False
-        self.server_ready = False  # 服务器准备状态
+        self.server_ready = False  # máy chủtrạng thái
 
-        # 基础配置
+        # cấu hình
         self.access_key_id = config.get("access_key_id")
         self.access_key_secret = config.get("access_key_secret")
         self.appkey = config.get("appkey")
         self.token = config.get("token")
         self.host = config.get("host", "nls-gateway-cn-shanghai.aliyuncs.com")
-        # 如果配置的是内网地址（包含-internal.aliyuncs.com），则使用ws协议，默认是wss协议
+        # nhưcấu hìnhcủlàbên trongđịa chỉ（-internal.aliyuncs.com），làm chosử dụngwsgiao thức，mặc địnhlàwssgiao thức
         if "-internal." in self.host:
             self.ws_url = f"ws://{self.host}/ws/v1"
         else:
-            # 默认使用wss协议
+            # mặc địnhlàm chosử dụngwssgiao thức
             self.ws_url = f"wss://{self.host}/ws/v1"
 
         self.max_sentence_silence = config.get("max_sentence_silence")
@@ -100,17 +100,17 @@ class ASRProvider(ASRProviderBase):
 
         self.task_id = uuid.uuid4().hex
 
-        # Token管理
+        # Token
         if self.access_key_id and self.access_key_secret:
             self._refresh_token()
         elif not self.token:
-            raise ValueError("必须提供access_key_id+access_key_secret或者直接提供token")
+            raise ValueError("access_key_id+access_key_secrethoặctoken")
 
     def _refresh_token(self):
-        """刷新Token"""
+        """làm mớiToken"""
         self.token, expire_time_str = AccessToken.create_token(self.access_key_id, self.access_key_secret)
         if not self.token:
-            raise ValueError("无法获取有效的访问Token")
+            raise ValueError("lấyhiệu quảcủToken")
         
         try:
             expire_str = str(expire_time_str).strip()
@@ -123,22 +123,22 @@ class ASRProvider(ASRProviderBase):
             self.expire_time = None
 
     def _is_token_expired(self):
-        """检查Token是否过期"""
+        """kiểm traTokenlàqua"""
         return self.expire_time and time.time() > self.expire_time
 
     async def open_audio_channels(self, conn):
         await super().open_audio_channels(conn)
 
     async def receive_audio(self, conn, audio, audio_have_voice):
-        # 先调用父类方法处理基础逻辑
+        # sử dụngphương phápxử lý
         await super().receive_audio(conn, audio, audio_have_voice)
 
-        # 只在有声音且没有连接时建立连接（排除正在停止的情况）
+        # chỉtại/trongcóvàcókết nốikhi/thờikết nối（tại/trongdừngcủ）
         if audio_have_voice and not self.is_processing and not self.asr_ws:
             try:
                 await self._start_recognition(conn)
             except Exception as e:
-                logger.bind(tag=TAG).error(f"开始识别失败: {str(e)}")
+                logger.bind(tag=TAG).error(f"bắt đầunhận dạngthất bại: {str(e)}")
                 await self._cleanup()
                 return
 
@@ -147,15 +147,15 @@ class ASRProvider(ASRProviderBase):
                 pcm_frame = self.decoder.decode(audio, 960)
                 await self.asr_ws.send(pcm_frame)
             except Exception as e:
-                logger.bind(tag=TAG).warning(f"发送音频失败: {str(e)}")
+                logger.bind(tag=TAG).warning(f"gửiâm thanhthất bại: {str(e)}")
                 await self._cleanup()
 
     async def _start_recognition(self, conn: "ConnectionHandler"):
-        """开始识别会话"""
+        """bắt đầunhận dạngphiên"""
         if self._is_token_expired():
             self._refresh_token()
         
-        # 建立连接
+        # kết nối
         headers = {"X-NLS-Token": self.token}
         self.asr_ws = await websockets.connect(
             self.ws_url,
@@ -168,13 +168,13 @@ class ASRProvider(ASRProviderBase):
 
         self.task_id = uuid.uuid4().hex
 
-        logger.bind(tag=TAG).debug(f"WebSocket连接建立成功, task_id: {self.task_id}")
+        logger.bind(tag=TAG).debug(f"WebSocketkết nốithành công, task_id: {self.task_id}")
 
         self.is_processing = True
-        self.server_ready = False  # 重置服务器准备状态
+        self.server_ready = False  # đặt lạimáy chủtrạng thái
         self.forward_task = asyncio.create_task(self._forward_results(conn))
 
-        # 发送开始请求
+        # gửibắt đầuyêu cầu
         start_request = {
             "header": {
                 "namespace": "SpeechTranscriber",
@@ -194,13 +194,13 @@ class ASRProvider(ASRProviderBase):
             }
         }
         await self.asr_ws.send(json.dumps(start_request, ensure_ascii=False))
-        logger.bind(tag=TAG).debug("已发送开始请求，等待服务器准备...")
+        logger.bind(tag=TAG).debug("đãgửibắt đầuyêu cầu，chờmáy chủ...")
 
     async def _forward_results(self, conn: "ConnectionHandler"):
-        """转发识别结果"""
+        """nhận dạngkết quả"""
         try:
             while not conn.stop_event.is_set():
-                # 获取当前连接的音频数据
+                # lấyhiện tạikết nốicủdữ liệu âm thanh
                 audio_data = conn.asr_audio
                 try:
                     response = await self.asr_ws.recv()
@@ -213,80 +213,80 @@ class ASRProvider(ASRProviderBase):
 
                     if status != 20000000:
                         if status == 40010004:
-                            logger.bind(tag=TAG).warning(f"请在服务端响应完成后再关闭链接，状态码: {status}")
+                            logger.bind(tag=TAG).warning(f"tại/trongdịch vụphản hồihoàn thànhsauđóng，trạng thái: {status}")
                             break
-                        if status in [40000004, 40010003]:  # 连接超时或客户端断开
-                            logger.bind(tag=TAG).warning(f"连接问题，状态码: {status}")
+                        if status in [40000004, 40010003]:  # kết nốiquá thời gianhoặcmáy kháchngắt kết nối
+                            logger.bind(tag=TAG).warning(f"kết nối，trạng thái: {status}")
                             break
-                        elif status in [40270002, 40270003]:  # 音频问题
-                            logger.bind(tag=TAG).warning(f"音频处理问题，状态码: {status}")
+                        elif status in [40270002, 40270003]:  # âm thanh
+                            logger.bind(tag=TAG).warning(f"âm thanhxử lý，trạng thái: {status}")
                             continue
                         else:
-                            logger.bind(tag=TAG).error(f"识别错误，状态码: {status}, 消息: {header.get('status_text', '')}")
+                            logger.bind(tag=TAG).error(f"nhận dạngsai，trạng thái: {status}, tin nhắn: {header.get('status_text', '')}")
                             continue
 
-                    # 收到TranscriptionStarted表示服务器准备好接收音频数据
+                    # đếnTranscriptionStartedmáy chủnhậndữ liệu âm thanh
                     if message_name == "TranscriptionStarted":
                         self.server_ready = True
-                        logger.bind(tag=TAG).debug("服务器已准备，开始发送缓存音频...")
+                        logger.bind(tag=TAG).debug("máy chủđã，bắt đầugửibộ nhớ đệmâm thanh...")
 
-                        # 发送缓存音频
+                        # gửibộ nhớ đệmâm thanh
                         if conn.asr_audio:
                             for cached_audio in conn.asr_audio[-10:]:
                                 try:
                                     pcm_frame = self.decoder.decode(cached_audio, 960)
                                     await self.asr_ws.send(pcm_frame)
                                 except Exception as e:
-                                    logger.bind(tag=TAG).warning(f"发送缓存音频失败: {e}")
+                                    logger.bind(tag=TAG).warning(f"gửibộ nhớ đệmâm thanhthất bại: {e}")
                                     break
                         continue
                     elif message_name == "SentenceEnd":
-                        # 句子结束（每个句子都会触发）
+                        # câukết thúc（mỗicâusẽ）
                         text = payload.get("result", "")
                         if text:
-                            logger.bind(tag=TAG).info(f"识别到文本: {text}")
+                            logger.bind(tag=TAG).info(f"nhận dạngđếnvăn bản: {text}")
 
-                            # 手动模式下累积识别结果
+                            # chế độtích lũynhận dạngkết quả
                             if conn.client_listen_mode == "manual":
                                 if self.text:
                                     self.text += text
                                 else:
                                     self.text = text
 
-                                # 手动模式下，只有在收到stop信号后才触发处理（仅处理一次）
+                                # chế độ，chỉcótại/trongđếnstopsauxử lý（chỉxử lýlần）
                                 if conn.client_voice_stop:
-                                    logger.bind(tag=TAG).debug("收到最终识别结果，触发处理")
+                                    logger.bind(tag=TAG).debug("đếnnhận dạngkết quả，xử lý")
                                     await self.handle_voice_stop(conn, audio_data)
                                     break
                             else:
-                                # 自动模式下直接覆盖
+                                # chế độ
                                 self.text = text
                                 await self.handle_voice_stop(conn, audio_data)
                                 break
 
                 except asyncio.TimeoutError:
-                    logger.bind(tag=TAG).error("接收结果超时")
+                    logger.bind(tag=TAG).error("nhậnkết quảquá thời gian")
                     break
                 except websockets.ConnectionClosed:
-                    logger.bind(tag=TAG).info("ASR服务连接已关闭")
+                    logger.bind(tag=TAG).info("ASRdịch vụkết nốiđãđóng")
                     self.is_processing = False
                     break
                 except Exception as e:
-                    logger.bind(tag=TAG).error(f"处理结果失败: {str(e)}")
+                    logger.bind(tag=TAG).error(f"xử lýkết quảthất bại: {str(e)}")
                     break
 
         except Exception as e:
-            logger.bind(tag=TAG).error(f"结果转发失败: {str(e)}")
+            logger.bind(tag=TAG).error(f"kết quảthất bại: {str(e)}")
         finally:
-            # 清理连接的音频缓存
+            # dọn dẹpkết nốicủâm thanhbộ nhớ đệm
             await self._cleanup()
             conn.reset_audio_states()
 
     async def _send_stop_request(self):
-        """发送停止识别请求（不关闭连接）"""
+        """gửidừngnhận dạngyêu cầu（khôngđóngkết nối）"""
         if self.asr_ws:
             try:
-                # 先停止音频发送
+                # dừngâm thanhgửi
                 self.is_processing = False
 
                 stop_msg = {
@@ -298,44 +298,44 @@ class ASRProvider(ASRProviderBase):
                         "appkey": self.appkey
                     }
                 }
-                logger.bind(tag=TAG).debug("停止识别请求已发送")
+                logger.bind(tag=TAG).debug("dừngnhận dạngyêu cầuđãgửi")
                 await self.asr_ws.send(json.dumps(stop_msg, ensure_ascii=False))
             except Exception as e:
-                logger.bind(tag=TAG).error(f"发送停止识别请求失败: {e}")
+                logger.bind(tag=TAG).error(f"gửidừngnhận dạngyêu cầuthất bại: {e}")
 
     async def _cleanup(self):
-        """清理资源（关闭连接）"""
-        logger.bind(tag=TAG).debug(f"开始ASR会话清理 | 当前状态: processing={self.is_processing}, server_ready={self.server_ready}")
+        """dọn dẹptài nguyên（đóngkết nối）"""
+        logger.bind(tag=TAG).debug(f"bắt đầuASRphiêndọn dẹp | hiện tạitrạng thái: processing={self.is_processing}, server_ready={self.server_ready}")
 
-        # 状态重置
+        # trạng tháiđặt lại
         self.is_processing = False
         self.server_ready = False
-        logger.bind(tag=TAG).debug("ASR状态已重置")
+        logger.bind(tag=TAG).debug("ASRtrạng tháiđãđặt lại")
 
-        # 关闭连接
+        # đóngkết nối
         if self.asr_ws:
             try:
-                logger.bind(tag=TAG).debug("正在关闭WebSocket连接")
+                logger.bind(tag=TAG).debug("tại/trongđóngWebSocketkết nối")
                 await asyncio.wait_for(self.asr_ws.close(), timeout=2.0)
-                logger.bind(tag=TAG).debug("WebSocket连接已关闭")
+                logger.bind(tag=TAG).debug("WebSocketkết nốiđãđóng")
             except Exception as e:
-                logger.bind(tag=TAG).error(f"关闭WebSocket连接失败: {e}")
+                logger.bind(tag=TAG).error(f"đóngWebSocketkết nốithất bại: {e}")
             finally:
                 self.asr_ws = None
 
-        # 清理任务引用
+        # dọn dẹpnhiệm vụsử dụng
         self.forward_task = None
 
-        logger.bind(tag=TAG).debug("ASR会话清理完成")
+        logger.bind(tag=TAG).debug("ASRphiêndọn dẹphoàn thành")
 
     async def speech_to_text(self, opus_data, session_id, audio_format, artifacts=None):
-        """获取识别结果"""
+        """lấynhận dạngkết quả"""
         result = self.text
         self.text = ""
         return result, None
 
     async def close(self):
-        """关闭资源"""
+        """đóngtài nguyên"""
         await self._cleanup()
         if hasattr(self, 'decoder') and self.decoder is not None:
             try:
@@ -343,4 +343,4 @@ class ASRProvider(ASRProviderBase):
                 self.decoder = None
                 logger.bind(tag=TAG).debug("Aliyun decoder resources released")
             except Exception as e:
-                logger.bind(tag=TAG).debug(f"释放Aliyun decoder资源时出错: {e}")
+                logger.bind(tag=TAG).debug(f"giải phóngAliyun decodertài nguyênkhi/thờira: {e}")

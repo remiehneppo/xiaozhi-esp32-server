@@ -1,4 +1,4 @@
-"""设备端MCP客户端支持模块"""
+"""MCPmáy khách"""
 
 import json
 import asyncio
@@ -17,7 +17,7 @@ logger = setup_logging()
 
 
 class MCPClient:
-    """设备端MCP客户端，用于管理MCP状态和工具"""
+    """MCPmáy khách，sử dụngtạiMCPtrạng tháivàcông cụ"""
 
     def __init__(self):
         self.tools = {}  # sanitized_name -> tool_data
@@ -103,26 +103,26 @@ class MCPClient:
 async def send_mcp_message(conn: "ConnectionHandler", payload: dict):
     """Helper to send MCP messages, encapsulating common logic."""
     if not conn.features.get("mcp"):
-        logger.bind(tag=TAG).warning("客户端不支持MCP，无法发送MCP消息")
+        logger.bind(tag=TAG).warning("máy kháchkhôngMCP，gửiMCPtin nhắn")
         return
 
     message = json.dumps({"type": "mcp", "payload": payload})
 
     try:
         await conn.websocket.send(message)
-        logger.bind(tag=TAG).debug(f"成功发送MCP消息: {message}")
+        logger.bind(tag=TAG).debug(f"thành cônggửiMCPtin nhắn: {message}")
     except Exception as e:
-        logger.bind(tag=TAG).error(f"发送MCP消息失败: {e}")
+        logger.bind(tag=TAG).error(f"gửiMCPtin nhắnthất bại: {e}")
 
 
 async def handle_mcp_message(
     conn: "ConnectionHandler", mcp_client: MCPClient, payload: dict
 ):
-    """处理MCP消息,包括初始化、工具列表和工具调用响应等"""
-    logger.bind(tag=TAG).debug(f"处理MCP消息: {str(payload)[:100]}")
+    """xử lýMCPtin nhắn,bao gồmkhởi tạo、công cụvàcông cụsử dụngphản hồiv.v."""
+    logger.bind(tag=TAG).debug(f"xử lýMCPtin nhắn: {str(payload)[:100]}")
 
     if not isinstance(payload, dict):
-        logger.bind(tag=TAG).error("MCP消息缺少payload字段或格式错误")
+        logger.bind(tag=TAG).error("MCPtin nhắnpayloadhoặcđịnh dạngsai")
         return
 
     # Handle result
@@ -133,37 +133,37 @@ async def handle_mcp_message(
         # Check for tool call response first
         if msg_id in mcp_client.call_results:
             logger.bind(tag=TAG).debug(
-                f"收到工具调用响应，ID: {msg_id}, 结果: {result}"
+                f"đếncông cụsử dụngphản hồi，ID: {msg_id}, kết quả: {result}"
             )
             await mcp_client.resolve_call_result(msg_id, result)
             return
 
         if msg_id == 1:  # mcpInitializeID
-            logger.bind(tag=TAG).debug("收到MCP初始化响应")
+            logger.bind(tag=TAG).debug("đếnMCPkhởi tạophản hồi")
             server_info = result.get("serverInfo")
             if isinstance(server_info, dict):
                 name = server_info.get("name")
                 version = server_info.get("version")
                 logger.bind(tag=TAG).debug(
-                    f"客户端MCP服务器信息: name={name}, version={version}"
+                    f"máy kháchMCPmáy chủthông tin: name={name}, version={version}"
                 )
 
             await asyncio.sleep(1)
-            logger.bind(tag=TAG).debug("初始化完成，开始请求MCP工具列表")
+            logger.bind(tag=TAG).debug("khởi tạohoàn thành，bắt đầuyêu cầuMCPcông cụ")
             await send_mcp_tools_list_request(conn)
 
             return
 
         elif msg_id == 2:  # mcpToolsListID
-            logger.bind(tag=TAG).debug("收到MCP工具列表响应")
+            logger.bind(tag=TAG).debug("đếnMCPcông cụphản hồi")
             if isinstance(result, dict) and "tools" in result:
                 tools_data = result["tools"]
                 if not isinstance(tools_data, list):
-                    logger.bind(tag=TAG).error("工具列表格式错误")
+                    logger.bind(tag=TAG).error("công cụđịnh dạngsai")
                     return
 
                 logger.bind(tag=TAG).info(
-                    f"客户端设备支持的工具数量: {len(tools_data)}"
+                    f"máy kháchcủcông cụ: {len(tools_data)}"
                 )
 
                 for i, tool in enumerate(tools_data):
@@ -188,13 +188,13 @@ async def handle_mcp_message(
                         "inputSchema": input_schema,
                     }
                     await mcp_client.add_tool(new_tool)
-                    logger.bind(tag=TAG).debug(f"客户端工具 #{i+1}: {name}")
+                    logger.bind(tag=TAG).debug(f"máy kháchcông cụ #{i+1}: {name}")
 
-                # 替换所有工具描述中的工具名称
+                # thay thếcócông cụtrongcủcông cụ
                 for tool_data in mcp_client.tools.values():
                     if "description" in tool_data:
                         description = tool_data["description"]
-                        # 遍历所有工具名称进行替换
+                        # duyệtcócông cụtiến hànhthay thế
                         for (
                             sanitized_name,
                             original_name,
@@ -206,13 +206,13 @@ async def handle_mcp_message(
 
                 next_cursor = result.get("nextCursor", "")
                 if next_cursor:
-                    logger.bind(tag=TAG).debug(f"有更多工具，nextCursor: {next_cursor}")
+                    logger.bind(tag=TAG).debug(f"cóhơnnhiềucông cụ，nextCursor: {next_cursor}")
                     await send_mcp_tools_list_continue_request(conn, next_cursor)
                 else:
                     await mcp_client.set_ready(True)
-                    logger.bind(tag=TAG).debug("所有工具已获取，MCP客户端准备就绪")
+                    logger.bind(tag=TAG).debug("cócông cụđãlấy，MCPmáy kháchthì")
 
-                    # 刷新工具缓存，确保MCP工具被包含在函数列表中
+                    # làm mớicông cụbộ nhớ đệm，đảm bảoMCPcông cụbịtại/tronghàmtrong
                     if hasattr(conn, "func_handler") and conn.func_handler:
                         conn.func_handler.tool_manager.refresh_tools()
                         conn.func_handler.current_support_functions()
@@ -221,26 +221,26 @@ async def handle_mcp_message(
     # Handle method calls (requests from the client)
     elif "method" in payload:
         method = payload["method"]
-        logger.bind(tag=TAG).info(f"收到MCP客户端请求: {method}")
+        logger.bind(tag=TAG).info(f"đếnMCPmáy kháchyêu cầu: {method}")
 
     elif "error" in payload:
         error_data = payload["error"]
-        error_msg = error_data.get("message", "未知错误")
-        logger.bind(tag=TAG).error(f"收到MCP错误响应: {error_msg}")
+        error_msg = error_data.get("message", "lỗi không xác định")
+        logger.bind(tag=TAG).error(f"đếnMCPsaiphản hồi: {error_msg}")
 
         msg_id = int(payload.get("id", 0))
         if msg_id in mcp_client.call_results:
             await mcp_client.reject_call_result(
-                msg_id, Exception(f"MCP错误: {error_msg}")
+                msg_id, Exception(f"MCPsai: {error_msg}")
             )
 
 
 async def send_mcp_initialize_message(conn: "ConnectionHandler"):
-    """发送MCP初始化消息"""
+    """gửiMCPkhởi tạotin nhắn"""
 
     vision_url = get_vision_url(conn.config)
 
-    # 密钥生成token
+    # tạotoken
     auth = AuthToken(conn.config["server"]["auth_key"])
     token = auth.generate_token(conn.headers.get("device-id"))
 
@@ -266,30 +266,30 @@ async def send_mcp_initialize_message(conn: "ConnectionHandler"):
             },
         },
     }
-    logger.bind(tag=TAG).debug("发送MCP初始化消息")
+    logger.bind(tag=TAG).debug("gửiMCPkhởi tạotin nhắn")
     await send_mcp_message(conn, payload)
 
 
 async def send_mcp_tools_list_request(conn: "ConnectionHandler"):
-    """发送MCP工具列表请求"""
+    """gửiMCPcông cụyêu cầu"""
     payload = {
         "jsonrpc": "2.0",
         "id": 2,  # mcpToolsListID
         "method": "tools/list",
     }
-    logger.bind(tag=TAG).debug("发送MCP工具列表请求")
+    logger.bind(tag=TAG).debug("gửiMCPcông cụyêu cầu")
     await send_mcp_message(conn, payload)
 
 
 async def send_mcp_tools_list_continue_request(conn: "ConnectionHandler", cursor: str):
-    """发送带有cursor的MCP工具列表请求"""
+    """gửicócursorcủMCPcông cụyêu cầu"""
     payload = {
         "jsonrpc": "2.0",
         "id": 2,  # mcpToolsListID (same ID for continuation)
         "method": "tools/list",
         "params": {"cursor": cursor},
     }
-    logger.bind(tag=TAG).info(f"发送带cursor的MCP工具列表请求: {cursor}")
+    logger.bind(tag=TAG).info(f"gửicursorcủMCPcông cụyêu cầu: {cursor}")
     await send_mcp_message(conn, payload)
 
 
@@ -301,35 +301,35 @@ async def call_mcp_tool(
     timeout: int = 30,
 ):
     """
-    调用指定的工具，并等待响应
+    sử dụngchỉ địnhcủcông cụ，vàchờphản hồi
     """
     if not await mcp_client.is_ready():
-        raise RuntimeError("MCP客户端尚未准备就绪")
+        raise RuntimeError("MCPmáy kháchthì")
 
     if not mcp_client.has_tool(tool_name):
-        raise ValueError(f"工具 {tool_name} 不存在")
+        raise ValueError(f"công cụ {tool_name} khôngtại/trong")
 
     tool_call_id = await mcp_client.get_next_id()
     result_future = asyncio.Future()
     await mcp_client.register_call_result_future(tool_call_id, result_future)
 
-    # 处理参数
+    # xử lýtham số
     try:
         if isinstance(args, str):
-            # 确保字符串是有效的JSON
+            # đảm bảoký tựlàhiệu quảcủJSON
             if not args.strip():
                 arguments = {}
             else:
                 try:
-                    # 尝试直接解析
+                    # cố gắngphân tích
                     arguments = json.loads(args)
                 except json.JSONDecodeError:
-                    # 如果解析失败，尝试合并多个JSON对象
+                    # nhưphân tíchthất bại，thửvànhiềuJSONvới
                     try:
-                        # 使用正则表达式匹配所有JSON对象
+                        # sử dụngkhớpcóJSONvới
                         json_objects = re.findall(r"\{[^{}]*\}", args)
                         if len(json_objects) > 1:
-                            # 合并所有JSON对象
+                            # vàcóJSONvới
                             merged_dict = {}
                             for json_str in json_objects:
                                 try:
@@ -341,26 +341,26 @@ async def call_mcp_tool(
                             if merged_dict:
                                 arguments = merged_dict
                             else:
-                                raise ValueError(f"无法解析任何有效的JSON对象: {args}")
+                                raise ValueError(f"phân tíchhiệu quảcủJSONvới: {args}")
                         else:
-                            raise ValueError(f"参数JSON解析失败: {args}")
+                            raise ValueError(f"tham sốJSONphân tíchthất bại: {args}")
                     except Exception as e:
                         logger.bind(tag=TAG).error(
-                            f"参数JSON解析失败: {str(e)}, 原始参数: {args}"
+                            f"tham sốJSONphân tíchthất bại: {str(e)}, ban đầutham số: {args}"
                         )
-                        raise ValueError(f"参数JSON解析失败: {str(e)}")
+                        raise ValueError(f"tham sốJSONphân tíchthất bại: {str(e)}")
         elif isinstance(args, dict):
             arguments = args
         else:
-            raise ValueError(f"参数类型错误，期望字符串或字典，实际类型: {type(args)}")
+            raise ValueError(f"tham sốsai，ký tựhoặc，: {type(args)}")
 
-        # 确保参数是字典类型
+        # đảm bảotham sốlà
         if not isinstance(arguments, dict):
-            raise ValueError(f"参数必须是字典类型，实际类型: {type(arguments)}")
+            raise ValueError(f"tham sốlà，: {type(arguments)}")
 
     except Exception as e:
         if not isinstance(e, ValueError):
-            raise ValueError(f"参数处理失败: {str(e)}")
+            raise ValueError(f"tham sốxử lýthất bại: {str(e)}")
         raise e
 
     actual_name = mcp_client.name_mapping.get(tool_name, tool_name)
@@ -371,33 +371,33 @@ async def call_mcp_tool(
         "params": {"name": actual_name, "arguments": arguments},
     }
 
-    logger.bind(tag=TAG).info(f"发送客户端mcp工具调用请求: {actual_name}，参数: {args}")
+    logger.bind(tag=TAG).info(f"gửimáy kháchmcpcông cụsử dụngyêu cầu: {actual_name}，tham số: {args}")
     await send_mcp_message(conn, payload)
 
     try:
         # Wait for response or timeout
         raw_result = await asyncio.wait_for(result_future, timeout=timeout)
         logger.bind(tag=TAG).info(
-            f"客户端mcp工具调用 {actual_name} 成功，原始结果: {raw_result}"
+            f"máy kháchmcpcông cụsử dụng {actual_name} thành công，ban đầukết quả: {raw_result}"
         )
 
         if isinstance(raw_result, dict):
             if raw_result.get("isError") is True:
                 error_msg = raw_result.get(
-                    "error", "工具调用返回错误，但未提供具体错误信息"
+                    "error", "công cụsử dụngtrả vềsai，nhưngsaithông tin"
                 )
-                raise RuntimeError(f"工具调用错误: {error_msg}")
+                raise RuntimeError(f"công cụsử dụngsai: {error_msg}")
 
             content = raw_result.get("content")
             if isinstance(content, list) and len(content) > 0:
                 if isinstance(content[0], dict) and "text" in content[0]:
-                    # 直接返回文本内容，不进行JSON解析
+                    # trả vềvăn bảnbên trong，khôngtiến hànhJSONphân tích
                     return content[0]["text"]
-        # 如果结果不是预期的格式，将其转换为字符串
+        # nhưkết quảkhônglàcủđịnh dạng，sẽnó/của nóchuyển đổichoký tự
         return str(raw_result)
     except asyncio.TimeoutError:
         await mcp_client.cleanup_call_result(tool_call_id)
-        raise TimeoutError("工具调用请求超时")
+        raise TimeoutError("công cụsử dụngyêu cầuquá thời gian")
     except Exception as e:
         await mcp_client.cleanup_call_result(tool_call_id)
         raise e

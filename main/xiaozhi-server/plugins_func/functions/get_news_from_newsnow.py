@@ -15,47 +15,47 @@ logger = setup_logging()
 
 CHANNEL_MAP = {
     "V2EX": "v2ex-share",
-    "知乎": "zhihu",
-    "微博": "weibo",
-    "联合早报": "zaobao",
-    "酷安": "coolapk",
+    "": "zhihu",
+    "": "weibo",
+    "": "zaobao",
+    "": "coolapk",
     "MKTNews": "mktnews-flash",
-    "华尔街见闻": "wallstreetcn-quick",
-    "36氪": "36kr-quick",
-    "抖音": "douyin",
-    "虎扑": "hupu",
-    "百度贴吧": "tieba",
-    "今日头条": "toutiao",
-    "IT之家": "ithome",
-    "澎湃新闻": "thepaper",
-    "卫星通讯社": "sputniknewscn",
-    "参考消息": "cankaoxiaoxi",
-    "远景论坛": "pcbeta-windows11",
-    "财联社": "cls-depth",
-    "雪球": "xueqiu-hotstock",
-    "格隆汇": "gelonghui",
-    "法布财经": "fastbull-express",
+    "": "wallstreetcn-quick",
+    "36": "36kr-quick",
+    "": "douyin",
+    "": "hupu",
+    "": "tieba",
+    "": "toutiao",
+    "IT": "ithome",
+    "": "thepaper",
+    "": "sputniknewscn",
+    "tin nhắn": "cankaoxiaoxi",
+    "": "pcbeta-windows11",
+    "": "cls-depth",
+    "": "xueqiu-hotstock",
+    "": "gelonghui",
+    "": "fastbull-express",
     "Solidot": "solidot",
     "Hacker News": "hackernews",
     "Product Hunt": "producthunt",
     "Github": "github-trending-today",
-    "哔哩哔哩": "bilibili-hot-search",
-    "快手": "kuaishou",
-    "靠谱新闻": "kaopu",
-    "金十数据": "jin10",
-    "百度热搜": "baidu",
-    "牛客": "nowcoder",
-    "少数派": "sspai",
-    "稀土掘金": "juejin",
-    "凤凰网": "ifeng",
-    "虫部落": "chongbuluo-latest",
+    "": "bilibili-hot-search",
+    "": "kuaishou",
+    "": "kaopu",
+    "dữ liệu": "jin10",
+    "": "baidu",
+    "": "nowcoder",
+    "": "sspai",
+    "": "juejin",
+    "": "ifeng",
+    "": "chongbuluo-latest",
 }
 
-# 默认新闻来源字典，当配置中没有指定时使用
-DEFAULT_NEWS_SOURCES = "澎湃新闻;百度热搜;财联社"
+# mặc địnhđến，cấu hìnhtrongcóchỉ địnhkhi/thờilàm chosử dụng
+DEFAULT_NEWS_SOURCES = ";;"
 
 def _get_newsnow_config(conn):
-    # 从连接配置获取
+    # từkết nốicấu hìnhlấy
     plugins = conn.config.get("plugins", {})
     newsnow = plugins.get("get_news_from_newsnow", {})
     sources = newsnow.get("news_sources", "")
@@ -65,43 +65,43 @@ def _get_newsnow_config(conn):
     return ""
 
 def get_news_sources_from_config(conn):
-    """从配置中获取新闻源字符串"""
+    """từcấu hìnhtronglấyký tự"""
     try:
         result = _get_newsnow_config(conn)
         if result:
-            logger.bind(tag=TAG).debug(f"使用配置的新闻源: {result}")
+            logger.bind(tag=TAG).debug(f"làm chosử dụngcấu hìnhcủ: {result}")
             return result
 
-        logger.bind(tag=TAG).debug("未找到新闻源配置，使用默认配置")
+        logger.bind(tag=TAG).debug("đếncấu hình，làm chosử dụngmặc địnhcấu hình")
         return DEFAULT_NEWS_SOURCES
 
     except Exception as e:
-        logger.bind(tag=TAG).error(f"获取新闻源配置失败: {e}，使用默认配置")
+        logger.bind(tag=TAG).error(f"lấycấu hìnhthất bại: {e}，làm chosử dụngmặc địnhcấu hình")
         return DEFAULT_NEWS_SOURCES
 
 
-# 从默认配置获取可用的新闻源名称（运行时由get_news_sources_from_config动态获取）
+# từmặc địnhcấu hìnhlấykhả dụngcủ（khi/thờiget_news_sources_from_configlấy）
 example_sources_str = DEFAULT_NEWS_SOURCES.replace(";","、")
 
 GET_NEWS_FROM_NEWSNOW_FUNCTION_DESC = {
     "type": "function",
     "function": {
         "name": "get_news_from_newsnow",
-        "description": "当用户要求查看或收听新闻时调用（如'来条新闻''今天有什么新闻'）。",
+        "description": "sử dụngphảihoặckhi/thờisử dụng（như'đến''cógì'）。",
         "parameters": {
             "type": "object",
             "properties": {
                 "source": {
                     "type": "string",
-                    "description": f"新闻源的标准中文名称，例如{example_sources_str}等。可选参数，如果不提供则使用默认新闻源",
+                    "description": f"củtrong，như{example_sources_str}v.v.。tùy chọntham số，nhưkhônglàm chosử dụngmặc định",
                 },
                 "detail": {
                     "type": "boolean",
-                    "description": "是否获取详细内容，默认为false。如果为true，则获取上一条新闻的详细内容",
+                    "description": "làlấybên trong，mặc địnhchofalse。nhưchotrue，lấytrêncủbên trong",
                 },
                 "lang": {
                     "type": "string",
-                    "description": "返回用户使用的语言code，例如zh_CN/zh_HK/en_US/ja_JP等，默认zh_CN",
+                    "description": "Ngôn ngữ code user sử dụng trả về, ví dụ zh_CN/zh_HK/en_US/ja_JP v.v., mặc định zh_CN",
                 },
             },
             "required": ["lang"],
@@ -111,7 +111,7 @@ GET_NEWS_FROM_NEWSNOW_FUNCTION_DESC = {
 
 
 def fetch_news_from_api(conn: "ConnectionHandler", source="thepaper"):
-    """从API获取新闻列表"""
+    """từAPIlấy"""
     try:
         api_url = f"https://newsnow.busiyi.world/api/s?id={source}"
 
@@ -128,37 +128,37 @@ def fetch_news_from_api(conn: "ConnectionHandler", source="thepaper"):
         if "items" in data:
             return data["items"]
         else:
-            logger.bind(tag=TAG).error(f"获取新闻API响应格式错误: {data}")
+            logger.bind(tag=TAG).error(f"lấyAPIphản hồiđịnh dạngsai: {data}")
             return []
 
     except Exception as e:
-        logger.bind(tag=TAG).error(f"获取新闻API失败: {e}")
+        logger.bind(tag=TAG).error(f"lấyAPIthất bại: {e}")
         return []
 
 
 def fetch_news_detail(url):
-    """获取新闻详情页内容并使用MarkItDown清理HTML"""
+    """lấybên trongvàlàm chosử dụngMarkItDowndọn dẹpHTML"""
     try:
         headers = {"User-Agent": "Mozilla/5.0"}
         response = requests.get(url, headers=headers, timeout=10)
         response.raise_for_status()
 
-        # 使用MarkItDown清理HTML内容
+        # sử dụngMarkItDowndọn dẹpHTMLbên trong
         md = MarkItDown(enable_plugins=False)
         result = md.convert(response)
 
-        # 获取清理后的文本内容
+        # lấydọn dẹpsaucủvăn bảnbên trong
         clean_text = result.text_content
 
-        # 如果清理后的内容为空，返回提示信息
+        # nhưdọn dẹpsaucủbên trongcho，trả vềgợi ýthông tin
         if not clean_text or len(clean_text.strip()) == 0:
-            logger.bind(tag=TAG).warning(f"清理后的新闻内容为空: {url}")
-            return "无法解析新闻详情内容，可能是网站结构特殊或内容受限。"
+            logger.bind(tag=TAG).warning(f"dọn dẹpsaucủbên trongcho: {url}")
+            return "phân tíchbên trong，có thểlàhoặcbên trong。"
 
         return clean_text
     except Exception as e:
-        logger.bind(tag=TAG).error(f"获取新闻详情失败: {e}")
-        return "无法获取详细内容"
+        logger.bind(tag=TAG).error(f"lấythất bại: {e}")
+        return "lấybên trong"
 
 
 @register_function(
@@ -168,16 +168,16 @@ def fetch_news_detail(url):
 )
 def get_news_from_newsnow(
     conn: "ConnectionHandler",
-    source: str = "澎湃新闻",
+    source: str = "",
     detail: bool = False,
     lang: str = "zh_CN",
 ):
-    """获取新闻并随机选择一条进行播报，或获取上一条新闻的详细内容"""
+    """lấyvàtiến hành，hoặclấytrêncủbên trong"""
     try:
-        # 获取当前配置的新闻源
+        # lấyhiện tạicấu hìnhcủ
         news_sources = get_news_sources_from_config(conn)
 
-        # 如果detail为True，获取上一条新闻的详细内容
+        # nhưdetailchoTrue，lấytrêncủbên trong
         detail = str(detail).lower() == "true"
         if detail:
             if (
@@ -187,101 +187,101 @@ def get_news_from_newsnow(
             ):
                 return ActionResponse(
                     Action.REQLLM,
-                    "抱歉，没有找到最近查询的新闻，请先获取一条新闻。",
+                    "，cóđếncủ，lấy。",
                     None,
                 )
 
             url = conn.last_newsnow_link.get("url")
-            title = conn.last_newsnow_link.get("title", "未知标题")
+            title = conn.last_newsnow_link.get("title", "không xác định")
             source_id = conn.last_newsnow_link.get("source_id", "thepaper")
-            source_name = CHANNEL_MAP.get(source_id, "未知来源")
+            source_name = CHANNEL_MAP.get(source_id, "không xác địnhđến")
 
             if not url or url == "#":
                 return ActionResponse(
-                    Action.REQLLM, "抱歉，该新闻没有可用的链接获取详细内容。", None
+                    Action.REQLLM, "，cókhả dụngcủlấybên trong。", None
                 )
 
             logger.bind(tag=TAG).debug(
-                f"获取新闻详情: {title}, 来源: {source_name}, URL={url}"
+                f"lấy: {title}, đến: {source_name}, URL={url}"
             )
 
-            # 获取新闻详情
+            # lấy
             detail_content = fetch_news_detail(url)
 
-            if not detail_content or detail_content == "无法获取详细内容":
+            if not detail_content or detail_content == "lấybên trong":
                 return ActionResponse(
                     Action.REQLLM,
-                    f"抱歉，无法获取《{title}》的详细内容，可能是链接已失效或网站结构发生变化。",
+                    f"，lấy《{title}》củbên trong，có thểlàđãhoặc。",
                     None,
                 )
 
-            # 构建详情报告
+            # xây dựngbáo cáo
             detail_report = (
-                f"根据下列数据，用{lang}回应用户的新闻详情查询请求：\n\n"
-                f"新闻标题: {title}\n"
-                # f"新闻来源: {source_name}\n"
-                f"详细内容: {detail_content}\n\n"
-                f"(请对上述新闻内容进行总结，提取关键信息，以自然、流畅的方式向用户播报，"
-                f"不要提及这是总结，就像是在讲述一个完整的新闻)"
+                f"theodữ liệu，sử dụng{lang}sử dụngcủyêu cầu：\n\n"
+                f": {title}\n"
+                # f"đến: {source_name}\n"
+                f"bên trong: {detail_content}\n\n"
+                f"(vớitrênbên trongtiến hành，thông tin，bằng、củphương thứchướngsử dụng，"
+                f"khôngphảivà/cũngnàylà，thìlàtại/trongmộthoàn chỉnhcủ)"
             )
 
             return ActionResponse(Action.REQLLM, detail_report, None)
 
-        # 否则，获取新闻列表并随机选择一条
-        # 将中文名称转换为英文ID
+        # ，lấyvà
+        # sẽtrongchuyển đổichoID
         english_source_id = None
 
-        # 检查输入的中文名称是否在配置的新闻源中
+        # kiểm travàocủtronglàtại/trongcấu hìnhcủtrong
         news_sources_list = [
             name.strip() for name in news_sources.split(";") if name.strip()
         ]
         if source in news_sources_list:
-            # 如果输入的中文名称在配置的新闻源中，在 CHANNEL_MAP 中查找对应的英文ID
+            # nhưvàocủtrongtại/trongcấu hìnhcủtrong，tại/trong CHANNEL_MAP trongvớicủID
             english_source_id = CHANNEL_MAP.get(source)
 
-        # 如果找不到对应的英文ID，使用默认源
+        # nhưkhôngđếnvớicủID，làm chosử dụngmặc định
         if not english_source_id:
-            logger.bind(tag=TAG).warning(f"无效的新闻源: {source}，使用默认源澎湃新闻")
+            logger.bind(tag=TAG).warning(f"không hiệu quảcủ: {source}，làm chosử dụngmặc định")
             english_source_id = "thepaper"
-            source = "澎湃新闻"
+            source = ""
 
-        logger.bind(tag=TAG).info(f"获取新闻: 新闻源={source}({english_source_id})")
+        logger.bind(tag=TAG).info(f"lấy: ={source}({english_source_id})")
 
-        # 获取新闻列表
+        # lấy
         news_items = fetch_news_from_api(conn, english_source_id)
 
         if not news_items:
             return ActionResponse(
                 Action.REQLLM,
-                f"抱歉，未能从{source}获取到新闻信息，请稍后再试或尝试其他新闻源。",
+                f"，có thểtừ{source}lấyđếnthông tin，sauhoặcthửnó/của nó。",
                 None,
             )
 
-        # 随机选择一条新闻
+        # 
         selected_news = random.choice(news_items)
 
-        # 保存当前新闻链接到连接对象，以便后续查询详情
+        # lưuhiện tạiđếnkết nốivới，bằngsau
         if not hasattr(conn, "last_newsnow_link"):
             conn.last_newsnow_link = {}
         conn.last_newsnow_link = {
             "url": selected_news.get("url", "#"),
-            "title": selected_news.get("title", "未知标题"),
+            "title": selected_news.get("title", "không xác định"),
             "source_id": english_source_id,
         }
 
-        # 构建新闻报告
+        # xây dựngbáo cáo
         news_report = (
-            f"根据下列数据，用{lang}回应用户的新闻查询请求：\n\n"
-            f"新闻标题: {selected_news['title']}\n"
-            # f"新闻来源: {source}\n"
-            f"(请以自然、流畅的方式向用户播报这条新闻标题，"
-            f"提示用户可以要求获取详细内容，此时会获取新闻的详细内容。)"
+            f"theodữ liệu，sử dụng{lang}sử dụngcủyêu cầu：\n\n"
+            f": {selected_news['title']}\n"
+            # f"đến: {source}\n"
+            f"(bằng、củphương thứchướngsử dụngnày，"
+            f"gợi ýsử dụngcó thểphảilấybên trong，nàykhi/thờisẽlấycủbên trong。)"
         )
 
         return ActionResponse(Action.REQLLM, news_report, None)
 
     except Exception as e:
-        logger.bind(tag=TAG).error(f"获取新闻出错: {e}")
+        logger.bind(tag=TAG).error(f"lấyra: {e}")
         return ActionResponse(
-            Action.REQLLM, "抱歉，获取新闻时发生错误，请稍后再试。", None
+            Action.REQLLM, "，lấykhi/thờisai，sau。", None
         )

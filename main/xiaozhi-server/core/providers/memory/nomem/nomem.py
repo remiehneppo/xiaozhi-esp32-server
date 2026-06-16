@@ -1,5 +1,5 @@
 """
-不使用记忆，可以选择此模块
+khônglàm chosử dụngký ức，có thểnày
 """
 
 from ..base import MemoryProviderBase, logger

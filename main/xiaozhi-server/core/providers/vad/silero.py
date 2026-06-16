@@ -40,7 +40,7 @@ class VADProvider(VADProviderBase):
         self.frame_window_threshold = 3
 
     def _init_connection_state(self, conn):
-        """为连接初始化独立的 VAD 状态"""
+        """chokết nốikhởi tạo VAD trạng thái"""
         if not hasattr(conn, "_vad_opus_decoder"):
             conn._vad_opus_decoder = opuslib_next.Decoder(16000, 1)
         if not hasattr(conn, "_vad_state"):
@@ -49,7 +49,7 @@ class VADProvider(VADProviderBase):
             conn._vad_context = np.zeros((1, 64), dtype=np.float32)
 
     def release_conn_resources(self, conn):
-        """释放连接的 VAD 资源（连接关闭时调用）"""
+        """giải phóngkết nối VAD tài nguyên（kết nốiđóngthờisử dụng）"""
         for attr in ("_vad_opus_decoder", "_vad_state", "_vad_context"):
             if hasattr(conn, attr):
                 try:
@@ -58,7 +58,7 @@ class VADProvider(VADProviderBase):
                     pass
 
     def is_vad(self, conn, opus_packet):
-        # 手动模式：直接返回True，不进行实时VAD检测，所有音频都缓存
+        # chế độ：trả vềTrue，khôngtiến hànhthờiVAD，cóâm thanhbộ nhớ đệm
         if conn.client_listen_mode == "manual":
             return True
 
@@ -90,7 +90,7 @@ class VADProvider(VADProviderBase):
                 conn._vad_context = audio_input[:, -64:]
                 speech_prob = out.item()
 
-                # 双阈值判断
+                # 
                 if speech_prob >= self.vad_threshold:
                     is_voice = True
                 elif speech_prob <= self.vad_threshold_low:
@@ -98,16 +98,16 @@ class VADProvider(VADProviderBase):
                 else:
                     is_voice = conn.last_is_voice
 
-                # 声音没低于最低值则延续前一个状态，判断为有声音
+                # tạimộttrạng thái，chocó
                 conn.last_is_voice = is_voice
 
-                # 更新滑动窗口
+                # cập nhậttrượt
                 conn.client_voice_window.append(is_voice)
                 client_have_voice = (
                     conn.client_voice_window.count(True) >= self.frame_window_threshold
                 )
 
-                # 如果之前有声音，但本次没有声音，且与上次有声音的时间差已经超过了静默阈值，则认为已经说完一句话
+                # nhưcó，nhưnglầnkhông có，vàvớitrênlầncóthời gianđãvượt quá，chođãnói
                 if conn.client_have_voice and not client_have_voice:
                     stop_duration = time.time() * 1000 - conn.vad_last_voice_time
                     if stop_duration >= self.silence_threshold_ms:
@@ -118,6 +118,6 @@ class VADProvider(VADProviderBase):
 
             return client_have_voice
         except opuslib_next.OpusError as e:
-            logger.bind(tag=TAG).info(f"解码错误: {e}")
+            logger.bind(tag=TAG).info(f"giải mãlỗi: {e}")
         except Exception as e:
             logger.bind(tag=TAG).error(f"Error processing audio packet: {e}")

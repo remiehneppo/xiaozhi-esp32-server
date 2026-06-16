@@ -19,13 +19,13 @@ class Message:
         self.content = content
         self.tool_calls = tool_calls
         self.tool_call_id = tool_call_id
-        self.is_temporary = is_temporary  # 标记临时消息（如工具调用提醒）
+        self.is_temporary = is_temporary  # tạm thờitin nhắn（nhưcông cụsử dụng）
 
 
 class Dialogue:
     def __init__(self):
         self.dialogue: List[Message] = []
-        # 获取当前时间
+        # lấyhiện tạithời gian
         self.current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
     def put(self, message: Message):
@@ -48,13 +48,13 @@ class Dialogue:
             dialogue.append({"role": m.role, "content": m.content})
 
     def get_llm_dialogue(self) -> List[Dict[str, str]]:
-        # 直接调用get_llm_dialogue_with_memory，传入None作为memory_str
-        # 这样确保说话人功能在所有调用路径下都生效
+        # sử dụngget_llm_dialogue_with_memory，vàoNonechomemory_str
+        # nàyđảm bảonóicó thểtạicósử dụngđường dẫn
         return self.get_llm_dialogue_with_memory(None, None)
 
     def update_system_message(self, new_content: str):
-        """更新或添加系统消息"""
-        # 查找第一个系统消息
+        """cập nhậthoặcthêmtin nhắn"""
+        # mộttin nhắn
         system_msg = next((msg for msg in self.dialogue if msg.role == "system"), None)
         if system_msg:
             system_msg.content = new_content
@@ -63,8 +63,8 @@ class Dialogue:
 
     def _ensure_tool_calls_complete(self, messages: List[Message]) -> List[Message]:
         """
-        确保所有 tool_calls 都有对应的 tool 响应
-        修复被打断导致的悬空 tool_calls，防止大模型 API 报 400 错误
+        đảm bảocó tool_calls cótương ứng tool phản hồi
+        bịngắt tool_calls，ngăn ngừamô hình API  400 lỗi
         """
         pending_tool_calls = set()
         result = []
@@ -84,7 +84,7 @@ class Dialogue:
         for missing_id in pending_tool_calls:
             dummy_tool_msg = Message(
                 role="tool",
-                content='{"status": "interrupted", "message": "动作已取消/被打断"}',
+                content='{"status": "interrupted", "message": "đãhủy/bịngắt"}',
                 tool_call_id=missing_id
             )
             result.append(dummy_tool_msg)
@@ -94,18 +94,18 @@ class Dialogue:
     def get_llm_dialogue_with_memory(
             self, memory_str: str = None, voiceprint_config: dict = None
     ) -> List[Dict[str, str]]:
-        # 构建对话
+        # xây dựnghội thoại
         dialogue = []
 
-        # 添加系统提示和记忆
+        # thêmgợi ývàký ức
         system_message = next(
             (msg for msg in self.dialogue if msg.role == "system"), None
         )
 
         if system_message:
-            # 以 <context> 为分界点，拆分静态 system prompt 和动态上下文
-            # 静态部分（规则、身份等）保持不变，可命中前缀缓存
-            # 动态部分（时间、天气、记忆等）作为第二条 system 消息，保持 system 权威性
+            # bằng <context> cho， system prompt vàngữ cảnh
+            # phần（、v.v.）không，trongtiền tốbộ nhớ đệm
+            # phần（thời gian、、ký ứcv.v.）cho system tin nhắn， system 
             full_prompt = system_message.content
             context_match = re.search(r"<context>", full_prompt)
             if context_match:
@@ -115,25 +115,25 @@ class Dialogue:
                 static_part = full_prompt
                 dynamic_part = ""
 
-            # 第一段：静态 system prompt（前缀缓存可命中）
+            # ： system prompt（tiền tốbộ nhớ đệmtrong）
             dialogue.append({"role": "system", "content": static_part})
 
-        # 第二段：few-shot 示例（会话内不变，也是缓存前缀的一部分）
+        # ：few-shot （phiêntrongkhông，bộ nhớ đệmtiền tốphần）
         non_system_messages = [m for m in self.dialogue if m.role != "system"]
         fewshot_messages = [m for m in non_system_messages if m.is_temporary]
         complete_fewshot = self._ensure_tool_calls_complete(fewshot_messages)
         for m in complete_fewshot:
             self.getMessages(m, dialogue)
 
-        # 第三段：动态上下文 system prompt（时间、记忆、说话人等）
-        # 保持 system 角色以确保模型权威性，不降级为 user
+        # ：ngữ cảnh system prompt（thời gian、ký ức、nóiv.v.）
+        #  system bằngđảm bảomô hình，khôngcho user
         if system_message and dynamic_part:
-            # 替换时间占位符
+            # thay thếthời gian
             dynamic_part = dynamic_part.replace(
                 "{{current_time}}", datetime.now().strftime("%H:%M")
             )
 
-            # 填充记忆
+            # ký ức
             if memory_str is not None:
                 dynamic_part = re.sub(
                     r"<memory>.*?</memory>",
@@ -142,7 +142,7 @@ class Dialogue:
                     flags=re.DOTALL,
                 )
 
-            # 追加说话人信息
+            # nóithông tin
             try:
                 speakers = voiceprint_config.get("speakers", [])
                 if speakers:
@@ -164,7 +164,7 @@ class Dialogue:
 
             dialogue.append({"role": "system", "content": dynamic_part})
 
-        # 第四段：实际对话历史（不含 few-shot）
+        # ：hội thoại（không few-shot）
         actual_messages = [m for m in non_system_messages if not m.is_temporary]
         complete_actual = self._ensure_tool_calls_complete(actual_messages)
         for m in complete_actual:

@@ -24,56 +24,56 @@ class TTSProvider(TTSProviderBase):
             self.voice = config.get("private_voice")
         else:
             self.voice = int(config.get("voice"))
-        self.api_url = "https://tts.tencentcloudapi.com"  # 正确的API端点
+        self.api_url = "https://tts.tencentcloudapi.com"  # đúngAPI
         self.region = config.get("region")
         self.output_file = config.get("output_dir")
         self.audio_file_type = config.get("format", "wav")
 
-        # 音频参数配置
+        # âm thanhtham sốcấu hình
         speed = config.get("speed", "0")
         self.speed = int(speed) if speed else 0
 
         volume = config.get("volume", "0")
         self.volume = int(volume) if volume else 0
 
-        # 应用百分比调整（如果存在），否则使用公有化配置
+        # áp dụngphần trăm（nhưtại），làm chosử dụngcócấu hình
         self._apply_percentage_params(config)
 
     def _get_auth_headers(self, request_body):
-        """生成鉴权请求头"""
-        # 获取当前UTC时间戳
+        """tạoyêu cầu"""
+        # lấyhiện tạiUTCthời gian
         timestamp = int(time.time())
 
-        # 使用UTC时间计算日期
+        # làm chosử dụngUTCthời giantính toán
         utc_date = datetime.fromtimestamp(timestamp, tz=timezone.utc).strftime(
             "%Y-%m-%d"
         )
 
-        # 服务名称必须是 "tts"
+        # dịch vụ "tts"
         service = "tts"
 
-        # 拼接凭证范围
+        # nối
         credential_scope = f"{utc_date}/{service}/tc3_request"
 
-        # 使用TC3-HMAC-SHA256签名方法
+        # làm chosử dụngTC3-HMAC-SHA256chữ kýphương pháp
         algorithm = "TC3-HMAC-SHA256"
 
-        # 构建规范请求字符串
+        # xây dựngyêu cầuký tự
         http_request_method = "POST"
         canonical_uri = "/"
         canonical_querystring = ""
 
-        # 请求头必须包含host和content-type，且按字典序排列
+        # yêu cầuhostvàcontent-type，và
         canonical_headers = (
             f"content-type:application/json\n" f"host:tts.tencentcloudapi.com\n"
         )
         signed_headers = "content-type;host"
 
-        # 请求体哈希值
+        # yêu cầubăm
         payload = json.dumps(request_body)
         payload_hash = hashlib.sha256(payload.encode("utf-8")).hexdigest()
 
-        # 构建规范请求字符串
+        # xây dựngyêu cầuký tự
         canonical_request = (
             f"{http_request_method}\n"
             f"{canonical_uri}\n"
@@ -83,12 +83,12 @@ class TTSProvider(TTSProviderBase):
             f"{payload_hash}"
         )
 
-        # 计算规范请求的哈希值
+        # tính toányêu cầubăm
         hashed_canonical_request = hashlib.sha256(
             canonical_request.encode("utf-8")
         ).hexdigest()
 
-        # 构建待签名字符串
+        # xây dựngchữ kýký tự
         string_to_sign = (
             f"{algorithm}\n"
             f"{timestamp}\n"
@@ -96,19 +96,19 @@ class TTSProvider(TTSProviderBase):
             f"{hashed_canonical_request}"
         )
 
-        # 计算签名密钥
+        # tính toánchữ ký
         secret_date = self._hmac_sha256(
             f"TC3{self.secret_key}".encode("utf-8"), utc_date
         )
         secret_service = self._hmac_sha256(secret_date, service)
         secret_signing = self._hmac_sha256(secret_service, "tc3_request")
 
-        # 计算签名
+        # tính toánchữ ký
         signature = hmac.new(
             secret_signing, string_to_sign.encode("utf-8"), hashlib.sha256
         ).hexdigest()
 
-        # 构建授权头
+        # xây dựngủy quyền
         authorization = (
             f"{algorithm} "
             f"Credential={self.secret_id}/{credential_scope}, "
@@ -116,7 +116,7 @@ class TTSProvider(TTSProviderBase):
             f"Signature={signature}"
         )
 
-        # 构建请求头
+        # xây dựngyêu cầu
         headers = {
             "Content-Type": "application/json",
             "Host": "tts.tencentcloudapi.com",
@@ -131,44 +131,44 @@ class TTSProvider(TTSProviderBase):
         return headers
 
     def _hmac_sha256(self, key, msg):
-        """HMAC-SHA256加密"""
+        """HMAC-SHA256mã hóa"""
         if isinstance(msg, str):
             msg = msg.encode("utf-8")
         return hmac.new(key, msg, hashlib.sha256).digest()
 
     async def text_to_speak(self, text, output_file):
-        # 构建请求体
+        # xây dựngyêu cầu
         request_json = {
-            "Text": text,  # 合成语音的源文本
-            "SessionId": str(uuid.uuid4()),  # 会话ID，随机生成
-            "VoiceType": int(self.voice),  # 音色
-            "Codec": self.audio_file_type,  # 音频编码格式
-            "Volume": self.volume,  # 音量
-            "Speed": self.speed,  # 语速
-            "SampleRate": self.conn.sample_rate,  # 采样率部分支持24000
+            "Text": text,  # giọng nóivăn bản
+            "SessionId": str(uuid.uuid4()),  # phiênID，tạo
+            "VoiceType": int(self.voice),  # 
+            "Codec": self.audio_file_type,  # mã hóa âm thanhđịnh dạng
+            "Volume": self.volume,  # 
+            "Speed": self.speed,  # 
+            "SampleRate": self.conn.sample_rate,  # tần số lấy mẫuphần24000
         }
 
         try:
-            # 获取请求头（每次请求都重新生成，以确保时间戳和签名是最新的）
+            # lấyyêu cầu（lầnyêu cầutạo，bằngđảm bảothời gianvàchữ ký）
             headers = self._get_auth_headers(request_json)
 
-            # 发送请求
+            # gửiyêu cầu
             resp = requests.post(
                 self.api_url, json.dumps(request_json), headers=headers
             )
 
-            # 检查响应
+            # kiểm traphản hồi
             if resp.status_code == 200:
                 response_data = resp.json()
 
-                # 检查是否成功
+                # kiểm tracóthành công
                 if response_data.get("Response", {}).get("Error") is not None:
                     error_info = response_data["Response"]["Error"]
                     raise Exception(
-                        f"API返回错误: {error_info['Code']}: {error_info['Message']}"
+                        f"APItrả vềlỗi: {error_info['Code']}: {error_info['Message']}"
                     )
 
-                # 解码Base64音频数据
+                # giải mãBase64dữ liệu âm thanh
                 audio_bytes = base64.b64decode(response_data["Response"].get("Audio"))
                 if audio_bytes:
                     if output_file:
@@ -177,7 +177,7 @@ class TTSProvider(TTSProviderBase):
                     else:
                         return audio_bytes
                 else:
-                    raise Exception(f"{__name__}: 没有返回音频数据: {response_data}")
+                    raise Exception(f"{__name__}: không cótrả vềdữ liệu âm thanh: {response_data}")
             else:
                 raise Exception(
                     f"{__name__} status_code: {resp.status_code} response: {resp.content}"

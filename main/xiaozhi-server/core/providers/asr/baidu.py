@@ -26,28 +26,28 @@ class ASRProvider(ASRProviderBase):
 
         self.client = AipSpeech(str(self.app_id), self.api_key, self.secret_key)
 
-        # 确保输出目录存在
+        # đảm bảorathư mụctại
         os.makedirs(self.output_dir, exist_ok=True)
 
     async def speech_to_text(
         self, opus_data: List[bytes], session_id: str, audio_format="opus", artifacts=None
     ) -> Tuple[Optional[str], Optional[str]]:
-        """将语音数据转换为文本"""
+        """sẽgiọng nóidữ liệuchuyển đổichovăn bản"""
         if not opus_data:
-            logger.bind(tag=TAG).warning("音频数据为空！")
+            logger.bind(tag=TAG).warning("dữ liệu âm thanhcho！")
             return None, None
 
         try:
-            # 检查配置是否已设置
+            # kiểm tracấu hìnhcóđãđặt
             if not self.app_id or not self.api_key or not self.secret_key:
-                logger.bind(tag=TAG).error("百度语音识别配置未设置，无法进行识别")
+                logger.bind(tag=TAG).error("giọng nóinhận dạngcấu hìnhđặt，tiến hànhnhận dạng")
                 return None, None
 
             if artifacts is None:
                 return "", None
 
             start_time = time.time()
-            # 识别本地文件
+            # nhận dạngcục bộtệp
             result = self.client.asr(
                 artifacts.pcm_bytes,
                 "pcm",
@@ -59,16 +59,16 @@ class ASRProvider(ASRProviderBase):
 
             if result and result["err_no"] == 0:
                 logger.bind(tag=TAG).debug(
-                    f"百度语音识别耗时: {time.time() - start_time:.3f}s | 结果: {result}"
+                    f"giọng nóinhận dạngthời: {time.time() - start_time:.3f}s | kết quả: {result}"
                 )
                 result = result["result"][0]
                 return result, artifacts.file_path
             else:
                 raise Exception(
-                    f"百度语音识别失败，错误码: {result['err_no']}，错误信息: {result['err_msg']}"
+                    f"giọng nóinhận dạngthất bại，lỗi: {result['err_no']}，lỗithông tin: {result['err_msg']}"
                 )
                 return None, artifacts.file_path
 
         except Exception as e:
-            logger.bind(tag=TAG).error(f"处理音频时发生错误！{e}", exc_info=True)
+            logger.bind(tag=TAG).error(f"xử lýâm thanhthờilỗi！{e}", exc_info=True)
             return None, None

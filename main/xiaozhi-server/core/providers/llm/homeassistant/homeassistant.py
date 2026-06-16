@@ -9,41 +9,41 @@ logger = setup_logging()
 
 class LLMProvider(LLMProviderBase):
     def __init__(self, config):
-        self.agent_id = config.get("agent_id")  # 对应 agent_id
+        self.agent_id = config.get("agent_id")  # tương ứng agent_id
         self.api_key = config.get("api_key")
-        self.base_url = config.get("base_url", config.get("url"))  # 默认使用 base_url
-        self.api_url = f"{self.base_url}/api/conversation/process"  # 拼接完整的 API URL
+        self.base_url = config.get("base_url", config.get("url"))  # mặc địnhlàm chosử dụng base_url
+        self.api_url = f"{self.base_url}/api/conversation/process"  # nốihoàn chỉnh API URL
 
     def response(self, session_id, dialogue, **kwargs):
-        # home assistant语音助手自带意图，无需使用xiaozhi ai自带的，只需要把用户说的话传递给home assistant即可
+        # home assistantgiọng nóiý định，làm chosử dụngxiaozhi ai，chỉcầnsử dụngnóichohome assistant
 
-        # 提取最后一个 role 为 'user' 的 content
+        # saumột role cho 'user'  content
         input_text = None
-        if isinstance(dialogue, list):  # 确保 dialogue 是一个列表
-            # 逆序遍历，找到最后一个 role 为 'user' 的消息
+        if isinstance(dialogue, list):  # đảm bảo dialogue một
+            # duyệt，đếnsaumột role cho 'user' tin nhắn
             for message in reversed(dialogue):
-                if message.get("role") == "user":  # 找到 role 为 'user' 的消息
+                if message.get("role") == "user":  # đến role cho 'user' tin nhắn
                     input_text = message.get("content", "")
-                    break  # 找到后立即退出循环
+                    break  # đếnsauthoát
 
-        # 构造请求数据
+        # yêu cầudữ liệu
         payload = {
             "text": input_text,
             "agent_id": self.agent_id,
-            "conversation_id": session_id,  # 使用 session_id 作为 conversation_id
+            "conversation_id": session_id,  # làm chosử dụng session_id cho conversation_id
         }
-        # 设置请求头
+        # đặtyêu cầu
         headers = {
             "Authorization": f"Bearer {self.api_key}",
             "Content-Type": "application/json",
         }
 
-        # 发起 POST 请求
+        #  POST yêu cầu
         with requests.post(self.api_url, json=payload, headers=headers) as response:
-            # 检查请求是否成功
+            # kiểm trayêu cầucóthành công
             response.raise_for_status()
 
-            # 解析返回数据
+            # phân tíchtrả vềdữ liệu
             data = response.json()
         speech = (
             data.get("response", {})
@@ -52,13 +52,13 @@ class LLMProvider(LLMProviderBase):
             .get("speech", "")
         )
 
-        # 返回生成的内容
+        # trả vềtạonội dung
         if speech:
             yield speech
         else:
-            logger.bind(tag=TAG).warning("API 返回数据中没有 speech 内容")
+            logger.bind(tag=TAG).warning("API trả vềdữ liệutrongkhông có speech nội dung")
 
     def response_with_functions(self, session_id, dialogue, functions=None):
         logger.bind(tag=TAG).error(
-            f"homeassistant不支持（function call），建议使用其他意图识别"
+            f"homeassistantkhông（function call），làm chosử dụngnóý địnhnhận dạng"
         )

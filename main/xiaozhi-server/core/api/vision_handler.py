@@ -13,14 +13,14 @@ from plugins_func.register import Action
 
 TAG = __name__
 
-# 设置最大文件大小为5MB
+# đặttệpcho5MB
 MAX_FILE_SIZE = 5 * 1024 * 1024
 
 
 class VisionHandler(BaseHandler):
     def __init__(self, config: dict):
         super().__init__(config)
-        # 初始化认证工具
+        # khởi tạoxác thựccông cụ
         self.auth = AuthToken(config["server"]["auth_key"])
 
     def _create_error_response(self, message: str) -> dict:
@@ -41,14 +41,14 @@ class VisionHandler(BaseHandler):
         if not auth_header.startswith("Bearer "):
             return False, None
 
-        token = auth_header[7:]  # 移除"Bearer "前缀
+        token = auth_header[7:]  # loại bỏ"Bearer "tiền tố
         return self.auth.verify_token(token)
 
     async def handle_post(self, request):
         """Xử lý yêu cầu POST của MCP Vision"""
-        response = None  # 初始化response变量
+        response = None  # khởi tạoresponse
         try:
-            # 验证token
+            # xác thựctoken
             is_valid, token_device_id = self._verify_auth_token(request)
             if not is_valid:
                 response = web.Response(
@@ -60,7 +60,7 @@ class VisionHandler(BaseHandler):
                 )
                 return response
 
-            # 获取请求头信息
+            # lấyyêu cầuthông tin
             device_id = request.headers.get("Device-Id", "")
             client_id = request.headers.get("Client-Id", "")
             if device_id != token_device_id:

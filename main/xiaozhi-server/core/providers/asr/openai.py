@@ -36,13 +36,13 @@ class ASRProvider(ASRProviderBase):
                 "Authorization": f"Bearer {self.api_key}",
             }
             
-            # 使用data参数传递模型名称
+            # làm chosử dụngdatatham sốmô hình
             data = {
                 "model": self.model
             }
 
 
-            with open(file_path, "rb") as audio_file:  # 使用with语句确保文件关闭
+            with open(file_path, "rb") as audio_file:  # làm chosử dụngwithđảm bảotệpđóng
                 files = {
                     "file": audio_file
                 }
@@ -55,16 +55,16 @@ class ASRProvider(ASRProviderBase):
                     headers=headers
                 )
                 logger.bind(tag=TAG).debug(
-                    f"语音识别耗时: {time.time() - start_time:.3f}s | 结果: {response.text}"
+                    f"giọng nóinhận dạngthời: {time.time() - start_time:.3f}s | kết quả: {response.text}"
                 )
 
             if response.status_code == 200:
                 text = response.json().get("text", "")
                 return text, file_path
             else:
-                raise Exception(f"API请求失败: {response.status_code} - {response.text}")
+                raise Exception(f"APIyêu cầuthất bại: {response.status_code} - {response.text}")
                 
         except Exception as e:
-            logger.bind(tag=TAG).error(f"语音识别失败: {e}")
+            logger.bind(tag=TAG).error(f"giọng nóinhận dạngthất bại: {e}")
             return "", None
         
