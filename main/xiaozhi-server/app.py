@@ -40,7 +40,11 @@ async def wait_for_exit() -> None:
 async def monitor_stdin():
     """Theo dõi stdin, chỉ để tiêu thụ phím Enter"""
     while True:
-        await ainput()  # Chờ input bất đồng bộ, chỉ để tiêu thụ Enter
+        try:
+            await ainput()  # Chờ input bất đồng bộ, chỉ để tiêu thụ Enter
+        except (EOFError, OSError):
+            # Không có terminal (stdin đóng) - thoát gracefully
+            break
 
 
 async def main():
@@ -131,17 +135,27 @@ async def main():
         await gc_manager.stop()
 
         # Hủy tất cả tác vụ (điểm sửa quan trọng)
-        stdin_task.cancel()
-        ws_task.cancel()
-        if ota_task:
+        if not stdin_task.done():
+            stdin_task.cancel()
+        if not ws_task.done():
+            ws_task.cancel()
+        if ota_task and not ota_task.done():
             ota_task.cancel()
 
         # Chờ tác vụ kết thúc (phải có timeout)
-        await asyncio.wait(
-            [stdin_task, ws_task, ota_task] if ota_task else [stdin_task, ws_task],
-            timeout=3.0,
-            return_when=asyncio.ALL_COMPLETED,
-        )
+        pending = [t for t in [stdin_task, ws_task, ota_task] if t and not t.done()]
+        if ota_task:
+            await asyncio.wait(
+                [stdin_task, ws_task, ota_task],
+                timeout=3.0,
+                return_when=asyncio.ALL_COMPLETED,
+            )
+        elif ws_task or stdin_task:
+            await asyncio.wait(
+                [t for t in [stdin_task, ws_task] if t],
+                timeout=3.0,
+                return_when=asyncio.ALL_COMPLETED,
+            )
         print("Máy chủ đã tắt, chương trình thoát.")
 
 

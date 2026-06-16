@@ -4,7 +4,8 @@ import sys
 # 添加项目根目录到Python路径
 current_dir = os.path.dirname(os.path.abspath(__file__))
 project_root = os.path.abspath(os.path.join(current_dir, "..", ".."))
-sys.path.insert(0, project_root)
+if project_root not in sys.path:
+    sys.path.insert(0, project_root)
 
 from config.logger import setup_logging
 import importlib
@@ -14,7 +15,8 @@ logger = setup_logging()
 
 def create_instance(class_name, *args, **kwargs):
     # 创建LLM实例
-    if os.path.exists(os.path.join('core', 'providers', 'llm', class_name, f'{class_name}.py')):
+    provider_path = os.path.join(project_root, 'core', 'providers', 'llm', class_name, f'{class_name}.py')
+    if os.path.exists(provider_path):
         lib_name = f'core.providers.llm.{class_name}.{class_name}'
         if lib_name not in sys.modules:
             sys.modules[lib_name] = importlib.import_module(f'{lib_name}')
