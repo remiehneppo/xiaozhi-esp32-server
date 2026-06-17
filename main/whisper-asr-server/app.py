@@ -9,7 +9,10 @@ from faster_whisper import WhisperModel
 from pydantic import BaseModel
 
 
-MODEL_NAME = os.getenv("WHISPER_MODEL", "medium")
+MODEL_NAME = os.getenv(
+    "WHISPER_MODEL",
+    "quocphu/PhoWhisper-ct2-FasterWhisper/PhoWhisper-small-ct2-fasterWhisper",
+)
 MODEL_DIR = os.getenv("WHISPER_MODEL_DIR", "./models")
 DEVICE = os.getenv("WHISPER_DEVICE", "cpu")
 COMPUTE_TYPE = os.getenv("WHISPER_COMPUTE_TYPE", "int8")

@@ -19,6 +19,13 @@ cd main/whisper-asr-server
 docker compose up --build
 ```
 
+Run with GPU when the host has NVIDIA Container Toolkit installed:
+
+```bash
+cd main/whisper-asr-server
+docker compose -f docker-compose.yml -f docker-compose.gpu.yml up --build
+```
+
 Default endpoint:
 
 ```text
@@ -29,7 +36,7 @@ Useful environment variables:
 
 | Variable | Default | Meaning |
 | --- | --- | --- |
-| `WHISPER_MODEL` | `tiny` | faster-whisper model name or local model path. Use `small`, `medium`, or `large-v3` after the pipeline is stable. |
+| `WHISPER_MODEL` | `quocphu/PhoWhisper-ct2-FasterWhisper/PhoWhisper-small-ct2-fasterWhisper` | faster-whisper/CTranslate2 model name or local model path. |
 | `WHISPER_DEVICE` | `cpu` | `cpu`, `cuda`, or `auto`. |
 | `WHISPER_COMPUTE_TYPE` | `int8` | Common CPU value: `int8`; common CUDA values: `float16`, `int8_float16`. |
 | `WHISPER_LANGUAGE` | `vi` | Default transcription language. Use empty value for auto-detect. |
@@ -59,7 +66,7 @@ ASR:
     type: openai
     api_key: local
     base_url: http://127.0.0.1:8001/v1/audio/transcriptions
-    model_name: tiny
+    model_name: quocphu/PhoWhisper-ct2-FasterWhisper/PhoWhisper-small-ct2-fasterWhisper
     output_dir: tmp/
 ```
 

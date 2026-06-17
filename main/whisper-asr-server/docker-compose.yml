@@ -6,7 +6,7 @@ services:
     ports:
       - "8001:8001"
     environment:
-      WHISPER_MODEL: tiny
+      WHISPER_MODEL: quocphu/PhoWhisper-ct2-FasterWhisper/PhoWhisper-small-ct2-fasterWhisper
       WHISPER_DEVICE: cpu
       WHISPER_COMPUTE_TYPE: int8
       WHISPER_LANGUAGE: vi
