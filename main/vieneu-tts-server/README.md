@@ -36,6 +36,17 @@ docker compose -f docker-compose.yml -f docker-compose.gpu.yml up --build
 
 Models are cached under `./models`.
 
+GPU mode requires a working host NVIDIA driver plus NVIDIA Container Toolkit.
+Verify Docker GPU access before starting the service:
+
+```bash
+docker run --rm --gpus all nvidia/cuda:12.4.1-base-ubuntu22.04 nvidia-smi
+```
+
+If Docker reports `failed to discover GPU vendor from CDI` or cannot find
+`nvidia-container-runtime`, install/configure `nvidia-container-toolkit` on the
+host first.
+
 ## Local Python
 
 ```bash
@@ -49,7 +60,10 @@ Useful environment variables:
 | Variable | Default |
 | --- | --- |
 | `VIENEU_MODEL_ID` | `pnnbao-ump/VieNeu-TTS-v2-Turbo-GGUF` |
+| `VIENEU_MODE` | `turbo` |
 | `VIENEU_MODEL_DIR` | `/models` |
+| `HF_HOME` | `/models` |
+| `HUGGINGFACE_HUB_CACHE` | `/models/hub` |
 | `VIENEU_DEFAULT_VOICE` | `Thục Đoan (Nữ - Miền Nam)` |
 | `VIENEU_DEVICE` | `cpu` |
 | `VIENEU_N_GPU_LAYERS` | `0` |
@@ -61,6 +75,9 @@ Useful environment variables:
 
 `VIENEU_FAKE=true` is only for local smoke tests and returns synthetic PCM
 without loading the real model.
+
+Set `HF_TOKEN` when available to avoid Hugging Face unauthenticated rate limits
+during first model download.
 
 ## Xiaozhi Config
 

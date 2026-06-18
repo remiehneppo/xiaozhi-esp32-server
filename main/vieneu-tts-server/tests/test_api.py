@@ -1,6 +1,10 @@
 import importlib
 import math
 import sys
+import threading
+import time
+import types
+from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 
 from fastapi.testclient import TestClient
@@ -92,3 +96,61 @@ def test_invalid_voice_is_rejected(monkeypatch):
 
     assert response.status_code == 400
     assert "voice" in response.json()["detail"].lower()
+
+
+def test_real_engine_uses_vieneu_turbo_constructor(monkeypatch, tmp_path):
+    module = load_app(monkeypatch)
+    captured = {}
+
+    class FakeVieneuClient:
+        pass
+
+    def fake_vieneu(**kwargs):
+        captured.update(kwargs)
+        return FakeVieneuClient()
+
+    monkeypatch.setitem(sys.modules, "vieneu", types.SimpleNamespace(Vieneu=fake_vieneu))
+    monkeypatch.setattr(module, "MODEL_DIR", str(tmp_path / "models"))
+
+    engine = module.VieNeuEngine()
+
+    assert isinstance(engine.tts, FakeVieneuClient)
+    assert captured["mode"] == "turbo"
+    assert captured["backbone_repo"] == "pnnbao-ump/VieNeu-TTS-v2-Turbo-GGUF"
+    assert captured["backbone_filename"] == "vieneu-tts-v2-turbo.gguf"
+    assert captured["device"] == "cpu"
+
+
+def test_synthesis_requests_are_serialized(monkeypatch):
+    module = load_app(monkeypatch)
+
+    class ConcurrentDetectingEngine(module.FakeEngine):
+        def __init__(self):
+            super().__init__(sample_rate=module.SAMPLE_RATE)
+            self.active = 0
+            self.max_active = 0
+            self.lock = threading.Lock()
+
+        def synthesize_pcm(self, text, voice, speed):
+            with self.lock:
+                self.active += 1
+                self.max_active = max(self.max_active, self.active)
+            time.sleep(0.05)
+            try:
+                return super().synthesize_pcm(text, voice, speed)
+            finally:
+                with self.lock:
+                    self.active -= 1
+
+    detecting_engine = ConcurrentDetectingEngine()
+    module.engine = detecting_engine
+    client = TestClient(module.app, raise_server_exceptions=False)
+
+    def request_tts():
+        return client.post("/tts", json={"text": "Xin chào", "character": "Thục Đoan"})
+
+    with ThreadPoolExecutor(max_workers=2) as executor:
+        responses = list(executor.map(lambda _: request_tts(), range(2)))
+
+    assert [response.status_code for response in responses] == [200, 200]
+    assert detecting_engine.max_active == 1

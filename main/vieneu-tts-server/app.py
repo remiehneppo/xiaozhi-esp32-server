@@ -44,6 +44,7 @@ async def lifespan(_app: FastAPI):
 
 
 app = FastAPI(title="VieNeu TTS Server", version="1.0.0", lifespan=lifespan)
+engine_lock = threading.Lock()
 
 
 class SpeechRequest(BaseModel):
@@ -106,20 +107,16 @@ class VieNeuEngine(TTSEngine):
             ) from exc
 
         Path(MODEL_DIR).mkdir(parents=True, exist_ok=True)
-        mode = os.getenv("VIENEU_MODE", "v2turbo")
+        mode = os.getenv("VIENEU_MODE", "turbo")
         attempts = [
             {
                 "mode": mode,
-                "model_name": MODEL_ID,
-                "model_dir": MODEL_DIR,
+                "backbone_repo": MODEL_ID,
+                "backbone_filename": MODEL_FILE,
                 "device": DEVICE,
-                "n_gpu_layers": N_GPU_LAYERS,
-                "n_threads": THREADS,
-                "n_ctx": N_CTX,
             },
-            {"mode": mode, "model_name": MODEL_ID, "model_dir": MODEL_DIR, "device": DEVICE},
-            {"mode": mode, "model_name": MODEL_ID},
-            {"model_name": MODEL_ID},
+            {"mode": mode, "backbone_repo": MODEL_ID, "backbone_filename": MODEL_FILE},
+            {"mode": mode},
             {},
         ]
         last_error: Optional[Exception] = None
@@ -356,7 +353,8 @@ def synthesize(text: str, voice_name: Optional[str], fmt: str, speed: float) -> 
     voice = resolve_voice(voice_name)
     output_format = validate_format(fmt)
     start = time.perf_counter()
-    pcm = get_engine().synthesize_pcm(clean_text, voice, speed)
+    with engine_lock:
+        pcm = get_engine().synthesize_pcm(clean_text, voice, speed)
     synthesis_ms = (time.perf_counter() - start) * 1000
     if output_format == "wav":
         return pcm_to_wav(pcm), "audio/wav", synthesis_ms, voice

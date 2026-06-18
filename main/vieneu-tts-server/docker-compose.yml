@@ -8,7 +8,10 @@ services:
     environment:
       VIENEU_MODEL_ID: pnnbao-ump/VieNeu-TTS-v2-Turbo-GGUF
       VIENEU_MODEL_FILE: vieneu-tts-v2-turbo.gguf
+      VIENEU_MODE: turbo
       VIENEU_MODEL_DIR: /models
+      HF_HOME: /models
+      HUGGINGFACE_HUB_CACHE: /models/hub
       VIENEU_DEFAULT_VOICE: Thục Đoan (Nữ - Miền Nam)
       VIENEU_DEVICE: cpu
       VIENEU_N_GPU_LAYERS: "0"
