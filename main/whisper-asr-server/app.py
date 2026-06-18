@@ -6,6 +6,7 @@ from typing import Optional
 
 from fastapi import FastAPI, File, Form, Header, HTTPException, UploadFile
 from faster_whisper import WhisperModel
+from huggingface_hub import snapshot_download
 from pydantic import BaseModel
 
 
@@ -41,12 +42,31 @@ def require_auth(authorization: Optional[str]) -> None:
         raise HTTPException(status_code=401, detail="Token bearer không hợp lệ")
 
 
+def resolve_model_path(model_name: str) -> str:
+    model_path = Path(model_name).expanduser()
+    if model_path.exists():
+        return str(model_path)
+
+    parts = model_name.split("/")
+    if len(parts) <= 2:
+        return model_name
+
+    repo_id = "/".join(parts[:2])
+    subfolder = "/".join(parts[2:])
+    snapshot_path = snapshot_download(
+        repo_id=repo_id,
+        cache_dir=MODEL_DIR,
+        allow_patterns=[f"{subfolder}/*"],
+    )
+    return str(Path(snapshot_path) / subfolder)
+
+
 def get_model() -> WhisperModel:
     global model
     if model is None:
         Path(MODEL_DIR).mkdir(parents=True, exist_ok=True)
         model = WhisperModel(
-            MODEL_NAME,
+            resolve_model_path(MODEL_NAME),
             device=DEVICE,
             compute_type=COMPUTE_TYPE,
             download_root=MODEL_DIR,

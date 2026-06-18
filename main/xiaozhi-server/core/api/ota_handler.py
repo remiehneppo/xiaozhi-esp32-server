@@ -135,7 +135,11 @@ class OTAHandler(BaseHandler):
         server_config = self.config["server"]
         websocket_config = server_config.get("websocket", "")
 
-        if "" not in websocket_config:
+        if (
+            websocket_config
+            and "địa_chỉ_ip_hoặc_domain" not in websocket_config
+            and "cổng" not in websocket_config
+        ):
             return websocket_config
         else:
             return f"ws://{local_ip}:{port}/xiaozhi/v1/"

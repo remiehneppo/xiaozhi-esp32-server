@@ -106,14 +106,23 @@ async def main():
 
     # Lấy cấu hình WebSocket, dùng giá trị mặc định an toàn
     websocket_port = 8000
+    websocket_url = None
     server_config = config.get("server", {})
     if isinstance(server_config, dict):
         websocket_port = int(server_config.get("port", 8000))
+        configured_websocket = server_config.get("websocket")
+        if (
+            configured_websocket
+            and "địa_chỉ_ip_hoặc_domain" not in configured_websocket
+            and "cổng" not in configured_websocket
+        ):
+            websocket_url = configured_websocket
+    if not websocket_url:
+        websocket_url = f"ws://{get_local_ip()}:{websocket_port}/xiaozhi/v1/"
 
     logger.bind(tag=TAG).info(
-        "Địa chỉ WebSocket là\tws://{}:{}/xiaozhi/v1/",
-        get_local_ip(),
-        websocket_port,
+        "Địa chỉ WebSocket là\t{}",
+        websocket_url,
     )
 
     logger.bind(tag=TAG).info(

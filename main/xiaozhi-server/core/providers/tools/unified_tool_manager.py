@@ -1,9 +1,14 @@
 """thống nhấtcông cụ"""
 
+import re
 from typing import Dict, List, Optional, Any
 from config.logger import setup_logging
 from plugins_func.register import Action, ActionResponse
 from .base import ToolType, ToolDefinition, ToolExecutor
+
+
+def sanitize_tool_name(name: str) -> str:
+    return re.sub(r"[^a-zA-Z0-9_\-\u4e00-\u9fff]", "_", name)
 
 
 class ToolManager:
@@ -68,6 +73,10 @@ class ToolManager:
         """lấycông cụ"""
         tools = self.get_all_tools()
         tool_def = tools.get(tool_name)
+        if tool_def is None:
+            sanitized_name = sanitize_tool_name(tool_name)
+            if sanitized_name != tool_name:
+                tool_def = tools.get(sanitized_name)
         return tool_def.tool_type if tool_def else None
 
     async def execute_tool(
@@ -76,7 +85,17 @@ class ToolManager:
         """công cụsử dụng"""
         try:
             # công cụ
-            tool_type = self.get_tool_type(tool_name)
+            tools = self.get_all_tools()
+            resolved_tool_name = tool_name
+            tool_def = tools.get(resolved_tool_name)
+            if tool_def is None:
+                sanitized_name = sanitize_tool_name(tool_name)
+                if sanitized_name != tool_name:
+                    tool_def = tools.get(sanitized_name)
+                    if tool_def is not None:
+                        resolved_tool_name = sanitized_name
+
+            tool_type = tool_def.tool_type if tool_def else None
             if not tool_type:
                 return ActionResponse(
                     action=Action.NOTFOUND,
@@ -92,8 +111,8 @@ class ToolManager:
                 )
 
             # công cụ
-            self.logger.info(f"công cụ: {tool_name}，tham số: {arguments}")
-            result = await executor.execute(self.conn, tool_name, arguments)
+            self.logger.info(f"công cụ: {resolved_tool_name}，tham số: {arguments}")
+            result = await executor.execute(self.conn, resolved_tool_name, arguments)
             self.logger.debug(f"công cụkết quả: {result}")
             return result
 
