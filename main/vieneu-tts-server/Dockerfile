@@ -36,4 +36,4 @@ COPY app.py voices.json ./
 
 EXPOSE 8004
 
-CMD ["python3", "-m", "uvicorn", "app:app", "--host", "0.0.0.0", "--port", "8004"]
+CMD ["sh", "-c", "exec python3 -m uvicorn app:app --host 0.0.0.0 --port ${PORT:-8004}"]

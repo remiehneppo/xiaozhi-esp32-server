@@ -34,7 +34,8 @@ cd main/vieneu-tts-server
 docker compose -f docker-compose.yml -f docker-compose.gpu.yml up --build
 ```
 
-Models are cached under `./models`.
+Models are cached under `./models`. Compose values can be overridden with environment variables.
+For example, run `VIENEU_FAKE=true PORT=8007 docker compose up --build` for a synthetic smoke test.
 
 GPU mode requires a working host NVIDIA driver plus NVIDIA Container Toolkit.
 Verify Docker GPU access before starting the service:
