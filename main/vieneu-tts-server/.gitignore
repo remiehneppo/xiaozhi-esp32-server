@@ -1,0 +1,6 @@
+.venv/
+__pycache__/
+*.pyc
+benchmarks/
+models/*
+!models/CACHEDIR.TAG
