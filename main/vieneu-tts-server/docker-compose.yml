@@ -1,7 +1,6 @@
 services:
   vieneu-tts-server:
     build: .
-    container_name: vieneu-tts-server
     restart: unless-stopped
     ports:
       - "8004:8004"
