@@ -40,7 +40,7 @@ GPU mode requires a working host NVIDIA driver plus NVIDIA Container Toolkit.
 Verify Docker GPU access before starting the service:
 
 ```bash
-docker run --rm --gpus all nvidia/cuda:12.4.1-base-ubuntu22.04 nvidia-smi
+./scripts/check_gpu_docker.sh
 ```
 
 If Docker reports `failed to discover GPU vendor from CDI` or cannot find
