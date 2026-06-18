@@ -1,0 +1,200 @@
+# Mau cau hinh bootstrap cho che do Manager API/Web, toi uu cho trien khai o Viet Nam.
+#
+# Cach dung:
+# 1. Khoi dong manager-api va manager-web.
+# 2. Dang ky tai khoan admin dau tien trong Manager Web.
+# 3. Vao Quan ly tham so, lay gia tri `server.secret`.
+# 4. Copy file nay thanh `data/.config.yaml`.
+# 5. Dien `manager-api.secret` bang gia tri `server.secret`.
+#
+# Luu y:
+# - Khi `read_config_from_api: true`, KHONG them `selected_module`, `LLM`, `ASR`,
+#   `TTS`, `Intent`... vao file nay. Cac cau hinh model se duoc lay tu manager-api.
+# - Dia chi public tra ve cho ESP32 phai la domain/URL ma ESP32 truy cap duoc,
+#   khong dung localhost, 127.0.0.1, hoac ten service Docker.
+# - Cac tham so nang cao ben duoi duoc chia lam 2 nhom:
+#   * "bootstrap": co the dat trong file nay vi xiaozhi-server can biet truoc khi
+#     goi manager-api.
+#   * "manager": chi nen cau hinh trong Manager Web/DB. Chung duoc de duoi dang
+#     comment de lam tai lieu tham khao, khong phai gia tri co hieu luc.
+
+read_config_from_api: true
+
+server:
+  # Dia chi listen cua xiaozhi-server.
+  ip: 0.0.0.0
+
+  # Port WebSocket noi bo cua xiaozhi-server.
+  # Neu dang dung cau hinh hien tai cua du an nay, giu 8010.
+  port: 8010
+
+  # Port HTTP noi bo, dung cho vision endpoint.
+  # Neu dang dung cau hinh hien tai cua du an nay, giu 8013.
+  http_port: 8013
+
+  # Dia chi WebSocket public ma Manager API/OTA se gui cho ESP32.
+  websocket: wss://ws-ai.suprenam.id.vn/xiaozhi/v1/
+
+  # Dia chi public cua API phan tich anh/VLM.
+  vision_explain: https://ai-server.suprenam.id.vn/mcp/vision/explain
+
+  # Mui gio Viet Nam.
+  timezone_offset: +7
+
+  # Tuy chon bootstrap: khoa ky JWT noi bo cho vision/token WebSocket.
+  # Neu bo trong, server se uu tien `manager-api.secret`; neu secret chua hop le
+  # thi tu sinh khoa tam thoi. San xuat nen de trong va dung `server.secret` tu
+  # Manager Web de dong bo mot nguon khoa duy nhat.
+  # auth_key: ""
+
+  # Tuy chon bootstrap: bat xac thuc WebSocket phia xiaozhi-server.
+  # Mac dinh khong bat de de test ESP32. Khi bat, can cau hinh token/whitelist
+  # dong bo voi Manager API, neu khong ESP32 co the bi tu choi ket noi.
+  # auth:
+  #   enabled: false
+  #   allowed_devices:
+  #     - "AA:BB:CC:DD:EE:FF"
+
+  # Tuy chon bootstrap: MQTT/UDP gateway neu dung gateway rieng thay vi WebSocket
+  # truc tiep. De null neu chua deploy cac gateway nay.
+  # mqtt_gateway: null
+  # mqtt_signature_key: null
+  # udp_gateway: null
+
+manager-api:
+  # Neu xiaozhi-server chay trong cung docker-compose_all.yml voi manager-api,
+  # dung service name ben duoi.
+  url: http://xiaozhi-esp32-server-web:8002/xiaozhi
+
+  # Neu xiaozhi-server chay truc tiep tren host, co the doi thanh:
+  # url: http://127.0.0.1:8002/xiaozhi
+
+  # Dien gia tri `server.secret` lay tu Manager Web > Quan ly tham so.
+  secret: thay_bang_server_secret_tu_manager_web
+
+  # Timeout moi request den manager-api, tinh bang giay.
+  # Gia tri 30 hop ly cho LAN/Docker; neu manager-api o xa hoac may yeu co the tang.
+  timeout: 30
+
+  # So lan retry khi manager-api tam thoi loi ket noi/timeout.
+  # 6 lan x 10 giay phu hop khi docker compose vua khoi dong va MySQL/Redis con warm-up.
+  max_retries: 6
+
+  # Khoang cach retry, tinh bang giay.
+  retry_delay: 10
+
+# File prompt template mac dinh. Prompt noi dung se do Manager API tra ve.
+prompt_template: agent-base-prompt.txt
+
+# -----------------------------------------------------------------------------
+# Tham so nen quan ly trong Manager Web/DB
+# -----------------------------------------------------------------------------
+# Cac gia tri ben duoi la placeholder/tham khao de nhap trong Manager Web
+# hoac seed vao bang `sys_params`, `ai_model_config`, `ai_agent_template`.
+# KHONG bo comment trong file bootstrap nay khi `read_config_from_api: true`,
+# tru khi ban biet ro loader se xu ly chung nhu the nao.
+
+# [sys_params] Dia chi endpoint public
+# - server.websocket: WebSocket public tra cho ESP32. Bat buoc la `wss://` khi
+#   ESP32 ket noi qua internet/HTTPS reverse proxy.
+#   Gia tri tham khao: wss://ws-ai.suprenam.id.vn/xiaozhi/v1/
+# - server.vision_explain: endpoint HTTP(S) cho VLM phan tich anh.
+#   Gia tri tham khao: https://ai-server.suprenam.id.vn/mcp/vision/explain
+# - server.mcp_endpoint: MCP endpoint public neu co tich hop MCP endpoint server.
+#   Gia tri tham khao: wss://ws-ai.suprenam.id.vn/mcp/
+# - server.ota: endpoint OTA public neu dung OTA qua manager-api.
+#   Gia tri tham khao: https://ai-server.suprenam.id.vn/xiaozhi/ota/
+
+# [sys_params] Runtime server
+# - delete_audio: true
+#   Xoa file am thanh tam sau khi xu ly, giam dung luong dia.
+# - close_connection_no_voice_time: 180
+#   Ngat ket noi sau 180 giay khong co giong noi; phu hop dung tai nha.
+# - tts_timeout: 15
+#   Timeout TTS. EdgeTTS qua internet doi khi cham hon 10 giay.
+# - tool_call_timeout: 20
+#   Timeout goi tool/MCP. Nen du ngan de ESP32 khong bi treo hoi thoai.
+# - enable_wakeup_words_response_cache: true
+#   Cache phan hoi tu danh thuc de giam latency.
+# - enable_greeting: true
+#   Chao khi bat dau phien noi chuyen.
+# - enable_stop_tts_notify: false
+#   Tat am bao ket thuc TTS de hoi thoai tu nhien hon.
+# - enable_websocket_ping: false
+#   Thuong de false voi ESP32 de tranh xung dot heartbeat rieng cua firmware.
+# - tts_audio_send_delay: 0
+#   Gui audio theo dieu tiet chinh xac cua server.
+
+# [sys_params] Ngon ngu va hanh vi cho nguoi Viet
+# - exit_commands: thoat;tam biet;dung lai;ngu di
+#   Neu Manager Web chap nhan Unicode, nen nhap co dau:
+#   thoat;tam biet;dung lai;ngu di
+# - wakeup_words: xin chao;chao ban;oi tro ly;nay ban;hello
+#   Neu Manager Web chap nhan Unicode, nen nhap co dau:
+#   xin chao;chao ban;oi tro ly;nay ban;hello
+# - xiaozhi:
+#   {
+#     "type": "hello",
+#     "version": 1,
+#     "transport": "websocket",
+#     "audio_params": {
+#       "format": "opus",
+#       "sample_rate": 24000,
+#       "channels": 1,
+#       "frame_duration": 60
+#     }
+#   }
+#   sample_rate 24000 cho chat voice tu nhien hon 16000, van phu hop Opus ESP32.
+
+# [sys_params] Plugin nen bat cho tieng Viet
+# - plugins.get_weather.default_location: Ha Noi
+#   Neu phuc vu nhieu tinh thanh, co the de trong de hoi nguoi dung.
+# - plugins.get_weather.api_key: <qweather_or_provider_key>
+#   Nen dung key rieng, khong dung key demo trong config goc.
+# - plugins.play_music.music_dir: ./music
+# - plugins.play_music.music_ext: mp3;wav;p3
+# - plugins.play_music.refresh_time: 300
+# - plugins.web_search.provider: tavily
+#   Tavily hop voi truy van tieng Viet/web quoc te hon Metaso.
+# - plugins.web_search.max_results: 5
+# - plugins.web_search.api_key: <tvly_xxx>
+
+# [ai_model_config] Model mac dinh khuyen nghi
+# - VAD_SileroVAD:
+#   {"type":"silero","threshold":0.55,"threshold_low":0.35,
+#    "model_dir":"models/snakers4_silero-vad","min_silence_duration_ms":300}
+#   Tang threshold nhe giup giam kich nham trong moi truong nhieu nhieu.
+# - ASR_OpenaiASR:
+#   {"type":"openai","api_key":"local",
+#    "base_url":"http://whisper-asr-server:8001/v1/audio/transcriptions",
+#    "model_name":"PhoWhisper-small","output_dir":"tmp/"}
+#   Neu xiaozhi-server chay native tren host, doi base_url thanh
+#   http://127.0.0.1:8001/v1/audio/transcriptions.
+# - LLM_LlamaServerLLM:
+#   {"type":"openai","model_name":"gemma-4-12b-it-qat",
+#    "base_url":"http://127.0.0.1:8000/v1","api_key":"llama-server",
+#    "timeout":120,"temperature":0.7,"max_tokens":2048}
+#   Doi base_url theo noi llama-server thuc su reachable tu xiaozhi-server.
+# - VLLM_LlamaServerVLLM:
+#   {"type":"openai","model_name":"gemma-4-12b-it-qat",
+#    "base_url":"http://127.0.0.1:8000/v1","api_key":"llama-server",
+#    "max_tokens":1024,"temperature":0.7,"top_p":1.0}
+#   Dung cung llama-server neu model ho tro image input.
+# - TTS_EdgeTTS:
+#   {"type":"edge","voice":"vi-VN-HoaiMyNeural",
+#    "output_dir":"tmp/","language":"Tieng Viet"}
+#   Giong nu HoaiMy phu hop assistant mac dinh. Co the them NamMinh cho giong nam.
+# - Memory_nomem:
+#   {"type":"nomem"}
+#   Giai doan dau nen khong luu nho de giam rui ro du lieu ca nhan.
+# - Intent_function_call:
+#   {"type":"function_call"}
+#   Can thiet de LLM goi tool/MCP nhu doi am luong, xem status thiet bi.
+
+# [agent/template] Prompt tieng Viet tham khao
+# Ban la tro ly giong noi tieng Viet cho nguoi dung o Viet Nam.
+# Tra loi ngan gon, tu nhien, lich su, nhu dang tro chuyen truc tiep.
+# Neu nguoi dung khong noi ro dia diem hoac quoc gia, mac dinh ngu canh la Viet Nam.
+# Khi doc ngay gio, so dien thoai, dia chi, tien te, hay doc theo cach nguoi Viet
+# thuong noi. Khong dung tieng Trung. Chi dung tieng Anh khi nguoi dung yeu cau
+# hoac thuat ngu do pho bien hon bang tieng Anh.
