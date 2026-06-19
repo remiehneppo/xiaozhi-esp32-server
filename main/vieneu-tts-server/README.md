@@ -134,13 +134,7 @@ If Docker GPU access is not configured but the host CUDA toolkit is available,
 you can run a local GPU smoke benchmark:
 
 ```bash
-python3.11 -m venv .venv-gpu
-.venv-gpu/bin/pip install --upgrade pip setuptools wheel cmake ninja
-.venv-gpu/bin/pip install fastapi "uvicorn[standard]" pydantic psutil numpy requests vieneu
-CMAKE_ARGS="-DGGML_CUDA=on" FORCE_CMAKE=1 CUDACXX=/usr/local/cuda/bin/nvcc \
-  .venv-gpu/bin/pip install --no-cache-dir --force-reinstall --no-binary llama-cpp-python llama-cpp-python
-VIENEU_DEVICE=cuda VIENEU_N_GPU_LAYERS=-1 VIENEU_MODEL_DIR=./models \
-  HF_HOME=./models HUGGINGFACE_HUB_CACHE=./models/hub VIENEU_BENCHMARK_DIR=/tmp/vieneu-gpu-benchmarks \
-  .venv-gpu/bin/python -m uvicorn app:app --host 127.0.0.1 --port 8010
+./scripts/install_gpu_local.sh
+./scripts/start_gpu_local.sh
 ./scripts/benchmark.py --url http://127.0.0.1:8010/benchmark --output /tmp/vieneu-gpu-benchmark.json
 ```
