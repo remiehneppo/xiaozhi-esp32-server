@@ -184,7 +184,7 @@ plugins:
     # trả vềkết quả（mặc định5）
     max_results: 5
     # 9Router dùng khi provider là 9router/nrouter
-    base_url: "http://192.168.2.2:20128/v1"
+    base_url: "http://your-9router-host:20128/v1"
     model: "searxng"
     search_type: "web"
     # API Key（mk-tiền tố） / Tavily API Key（tvly-tiền tố） / 9Router API Key

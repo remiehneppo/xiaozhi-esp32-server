@@ -152,10 +152,13 @@ def _search_9router(
     response = requests.post(url, json=payload, headers=headers, timeout=15)
     response.raise_for_status()
     data = response.json()
-    logger.bind(tag=TAG).debug(f"9Router tìm kiếm phản hồi | status: {response.status_code} | data: {data}")
 
     answer = data.get("answer") or data.get("summary")
     results = _normalize_results(data)
+    logger.bind(tag=TAG).debug(
+        f"9Router tìm kiếm phản hồi | status: {response.status_code} | "
+        f"keys: {list(data.keys())} | results: {len(results)}"
+    )
     if not answer and not results:
         return "Không tìm thấy kết quả."
 
