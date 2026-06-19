@@ -451,8 +451,11 @@ def run_benchmark(request: BenchmarkRequest) -> dict[str, Any]:
         "resources": resources,
         "created_at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
     }
-    BENCHMARK_DIR.mkdir(parents=True, exist_ok=True)
-    BENCHMARK_LATEST_PATH.write_text(json.dumps(result, ensure_ascii=False, indent=2), encoding="utf-8")
+    try:
+        BENCHMARK_DIR.mkdir(parents=True, exist_ok=True)
+        BENCHMARK_LATEST_PATH.write_text(json.dumps(result, ensure_ascii=False, indent=2), encoding="utf-8")
+    except OSError as exc:
+        result["benchmark_write_error"] = str(exc)
     last_benchmark = result
     return result
 

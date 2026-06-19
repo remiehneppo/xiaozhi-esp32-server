@@ -88,6 +88,25 @@ def test_benchmark_returns_latency_and_resource_metrics(monkeypatch, tmp_path):
     assert (tmp_path / "latest.json").exists()
 
 
+def test_benchmark_still_returns_when_latest_file_is_not_writable(monkeypatch, tmp_path):
+    module = load_app(monkeypatch)
+
+    class DenyingPath:
+        def write_text(self, *_args, **_kwargs):
+            raise PermissionError("permission denied")
+
+    monkeypatch.setattr(module, "BENCHMARK_DIR", tmp_path)
+    monkeypatch.setattr(module, "BENCHMARK_LATEST_PATH", DenyingPath())
+    client = TestClient(module.app)
+
+    response = client.post("/benchmark", json={"text": "Xin chào benchmark"})
+
+    assert response.status_code == 200
+    body = response.json()
+    assert body["cases"][0]["total_latency_ms"] >= 0
+    assert "permission denied" in body["benchmark_write_error"]
+
+
 def test_invalid_voice_is_rejected(monkeypatch):
     module = load_app(monkeypatch)
     client = TestClient(module.app)
