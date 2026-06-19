@@ -1,7 +1,9 @@
 import audioop
+import io
 import json
 import math
 import os
+import secrets
 import struct
 import subprocess
 import tempfile
@@ -123,7 +125,7 @@ class VieNeuEngine(TTSEngine):
         for kwargs in attempts:
             try:
                 return Vieneu(**kwargs)
-            except TypeError as exc:
+            except Exception as exc:
                 last_error = exc
                 continue
         raise RuntimeError(f"Không khởi tạo được Vieneu SDK: {last_error}")
@@ -239,7 +241,10 @@ VOICES = load_voices()
 def require_auth(authorization: Optional[str]) -> None:
     if not API_KEY:
         return
-    if authorization != f"Bearer {API_KEY}":
+    if not authorization or not authorization.startswith("Bearer "):
+        raise HTTPException(status_code=401, detail="Token bearer không hợp lệ")
+    token = authorization[len("Bearer "):]
+    if not secrets.compare_digest(token, API_KEY):
         raise HTTPException(status_code=401, detail="Token bearer không hợp lệ")
 
 
@@ -285,46 +290,31 @@ def validate_format(value: str) -> str:
 
 
 def pcm_to_wav(pcm: bytes, sample_rate: int = SAMPLE_RATE) -> bytes:
-    with tempfile.NamedTemporaryFile(suffix=".wav", delete=False) as tmp:
-        tmp_path = tmp.name
-    try:
-        with wave.open(tmp_path, "wb") as wav:
-            wav.setnchannels(1)
-            wav.setsampwidth(2)
-            wav.setframerate(sample_rate)
-            wav.writeframes(pcm)
-        return Path(tmp_path).read_bytes()
-    finally:
-        try:
-            os.unlink(tmp_path)
-        except OSError:
-            pass
+    wav_buf = io.BytesIO()
+    with wave.open(wav_buf, "wb") as wav:
+        wav.setnchannels(1)
+        wav.setsampwidth(2)
+        wav.setframerate(sample_rate)
+        wav.writeframes(pcm)
+    return wav_buf.getvalue()
 
 
 def wav_to_pcm_24k_mono(wav_bytes: bytes) -> bytes:
     if not wav_bytes.startswith(b"RIFF"):
         return ensure_even_pcm(wav_bytes)
-    with tempfile.NamedTemporaryFile(suffix=".wav", delete=False) as tmp:
-        tmp.write(wav_bytes)
-        tmp_path = tmp.name
-    try:
-        with wave.open(tmp_path, "rb") as wav:
-            channels = wav.getnchannels()
-            sample_width = wav.getsampwidth()
-            sample_rate = wav.getframerate()
-            pcm = wav.readframes(wav.getnframes())
-        if sample_width != 2:
-            pcm = audioop.lin2lin(pcm, sample_width, 2)
-        if channels > 1:
-            pcm = audioop.tomono(pcm, 2, 0.5, 0.5)
-        if sample_rate != SAMPLE_RATE:
-            pcm, _state = audioop.ratecv(pcm, 2, 1, sample_rate, SAMPLE_RATE, None)
-        return ensure_even_pcm(pcm)
-    finally:
-        try:
-            os.unlink(tmp_path)
-        except OSError:
-            pass
+    wav_buf = io.BytesIO(wav_bytes)
+    with wave.open(wav_buf, "rb") as wav:
+        channels = wav.getnchannels()
+        sample_width = wav.getsampwidth()
+        sample_rate = wav.getframerate()
+        pcm = wav.readframes(wav.getnframes())
+    if sample_width != 2:
+        pcm = audioop.lin2lin(pcm, sample_width, 2)
+    if channels > 1:
+        pcm = audioop.tomono(pcm, 2, 0.5, 0.5)
+    if sample_rate != SAMPLE_RATE:
+        pcm, _state = audioop.ratecv(pcm, 2, 1, sample_rate, SAMPLE_RATE, None)
+    return ensure_even_pcm(pcm)
 
 
 def ensure_even_pcm(pcm: bytes) -> bytes:
