@@ -1,137 +1,122 @@
-# Mau cau hinh bootstrap cho che do Manager API/Web, toi uu cho trien khai o Viet Nam.
+# Mẫu cấu hình bootstrap cho chế độ Manager API/Web, tối ưu hóa cho người Việt Nam.
 #
-# Cach dung:
-# 1. Khoi dong manager-api va manager-web.
-# 2. Dang ky tai khoan admin dau tien trong Manager Web.
-# 3. Vao Quan ly tham so, lay gia tri `server.secret`.
-# 4. Copy file nay thanh `data/.config.yaml`.
-# 5. Dien `manager-api.secret` bang gia tri `server.secret`.
+# Cách dùng:
+# 1. Khởi động manager-api và manager-web.
+# 2. Đăng ký tài khoản admin đầu tiên trong Manager Web.
+# 3. Vào Quản lý tham số, lấy giá trị `server.secret`.
+# 4. Copy file này thành `data/.config.yaml`.
+# 5. Điền `manager-api.secret` bằng giá trị `server.secret` vừa lấy.
 #
-# Luu y:
-# - Khi `read_config_from_api: true`, KHONG them `selected_module`, `LLM`, `ASR`,
-#   `TTS`, `Intent`... vao file nay. Cac cau hinh model se duoc lay tu manager-api.
-# - Dia chi public tra ve cho ESP32 phai la domain/URL ma ESP32 truy cap duoc,
-#   khong dung localhost, 127.0.0.1, hoac ten service Docker.
-# - Cac tham so nang cao ben duoi duoc chia lam 2 nhom:
-#   * "bootstrap": co the dat trong file nay vi xiaozhi-server can biet truoc khi
-#     goi manager-api.
-#   * "manager": chi nen cau hinh trong Manager Web/DB. Chung duoc de duoi dang
-#     comment de lam tai lieu tham khao, khong phai gia tri co hieu luc.
+# Lưu ý:
+# - Khi `read_config_from_api: true`, KHÔNG thêm `selected_module`, `LLM`, `ASR`,
+#   `TTS`, `Intent`... vào file này. Các cấu hình model/agent thực tế sẽ được tải từ manager-api.
+# - Địa chỉ public trả về cho ESP32 phải là domain/URL mà ESP32 truy cập được,
+#   không dùng localhost, 127.0.0.1, hoặc tên service Docker nội bộ.
+# - Các tham số nâng cao bên dưới được chia làm 2 nhóm:
+#   * "bootstrap": Cần đặt trong file này vì xiaozhi-server cần biết trước khi
+#     kết nối đến manager-api.
+#   * "manager": Chỉ nên cấu hình trong Manager Web/DB (thêm dưới dạng comment để tham khảo).
 
 read_config_from_api: true
 
 server:
-  # Dia chi listen cua xiaozhi-server.
+  # Địa chỉ listen của xiaozhi-server.
   ip: 0.0.0.0
 
-  # Port WebSocket noi bo cua xiaozhi-server.
-  # Neu dang dung cau hinh hien tai cua du an nay, giu 8010.
+  # Port WebSocket nội bộ của xiaozhi-server.
+  # Nếu đang dùng cấu hình mặc định của dự án này, giữ 8010.
   port: 8010
 
-  # Port HTTP noi bo, dung cho vision endpoint.
-  # Neu dang dung cau hinh hien tai cua du an nay, giu 8013.
+  # Port HTTP nội bộ, dùng cho vision endpoint.
+  # Nếu đang dùng cấu hình mặc định của dự án này, giữ 8013.
   http_port: 8013
 
-  # Dia chi WebSocket public ma Manager API/OTA se gui cho ESP32.
+  # Địa chỉ WebSocket public mà Manager API/OTA sẽ gửi cho ESP32 kết nối qua internet.
   websocket: wss://ws-ai.suprenam.id.vn/xiaozhi/v1/
 
-  # Dia chi public cua API phan tich anh/VLM.
+  # Địa chỉ public của API phân tích ảnh/VLM.
   vision_explain: https://ai-server.suprenam.id.vn/mcp/vision/explain
 
-  # Mui gio Viet Nam.
+  # Múi giờ Việt Nam.
   timezone_offset: +7
 
-  # Tuy chon bootstrap: khoa ky JWT noi bo cho vision/token WebSocket.
-  # Neu bo trong, server se uu tien `manager-api.secret`; neu secret chua hop le
-  # thi tu sinh khoa tam thoi. San xuat nen de trong va dung `server.secret` tu
-  # Manager Web de dong bo mot nguon khoa duy nhat.
+  # Tùy chọn bootstrap: khóa ký JWT nội bộ cho vision/token WebSocket.
+  # Nếu bỏ trống, server sẽ ưu tiên sử dụng `manager-api.secret`.
   # auth_key: ""
 
-  # Tuy chon bootstrap: bat xac thuc WebSocket phia xiaozhi-server.
-  # Mac dinh khong bat de de test ESP32. Khi bat, can cau hinh token/whitelist
-  # dong bo voi Manager API, neu khong ESP32 co the bi tu choi ket noi.
+  # Tùy chọn bootstrap: bật xác thực WebSocket phía xiaozhi-server.
+  # Mặc định tắt để dễ test ESP32. Khi bật, cần cấu hình token/whitelist đồng bộ với Manager API.
   # auth:
   #   enabled: false
   #   allowed_devices:
   #     - "AA:BB:CC:DD:EE:FF"
 
-  # Tuy chon bootstrap: MQTT/UDP gateway neu dung gateway rieng thay vi WebSocket
-  # truc tiep. De null neu chua deploy cac gateway nay.
+  # Tùy chọn bootstrap: MQTT/UDP gateway nếu dùng gateway riêng thay vì WebSocket trực tiếp.
   # mqtt_gateway: null
   # mqtt_signature_key: null
   # udp_gateway: null
 
 manager-api:
-  # Neu xiaozhi-server chay trong cung docker-compose_all.yml voi manager-api,
-  # dung service name ben duoi.
+  # URL kết nối tới manager-api service (dùng service name nếu chung docker network).
   url: http://xiaozhi-esp32-server-web:8002/xiaozhi
 
-  # Neu xiaozhi-server chay truc tiep tren host, co the doi thanh:
+  # Nếu xiaozhi-server chạy trực tiếp trên host máy chủ, có thể đổi thành:
   # url: http://127.0.0.1:8002/xiaozhi
 
-  # Dien gia tri `server.secret` lay tu Manager Web > Quan ly tham so.
+  # Điền giá trị `server.secret` lấy từ Manager Web > Quản lý tham số.
   secret: thay_bang_server_secret_tu_manager_web
 
-  # Timeout moi request den manager-api, tinh bang giay.
-  # Gia tri 30 hop ly cho LAN/Docker; neu manager-api o xa hoac may yeu co the tang.
+  # Timeout mỗi request đến manager-api, tính bằng giây.
   timeout: 30
 
-  # So lan retry khi manager-api tam thoi loi ket noi/timeout.
-  # 6 lan x 10 giay phu hop khi docker compose vua khoi dong va MySQL/Redis con warm-up.
+  # Số lần retry khi kết nối đến manager-api bị lỗi/timeout tạm thời.
   max_retries: 6
 
-  # Khoang cach retry, tinh bang giay.
+  # Khoảng cách giữa các lần retry, tính bằng giây.
   retry_delay: 10
 
-# File prompt template mac dinh. Prompt noi dung se do Manager API tra ve.
+# File prompt template mặc định. Nội dung hệ thống sẽ do Manager API trả về.
 prompt_template: agent-base-prompt.txt
 
-# -----------------------------------------------------------------------------
-# Tham so nen quan ly trong Manager Web/DB
-# -----------------------------------------------------------------------------
-# Cac gia tri ben duoi la placeholder/tham khao de nhap trong Manager Web
-# hoac seed vao bang `sys_params`, `ai_model_config`, `ai_agent_template`.
-# KHONG bo comment trong file bootstrap nay khi `read_config_from_api: true`,
-# tru khi ban biet ro loader se xu ly chung nhu the nao.
 
-# [sys_params] Dia chi endpoint public
-# - server.websocket: WebSocket public tra cho ESP32. Bat buoc la `wss://` khi
-#   ESP32 ket noi qua internet/HTTPS reverse proxy.
-#   Gia tri tham khao: wss://ws-ai.suprenam.id.vn/xiaozhi/v1/
-# - server.vision_explain: endpoint HTTP(S) cho VLM phan tich anh.
-#   Gia tri tham khao: https://ai-server.suprenam.id.vn/mcp/vision/explain
-# - server.mcp_endpoint: MCP endpoint public neu co tich hop MCP endpoint server.
-#   Gia tri tham khao: wss://ws-ai.suprenam.id.vn/mcp/
-# - server.ota: endpoint OTA public neu dung OTA qua manager-api.
-#   Gia tri tham khao: https://ai-server.suprenam.id.vn/xiaozhi/ota/
+# -----------------------------------------------------------------------------
+# THAM SỐ CẤU HÌNH TRONG DB / MANAGER WEB (DÀNH CHO NGƯỜI VIỆT)
+# -----------------------------------------------------------------------------
+# Các giá trị bên dưới dùng làm placeholder/tham khảo để nhập trong Manager Web
+# hoặc seed trực tiếp vào DB (bảng `sys_params`, `ai_model_config`, `ai_agent_template`).
+# KHÔNG bỏ comment trực tiếp các cấu hình này trong file bootstrap này.
 
-# [sys_params] Runtime server
+# ==========================================
+# 1. [sys_params] Cấu hình Hệ thống & Hành vi
+# ==========================================
 # - delete_audio: true
-#   Xoa file am thanh tam sau khi xu ly, giam dung luong dia.
+#   Tự động xóa các file âm thanh tạm thời sau khi xử lý để tránh đầy bộ nhớ máy chủ.
 # - close_connection_no_voice_time: 180
-#   Ngat ket noi sau 180 giay khong co giong noi; phu hop dung tai nha.
+#   Tự động ngắt kết nối sau 180 giây không có giọng nói để tiết kiệm pin thiết bị và tài nguyên.
 # - tts_timeout: 15
-#   Timeout TTS. EdgeTTS qua internet doi khi cham hon 10 giay.
+#   Timeout sinh giọng nói TTS (giây).
 # - tool_call_timeout: 20
-#   Timeout goi tool/MCP. Nen du ngan de ESP32 khong bi treo hoi thoai.
+#   Timeout tối đa khi gọi công cụ bên ngoài (tìm kiếm, Home Assistant).
 # - enable_wakeup_words_response_cache: true
-#   Cache phan hoi tu danh thuc de giam latency.
+#   Bật cache phản hồi từ đánh thức giúp giảm thời gian phản hồi ban đầu.
 # - enable_greeting: true
-#   Chao khi bat dau phien noi chuyen.
+#   Chào khi bắt đầu kết nối thoại để tạo cảm giác thân thiện.
 # - enable_stop_tts_notify: false
-#   Tat am bao ket thuc TTS de hoi thoai tu nhien hon.
-# - enable_websocket_ping: false
-#   Thuong de false voi ESP32 de tranh xung dot heartbeat rieng cua firmware.
+#   Tắt âm thanh thông báo khi dừng TTS để cuộc đối thoại diễn ra tự nhiên hơn.
 # - tts_audio_send_delay: 0
-#   Gui audio theo dieu tiet chinh xac cua server.
+#   Gửi audio theo điều tiết chính xác thực tế của server (mặc định 0).
+# - system_error_response: "Mình đang gặp chút trục trặc, bạn thử lại sau một lát nhé."
+#   Câu thoại thông báo lỗi khi LLM/ASR/TTS gặp sự cố.
+# - end_prompt: {"enable": true, "prompt": "Hãy kết thúc cuộc trò chuyện bằng một câu tiếng Việt ngắn gọn, thân thiện, tự nhiên."}
+#   Prompt dẫn dắt LLM chào tạm biệt khi người dùng nói câu kết thúc.
 
-# [sys_params] Ngon ngu va hanh vi cho nguoi Viet
-# - exit_commands: thoat;tam biet;dung lai;ngu di
-#   Neu Manager Web chap nhan Unicode, nen nhap co dau:
-#   thoat;tam biet;dung lai;ngu di
-# - wakeup_words: xin chao;chao ban;oi tro ly;nay ban;hello
-#   Neu Manager Web chap nhan Unicode, nen nhap co dau:
-#   xin chao;chao ban;oi tro ly;nay ban;hello
+# ==========================================
+# 2. [sys_params] Ngôn ngữ và Từ khóa cho Người Việt
+# ==========================================
+# - exit_commands: thoát;đóng;tạm biệt;dừng lại;ngủ đi;hẹn gặp lại;tắt đi
+#   Các khẩu lệnh dừng cuộc trò chuyện nhanh bằng tiếng Việt.
+# - wakeup_words: xin chào;chào bạn;ơi trợ lý;này bạn;trợ lý ơi;hello;tiểu trí ơi
+#   Các từ khóa đánh thức thiết bị bằng tiếng Việt để tăng độ nhạy nhận diện.
 # - xiaozhi:
 #   {
 #     "type": "hello",
@@ -144,63 +129,97 @@ prompt_template: agent-base-prompt.txt
 #       "frame_duration": 60
 #     }
 #   }
-#   sample_rate 24000 cho chat voice tu nhien hon 16000, van phu hop Opus ESP32.
+#   Cấu hình thông số âm thanh Opus 24kHz giúp giọng thoại nghe trong và rõ ràng hơn.
 
-# [sys_params] Plugin nen bat cho tieng Viet
-# - plugins.get_weather.default_location: Ha Noi
-#   Neu phuc vu nhieu tinh thanh, co the de trong de hoi nguoi dung.
-# - plugins.get_weather.api_key: <qweather_or_provider_key>
-#   Nen dung key rieng, khong dung key demo trong config goc.
+# ==========================================
+# 3. [sys_params] Cấu hình Plugins/Công cụ hữu ích
+# ==========================================
+#
+# A. THỜI TIẾT (QWeather)
+# - plugins.get_weather.default_location: Hà Nội
+#   Địa điểm mặc định khi người dùng chỉ hỏi "Thời tiết thế nào?" mà không chỉ rõ địa danh.
+# - plugins.get_weather.api_key: a861d0d5e7bf4ee1a83d9a9e4f96d4da
+# - plugins.get_weather.api_host: mj7p3y7naa.re.qweatherapi.com
+#
+# B. NGHE NHẠC (Local Music)
 # - plugins.play_music.music_dir: ./music
+#   Đường dẫn chứa kho nhạc của bạn (ví dụ nhạc Việt, cải lương, nhạc trẻ).
 # - plugins.play_music.music_ext: mp3;wav;p3
 # - plugins.play_music.refresh_time: 300
+#
+# C. TÌM KIẾM WEB (Sử dụng 9Router hoặc Tavily)
 # - plugins.web_search.provider: 9router
-#   Dung 9Router local cho web search qua endpoint OpenAI-style.
-# - plugins.web_search.base_url: http://192.168.2.2:20128/v1
-# - plugins.web_search.api_key: <9router_api_key>
+#   Sử dụng 9Router local để không bị giới hạn lượng request và bảo mật hơn.
+# - plugins.web_search.base_url: http://your-9router-host:20128/v1
+# - plugins.web_search.api_key: <your_9router_or_tavily_key>
 # - plugins.web_search.model: searxng
 # - plugins.web_search.search_type: web
 # - plugins.web_search.max_results: 5
+# - plugins.web_search.description: "Tìm kiếm thông tin trực tuyến khi người dùng hỏi về tin tức mới nhất, địa danh, giá cả, thời tiết hoặc thông tin tại Việt Nam."
+#
+# D. ĐIỀU KHIỂN NHÀ THÔNG MINH (Home Assistant)
+# - plugins.home_assistant.base_url: http://homeassistant.local:8123
+#   Địa chỉ Home Assistant cục bộ của bạn.
+# - plugins.home_assistant.api_key: <long_lived_access_token>
+# - plugins.home_assistant.devices: "Phòng khách,Đèn chính,light.living_room_light;Phòng khách,Quạt trần,fan.living_room_fan;Phòng ngủ,Máy lạnh,climate.bedroom_ac"
+#   Danh sách thiết bị kết nối dạng: <Tên phòng>,<Tên thiết bị>,<entity_id>.
+#   LLM có thể tắt/mở thiết bị khi người dùng yêu cầu tiếng Việt tự nhiên: "Bật đèn phòng khách lên".
 
-# [ai_model_config] Model mac dinh khuyen nghi
+# ==========================================
+# 4. [ai_model_config] Các Model tối ưu tiếng Việt
+# ==========================================
+#
+# A. VAD (Đoạt phát hiện giọng nói)
 # - VAD_SileroVAD:
 #   {"type":"silero","threshold":0.55,"threshold_low":0.35,
 #    "model_dir":"models/snakers4_silero-vad","min_silence_duration_ms":300}
-#   Tang threshold nhe giup giam kich nham trong moi truong nhieu nhieu.
+#   Ngưỡng threshold 0.55 giúp giảm nhận diện nhầm tiếng ồn/tiếng nhạc tạp âm tại Việt Nam.
+#
+# B. ASR (Nhận dạng giọng nói tiếng Việt qua 9Router với model whisper large turbo, fallback về whisper large)
 # - ASR_OpenaiASR:
-#   {"type":"openai","api_key":"local",
-#    "base_url":"http://whisper-asr-server:8001/v1/audio/transcriptions",
-#    "model_name":"PhoWhisper-small","output_dir":"tmp/"}
-#   Neu xiaozhi-server chay native tren host, doi base_url thanh
-#   http://127.0.0.1:8001/v1/audio/transcriptions.
-# - LLM_LlamaServerLLM:
-#   {"type":"openai","model_name":"gemma-4-12b-it-qat",
-#    "base_url":"http://127.0.0.1:8000/v1","api_key":"llama-server",
-#    "timeout":120,"temperature":0.7,"max_tokens":2048}
-#   Doi base_url theo noi llama-server thuc su reachable tu xiaozhi-server.
-# - VLLM_LlamaServerVLLM:
-#   {"type":"openai","model_name":"gemma-4-12b-it-qat",
-#    "base_url":"http://127.0.0.1:8000/v1","api_key":"llama-server",
+#   {"type":"openai","api_key":"<9router_api_key>",
+#    "base_url":"http://your-9router-host:20128/v1/audio/transcriptions",
+#    "model_name":"whisper-large-v3-turbo;whisper-large-v3","output_dir":"tmp/"}
+#   Hỗ trợ fallback tự động: Nếu model turbo gặp sự cố hoặc quá tải, hệ thống tự động thử lại bằng model large thông thường.
+#
+# C. LLM (Trí tuệ nhân tạo suy luận tiếng Việt qua 9Router với model "flash")
+# - LLM_OpenaiLLM:
+#   {"type":"openai","model_name":"flash",
+#    "base_url":"http://your-9router-host:20128/v1","api_key":"<9router_api_key>",
+#    "timeout":60,"temperature":0.7,"max_tokens":1024}
+#   Sử dụng model "flash" (ví dụ gemini-1.5-flash hoặc gemini-2.0-flash qua 9Router) giúp giảm độ trễ phản hồi thoại xuống tối đa.
+#
+# D. VLLM (Nhận diện hình ảnh qua 9Router với model "flash")
+# - VLLM_OpenaiVLLM:
+#   {"type":"openai","model_name":"flash",
+#    "base_url":"http://your-9router-host:20128/v1","api_key":"<9router_api_key>",
 #    "max_tokens":1024,"temperature":0.7,"top_p":1.0}
-#   Dung cung llama-server neu model ho tro image input.
+#
+# E. TTS (Giọng nói Tiếng Việt cao cấp)
 # - TTS_VieNeuTTS:
 #   {"type":"openai","api_key":"local",
 #    "api_url":"http://vieneu-tts-server:8004/v1/audio/speech",
 #    "model":"vieneu-v2-turbo","voice":"Thục Đoan (Nữ - Miền Nam)",
 #    "format":"wav","speed":1.0,"output_dir":"tmp/"}
-#   Neu xiaozhi-server chay native tren host, doi api_url thanh
-#   http://127.0.0.1:8004/v1/audio/speech.
+#   Giọng nói VieNeuTTS sử dụng GPU phát âm cực kỳ tự nhiên, có ngắt nghỉ đúng văn phong của người Việt.
+#
+# - TTS_EdgeTTS (Phương án dự phòng không cần GPU):
+#   {"type":"edge","voice":"vi-VN-HoaiMyNeural","output_dir":"tmp/","language":"Tiếng Việt"}
+#
+# F. Memory & Intent
 # - Memory_nomem:
 #   {"type":"nomem"}
-#   Giai doan dau nen khong luu nho de giam rui ro du lieu ca nhan.
 # - Intent_function_call:
-#   {"type":"function_call"}
-#   Can thiet de LLM goi tool/MCP nhu doi am luong, xem status thiet bi.
+#   {"type":"function_call","functions":["web_search","get_weather","play_music","call_device"]}
 
-# [agent/template] Prompt tieng Viet tham khao
-# Ban la tro ly giong noi tieng Viet cho nguoi dung o Viet Nam.
-# Tra loi ngan gon, tu nhien, lich su, nhu dang tro chuyen truc tiep.
-# Neu nguoi dung khong noi ro dia diem hoac quoc gia, mac dinh ngu canh la Viet Nam.
-# Khi doc ngay gio, so dien thoai, dia chi, tien te, hay doc theo cach nguoi Viet
-# thuong noi. Khong dung tieng Trung. Chi dung tieng Anh khi nguoi dung yeu cau
-# hoac thuat ngu do pho bien hon bang tieng Anh.
+# ==========================================
+# 5. [ai_agent_template] Prompt hệ thống tối ưu cho người Việt
+# ==========================================
+# Ban la tro ly giong noi tieng Viet ten la Tieu Tri. Ban ho tro nguoi dung tai Viet Nam mot cach nhiet tinh, lich su va than thien.
+# Hay luon tuan thu nghiem ngat cac quy tac phat ngon va suy luan sau:
+# 1. Luon tra loi that ngan gon, suc tich (tot nhat duoi 3 cau, khoang 30-50 tu) vi cau tra loi se duoc doc truc tiep ra loa cua thiet bi.
+# 2. Xung ho tu nhien, lich su va phu hop voi van hoa Viet Nam (vi du: "Dạ, em nghe đây", "Dạ, em có thể giúp gì cho anh/chị ạ?", tu xung la "em" hoay "Tieu Tri").
+# 3. Mac dinh ngu canh ve thoi tiet, gio giac, dia ly, tin tuc la o Viet Nam (Ha Noi, Da Nang, Ho Chi Minh...) tru khi nguoi dung chi dinh mot vung mien hay quoc gia khac.
+# 4. Khi doc cac thong tin ve ngay gio (12/6), so dien thoai, dia chi, don vi tien te (dong/VNĐ), hay tu dong quy doi va doc theo dung van phong giao tiep hang ngay cua nguoi Viet (vi du: "ngay muoi hai thang sau" thay vi "muoi hai gach cheo sau", "hai muoi nghin dong" thay vi "hai khong khong khong khong dong").
+# 5. Neu nguoi dung hoi cac thong tin can thoi gian thuc nhu thoi tiet, tin tuc trong ngay hoac gia ca vang/do-la hien tai, hay su dung ngay cong cu tim kiem truc tuyen (web_search) hoac get_weather de cung cap du lieu chinh xac nhat.
+# 6. Tuyet doi khong dung tieng Trung. Chi dung tieng Anh khi nguoi dung yeu cau hoac khi su dung cac thuat ngu ky thuat/khoa hoc pho bien khong the dich sang tieng Viet.

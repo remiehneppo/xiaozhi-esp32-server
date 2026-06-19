@@ -171,23 +171,23 @@ plugins:
     api_key: "ragflow-xxx"
     # ragflowid
     dataset_ids: ["123456789"]
-  # Tìm kiếm trực tuyếncấu hình
-  # metaso / tavily / 9router tìm kiếm
-  # API Key：https://metaso.cn/search-api/api-keys
-  # Tavily API Key：https://app.tavily.com/home
+  # Cấu hình tìm kiếm trực tuyến
+  # Nhà cung cấp tìm kiếm: metaso / tavily / 9router
+  # API Key Metaso: https://metaso.cn/search-api/api-keys
+  # Tavily API Key: https://app.tavily.com/home
   # 9Router: http://host:port/v1/search
   web_search:
-    # tìm kiếm：metaso / tavily / 9router
+    # Nhà cung cấp tìm kiếm: metaso / tavily / 9router
     provider: "metaso"
-    # công cụ，dùng choLLMcông cụ，định nghĩa
-    description: "Tìm kiếm trực tuyếncông cụ。Tìm kiếm trực tuyếncông cụ。"
-    # trả vềkết quả（mặc định5）
+    # Mô tả công cụ cho LLM sử dụng
+    description: "Công cụ tìm kiếm trực tuyến. Sử dụng khi cần tìm kiếm thông tin mới nhất trên mạng."
+    # Số lượng kết quả tối đa trả về (mặc định 5)
     max_results: 5
-    # 9Router dùng khi provider là 9router/nrouter
+    # Địa chỉ base_url của 9Router (chỉ dùng khi provider là 9router hoặc nrouter)
     base_url: "http://your-9router-host:20128/v1"
     model: "searxng"
     search_type: "web"
-    # API Key（mk-tiền tố） / Tavily API Key（tvly-tiền tố） / 9Router API Key
+    # API Key (mk-... cho Metaso / tvly-... cho Tavily / API Key của 9Router)
     api_key: "mk-xxx"
 # nhận dạngcấu hình
 voiceprint:
