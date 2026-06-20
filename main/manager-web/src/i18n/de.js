@@ -1571,4 +1571,10 @@ export default {
 
   // Additional keys injected for footer
   'footer.beianIcon': 'Beian-Symbol',
+
+  // Additional keys injected for valid JSON placeholders
+  'functionDialog.inputValidJson': 'Bitte geben Sie ein gültiges JSON-Format ein',
+
+  // Additional keys injected for modelEdit sensitive mask format
+  'modelEdit.sensitive.maskFormat': 'Ihr {name}',
 }

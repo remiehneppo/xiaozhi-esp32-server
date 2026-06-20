@@ -246,7 +246,7 @@ export default {
                 Object.keys(model.configJson).forEach((key) => {
                   if (this.isSensitiveField(key) && model.configJson[key]) {
                     const sensitiveName = this.getSensitiveFieldName(key);
-                    model.configJson[key] = `你的${sensitiveName}`;
+                    model.configJson[key] = this.$t('modelEdit.sensitive.maskFormat', { name: sensitiveName });
                   }
                 });
               }
@@ -456,7 +456,7 @@ export default {
             this.$set(this.form.configJson, field, this.originalValues[field]);
           } else {
             const sensitiveName = this.getSensitiveFieldName(field);
-            this.$set(this.form.configJson, field, `你的${sensitiveName}`);
+            this.$set(this.form.configJson, field, this.$t('modelEdit.sensitive.maskFormat', { name: sensitiveName }));
           }
           // 清除临时存储的原始值
           this.$delete(this.originalValues, field);

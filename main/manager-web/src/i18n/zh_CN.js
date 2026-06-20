@@ -1570,4 +1570,10 @@ export default {
 
   // Additional keys injected for footer
   'footer.beianIcon': '备案图标',
+
+  // Additional keys injected for valid JSON placeholders
+  'functionDialog.inputValidJson': '请输入合法的 JSON',
+
+  // Additional keys injected for modelEdit sensitive mask format
+  'modelEdit.sensitive.maskFormat': '你的{name}',
 }

@@ -1571,4 +1571,10 @@ export default {
 
   // Additional keys injected for footer
   'footer.beianIcon': 'Biểu tượng Beian',
+
+  // Additional keys injected for valid JSON placeholders
+  'functionDialog.inputValidJson': 'Vui lòng nhập định dạng JSON hợp lệ',
+
+  // Additional keys injected for modelEdit sensitive mask format
+  'modelEdit.sensitive.maskFormat': '{name} của bạn',
 }
