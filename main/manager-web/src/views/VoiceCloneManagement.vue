@@ -184,19 +184,19 @@ export default {
     methods: {
         getTooltipContent(row) {
             if (!row.hasVoice) {
-                return '待上传';
+                return this.$t('voiceClone.waitingUpload');
             }
             switch (row.trainStatus) {
                 case 0:
-                    return '待复刻';
+                    return this.$t('voiceClone.waitingTraining');
                 case 2:
-                    return '训练成功';
+                    return this.$t('voiceClone.trainSuccess');
                 case 3:
                     // 训练失败时，根据错误信息智能展示
                     if (row.trainError) {
-                        return `训练失败：${row.trainError}`;
+                        return `${this.$t('voiceClone.trainFailed')}：${row.trainError}`;
                     }
-                    return '训练失败';
+                    return this.$t('voiceClone.trainFailed');
                 default:
                     return '';
             }
@@ -307,30 +307,30 @@ export default {
                             this.fetchVoiceCloneList();
                         } else {
                             // 复刻失败时刷新列表以获取完整的错误信息
-                            console.log('API返回错误，刷新列表获取详细错误信息');
+                            console.log('API returned error, refreshing list to get detailed error info');
                             this.$message.error(res.msg || this.$t('message.error'));
                             // 刷新列表以获取后端保存的完整错误详情
                             this.fetchVoiceCloneList();
                         }
                     } catch (error) {
                         // 处理响应时出错，刷新列表
-                        console.error('处理响应时出错:', error);
-                        this.$message.error('处理响应时出错');
+                        console.error('Error processing response:', error);
+                        this.$message.error(this.$t('voiceClone.errorProcessingResponse'));
                         this.fetchVoiceCloneList();
                     } finally {
                         this.$set(row, '_cloning', false);
                     }
                 }, (error) => {
                     // API调用失败，刷新列表以获取最新状态
-                    console.error('API调用失败:', error);
-                    this.$message.error('克隆失败，请将鼠标悬停在错误提示上，查看错误详情');
+                    console.error('API call failed:', error);
+                    this.$message.error(this.$t('voiceClone.cloneFailedHoverTip'));
                     this.fetchVoiceCloneList();
                     this.$set(row, '_cloning', false);
                 });
             } catch (error) {
                 // 调用API时出错，刷新列表
-                console.error('调用API时出错:', error);
-                this.$message.error('调用API时出错');
+                console.error('Error calling API:', error);
+                this.$message.error(this.$t('voiceClone.errorCallingApi'));
                 this.fetchVoiceCloneList();
                 this.$set(row, '_cloning', false);
             }

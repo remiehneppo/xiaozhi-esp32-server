@@ -276,7 +276,7 @@ export default {
           });
       }).catch(() => {
         this.$message.info({
-          message: '已取消删除',
+          message: this.$t('common.deleteCancelled'),
           showClose: true
         });
       });

@@ -574,6 +574,7 @@ export default {
   'cache.clearedSuccess': 'Cache limpo com sucesso',
   'cache.clearFailed': 'Falha ao limpar cache',
   'cache.clearCanceled': 'Operação de limpeza cancelada',
+  'cache.viewStatusTip': 'Pressione Alt+C ou execute checkCDNCacheStatus() no console para visualizar o status do cache do CDN',
 
   // Botões comuns
   'button.ok': 'OK',
@@ -901,6 +902,7 @@ export default {
   'functionDialog.copyFailed': 'Falha ao copiar. Por favor, copie manualmente',
   'functionDialog.jsonFormatError': ' erro no formato do campo: formato JSON inválido',
   'functionDialog.defaultValue': 'Valor Padrão',
+  'functionDialog.functionName': 'Nome da função',
 
   // Página de configuração de modelos
   'modelConfig.searchPlaceholder': 'Por favor, insira o nome do modelo para pesquisar',
@@ -1323,6 +1325,7 @@ export default {
   'knowledgeFileUpload.viewSlices': 'Ver Fatias',
   'knowledgeFileUpload.delete': 'Excluir',
   'knowledgeFileUpload.itemsPerPage': 'itens/página',
+  'knowledgeFileUpload.fileUnit': ' arquivos',
   'knowledgeFileUpload.firstPage': 'Primeira Página',
   'knowledgeFileUpload.prevPage': 'Página Anterior',
   'knowledgeFileUpload.nextPage': 'Próxima Página',
@@ -1523,4 +1526,49 @@ export default {
   // Header navigation
   'header.addressBook': 'Lista de Contatos',
 
+
+  // Cache loading failed
+  'cache.loadCacheFailed': 'Falha ao carregar dados do cache',
+
+  // Model Edit validations & sensitive keys
+  'modelEdit.validation.dictFormatRequired': 'Deve inserir o formato de dicionário (ex: {"key":"value"}), salvar para usar os dados originais',
+  'modelEdit.validation.jsonFormatError': 'Erro de formato JSON (ex: {"key":"value"}), salvar para usar os dados originais',
+  'modelEdit.sensitive.apiKey': 'Chave API',
+  'modelEdit.sensitive.personalAccessToken': 'Token de Acesso Pessoal',
+  'modelEdit.sensitive.accessToken': 'Token de Acesso',
+  'modelEdit.sensitive.token': 'Token',
+  'modelEdit.sensitive.secret': 'Segredo',
+  'modelEdit.sensitive.accessKeySecret': 'Segredo da Chave de Acesso',
+  'modelEdit.sensitive.secretKey': 'Chave Secreta',
+  'modelEdit.sensitive.default': 'Informação Sensível',
+
+  // Additional keys injected for Provider, Template and Voice Clone
+  'providerManagement.getProvidersFailed': 'Falha ao obter lista de provedores',
+  'templateQuickConfig.defaultAgentCode': 'Xiaozhi',
+  'voiceClone.errorProcessingResponse': 'Erro ao processar resposta',
+  'voiceClone.cloneFailedHoverTip': 'Falha na clonagem, passe o mouse sobre a mensagem de erro para ver os detalhes',
+  'voiceClone.errorCallingApi': 'Erro ao chamar API',
+
+  // Additional keys injected for Param Dialog
+  'paramDialog.arrayFormatError': 'Formato de array inválido, as linhas devem terminar com um ponto e vírgula (;)',
+
+  // Additional keys injected for Login/Register Pages
+  'login.captchaLoadFailed': 'Falha ao carregar o código de verificação, clique para atualizar',
+  'login.getUserInfoFailed': 'Falha ao obter informações do usuário',
+  'login.loginFailed': 'Falha no login',
+  'login.captchaAlt': 'Código de verificação',
+
+  // Additional keys injected for HTTP request notifications
+  'httpRequest.networkError': 'Erro na requisição de rede 【{status}】',
+  'httpRequest.cannotConnect': 'Parece que não é possível conectar ao servidor',
+  'httpRequest.connecting': 'Conectando ao servidor ({index})',
+
+  // Additional keys injected for viewPasswordDialog
+  'viewPasswordDialog.title': 'Nova senha do usuário',
+  'viewPasswordDialog.label': 'Nova senha do usuário:',
+  'viewPasswordDialog.copyPassword': 'Copiar senha',
+  'viewPasswordDialog.passwordCopied': 'Senha copiada',
+
+  // Additional keys injected for footer
+  'footer.beianIcon': 'Ícone do Beian',
 }

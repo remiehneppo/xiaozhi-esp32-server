@@ -574,6 +574,7 @@ export default {
   'cache.clearedSuccess': '缓存已清除',
   'cache.clearFailed': '清除缓存失败',
   'cache.clearCanceled': '已取消清除',
+  'cache.viewStatusTip': '按下 Alt+C 组合键或在控制台运行 checkCDNCacheStatus() 可以查看CDN缓存状态',
 
   // 通用按钮
   'button.ok': '确定',
@@ -901,6 +902,7 @@ export default {
   'functionDialog.copyFailed': '复制失败，请手动复制',
   'functionDialog.jsonFormatError': '的字段格式错误：JSON格式有误',
   'functionDialog.defaultValue': '默认值',
+  'functionDialog.functionName': '功能名称',
 
   // 模型配置页面文本
   'modelConfig.searchPlaceholder': '请输入模型名称查询',
@@ -1323,6 +1325,7 @@ export default {
   'knowledgeFileUpload.viewSlices': '查看切片',
   'knowledgeFileUpload.delete': '删除',
   'knowledgeFileUpload.itemsPerPage': '条/页',
+  'knowledgeFileUpload.fileUnit': '个文件',
   'knowledgeFileUpload.firstPage': '首页',
   'knowledgeFileUpload.prevPage': '上一页',
   'knowledgeFileUpload.nextPage': '下一页',
@@ -1522,4 +1525,49 @@ export default {
   'addressBookManagement.monthsAgo': '{months}个月前',
   'addressBookManagement.yearsAgo': '{years}年前',
 
+
+  // Cache loading failed
+  'cache.loadCacheFailed': '加载缓存数据失败',
+
+  // Model Edit validations & sensitive keys
+  'modelEdit.validation.dictFormatRequired': '必须输入字典格式（如 {"key":"value"}），保存则使用原数据',
+  'modelEdit.validation.jsonFormatError': 'JSON格式错误（如 {"key":"value"}），保存则使用原数据',
+  'modelEdit.sensitive.apiKey': 'API密钥',
+  'modelEdit.sensitive.personalAccessToken': '个人访问令牌',
+  'modelEdit.sensitive.accessToken': '访问令牌',
+  'modelEdit.sensitive.token': '令牌',
+  'modelEdit.sensitive.secret': '密钥',
+  'modelEdit.sensitive.accessKeySecret': '访问密钥',
+  'modelEdit.sensitive.secretKey': '密钥',
+  'modelEdit.sensitive.default': '敏感信息',
+
+  // Additional keys injected for Provider, Template and Voice Clone
+  'providerManagement.getProvidersFailed': '获取供应器列表失败',
+  'templateQuickConfig.defaultAgentCode': '小智',
+  'voiceClone.errorProcessingResponse': '处理响应时出错',
+  'voiceClone.cloneFailedHoverTip': '克隆失败，请将鼠标悬停在错误提示上，查看错误详情',
+  'voiceClone.errorCallingApi': '调用API时出错',
+
+  // Additional keys injected for Param Dialog
+  'paramDialog.arrayFormatError': '数组格式错误，需要使用英文分号结尾',
+
+  // Additional keys injected for Login/Register Pages
+  'login.captchaLoadFailed': '验证码加载失败，点击刷新',
+  'login.getUserInfoFailed': '用户信息获取失败',
+  'login.loginFailed': '登录失败',
+  'login.captchaAlt': '验证码',
+
+  // Additional keys injected for HTTP request notifications
+  'httpRequest.networkError': '网络请求出现了错误【{status}】',
+  'httpRequest.cannotConnect': '似乎无法连接服务器',
+  'httpRequest.connecting': '正在连接服务器({index})',
+
+  // Additional keys injected for viewPasswordDialog
+  'viewPasswordDialog.title': '用户新密码',
+  'viewPasswordDialog.label': '用户新密码：',
+  'viewPasswordDialog.copyPassword': '复制密码',
+  'viewPasswordDialog.passwordCopied': '密码已复制',
+
+  // Additional keys injected for footer
+  'footer.beianIcon': '备案图标',
 }

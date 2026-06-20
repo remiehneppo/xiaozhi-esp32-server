@@ -87,7 +87,7 @@ export default {
         'color: #409EFF; font-weight: bold;'
       );
       console.info(
-        '按下 Alt+C 组合键或在控制台运行 checkCDNCacheStatus() 可以查看CDN缓存状态'
+        this.$t('cache.viewStatusTip')
       );
 
       // 检查Service Worker状态
@@ -168,7 +168,7 @@ export default {
                 }
           }
         } catch (error) {
-          console.error('检查Service Worker状态失败:', error);
+          console.error('Failed to check Service Worker status:', error);
         }
       } else {
           console.warn(this.$t('cache.swNotSupported'));

@@ -165,7 +165,7 @@ export default {
             label: f.label,
             prop: f.key,
             type: f.type === 'password' ? 'password' : 'text',
-            placeholder: `请输入${f.key}`
+            placeholder: this.$t('mcpToolCall.inputPlaceholder', { label: f.key })
           }))
         }))
         this.providersLoaded = true

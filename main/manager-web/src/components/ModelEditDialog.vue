@@ -330,7 +330,7 @@ export default {
                 : f.type === "password"
                   ? "password"
                   : "text",
-            placeholder: `请输入${f.key}`,
+            placeholder: this.$t('mcpToolCall.inputPlaceholder', { label: f.key }),
           }));
 
           if (this.pendingModelData && this.pendingProviderType === providerCode) {
@@ -384,13 +384,13 @@ export default {
           return parsed;
         }
         this.$message.error({
-          message: '必须输入字典格式（如 {"key":"value"}），保存则使用原数据',
+          message: this.$t('modelEdit.validation.dictFormatRequired'),
           showClose: true,
         });
         return null;
       } catch (e) {
         this.$message.error({
-          message: 'JSON格式错误（如 {"key":"value"}），保存则使用原数据',
+          message: this.$t('modelEdit.validation.jsonFormatError'),
           showClose: true,
         });
         return null;
@@ -418,21 +418,21 @@ export default {
     // 获取敏感字段对应的中文名称
     getSensitiveFieldName(fieldName) {
       const keyMap = {
-        api_key: "API密钥",
-        personal_access_token: "个人访问令牌",
-        access_token: "访问令牌",
-        token: "令牌",
-        secret: "密钥",
-        access_key_secret: "访问密钥",
-        secret_key: "密钥",
+        api_key: "modelEdit.sensitive.apiKey",
+        personal_access_token: "modelEdit.sensitive.personalAccessToken",
+        access_token: "modelEdit.sensitive.accessToken",
+        token: "modelEdit.sensitive.token",
+        secret: "modelEdit.sensitive.secret",
+        access_key_secret: "modelEdit.sensitive.accessKeySecret",
+        secret_key: "modelEdit.sensitive.secretKey",
       };
 
       for (const [key, value] of Object.entries(keyMap)) {
         if (fieldName.toLowerCase().includes(key)) {
-          return value;
+          return this.$t(value);
         }
       }
-      return "敏感信息";
+      return this.$t("modelEdit.sensitive.default");
     },
 
     // 处理input聚焦事件

@@ -574,6 +574,7 @@ export default {
   'cache.clearedSuccess': 'Cache cleared successfully',
   'cache.clearFailed': 'Failed to clear cache',
   'cache.clearCanceled': 'Clear operation canceled',
+  'cache.viewStatusTip': 'Press Alt+C or run checkCDNCacheStatus() in the console to view the CDN cache status',
 
   // Common buttons
   'button.ok': 'OK',
@@ -901,6 +902,7 @@ export default {
   'functionDialog.copyFailed': 'Copy failed, please copy manually',
   'functionDialog.jsonFormatError': ' field format error: invalid JSON format',
   'functionDialog.defaultValue': 'Default Value',
+  'functionDialog.functionName': 'Function Name',
 
   // Model Configuration Page Text
   'modelConfig.searchPlaceholder': 'Please enter model name to search',
@@ -1323,6 +1325,7 @@ export default {
   'knowledgeFileUpload.viewSlices': 'View Slices',
   'knowledgeFileUpload.delete': 'Delete',
   'knowledgeFileUpload.itemsPerPage': 'items/page',
+  'knowledgeFileUpload.fileUnit': ' files',
   'knowledgeFileUpload.firstPage': 'First Page',
   'knowledgeFileUpload.prevPage': 'Previous Page',
   'knowledgeFileUpload.nextPage': 'Next Page',
@@ -1523,4 +1526,49 @@ export default {
   // Header navigation
   'header.addressBook': 'Address Book',
 
+
+  // Cache loading failed
+  'cache.loadCacheFailed': 'Failed to load cache data',
+
+  // Model Edit validations & sensitive keys
+  'modelEdit.validation.dictFormatRequired': 'Must enter dictionary format (e.g. {"key":"value"}), save to use original data',
+  'modelEdit.validation.jsonFormatError': 'JSON format error (e.g. {"key":"value"}), save to use original data',
+  'modelEdit.sensitive.apiKey': 'API Key',
+  'modelEdit.sensitive.personalAccessToken': 'Personal Access Token',
+  'modelEdit.sensitive.accessToken': 'Access Token',
+  'modelEdit.sensitive.token': 'Token',
+  'modelEdit.sensitive.secret': 'Secret',
+  'modelEdit.sensitive.accessKeySecret': 'Access Key Secret',
+  'modelEdit.sensitive.secretKey': 'Secret Key',
+  'modelEdit.sensitive.default': 'Sensitive Information',
+
+  // Additional keys injected for Provider, Template and Voice Clone
+  'providerManagement.getProvidersFailed': 'Failed to get provider list',
+  'templateQuickConfig.defaultAgentCode': 'Xiaozhi',
+  'voiceClone.errorProcessingResponse': 'Error processing response',
+  'voiceClone.cloneFailedHoverTip': 'Clone failed, please hover over the error message to view details',
+  'voiceClone.errorCallingApi': 'Error calling API',
+
+  // Additional keys injected for Param Dialog
+  'paramDialog.arrayFormatError': 'Invalid array format, lines must end with a semicolon (;)',
+
+  // Additional keys injected for Login/Register Pages
+  'login.captchaLoadFailed': 'Verification code failed to load, click to refresh',
+  'login.getUserInfoFailed': 'Failed to retrieve user profile',
+  'login.loginFailed': 'Login failed',
+  'login.captchaAlt': 'Verification code',
+
+  // Additional keys injected for HTTP request notifications
+  'httpRequest.networkError': 'Network request error 【{status}】',
+  'httpRequest.cannotConnect': 'Unable to connect to server',
+  'httpRequest.connecting': 'Connecting to server ({index})',
+
+  // Additional keys injected for viewPasswordDialog
+  'viewPasswordDialog.title': 'User\'s New Password',
+  'viewPasswordDialog.label': 'User\'s New Password:',
+  'viewPasswordDialog.copyPassword': 'Copy Password',
+  'viewPasswordDialog.passwordCopied': 'Password copied',
+
+  // Additional keys injected for footer
+  'footer.beianIcon': 'Beian Icon',
 }

@@ -1,9 +1,8 @@
-<template>
-  <el-dialog :title="title" :visible.sync="visible" width="520px" class="param-dialog-wrapper" :append-to-body="true"
+  <el-dialog :title="title || $t('paramManagement.addParam')" :visible.sync="visible" width="520px" class="param-dialog-wrapper" :append-to-body="true"
     :close-on-click-modal="false" :key="dialogKey" custom-class="custom-param-dialog" :show-close="false">
     <div class="dialog-container">
       <div class="dialog-header">
-        <h2 class="dialog-title">{{ title }}</h2>
+        <h2 class="dialog-title">{{ title || $t('paramManagement.addParam') }}</h2>
         <button class="custom-close-btn" @click="cancel">
           <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M13 1L1 13M1 1L13 13" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
@@ -72,7 +71,7 @@ export default {
   props: {
     title: {
       type: String,
-      default: '新增参数'
+      default: ''
     },
     visible: {
       type: Boolean,
@@ -126,7 +125,7 @@ export default {
             // 检查除最后一行外的每行是否以分号结尾
             for (let i = 0; i < lines.length - 1; i++) {
               if (!lines[i].trim().endsWith(';')) {
-                this.$message.error('数组格式错误，需要使用英文分号结尾');
+                this.$message.error(this.$t('paramDialog.arrayFormatError'));
                 return;
               }
             }

@@ -574,6 +574,7 @@ export default {
   'cache.clearedSuccess': 'Cache erfolgreich geleert',
   'cache.clearFailed': 'Cache-Leeren fehlgeschlagen',
   'cache.clearCanceled': 'Leer-Vorgang abgebrochen',
+  'cache.viewStatusTip': 'Drücken Sie Alt+C oder führen Sie checkCDNCacheStatus() in der Konsole aus, um den Status des CDN-Caches anzuzeigen',
 
   // Common buttons
   'button.ok': 'OK',
@@ -901,6 +902,7 @@ export default {
   'functionDialog.copyFailed': 'Kopieren fehlgeschlagen, bitte manuell kopieren',
   'functionDialog.jsonFormatError': ' Feldformatfehler: ungültiges JSON-Format',
   'functionDialog.defaultValue': 'Standardwert',
+  'functionDialog.functionName': 'Funktionsname',
 
   // Model Configuration Page Text
   'modelConfig.searchPlaceholder': 'Bitte Modellnamen zur Suche eingeben',
@@ -1323,6 +1325,7 @@ export default {
   'knowledgeFileUpload.viewSlices': 'Segmente anzeigen',
   'knowledgeFileUpload.delete': 'Löschen',
   'knowledgeFileUpload.itemsPerPage': 'Einträge/Seite',
+  'knowledgeFileUpload.fileUnit': ' Dateien',
   'knowledgeFileUpload.firstPage': 'Erste Seite',
   'knowledgeFileUpload.prevPage': 'Vorherige Seite',
   'knowledgeFileUpload.nextPage': 'Nächste Seite',
@@ -1523,4 +1526,49 @@ export default {
   // Header navigation
   'header.addressBook': 'Adressbuch',
 
+
+  // Cache loading failed
+  'cache.loadCacheFailed': 'Fehler beim Laden der Cache-Daten',
+
+  // Model Edit validations & sensitive keys
+  'modelEdit.validation.dictFormatRequired': 'Muss das Wörterbuchformat eingeben (z.B. {"key":"value"}), speichern, um Originaldaten zu verwenden',
+  'modelEdit.validation.jsonFormatError': 'JSON-Formatfehler (z.B. {"key":"value"}), speichern, um Originaldaten zu verwenden',
+  'modelEdit.sensitive.apiKey': 'API-Schlüssel',
+  'modelEdit.sensitive.personalAccessToken': 'Persönliches Zugangs-Token',
+  'modelEdit.sensitive.accessToken': 'Zugangs-Token',
+  'modelEdit.sensitive.token': 'Token',
+  'modelEdit.sensitive.secret': 'Geheimnis',
+  'modelEdit.sensitive.accessKeySecret': 'Zugriffsschlüssel-Geheimnis',
+  'modelEdit.sensitive.secretKey': 'Geheimer Schlüssel',
+  'modelEdit.sensitive.default': 'Empfindliche Informationen',
+
+  // Additional keys injected for Provider, Template and Voice Clone
+  'providerManagement.getProvidersFailed': 'Anbieterliste konnte nicht abgerufen werden',
+  'templateQuickConfig.defaultAgentCode': 'Xiaozhi',
+  'voiceClone.errorProcessingResponse': 'Fehler beim Verarbeiten der Antwort',
+  'voiceClone.cloneFailedHoverTip': 'Klonen fehlgeschlagen, bitte bewegen Sie die Maus über den Fehler, um Details anzuzeigen',
+  'voiceClone.errorCallingApi': 'Fehler beim Aufrufen der API',
+
+  // Additional keys injected for Param Dialog
+  'paramDialog.arrayFormatError': 'Ungültiges Array-Format, Zeilen müssen mit einem Semikolon (;) enden',
+
+  // Additional keys injected for Login/Register Pages
+  'login.captchaLoadFailed': 'Bestätigungscode konnte nicht geladen werden, zum Aktualisieren klicken',
+  'login.getUserInfoFailed': 'Benutzerinformationen konnten nicht abgerufen werden',
+  'login.loginFailed': 'Anmeldung fehlgeschlagen',
+  'login.captchaAlt': 'Bestätigungscode',
+
+  // Additional keys injected for HTTP request notifications
+  'httpRequest.networkError': 'Netzwerkfehler 【{status}】',
+  'httpRequest.cannotConnect': 'Verbindung zum Server kann nicht hergestellt werden',
+  'httpRequest.connecting': 'Verbindung zum Server wird hergestellt ({index})',
+
+  // Additional keys injected for viewPasswordDialog
+  'viewPasswordDialog.title': 'Neues Benutzerpasswort',
+  'viewPasswordDialog.label': 'Neues Benutzerpasswort:',
+  'viewPasswordDialog.copyPassword': 'Passwort kopieren',
+  'viewPasswordDialog.passwordCopied': 'Passwort kopiert',
+
+  // Additional keys injected for footer
+  'footer.beianIcon': 'Beian-Symbol',
 }

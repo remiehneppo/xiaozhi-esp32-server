@@ -574,6 +574,7 @@ export default {
   'cache.clearedSuccess': '緩存已清除',
   'cache.clearFailed': '清除緩存失敗',
   'cache.clearCanceled': '已取消清除',
+  'cache.viewStatusTip': '按下 Alt+C 組合鍵或在控制台運行 checkCDNCacheStatus() 可以查看CDN緩存狀態',
 
   // 通用按钮
   'button.ok': '確定',
@@ -901,6 +902,7 @@ export default {
   'functionDialog.copyFailed': '複製失敗，請手動複製',
   'functionDialog.jsonFormatError': '的字段格式錯誤：JSON格式有誤',
   'functionDialog.defaultValue': '默認值',
+  'functionDialog.functionName': '功能名稱',
 
   // 模型配置頁面文本
   'modelConfig.searchPlaceholder': '請輸入模型名稱查詢',
@@ -1323,6 +1325,7 @@ export default {
   'knowledgeFileUpload.viewSlices': '查看切片',
   'knowledgeFileUpload.delete': '刪除',
   'knowledgeFileUpload.itemsPerPage': '條/頁',
+  'knowledgeFileUpload.fileUnit': '個文件',
   'knowledgeFileUpload.firstPage': '首頁',
   'knowledgeFileUpload.prevPage': '上一頁',
   'knowledgeFileUpload.nextPage': '下一頁',
@@ -1522,4 +1525,49 @@ export default {
   'addressBookManagement.monthsAgo': '{months}個月前',
   'addressBookManagement.yearsAgo': '{years}年前',
 
+
+  // Cache loading failed
+  'cache.loadCacheFailed': '載入緩存數據失敗',
+
+  // Model Edit validations & sensitive keys
+  'modelEdit.validation.dictFormatRequired': '必須輸入字典格式（如 {"key":"value"}），保存則使用原數據',
+  'modelEdit.validation.jsonFormatError': 'JSON格式錯誤（如 {"key":"value"}），保存則使用原數據',
+  'modelEdit.sensitive.apiKey': 'API金鑰',
+  'modelEdit.sensitive.personalAccessToken': '個人存取權杖',
+  'modelEdit.sensitive.accessToken': '存取權杖',
+  'modelEdit.sensitive.token': '權杖',
+  'modelEdit.sensitive.secret': '金鑰',
+  'modelEdit.sensitive.accessKeySecret': '存取金鑰',
+  'modelEdit.sensitive.secretKey': '金鑰',
+  'modelEdit.sensitive.default': '敏感資訊',
+
+  // Additional keys injected for Provider, Template and Voice Clone
+  'providerManagement.getProvidersFailed': '獲取供應器列表失敗',
+  'templateQuickConfig.defaultAgentCode': '小智',
+  'voiceClone.errorProcessingResponse': '處理響應時出錯',
+  'voiceClone.cloneFailedHoverTip': '克隆失敗，請將滑鼠懸停在錯誤提示上，查看錯誤詳情',
+  'voiceClone.errorCallingApi': '呼叫API時出錯',
+
+  // Additional keys injected for Param Dialog
+  'paramDialog.arrayFormatError': '陣列格式錯誤，需要使用英文分號結尾',
+
+  // Additional keys injected for Login/Register Pages
+  'login.captchaLoadFailed': '驗證碼載入失敗，點擊重新整理',
+  'login.getUserInfoFailed': '使用者資訊獲取失敗',
+  'login.loginFailed': '登入失敗',
+  'login.captchaAlt': '驗證碼',
+
+  // Additional keys injected for HTTP request notifications
+  'httpRequest.networkError': '網路請求出現了錯誤【{status}】',
+  'httpRequest.cannotConnect': '似乎無法連接伺服器',
+  'httpRequest.connecting': '正在連接伺服器({index})',
+
+  // Additional keys injected for viewPasswordDialog
+  'viewPasswordDialog.title': '用戶新密碼',
+  'viewPasswordDialog.label': '用戶新密碼：',
+  'viewPasswordDialog.copyPassword': '複製密碼',
+  'viewPasswordDialog.passwordCopied': '密碼已複製',
+
+  // Additional keys injected for footer
+  'footer.beianIcon': '備案圖標',
 }

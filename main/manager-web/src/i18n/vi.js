@@ -574,6 +574,7 @@ export default {
   'cache.clearedSuccess': 'Đã xóa cache thành công',
   'cache.clearFailed': 'Xóa cache thất bại',
   'cache.clearCanceled': 'Đã hủy thao tác xóa',
+  'cache.viewStatusTip': 'Nhấn Alt+C hoặc chạy checkCDNCacheStatus() trên console để xem trạng thái cache CDN',
 
   // Common buttons
   'button.ok': 'OK',
@@ -901,6 +902,7 @@ export default {
   'functionDialog.copyFailed': 'Sao chép thất bại, vui lòng sao chép thủ công',
   'functionDialog.jsonFormatError': ' lỗi định dạng trường: định dạng JSON không hợp lệ',
   'functionDialog.defaultValue': 'Giá trị mặc định',
+  'functionDialog.functionName': 'Tên chức năng',
 
   // Model Configuration Page Text
   'modelConfig.searchPlaceholder': 'Vui lòng nhập tên mô hình để tìm kiếm',
@@ -1323,6 +1325,7 @@ export default {
   'knowledgeFileUpload.viewSlices': 'Xem các phần',
   'knowledgeFileUpload.delete': 'Xóa',
   'knowledgeFileUpload.itemsPerPage': 'mục/trang',
+  'knowledgeFileUpload.fileUnit': ' tệp',
   'knowledgeFileUpload.firstPage': 'Trang đầu',
   'knowledgeFileUpload.prevPage': 'Trang trước',
   'knowledgeFileUpload.nextPage': 'Trang sau',
@@ -1523,4 +1526,49 @@ export default {
   // Header navigation
   'header.addressBook': 'Danh bạ',
 
+
+  // Cache loading failed
+  'cache.loadCacheFailed': 'Tải dữ liệu cache thất bại',
+
+  // Model Edit validations & sensitive keys
+  'modelEdit.validation.dictFormatRequired': 'Bắt buộc nhập định dạng JSON (ví dụ: {"key":"value"}), hủy bỏ sẽ sử dụng dữ liệu cũ',
+  'modelEdit.validation.jsonFormatError': 'Định dạng JSON không hợp lệ (ví dụ: {"key":"value"}), hủy bỏ sẽ sử dụng dữ liệu cũ',
+  'modelEdit.sensitive.apiKey': 'Khóa API',
+  'modelEdit.sensitive.personalAccessToken': 'Mã truy cập cá nhân',
+  'modelEdit.sensitive.accessToken': 'Mã truy cập',
+  'modelEdit.sensitive.token': 'Mã truy cập (Token)',
+  'modelEdit.sensitive.secret': 'Mã bảo mật (Secret)',
+  'modelEdit.sensitive.accessKeySecret': 'Khóa truy cập bảo mật',
+  'modelEdit.sensitive.secretKey': 'Khóa bảo mật (Secret Key)',
+  'modelEdit.sensitive.default': 'Thông tin nhạy cảm',
+
+  // Additional keys injected for Provider, Template and Voice Clone
+  'providerManagement.getProvidersFailed': 'Lấy danh sách nhà cung cấp thất bại',
+  'templateQuickConfig.defaultAgentCode': 'Xiaozhi',
+  'voiceClone.errorProcessingResponse': 'Lỗi xử lý phản hồi',
+  'voiceClone.cloneFailedHoverTip': 'Nhân bản thất bại, vui lòng di chuột lên thông báo lỗi để xem chi tiết',
+  'voiceClone.errorCallingApi': 'Lỗi gọi API',
+
+  // Additional keys injected for Param Dialog
+  'paramDialog.arrayFormatError': 'Định dạng mảng không hợp lệ, các dòng phải kết thúc bằng dấu chấm phẩy (;)',
+
+  // Additional keys injected for Login/Register Pages
+  'login.captchaLoadFailed': 'Tải mã xác minh thất bại, nhấn để làm mới',
+  'login.getUserInfoFailed': 'Lấy thông tin người dùng thất bại',
+  'login.loginFailed': 'Đăng nhập thất bại',
+  'login.captchaAlt': 'Mã xác minh (Captcha)',
+
+  // Additional keys injected for HTTP request notifications
+  'httpRequest.networkError': 'Yêu cầu mạng gặp lỗi 【{status}】',
+  'httpRequest.cannotConnect': 'Không thể kết nối đến máy chủ',
+  'httpRequest.connecting': 'Đang kết nối đến máy chủ ({index})',
+
+  // Additional keys injected for viewPasswordDialog
+  'viewPasswordDialog.title': 'Mật khẩu mới của người dùng',
+  'viewPasswordDialog.label': 'Mật khẩu mới của người dùng:',
+  'viewPasswordDialog.copyPassword': 'Sao chép mật khẩu',
+  'viewPasswordDialog.passwordCopied': 'Đã sao chép mật khẩu',
+
+  // Additional keys injected for footer
+  'footer.beianIcon': 'Biểu tượng Beian',
 }
