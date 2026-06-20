@@ -15,132 +15,132 @@ import xiaozhi.modules.device.vo.UserShowDeviceListVO;
 
 public interface DeviceService extends BaseService<DeviceEntity> {
     /**
-     * 获取设备在线数据
+     * Nhận dữ liệu trực tuyến của thiết bị
      */
     String getDeviceOnlineData(String agentId);
 
     /**
-     * 检查设备是否激活
+     * Kiểm tra xem thiết bị đã được kích hoạt chưa
      */
     DeviceReportRespDTO checkDeviceActive(String macAddress, String clientId,
             DeviceReportReqDTO deviceReport);
 
     /**
-     * 获取用户指定智能体的设备列表，
+     * Lấy danh sách thiết bị của tác nhân do người dùng chỉ định,
      */
     List<DeviceEntity> getUserDevices(Long userId, String agentId);
 
     /**
-     * 获取用户指定智能体的设备列表（带时区处理），
+     * Lấy danh sách thiết bị của tác nhân do người dùng chỉ định (có xử lý múi giờ),
      */
     List<UserShowDeviceListVO> getUserDeviceList(Long userId, String agentId);
 
     /**
-     * 解绑设备
+     * Hủy liên kết thiết bị
      */
     void unbindDevice(Long userId, String deviceId);
 
     /**
-     * 设备激活
+     * Kích hoạt thiết bị
      */
     Boolean deviceActivation(String agentId, String activationCode);
 
     /**
-     * 删除此用户的所有设备
-     * 
-     * @param userId 用户id
+     * Xóa tất cả thiết bị cho người dùng này
+     *
+     * @param userId userid
      */
     void deleteByUserId(Long userId);
 
     /**
-     * 删除指定智能体关联的所有设备
-     * 
-     * @param agentId 智能体id
+     * Xóa tất cả các thiết bị được liên kết với tác nhân được chỉ định
+     *
+     * @param AgentId id đại lý
      */
     void deleteByAgentId(String agentId);
 
     /**
-     * 获取指定用户的设备数量
-     * 
-     * @param userId 用户id
-     * @return 设备数量
+     * Lấy số lượng thiết bị của một người dùng được chỉ định
+     *
+     * @param userId userid
+     * @return số lượng thiết bị
      */
     Long selectCountByUserId(Long userId);
 
     /**
-     * 分页获取全部设备信息
+     * Nhận tất cả thông tin thiết bị trong các trang
      *
-     * @param dto 分页查找参数
-     * @return 用户列表分页数据
+     * @param dto tham số tìm kiếm phân trang
+     * @return dữ liệu phân trang danh sách người dùng
      */
     PageData<UserShowDeviceListVO> page(DevicePageUserDTO dto);
 
     /**
-     * 根据MAC地址获取设备信息
-     * 
-     * @param macAddress MAC地址
-     * @return 设备信息
+     * Nhận thông tin thiết bị dựa trên địa chỉ MAC
+     *
+     * @param macĐịa chỉ địa chỉ MAC
+     * @return thông tin thiết bị
      */
     DeviceEntity getDeviceByMacAddress(String macAddress);
 
     /**
-     * 根据设备ID获取激活码
-     * 
-     * @param deviceId 设备ID
-     * @return 激活码
+     * Nhận mã kích hoạt dựa trên ID thiết bị
+     *
+     * @param ID thiết bị ID thiết bị
+     * @return mã kích hoạt
      */
     String geCodeByDeviceId(String deviceId);
 
     /**
-     * 获取这个智能体设备理的最近的最后连接时间
-     * 
-     * @param agentId 智能体id
-     * @return 返回设备最近的最后连接时间
+     * Nhận thời gian kết nối gần đây nhất cho thiết bị thông minh này
+     *
+     * @param AgentId id đại lý
+     * @return Trả về thời gian kết nối gần đây nhất của thiết bị
      */
     Date getLatestLastConnectionTime(String agentId);
 
     /**
-     * 手动添加设备
+     * Thêm thiết bị theo cách thủ công
      */
     void manualAddDevice(Long userId, DeviceManualAddDTO dto);
 
     /**
-     * 更新设备连接信息
+     * Cập nhật thông tin kết nối thiết bị
      */
     void updateDeviceConnectionInfo(String agentId, String deviceId, String appVersion);
 
     /**
-     * 生成WebSocket认证token
+     * Tạo mã thông báo xác thực WebSocket
      *
-     * @param clientId 客户端ID
-     * @param username 用户名(通常为deviceId)
-     * @return 认证token字符串
-     * @throws Exception 生成token时的异常
+     * ID khách hàng @param clientId
+     * @param tên người dùng tên người dùng (thường là deviceId)
+     * @return chuỗi mã thông báo xác thực
+     * @throws Ngoại lệ khi tạo mã thông báo
      */
     String generateWebSocketToken(String clientId, String username) throws Exception;
 
     /**
-     * 根据MAC地址搜索设备
+     * Tìm kiếm thiết bị dựa trên địa chỉ MAC
      *
-     * @param macAddress MAC地址关键词
-     * @param userId     用户ID
-     * @return 设备列表
+     * @param macAddress Từ khóa địa chỉ MAC
+     * @param userId ID người dùng
+     * @return danh sách thiết bị
      */
     List<DeviceEntity> searchDevicesByMacAddress(String macAddress, Long userId);
 
     /**
-     * 获取设备工具列表
+     * Nhận danh sách công cụ thiết bị
      */
     Object getDeviceTools(String deviceId);
 
     /**
-     * 调用设备工具
+     * Công cụ thiết bị gọi
      */
     Object callDeviceTool(String deviceId, String toolName, Map<String, Object> arguments);
 
     /**
-     * 转发呼叫请求到网关
-     * @return 网关响应 {status, message}
+     * Chuyển tiếp yêu cầu cuộc gọi đến cổng
+     * @return cổng phản hồi {trạng thái, tin nhắn}
      */
     Map<String, Object> forwardCallRequest(String callerMac, String targetMac, String callerNickname);
 

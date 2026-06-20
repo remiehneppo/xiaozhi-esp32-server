@@ -4,8 +4,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
 /**
- * 知识库模块定时任务配置
- * 启用 Spring Schedule 能力
+ * Cấu hình nhiệm vụ theo lịch trình của mô-đun cơ sở kiến thức
+ * Kích hoạt khả năng Lịch trình mùa xuân
  */
 @Configuration
 @EnableScheduling

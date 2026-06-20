@@ -5,25 +5,25 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
 /**
- * 音色分页参数DTO
- * 
+ * Tham số phân trang giai điệu DTO
+ *
  * @author zjy
  * @since 2025-3-21
  */
 @Data
-@Schema(description = "音色分页参数")
+@Schema(description = "Thông số phân trang giai điệu")
 public class TimbrePageDTO {
 
-    @Schema(description = "对应 TTS 模型主键")
+    @Schema(description = "tương ứng TTS Khóa chính của mô hình")
     @NotBlank(message = "{timbre.ttsModelId.require}")
     private String ttsModelId;
 
-    @Schema(description = "音色名称")
+    @Schema(description = "Tên giọng nói")
     private String name;
 
-    @Schema(description = "页数")
+    @Schema(description = "Số trang")
     private String page;
 
-    @Schema(description = "显示列数")
+    @Schema(description = "Hiển thị số cột")
     private String limit;
 }

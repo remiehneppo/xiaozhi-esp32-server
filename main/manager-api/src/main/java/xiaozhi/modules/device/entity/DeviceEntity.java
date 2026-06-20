@@ -15,53 +15,53 @@ import lombok.EqualsAndHashCode;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @TableName("ai_device")
-@Schema(description = "设备信息")
+@Schema(description = "Thông tin thiết bị")
 public class DeviceEntity {
 
     @TableId(type = IdType.ASSIGN_UUID)
     @Schema(description = "ID")
     private String id;
 
-    @Schema(description = "关联用户ID")
+    @Schema(description = "Người dùng được liên kếtID")
     private Long userId;
 
-    @Schema(description = "MAC地址")
+    @Schema(description = "MACđịa chỉ")
     private String macAddress;
 
-    @Schema(description = "最后连接时间")
+    @Schema(description = "Lần kết nối cuối cùng")
     private Date lastConnectedAt;
 
-    @Schema(description = "自动更新开关(0关闭/1开启)")
+    @Schema(description = "Công tắc cập nhật tự động(0Đóng/1bật lên)")
     private Integer autoUpdate;
 
-    @Schema(description = "设备硬件型号")
+    @Schema(description = "Mô hình phần cứng thiết bị")
     private String board;
 
-    @Schema(description = "设备别名")
+    @Schema(description = "Bí danh thiết bị")
     private String alias;
 
-    @Schema(description = "智能体ID")
+    @Schema(description = "đại lýID")
     private String agentId;
 
-    @Schema(description = "固件版本号")
+    @Schema(description = "Số phiên bản phần sụn")
     private String appVersion;
 
-    @Schema(description = "排序")
+    @Schema(description = "sắp xếp")
     private Integer sort;
 
-    @Schema(description = "更新者")
+    @Schema(description = "Trình cập nhật")
     @TableField(fill = FieldFill.UPDATE)
     private Long updater;
 
-    @Schema(description = "更新时间")
+    @Schema(description = "Thời gian cập nhật")
     @TableField(fill = FieldFill.UPDATE)
     private Date updateDate;
 
-    @Schema(description = "创建者")
+    @Schema(description = "Người sáng tạo")
     @TableField(fill = FieldFill.INSERT)
     private Long creator;
 
-    @Schema(description = "创建时间")
+    @Schema(description = "thời gian sáng tạo")
     @TableField(fill = FieldFill.INSERT)
     private Date createDate;
 }

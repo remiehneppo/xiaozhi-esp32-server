@@ -8,17 +8,17 @@ import java.util.Map;
 import xiaozhi.common.validator.AssertUtils;
 
 /**
- * 树形结构工具类，如：菜单、部门等
- * Copyright (c) 人人开源 All rights reserved.
+ * Các lớp công cụ cấu trúc cây, chẳng hạn như menu, phòng ban, v.v.
+ * Bản quyền (c) Renren Kaiyuan Mọi quyền được bảo lưu.
  * Website: https://www.renren.io
  */
 public class TreeUtils {
 
     /**
-     * 根据pid，构建树节点
+     * Xây dựng các nút cây dựa trên pid
      */
     public static <T extends TreeNode<T>> List<T> build(List<T> treeNodes, Long pid) {
-        // pid不能为空
+        // pid không thể trống
         AssertUtils.isNull(pid, "pid");
 
         List<T> treeList = new ArrayList<>();
@@ -32,7 +32,7 @@ public class TreeUtils {
     }
 
     /**
-     * 查找子节点
+     * Tìm các nút con
      */
     private static <T extends TreeNode<T>> T findChildren(List<T> treeNodes, T rootNode) {
         for (T treeNode : treeNodes) {
@@ -44,12 +44,12 @@ public class TreeUtils {
     }
 
     /**
-     * 构建树节点
+     * Xây dựng các nút cây
      */
     public static <T extends TreeNode<T>> List<T> build(List<T> treeNodes) {
         List<T> result = new ArrayList<>();
 
-        // list转map
+        // danh sách để lập bản đồ
         Map<Long, T> nodeMap = new LinkedHashMap<>(treeNodes.size());
         for (T treeNode : treeNodes) {
             nodeMap.put(treeNode.getId(), treeNode);

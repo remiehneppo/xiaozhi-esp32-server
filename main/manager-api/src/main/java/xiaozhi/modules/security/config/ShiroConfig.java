@@ -22,8 +22,8 @@ import xiaozhi.modules.security.secret.ServerSecretFilter;
 import xiaozhi.modules.sys.service.SysParamsService;
 
 /**
- * Shiro的配置文件
- * Copyright (c) 人人开源 All rights reserved.
+ * File cấu hình của Shira
+ * Bản quyền (c) Renren Kaiyuan Mọi quyền được bảo lưu.
  * Website: https://www.renren.io
  */
 @Configuration
@@ -57,19 +57,19 @@ public class ShiroConfig {
         shiroFilter.setShiroFilterConfiguration(config);
 
         Map<String, Filter> filters = new HashMap<>();
-        // oauth过滤
+        // lọc oauth
         filters.put("oauth2", new Oauth2Filter());
-        // 服务密钥过滤
+        // Lọc khóa dịch vụ
         filters.put("server", new ServerSecretFilter(sysParamsService));
         shiroFilter.setFilters(filters);
 
-        // 添加Shiro的内置过滤器
+        // Thêm bộ lọc tích hợp của Shira
         /*
-         * anon：无需认证就可以访问
-         * authc：必须认证了才能让问
-         * user：必须拥有，记住我功能，才能访问
-         * perms：拥有对某个资源的权限才能访问
-         * role：拥有某个角色权限才能访问
+         * anon: có thể được truy cập mà không cần xác thực
+         * authc: Phải được xác thực trước khi yêu cầu
+         * người dùng: phải có chức năng ghi nhớ tôi để truy cập nó
+         * perms: Bạn phải có quyền đối với tài nguyên để truy cập nó
+         * vai trò: chỉ truy cập nếu bạn có quyền vai trò nhất định
          */
         Map<String, String> filterMap = new LinkedHashMap<>();
         filterMap.put("/ota/**", "anon");
@@ -85,7 +85,7 @@ public class ShiroConfig {
         filterMap.put("/user/pub-config", "anon");
         filterMap.put("/user/register", "anon");
         filterMap.put("/user/retrieve-password", "anon");
-        // 将config路径使用server服务过滤器
+        // Sử dụng đường dẫn cấu hình với bộ lọc dịch vụ máy chủ
         filterMap.put("/config/**", "server");
         filterMap.put("/device/address-book/lookup", "server");
         filterMap.put("/device/call/forward", "server");

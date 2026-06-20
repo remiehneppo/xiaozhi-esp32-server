@@ -11,31 +11,31 @@ import lombok.Data;
 
 @Data
 @TableName("ai_agent_tag")
-@Schema(description = "智能体标签")
+@Schema(description = "Thẻ đại lý")
 public class AgentTagEntity {
 
     @TableId(type = IdType.ASSIGN_UUID)
-    @Schema(description = "主键")
+    @Schema(description = "khóa chính")
     private String id;
 
-    @Schema(description = "标签名称")
+    @Schema(description = "Tên thẻ")
     private String tagName;
 
-    @Schema(description = "排序")
+    @Schema(description = "sắp xếp")
     private Integer sort;
 
-    @Schema(description = "创建者")
+    @Schema(description = "Người sáng tạo")
     private Long creator;
 
-    @Schema(description = "创建时间")
+    @Schema(description = "thời gian sáng tạo")
     private Date createdAt;
 
-    @Schema(description = "更新者")
+    @Schema(description = "Trình cập nhật")
     private Long updater;
 
-    @Schema(description = "更新时间")
+    @Schema(description = "Thời gian cập nhật")
     private Date updatedAt;
 
-    @Schema(description = "删除标记")
+    @Schema(description = "xóa dấu")
     private Integer deleted;
 }

@@ -7,8 +7,8 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * 操作日志注解
- * Copyright (c) 人人开源 All rights reserved.
+ * Chú thích nhật ký hoạt động
+ * Bản quyền (c) Renren Kaiyuan Mọi quyền được bảo lưu.
  * Website: https://www.renren.io
  */
 @Target(ElementType.METHOD)

@@ -15,47 +15,47 @@ import lombok.EqualsAndHashCode;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @TableName("ai_ota")
-@Schema(description = "固件信息")
+@Schema(description = "Thông tin phần mềm")
 public class OtaEntity {
 
     @TableId(type = IdType.ASSIGN_UUID)
     @Schema(description = "ID")
     private String id;
 
-    @Schema(description = "固件名称")
+    @Schema(description = "Tên chương trình cơ sở")
     private String firmwareName;
 
-    @Schema(description = "固件类型")
+    @Schema(description = "Loại phần mềm")
     private String type;
 
-    @Schema(description = "版本号")
+    @Schema(description = "số phiên bản")
     private String version;
 
-    @Schema(description = "文件大小(字节)")
+    @Schema(description = "kích thước tập tin(Byte)")
     private Long size;
 
-    @Schema(description = "备注/说明")
+    @Schema(description = "Bình luận/Mô tả")
     private String remark;
 
-    @Schema(description = "固件路径")
+    @Schema(description = "Đường dẫn phần sụn")
     private String firmwarePath;
 
-    @Schema(description = "排序")
+    @Schema(description = "sắp xếp")
     private Integer sort;
 
-    @Schema(description = "更新者")
+    @Schema(description = "Trình cập nhật")
     @TableField(fill = FieldFill.UPDATE)
     private Long updater;
 
-    @Schema(description = "更新时间")
+    @Schema(description = "Thời gian cập nhật")
     @TableField(fill = FieldFill.UPDATE)
     private Date updateDate;
 
-    @Schema(description = "创建者")
+    @Schema(description = "Người sáng tạo")
     @TableField(fill = FieldFill.INSERT)
     private Long creator;
 
-    @Schema(description = "创建时间")
+    @Schema(description = "thời gian sáng tạo")
     @TableField(fill = FieldFill.INSERT)
     private Date createDate;
 }

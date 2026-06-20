@@ -7,13 +7,13 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import xiaozhi.modules.agent.entity.AgentPluginMapping;
 
 /**
- * @description 针对表【ai_agent_plugin_mapping(Agent与插件的唯一映射表)】的数据库操作Service
+ * @description Dịch vụ vận hành cơ sở dữ liệu cho bảng [ai_agent_plugin_mapping (bảng ánh xạ duy nhất giữa Tác nhân và trình cắm)]
  * @createDate 2025-05-25 22:33:17
  */
 public interface AgentPluginMappingService extends IService<AgentPluginMapping> {
 
     /**
-     * 根据智能体id获取插件参数
+     * Nhận thông số plug-in dựa trên id tác nhân
      *
      * @param agentId
      * @return
@@ -21,16 +21,16 @@ public interface AgentPluginMappingService extends IService<AgentPluginMapping> 
     List<AgentPluginMapping> agentPluginParamsByAgentId(String agentId);
 
     /**
-     * 根据智能体id删除插件参数
+     * Xóa tham số plugin dựa trên id tác nhân
      *
      * @param agentId
      */
     void deleteByAgentId(String agentId);
 
     /**
-     * 根据插件ID删除所有智能体的插件映射
+     * Xóa tất cả ánh xạ plugin của tác nhân dựa trên ID plugin
      *
-     * @param pluginId 插件ID
+     * ID plugin @param pluginId
      */
     void deleteByPluginId(String pluginId);
 }

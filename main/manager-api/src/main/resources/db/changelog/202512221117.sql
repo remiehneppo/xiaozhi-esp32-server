@@ -1,10 +1,10 @@
--- 更新豆包流式ASR供应器，增加end_window_size配置
+-- Cập nhật nhà cung cấp ASR phát trực tuyến Beanbag và thêm cấu hình end_window_size
 delete from `ai_model_provider` where id = 'SYSTEM_ASR_DoubaoStreamASR';
 INSERT INTO `ai_model_provider` (`id`, `model_type`, `provider_code`, `name`, `fields`, `sort`, `creator`, `create_date`, `updater`, `update_date`) VALUES
-('SYSTEM_ASR_DoubaoStreamASR', 'ASR', 'doubao_stream', '火山引擎语音识别(流式)', '[{"key":"appid","label":"应用ID","type":"string"},{"key":"access_token","label":"访问令牌","type":"string"},{"key":"cluster","label":"集群","type":"string"},{"key":"boosting_table_name","label":"热词文件名称","type":"string"},{"key":"correct_table_name","label":"替换词文件名称","type":"string"},{"key":"output_dir","label":"输出目录","type":"string"},{"key":"end_window_size","label":"静音判定时长(ms)","type":"number"}]', 3, 1, NOW(), 1, NOW());
+('SYSTEM_ASR_DoubaoStreamASR', 'ASR', 'doubao_stream', 'Nhận dạng giọng nói động cơ núi lửa(phát trực tuyến)', '[{"key":"appid","label":"ứng dụngID","type":"string"},{"key":"access_token","label":"mã thông báo truy cập","type":"string"},{"key":"cluster","label":"cụm","type":"string"},{"key":"boosting_table_name","label":"Tên file từ nóng","type":"string"},{"key":"correct_table_name","label":"Thay thế tên file word","type":"string"},{"key":"output_dir","label":"Thư mục đầu ra","type":"string"},{"key":"end_window_size","label":"Thời gian phán xét im lặng(ms)","type":"number"}]', 3, 1, NOW(), 1, NOW());
 
 
--- 更新豆包流式ASR模型配置，增加end_window_size默认值
+-- Cập nhật cấu hình mô hình ASR phát trực tuyến của Beanbao và tăng giá trị mặc định của end_window_size
 UPDATE `ai_model_config` SET
 `config_json` = JSON_SET(`config_json`, '$.end_window_size', 200)
 WHERE `id` = 'ASR_DoubaoStreamASR' AND JSON_EXTRACT(`config_json`, '$.end_window_size') IS NULL;

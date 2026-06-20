@@ -7,14 +7,14 @@ import java.io.Serializable;
 import java.util.List;
 
 @Data
-@Schema(description = "智能体标签DTO")
+@Schema(description = "Thẻ đại lýDTO")
 public class AgentTagDTO implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    @Schema(description = "标签ID")
+    @Schema(description = "nhãnID")
     private String id;
 
-    @Schema(description = "标签名称")
+    @Schema(description = "Tên thẻ")
     private String tagName;
 }

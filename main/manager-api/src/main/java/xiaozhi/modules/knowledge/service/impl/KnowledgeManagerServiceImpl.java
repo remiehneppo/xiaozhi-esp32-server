@@ -21,17 +21,17 @@ public class KnowledgeManagerServiceImpl implements KnowledgeManagerService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void deleteDatasetWithFiles(String datasetId) {
-        log.info("=== 级联删除开始: datasetId={} ===", datasetId);
+        log.info("=== Quá trình xóa xếp tầng bắt đầu: datasetId={} ===", datasetId);
 
-        // 1. 先调用文件服务，清理该数据集下的所有文档记录 (含 RAGFlow 端)
-        log.info("Step 1: 清理关联文档...");
+        // 1. Trước tiên, hãy gọi dịch vụ tệp để dọn sạch tất cả các bản ghi tài liệu trong tập dữ liệu (bao gồm cả phía RAGFlow)
+        log.info("Step 1: Dọn dẹp các tài liệu liên quan...");
         knowledgeFilesService.deleteDocumentsByDatasetId(datasetId);
 
-        // 2. 再调用知识库服务，彻底注销数据集 (含 RAGFlow 端)
-        log.info("Step 2: 删除数据集主体...");
+        // 2. Gọi lại dịch vụ cơ sở tri thức để đăng xuất hoàn toàn bộ dữ liệu (bao gồm cả bên RAGFlow)
+        log.info("Step 2: Xóa chủ đề tập dữ liệu...");
         knowledgeBaseService.deleteByDatasetId(datasetId);
 
-        log.info("=== 级联删除成功: datasetId={} ===", datasetId);
+        log.info("=== Xóa tầng thành công: datasetId={} ===", datasetId);
     }
 
     @Override
@@ -39,7 +39,7 @@ public class KnowledgeManagerServiceImpl implements KnowledgeManagerService {
     public void batchDeleteDatasetsWithFiles(List<String> datasetIds) {
         if (datasetIds == null || datasetIds.isEmpty())
             return;
-        log.info("=== 批量级联删除开始: count={} ===", datasetIds.size());
+        log.info("=== Việc xóa tầng hàng loạt bắt đầu: count={} ===", datasetIds.size());
         for (String id : datasetIds) {
             deleteDatasetWithFiles(id);
         }

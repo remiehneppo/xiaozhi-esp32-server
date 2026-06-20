@@ -31,21 +31,21 @@ public class AgentMcpAccessPointServiceImpl implements AgentMcpAccessPointServic
 
     @Override
     public String getAgentMcpAccessAddress(String id) {
-        // 获取到mcp的地址
+        // Lấy địa chỉ của mcp
         String url = sysParamsService.getValue(Constant.SERVER_MCP_ENDPOINT, true);
         if (StringUtils.isBlank(url) || "null".equals(url)) {
             return null;
         }
         URI uri = getURI(url);
-        // 获取智能体mcp的url前缀
+        // Lấy tiền tố url của đại lý mcp
         String agentMcpUrl = getAgentMcpUrl(uri);
-        // 获取密钥
+        // Nhận chìa khóa
         String key = getSecretKey(uri);
-        // 获取加密的token
+        // Nhận mã thông báo được mã hóa
         String encryptToken = encryptToken(id, key);
-        // 对token进行URL编码
+        // Mã hóa URL mã thông báo
         String encodedToken = URLEncoder.encode(encryptToken, StandardCharsets.UTF_8);
-        // 返回智能体Mcp路径的格式
+        // Trả về định dạng của đường dẫn Mcp của tác nhân
         agentMcpUrl = "%s/mcp/?token=%s".formatted(agentMcpUrl, encodedToken);
         return agentMcpUrl;
     }
@@ -57,11 +57,11 @@ public class AgentMcpAccessPointServiceImpl implements AgentMcpAccessPointServic
             return List.of();
         }
 
-        // 将 /mcp 替换为 /call
+        // Thay thế/mcp bằng/gọi
         wsUrl = wsUrl.replace("/mcp/", "/call/");
 
         try {
-            // 创建 WebSocket 连接，增加超时时间到15秒
+            // Tạo kết nối WebSocket và tăng thời gian chờ lên 15 giây
             try (WebSocketClientManager client = WebSocketClientManager.build(
                     new WebSocketClientManager.Builder()
                             .uri(wsUrl)
@@ -69,167 +69,167 @@ public class AgentMcpAccessPointServiceImpl implements AgentMcpAccessPointServic
                             .connectTimeout(8, TimeUnit.SECONDS)
                             .maxSessionDuration(10, TimeUnit.SECONDS))) {
 
-                // 步骤1: 发送初始化消息并等待响应
-                log.info("发送MCP初始化消息，智能体ID: {}", id);
+                // Bước 1: Gửi tin nhắn khởi tạo và chờ phản hồi
+                log.info("gửiMCPthông báo khởi tạo，đại lýID: {}", id);
                 client.sendText(XiaoZhiMcpJsonRpcJson.getInitializeJson());
 
-                // 等待初始化响应 (id=1) - 移除固定延迟，改为响应驱动
+                // Đợi phản hồi khởi tạo (id=1) - xóa độ trễ cố định và thay đổi thành hướng phản hồi
                 List<String> initResponses = client.listenerWithoutClose(response -> {
                     try {
                         Map<String, Object> jsonMap = JsonUtils.parseObject(response, Map.class);
                         if (jsonMap != null && Integer.valueOf(1).equals(jsonMap.get("id"))) {
-                            // 检查是否有result字段，表示初始化成功
+                            // Kiểm tra xem có trường kết quả hay không, cho biết khởi tạo thành công
                             return jsonMap.containsKey("result") && !jsonMap.containsKey("error");
                         }
                         return false;
                     } catch (Exception e) {
-                        log.warn("解析初始化响应失败: {}", response, e);
+                        log.warn("Không thể phân tích cú pháp phản hồi khởi tạo: {}", response, e);
                         return false;
                     }
                 });
 
-                // 验证初始化响应
+                // Xác minh phản hồi khởi tạo
                 boolean initSucceeded = false;
                 for (String response : initResponses) {
                     try {
                         Map<String, Object> jsonMap = JsonUtils.parseObject(response, Map.class);
                         if (jsonMap != null && Integer.valueOf(1).equals(jsonMap.get("id"))) {
                             if (jsonMap.containsKey("result")) {
-                                log.info("MCP初始化成功，智能体ID: {}", id);
+                                log.info("MCPKhởi tạo thành công，đại lýID: {}", id);
                                 initSucceeded = true;
                                 break;
                             } else if (jsonMap.containsKey("error")) {
-                                log.error("MCP初始化失败，智能体ID: {}, 错误: {}", id, jsonMap.get("error"));
+                                log.error("MCPKhởi tạo không thành công，đại lýID: {}, Lỗi: {}", id, jsonMap.get("error"));
                                 return List.of();
                             }
                         }
                     } catch (Exception e) {
-                        log.warn("处理初始化响应失败: {}", response, e);
+                        log.warn("Không thể xử lý phản hồi khởi tạo: {}", response, e);
                     }
                 }
 
                 if (!initSucceeded) {
-                    log.error("未收到有效的MCP初始化响应，智能体ID: {}", id);
+                    log.error("Không nhận được hợp lệMCPphản hồi khởi tạo，đại lýID: {}", id);
                     return List.of();
                 }
 
-                // 步骤2: 发送初始化完成通知 - 只有在收到initialize响应后才发送
-                log.info("发送MCP初始化完成通知，智能体ID: {}", id);
+                // Bước 2: Gửi thông báo hoàn thành khởi tạo - chỉ gửi sau khi nhận được phản hồi khởi tạo
+                log.info("gửiMCPThông báo hoàn thành khởi tạo，đại lýID: {}", id);
                 client.sendText(XiaoZhiMcpJsonRpcJson.getNotificationsInitializedJson());
-                // 步骤3: 发送工具列表请求 - 立即发送，无需额外延迟
-                log.info("发送MCP工具列表请求，智能体ID: {}", id);
+                // Bước 3: Gửi yêu cầu danh sách công cụ - ngay lập tức, không chậm trễ
+                log.info("gửiMCPYêu cầu danh sách công cụ，đại lýID: {}", id);
                 client.sendText(XiaoZhiMcpJsonRpcJson.getToolsListJson());
 
-                // 等待工具列表响应 (id=2)
+                // Đang chờ phản hồi danh sách công cụ (id=2)
                 List<String> toolsResponses = client.listener(response -> {
                     try {
                         Map<String, Object> jsonMap = JsonUtils.parseObject(response, Map.class);
                         return jsonMap != null && Integer.valueOf(2).equals(jsonMap.get("id"));
                     } catch (Exception e) {
-                        log.warn("解析工具列表响应失败: {}", response, e);
+                        log.warn("Phản hồi danh sách công cụ phân tích cú pháp không thành công: {}", response, e);
                         return false;
                     }
                 });
 
-                // 处理工具列表响应
+                // Xử lý phản hồi danh sách công cụ
                 for (String response : toolsResponses) {
                     try {
                         Map<String, Object> jsonMap = JsonUtils.parseObject(response, Map.class);
                         if (jsonMap != null && Integer.valueOf(2).equals(jsonMap.get("id"))) {
-                            // 检查是否有result字段
+                            // Kiểm tra xem có trường kết quả không
                             Object resultObj = jsonMap.get("result");
                             if (resultObj instanceof Map) {
                                 Map<String, Object> resultMap = (Map<String, Object>) resultObj;
                                 Object toolsObj = resultMap.get("tools");
                                 if (toolsObj instanceof List) {
                                     List<Map<String, Object>> toolsList = (List<Map<String, Object>>) toolsObj;
-                                    // 提取工具名称列表
+                                    // Danh sách tên công cụ trích xuất
                                     List<String> result = toolsList.stream()
                                             .map(tool -> (String) tool.get("name"))
                                             .filter(name -> name != null)
                                             .sorted()
                                             .collect(Collectors.toList());
-                                    log.info("成功获取MCP工具列表，智能体ID: {}, 工具数量: {}", id, result.size());
+                                    log.info("thu được thành côngMCPDanh sách công cụ，đại lýID: {}, Số lượng công cụ: {}", id, result.size());
                                     return result;
                                 }
                             } else if (jsonMap.containsKey("error")) {
-                                log.error("获取工具列表失败，智能体ID: {}, 错误: {}", id, jsonMap.get("error"));
+                                log.error("Không lấy được danh sách công cụ，đại lýID: {}, Lỗi: {}", id, jsonMap.get("error"));
                                 return List.of();
                             }
                         }
                     } catch (Exception e) {
-                        log.warn("处理工具列表响应失败: {}", response, e);
+                        log.warn("Phản hồi danh sách công cụ xử lý không thành công: {}", response, e);
                     }
                 }
 
-                log.warn("未找到有效的工具列表响应，智能体ID: {}", id);
+                log.warn("Không tìm thấy phản hồi danh sách công cụ hợp lệ，đại lýID: {}", id);
                 return List.of();
 
             }
         } catch (Exception e) {
-            log.error("获取智能体 MCP 工具列表失败，智能体ID: {},错误原因：{}", id, e.getMessage());
+            log.error("Nhận đại lý MCP Danh sách công cụ không thành công，đại lýID: {},Lý do lỗi：{}", id, e.getMessage());
             return List.of();
         }
     }
 
     /**
-     * 获取URI对象
-     * 
-     * @param url 路径
-     * @return URI对象
+     * Nhận đối tượng URI
+     *
+     * đường dẫn url @param
+     * @return đối tượng URI
      */
     private static URI getURI(String url) {
         try {
             return new URI(url);
         } catch (URISyntaxException e) {
-            log.error("路径格式不正确路径：{}，\n错误信息:{}", url, e.getMessage());
-            throw new RuntimeException("mcp的地址存在错误，请进入参数管理修改mcp接入点地址");
+            log.error("Định dạng đường dẫn là đường dẫn không chính xác：{}，\nthông báo lỗi:{}", url, e.getMessage());
+            throw new RuntimeException("mcpCó lỗi trong địa chỉ，Vui lòng nhập quản lý tham số để sửa đổimcpđịa chỉ điểm truy cập");
         }
     }
 
     /**
-     * 获取密钥
+     * Nhận chìa khóa
      *
-     * @param uri mcp地址
-     * @return 密钥
+     * @param uri địa chỉ mcp
+     * @return chìa khóa
      */
     private static String getSecretKey(URI uri) {
-        // 获取参数
+        // Nhận thông số
         String query = uri.getQuery();
-        // 获取aes加密密钥
+        // Nhận khóa mã hóa aes
         String str = "key=";
         return query.substring(query.indexOf(str) + str.length());
     }
 
     /**
-     * 获取智能体mcp接入点url
+     * Nhận url điểm truy cập mcp của đại lý
      *
-     * @param uri mcp地址
-     * @return 智能体mcp接入点url
+     * @param uri địa chỉ mcp
+     * @return đại lý url điểm truy cập mcp
      */
     private String getAgentMcpUrl(URI uri) {
-        // 获取协议
+        // Nhận thỏa thuận
         String wsScheme = (uri.getScheme().equals("https")) ? "wss" : "ws";
-        // 获取主机，端口，路径
+        // Nhận máy chủ, cổng, đường dẫn
         String path = uri.getSchemeSpecificPart();
-        // 获取到最后一个/前的path
+        // Nhận đường dẫn trước / cuối cùng
         path = path.substring(0, path.lastIndexOf("/"));
         return wsScheme + ":" + path;
     }
 
     /**
-     * 获取对智能体id加密的token
+     * Nhận mã thông báo được mã hóa của id đại lý
      *
-     * @param agentId 智能体id
-     * @param key     加密密钥
-     * @return 加密后token
+     * @param AgentId id đại lý
+     * Khóa mã hóa khóa @param
+     * @return mã thông báo được mã hóa
      */
     private static String encryptToken(String agentId, String key) {
-        // 使用md5对智能体id进行加密
+        // Sử dụng md5 để mã hóa ID tác nhân
         String md5 = HashEncryptionUtil.Md5hexDigest(agentId);
-        // aes需要加密文本
+        // aes yêu cầu văn bản được mã hóa
         String json = "{\"agentId\": \"%s\"}".formatted(md5);
-        // 加密后成token值
+        // Được mã hóa thành giá trị mã thông báo
         return AESUtils.encrypt(key, json);
     }
 }

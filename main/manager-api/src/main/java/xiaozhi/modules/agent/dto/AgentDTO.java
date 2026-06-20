@@ -8,46 +8,46 @@ import lombok.Data;
 import xiaozhi.modules.agent.dto.AgentTagDTO;
 
 /**
- * 智能体数据传输对象
- * 用于在服务层和控制器层之间传递智能体相关的数据
+ * Đối tượng truyền dữ liệu đại lý
+ * Được sử dụng để truyền dữ liệu liên quan đến tác nhân giữa lớp dịch vụ và lớp điều khiển
  */
 @Data
-@Schema(description = "智能体对象")
+@Schema(description = "đối tượng đại lý")
 public class AgentDTO {
-    @Schema(description = "智能体编码", example = "AGT_1234567890")
+    @Schema(description = "mã hóa đại lý", example = "AGT_1234567890")
     private String id;
 
-    @Schema(description = "智能体名称", example = "客服助手")
+    @Schema(description = "Tên đại lý", example = "Trợ lý dịch vụ khách hàng")
     private String agentName;
 
-    @Schema(description = "语音合成模型名称", example = "tts_model_01")
+    @Schema(description = "Tên mô hình tổng hợp giọng nói", example = "tts_model_01")
     private String ttsModelName;
 
-    @Schema(description = "音色名称", example = "voice_01")
+    @Schema(description = "Tên giọng nói", example = "voice_01")
     private String ttsVoiceName;
 
-    @Schema(description = "大语言模型名称", example = "llm_model_01")
+    @Schema(description = "Tên mô hình ngôn ngữ lớn", example = "llm_model_01")
     private String llmModelName;
 
-    @Schema(description = "视觉模型名称", example = "vllm_model_01")
+    @Schema(description = "Tên mô hình trực quan", example = "vllm_model_01")
     private String vllmModelName;
 
-    @Schema(description = "记忆模型ID", example = "mem_model_01")
+    @Schema(description = "mô hình bộ nhớID", example = "mem_model_01")
     private String memModelId;
 
-    @Schema(description = "角色设定参数", example = "你是一个专业的客服助手，负责回答用户问题并提供帮助")
+    @Schema(description = "Thông số cài đặt ký tự", example = "Bạn là trợ lý dịch vụ khách hàng chuyên nghiệp，Chịu trách nhiệm trả lời các câu hỏi của người dùng và cung cấp hỗ trợ")
     private String systemPrompt;
 
-    @Schema(description = "总结记忆", example = "构建可生长的动态记忆网络，在有限空间内保留关键信息的同时，智能维护信息演变轨迹\n" +
-            "根据对话记录，总结user的重要信息，以便在未来的对话中提供更个性化的服务", required = false)
+    @Schema(description = "Bộ nhớ tóm tắt", example = "Xây dựng mạng bộ nhớ động có thể phát triển，Lưu giữ thông tin quan trọng trong một không gian hạn chế，Theo dõi sự phát triển của thông tin bảo trì thông minh\n" +
+            "Theo bản ghi cuộc trò chuyện，Tóm tắtuserthông tin quan trọng，để cung cấp dịch vụ được cá nhân hóa hơn trong các cuộc trò chuyện trong tương lai.", required = false)
     private String summaryMemory;
 
-    @Schema(description = "最后连接时间", example = "2024-03-20 10:00:00")
+    @Schema(description = "Lần kết nối cuối cùng", example = "2024-03-20 10:00:00")
     private Date lastConnectedAt;
 
-    @Schema(description = "设备数量", example = "10")
+    @Schema(description = "Số lượng thiết bị", example = "10")
     private Integer deviceCount;
 
-    @Schema(description = "标签列表")
+    @Schema(description = "danh sách thẻ")
     private List<AgentTagDTO> tags;
 }

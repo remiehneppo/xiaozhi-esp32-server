@@ -12,7 +12,7 @@ import xiaozhi.modules.agent.entity.AgentEntity;
 import xiaozhi.modules.agent.vo.AgentInfoVO;
 
 /**
- * 智能体表处理service
+ * Dịch vụ xử lý bề mặt cơ thể thông minh
  *
  * @author Goody
  * @version 1.0, 2025/4/30
@@ -20,84 +20,84 @@ import xiaozhi.modules.agent.vo.AgentInfoVO;
  */
 public interface AgentService extends BaseService<AgentEntity> {
     /**
-     * 获取管理员智能体列表
+     * Lấy danh sách đại lý quản trị viên
      *
-     * @param params 查询参数
-     * @return 分页数据
+     * @param tham số truy vấn thông số
+     * @return dữ liệu được phân trang
      */
     PageData<AgentEntity> adminAgentList(Map<String, Object> params);
 
     /**
-     * 根据ID获取智能体
+     * Nhận đại lý dựa trên ID
      *
-     * @param id 智能体ID
-     * @return 智能体实体
+     * ID đại lý @param id
+     * @return thực thể đại lý
      */
     AgentInfoVO getAgentById(String id);
 
     /**
-     * 插入智能体
+     * Chèn tác nhân
      *
-     * @param entity 智能体实体
-     * @return 是否成功
+     * @param thực thể đại lý thực thể
+     * @return xem có thành công không
      */
     boolean insert(AgentEntity entity);
 
     /**
-     * 根据用户ID删除智能体
+     * Xóa tác nhân dựa trên ID người dùng
      *
-     * @param userId 用户ID
+     * @param userId ID người dùng
      */
     void deleteAgentByUserId(Long userId);
 
     /**
-     * 获取用户智能体列表
+     * Lấy danh sách tác nhân người dùng
      *
-     * @param userId 用户ID
-     * @param keyword 搜索关键词
-     * @param searchType 搜索类型（name - 按名称搜索，mac - 按MAC地址搜索）
-     * @return 智能体列表
+     * @param userId ID người dùng
+     * Từ khóa tìm kiếm từ khóa @param
+     * @param searchType loại tìm kiếm (tên - tìm kiếm theo tên, mac - tìm kiếm theo địa chỉ MAC)
+     * @return danh sách đại lý
      */
     List<AgentDTO> getUserAgents(Long userId, String keyword, String searchType);
 
     /**
-     * 根据智能体ID获取设备数量
+     * Lấy số lượng thiết bị dựa trên ID đại lý
      *
-     * @param agentId 智能体ID
-     * @return 设备数量
+     * @param ID đại lý ID đại lý
+     * @return số lượng thiết bị
      */
     Integer getDeviceCountByAgentId(String agentId);
 
     /**
-     * 根据设备MAC地址查询对应设备的默认智能体信息
+     * Truy vấn thông tin tác nhân mặc định của thiết bị tương ứng dựa trên địa chỉ MAC của thiết bị
      *
-     * @param macAddress 设备MAC地址
-     * @return 默认智能体信息，不存在时返回null
+     * @param macĐịa chỉ MAC của thiết bị
+     * @return Thông tin tác nhân mặc định, trả về null nếu nó không tồn tại
      */
     AgentEntity getDefaultAgentByMacAddress(String macAddress);
 
     /**
-     * 检查用户是否有权限访问智能体
+     * Kiểm tra xem người dùng có quyền truy cập vào tác nhân hay không
      *
-     * @param agentId 智能体ID
-     * @param userId  用户ID
-     * @return 是否有权限
+     * @param ID đại lý ID đại lý
+     * @param userId ID người dùng
+     * @return có được phép không
      */
     boolean checkAgentPermission(String agentId, Long userId);
 
     /**
-     * 更新智能体
+     * Cập nhật đại lý
      *
-     * @param agentId 智能体ID
-     * @param dto     更新智能体所需的信息
+     * @param ID đại lý ID đại lý
+     * @param dto thông tin cần thiết để cập nhật tác nhân
      */
     void updateAgentById(String agentId, AgentUpdateDTO dto);
 
     /**
-     * 创建智能体
+     * Tạo một đại lý
      *
-     * @param dto 创建智能体所需的信息
-     * @return 创建的智能体ID
+     * @param dto thông tin cần thiết để tạo tác nhân
+     * @return ID đại lý đã tạo
      */
     String createAgent(AgentCreateDTO dto);
 

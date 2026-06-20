@@ -5,10 +5,10 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
 @Data
-@Schema(description = "获取智能体替换词DTO")
+@Schema(description = "Nhận từ thay thế đại lýDTO")
 public class CorrectWordsDTO {
 
-    @NotBlank(message = "设备MAC地址不能为空")
-    @Schema(description = "设备MAC地址")
+    @NotBlank(message = "Thiết bịMACĐịa chỉ không thể trống")
+    @Schema(description = "Thiết bịMACđịa chỉ")
     private String macAddress;
 }

@@ -10,115 +10,115 @@ import xiaozhi.common.exception.ErrorCode;
 import xiaozhi.common.exception.RenException;
 
 /**
- * 知识库适配器工厂类
- * 负责创建和管理不同类型的知识库API适配器
+ * Lớp Nhà máy Bộ điều hợp Cơ sở Kiến thức
+ * Chịu trách nhiệm tạo và quản lý các loại bộ điều hợp API cơ sở kiến thức khác nhau
  */
 @Slf4j
 public class KnowledgeBaseAdapterFactory {
 
-    // 注册的适配器类型映射
+    // Ánh xạ loại bộ điều hợp đã đăng ký
     private static final Map<String, Class<? extends KnowledgeBaseAdapter>> adapterRegistry = new HashMap<>();
 
-    // 适配器实例缓存
+    // Bộ nhớ đệm phiên bản bộ điều hợp
     private static final Map<String, KnowledgeBaseAdapter> adapterCache = new ConcurrentHashMap<>();
 
-    // 最大缓存实例数，防止内存泄露 (Issue 9)
+    // Số lượng phiên bản bộ nhớ đệm tối đa để tránh rò rỉ bộ nhớ (Vấn đề 9)
     private static final int MAX_CACHE_SIZE = 50;
 
     static {
-        // 注册内置适配器类型
+        // Đăng ký loại bộ điều hợp tích hợp
         registerAdapter("ragflow", xiaozhi.modules.knowledge.rag.impl.RAGFlowAdapter.class);
-        // 可以在这里注册更多适配器类型
+        // Nhiều loại bộ chuyển đổi có thể được đăng ký tại đây
     }
 
     /**
-     * 注册新的适配器类型
-     * 
-     * @param adapterType  适配器类型标识
-     * @param adapterClass 适配器类
+     * Đăng ký loại bộ điều hợp mới
+     *
+     * @param adapterType Mã định danh loại bộ điều hợp
+     * @param adapterClass Lớp bộ điều hợp
      */
     public static void registerAdapter(String adapterType, Class<? extends KnowledgeBaseAdapter> adapterClass) {
         if (adapterRegistry.containsKey(adapterType)) {
-            log.warn("适配器类型 '{}' 已存在，将被覆盖", adapterType);
+            log.warn("Loại bộ chuyển đổi '{}' Đã tồn tại，sẽ bị ghi đè", adapterType);
         }
         adapterRegistry.put(adapterType, adapterClass);
-        log.info("注册适配器类型: {} -> {}", adapterType, adapterClass.getSimpleName());
+        log.info("Đăng ký loại bộ điều hợp: {} -> {}", adapterType, adapterClass.getSimpleName());
     }
 
     /**
-     * 获取适配器实例
-     * 
-     * @param adapterType 适配器类型
-     * @param config      配置参数
-     * @return 适配器实例
+     * Nhận phiên bản bộ chuyển đổi
+     *
+     * @param adapterType loại bộ điều hợp
+     * Tham số cấu hình @param config
+     * @return phiên bản bộ chuyển đổi
      */
     public static KnowledgeBaseAdapter getAdapter(String adapterType, Map<String, Object> config) {
         String cacheKey = buildCacheKey(adapterType, config);
 
-        // 检查缓存中是否已存在实例
+        // Kiểm tra xem phiên bản đã tồn tại trong bộ đệm chưa
         if (adapterCache.containsKey(cacheKey)) {
-            log.debug("从缓存获取适配器实例: {}", cacheKey);
+            log.debug("Nhận phiên bản bộ điều hợp từ bộ đệm: {}", cacheKey);
             return adapterCache.get(cacheKey);
         }
 
-        // 创建新的适配器实例
+        // Tạo một phiên bản bộ điều hợp mới
         KnowledgeBaseAdapter adapter = createAdapter(adapterType, config);
 
-        // 缓存适配器实例 (带容量限制检查)
+        // Phiên bản bộ điều hợp bộ đệm (có kiểm tra giới hạn dung lượng)
         if (adapterCache.size() >= MAX_CACHE_SIZE) {
-            log.warn("适配器缓存已达上限 ({})，执行内存保护性清除", MAX_CACHE_SIZE);
-            // 简单处理：直接清空，生产环境下建议使用 LRU
+            log.warn("Bộ đệm bộ điều hợp đã đạt đến giới hạn ({})，Thực hiện dọn dẹp bảo vệ bộ nhớ", MAX_CACHE_SIZE);
+            // Xử lý đơn giản: xóa trực tiếp, nên sử dụng LRU trong môi trường sản xuất
             adapterCache.clear();
         }
 
         adapterCache.put(cacheKey, adapter);
-        log.info("创建并缓存适配器实例: {}", cacheKey);
+        log.info("Tạo và lưu trữ các phiên bản bộ điều hợp: {}", cacheKey);
 
         return adapter;
     }
 
     /**
-     * 获取适配器实例（无配置）
-     * 
-     * @param adapterType 适配器类型
-     * @return 适配器实例
+     * Nhận phiên bản bộ điều hợp (không có cấu hình)
+     *
+     * @param adapterType loại bộ điều hợp
+     * @return phiên bản bộ chuyển đổi
      */
     public static KnowledgeBaseAdapter getAdapter(String adapterType) {
         return getAdapter(adapterType, null);
     }
 
     /**
-     * 获取所有已注册的适配器类型
-     * 
-     * @return 适配器类型集合
+     * Nhận tất cả các loại bộ điều hợp đã đăng ký
+     *
+     * Bộ sưu tập loại bộ điều hợp @return
      */
     public static Set<String> getRegisteredAdapterTypes() {
         return adapterRegistry.keySet();
     }
 
     /**
-     * 检查适配器类型是否已注册
-     * 
-     * @param adapterType 适配器类型
-     * @return 是否已注册
+     * Kiểm tra xem loại bộ chuyển đổi đã được đăng ký chưa
+     *
+     * @param adapterType loại bộ điều hợp
+     * @return xem nó đã được đăng ký chưa
      */
     public static boolean isAdapterTypeRegistered(String adapterType) {
         return adapterRegistry.containsKey(adapterType);
     }
 
     /**
-     * 清除适配器缓存
+     * Xóa bộ nhớ đệm của bộ điều hợp
      */
     public static void clearCache() {
         int cacheSize = adapterCache.size();
         adapterCache.clear();
-        log.info("清除适配器缓存，共清除 {} 个实例", cacheSize);
+        log.info("Xóa bộ nhớ đệm của bộ điều hợp，Tổng cộng đã xóa {} trường hợp", cacheSize);
     }
 
     /**
-     * 移除特定适配器类型的缓存
-     * 
-     * @param adapterType 适配器类型
+     * Xóa bộ đệm cho một loại bộ điều hợp cụ thể
+     *
+     * @param adapterType loại bộ điều hợp
      */
     public static void removeCacheByType(String adapterType) {
         int removedCount = 0;
@@ -128,13 +128,13 @@ public class KnowledgeBaseAdapterFactory {
                 removedCount++;
             }
         }
-        log.info("移除适配器类型 '{}' 的缓存，共移除 {} 个实例", adapterType, removedCount);
+        log.info("Loại bỏ loại bộ chuyển đổi '{}' bộ nhớ đệm，Tổng số đã loại bỏ {} trường hợp", adapterType, removedCount);
     }
 
     /**
-     * 获取适配器工厂状态信息
-     * 
-     * @return 状态信息
+     * Nhận thông tin trạng thái nhà máy bộ chuyển đổi
+     *
+     * @return thông tin trạng thái
      */
     public static Map<String, Object> getFactoryStatus() {
         Map<String, Object> status = new HashMap<>();
@@ -145,59 +145,59 @@ public class KnowledgeBaseAdapterFactory {
     }
 
     /**
-     * 创建适配器实例
-     * 
-     * @param adapterType 适配器类型
-     * @param config      配置参数
-     * @return 适配器实例
+     * Tạo phiên bản bộ chuyển đổi
+     *
+     * @param adapterType loại bộ điều hợp
+     * Tham số cấu hình @param config
+     * @return phiên bản bộ chuyển đổi
      */
     private static KnowledgeBaseAdapter createAdapter(String adapterType, Map<String, Object> config) {
         if (!adapterRegistry.containsKey(adapterType)) {
             throw new RenException(ErrorCode.RAG_ADAPTER_TYPE_NOT_SUPPORTED,
-                    "不支持的适配器类型: " + adapterType);
+                    "Loại bộ chuyển đổi không được hỗ trợ: " + adapterType);
         }
 
         try {
             Class<? extends KnowledgeBaseAdapter> adapterClass = adapterRegistry.get(adapterType);
             KnowledgeBaseAdapter adapter = adapterClass.getDeclaredConstructor().newInstance();
 
-            // 初始化适配器
+            // Khởi tạo bộ chuyển đổi
             if (config != null) {
                 adapter.initialize(config);
 
-                // 验证配置
+                // Xác minh cấu hình
                 if (!adapter.validateConfig(config)) {
                     throw new RenException(ErrorCode.RAG_CONFIG_VALIDATION_FAILED,
-                            "适配器配置验证失败: " + adapterType);
+                            "Xác minh cấu hình bộ điều hợp không thành công: " + adapterType);
                 }
             }
 
-            log.info("成功创建适配器实例: {}", adapterType);
+            log.info("Phiên bản bộ điều hợp được tạo thành công: {}", adapterType);
             return adapter;
 
         } catch (Exception e) {
-            log.error("创建适配器实例失败: {}", adapterType, e);
+            log.error("Không tạo được phiên bản bộ chuyển đổi: {}", adapterType, e);
             throw new RenException(ErrorCode.RAG_ADAPTER_CREATION_FAILED,
-                    "创建适配器失败: " + adapterType + ", 错误: " + e.getMessage());
+                    "Không tạo được bộ chuyển đổi: " + adapterType + ", Lỗi: " + e.getMessage());
         }
     }
 
     /**
-     * 构建缓存键
-     * 
-     * @param adapterType 适配器类型
-     * @param config      配置参数
-     * @return 缓存键
+     * Xây dựng khóa bộ đệm
+     *
+     * @param adapterType loại bộ điều hợp
+     * Tham số cấu hình @param config
+     * @return khóa bộ đệm
      */
     private static String buildCacheKey(String adapterType, Map<String, Object> config) {
         if (config == null || config.isEmpty()) {
             return adapterType + "@default";
         }
 
-        // 基于配置参数生成缓存键
+        // Tạo khóa bộ đệm dựa trên các tham số cấu hình
         StringBuilder keyBuilder = new StringBuilder(adapterType + "@");
 
-        // 使用配置的哈希值作为缓存键的一部分
+        // Sử dụng hàm băm được định cấu hình như một phần của khóa bộ đệm
         int configHash = config.hashCode();
         keyBuilder.append(configHash);
 

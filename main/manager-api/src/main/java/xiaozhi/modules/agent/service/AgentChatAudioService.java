@@ -5,7 +5,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import xiaozhi.modules.agent.entity.AgentChatAudioEntity;
 
 /**
- * 智能体聊天音频数据表处理service
+ * Dịch vụ xử lý bảng dữ liệu âm thanh trò chuyện đại lý
  *
  * @author Goody
  * @version 1.0, 2025/5/8
@@ -13,18 +13,18 @@ import xiaozhi.modules.agent.entity.AgentChatAudioEntity;
  */
 public interface AgentChatAudioService extends IService<AgentChatAudioEntity> {
     /**
-     * 保存音频数据
+     * Lưu dữ liệu âm thanh
      *
-     * @param audioData 音频数据
-     * @return 音频ID
+     * @param audioData Dữ liệu âm thanh
+     * @return ID âm thanh
      */
     String saveAudio(byte[] audioData);
 
     /**
-     * 获取音频数据
+     * Nhận dữ liệu âm thanh
      *
-     * @param audioId 音频ID
-     * @return 音频数据
+     * @param audioId ID âm thanh
+     * @return dữ liệu âm thanh
      */
     byte[] getAudio(String audioId);
 }

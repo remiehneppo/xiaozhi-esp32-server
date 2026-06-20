@@ -53,12 +53,12 @@ public class DeviceAddressBookServiceImpl implements DeviceAddressBookService {
         if (callerBook == null) {
             return null;
         }
-        // 从缓存获取 targetMac，格式: "mac|permission"
+        // Lấy targetMac từ bộ đệm, định dạng: "mac|permission"
         String targetMacWithPerm = callerBook.get(nickname);
         if (targetMacWithPerm == null) {
             return null;
         }
-        // 解析 targetMac 和 permission
+        // Phân tích targetMac và quyền
         String[] parts = targetMacWithPerm.split("\\|");
         String targetMac = parts[0];
         boolean hasPermission = parts.length > 1 && "1".equals(parts[1]);
@@ -67,7 +67,7 @@ public class DeviceAddressBookServiceImpl implements DeviceAddressBookService {
         if (targetBook == null) {
             return null;
         }
-        // 检查双向关系：目标设备是否也添加了主叫方为联系人
+        // Kiểm tra mối quan hệ hai chiều: liệu thiết bị đích có thêm người gọi làm liên hệ hay không
         String callerNickname = targetBook.get(callerMac.toLowerCase());
         Map<String, String> result = new HashMap<>();
         result.put("targetMac", targetMac);
@@ -88,10 +88,10 @@ public class DeviceAddressBookServiceImpl implements DeviceAddressBookService {
             String alias = entity.getAlias();
             Boolean hasPermission = entity.getHasPermission();
             if (alias != null && !alias.isEmpty()) {
-                // 反向记录: (macB, macA) = B对A的称呼
+                // Bản ghi ngược: (macB, macA) = Tên B cho A
                 reverseMap.put(macB + ":" + macA, alias);
             }
-            // 记录 A 对 B 是否有权限呼叫
+            // Ghi lại xem A có được phép gọi B hay không
             permissionMap.put(macA + ":" + macB, hasPermission != null && hasPermission);
         }
         for (DeviceAddressBookEntity entity : allRecords) {
@@ -101,12 +101,12 @@ public class DeviceAddressBookServiceImpl implements DeviceAddressBookService {
             result.computeIfAbsent(macA, k -> new HashMap<>());
             result.computeIfAbsent(macB, k -> new HashMap<>());
             if (aliasAtoB != null && !aliasAtoB.isEmpty()) {
-                // A对B的映射: nickname -> macB|permission
+                // Ánh xạ từ A đến B: biệt hiệu -> macB|quyền
                 Boolean perm = entity.getHasPermission();
                 String permStr = (perm != null && perm) ? "1" : "0";
                 result.get(macA).put(aliasAtoB, macB + "|" + permStr);
             }
-            // B对A的映射: macA -> nickname（查反向记录）
+            // Ánh xạ B tới A: macA -> biệt hiệu (kiểm tra bản ghi ngược)
             String aliasBtoA = reverseMap.get(macA + ":" + macB);
             if (aliasBtoA != null && !aliasBtoA.isEmpty()) {
                 result.get(macB).put(macA, aliasBtoA);
@@ -136,7 +136,7 @@ public class DeviceAddressBookServiceImpl implements DeviceAddressBookService {
             DeviceAddressBookEntity entity = new DeviceAddressBookEntity();
             entity.setMacAddress(macAddress);
             entity.setTargetMac(targetMac);
-            // 如果 alias 为空，就用默认使用设备名称
+            // Nếu bí danh trống, tên thiết bị mặc định sẽ được sử dụng.
             if (StringUtils.isBlank(alias)) {
                 alias = deviceService.getDeviceByMacAddress(targetMac).getAlias();
             }

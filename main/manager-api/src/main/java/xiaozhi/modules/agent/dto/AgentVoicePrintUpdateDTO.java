@@ -3,26 +3,26 @@ package xiaozhi.modules.agent.dto;
 import lombok.Data;
 
 /**
- * 修改智能体声纹的dto
+ * Sửa đổi dto của giọng nói của tổng đài viên
  *
  * @author zjy
  */
 @Data
 public class AgentVoicePrintUpdateDTO {
     /**
-     * 智能体声纹id
+     * ID giọng nói thông minh
      */
     private String id;
     /**
-     * 音频文件id
+     * id tập tin âm thanh
      */
     private String audioId;
     /**
-     * 声纹来源的人姓名
+     * Tên của người có giọng nói đến từ
      */
     private String sourceName;
     /**
-     * 描述声纹来源的人
+     * Người mô tả nguồn gốc của giọng nói
      */
     private String introduce;
 }

@@ -10,8 +10,8 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 import jakarta.annotation.Resource;
 
 /**
- * Redis配置
- * Copyright (c) 人人开源 All rights reserved.
+ * Cấu hình Redis
+ * Bản quyền (c) Renren Kaiyuan Mọi quyền được bảo lưu.
  * Website: https://www.renren.io
  */
 @Configuration

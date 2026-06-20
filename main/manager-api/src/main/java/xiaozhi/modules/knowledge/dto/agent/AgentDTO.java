@@ -8,31 +8,31 @@ import java.util.Map;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.*;
 
-@Schema(description = "智能体 (Agent) 管理聚合 DTO")
+@Schema(description = "đại lý (Agent) Quản lý tổng hợp DTO")
 public class AgentDTO {
 
-    // ========== 1. Agent 管理 (CRUD) - 对应 RAGFlow_Agent接口详解 ==========
+    // ========== 1. Quản lý tác nhân (CRUD) - Giải thích chi tiết về giao diện RAGFlow_Agent tương ứng ===========
     @Data
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-    @Schema(description = "Agent 创建请求")
+    @Schema(description = "Agent Tạo yêu cầu")
     public static class CreateReq implements Serializable {
-        @Schema(description = "Agent 标题", requiredMode = Schema.RequiredMode.REQUIRED, example = "My Agent")
-        @NotBlank(message = "Agent 标题不能为空")
+        @Schema(description = "Agent Tiêu đề", requiredMode = Schema.RequiredMode.REQUIRED, example = "My Agent")
+        @NotBlank(message = "Agent Tiêu đề không thể trống")
         @JsonProperty("title")
         private String title;
 
-        @Schema(description = "DSL 定义 (画布 JSON)", requiredMode = Schema.RequiredMode.REQUIRED)
-        @NotNull(message = "DSL 定义不能为空")
+        @Schema(description = "DSL độ nét (vải vẽ JSON)", requiredMode = Schema.RequiredMode.REQUIRED)
+        @NotNull(message = "DSL Định nghĩa không thể trống")
         @JsonProperty("dsl")
         private Map<String, Object> dsl;
 
-        @Schema(description = "描述", example = "这是一个测试 Agent")
+        @Schema(description = "Mô tả", example = "đây là một bài kiểm tra Agent")
         @JsonProperty("description")
         private String description;
 
-        @Schema(description = "头像 URL", example = "http://example.com/avatar.png")
+        @Schema(description = "hình đại diện URL", example = "http://example.com/avatar.png")
         @JsonProperty("avatar")
         private String avatar;
     }
@@ -41,21 +41,21 @@ public class AgentDTO {
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-    @Schema(description = "Agent 更新请求")
+    @Schema(description = "Agent yêu cầu cập nhật")
     public static class UpdateReq implements Serializable {
-        @Schema(description = "Agent 标题", example = "Updated Agent")
+        @Schema(description = "Agent Tiêu đề", example = "Updated Agent")
         @JsonProperty("title")
         private String title;
 
-        @Schema(description = "DSL 定义 (画布 JSON)")
+        @Schema(description = "DSL độ nét (vải vẽ JSON)")
         @JsonProperty("dsl")
         private Map<String, Object> dsl;
 
-        @Schema(description = "描述")
+        @Schema(description = "Mô tả")
         @JsonProperty("description")
         private String description;
 
-        @Schema(description = "头像 URL")
+        @Schema(description = "hình đại diện URL")
         @JsonProperty("avatar")
         private String avatar;
     }
@@ -64,33 +64,33 @@ public class AgentDTO {
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-    @Schema(description = "Agent 列表请求")
+    @Schema(description = "Agent yêu cầu danh sách")
     public static class ListReq implements Serializable {
-        @Schema(description = "页码", defaultValue = "1")
+        @Schema(description = "Số trang", defaultValue = "1")
         @JsonProperty("page")
         @Builder.Default
         private Integer page = 1;
 
-        @Schema(description = "每页大小", defaultValue = "10")
+        @Schema(description = "kích thước trang", defaultValue = "10")
         @JsonProperty("page_size")
         @Builder.Default
         private Integer pageSize = 10;
 
-        @Schema(description = "排序字段", defaultValue = "update_time")
+        @Schema(description = "trường sắp xếp", defaultValue = "update_time")
         @JsonProperty("orderby")
         @Builder.Default
         private String orderby = "update_time";
 
-        @Schema(description = "是否降序", defaultValue = "true")
+        @Schema(description = "Có thứ tự giảm dần", defaultValue = "true")
         @JsonProperty("desc")
         @Builder.Default
         private Boolean desc = true;
 
-        @Schema(description = "Agent ID 过滤")
+        @Schema(description = "Agent ID bộ lọc")
         @JsonProperty("id")
         private String id;
 
-        @Schema(description = "标题模糊搜索")
+        @Schema(description = "Tìm kiếm mờ tiêu đề")
         @JsonProperty("title")
         private String title;
     }
@@ -99,58 +99,58 @@ public class AgentDTO {
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-    @Schema(description = "Agent 响应对象")
+    @Schema(description = "Agent đối tượng phản hồi")
     public static class AgentVO implements Serializable {
         @Schema(description = "Agent ID")
         @JsonProperty("id")
         private String id;
 
-        @Schema(description = "标题")
+        @Schema(description = "Tiêu đề")
         @JsonProperty("title")
         private String title;
 
-        @Schema(description = "描述")
+        @Schema(description = "Mô tả")
         @JsonProperty("description")
         private String description;
 
-        @Schema(description = "头像")
+        @Schema(description = "hình đại diện")
         @JsonProperty("avatar")
         private String avatar;
 
-        @Schema(description = "DSL 定义")
+        @Schema(description = "DSL độ nét")
         @JsonProperty("dsl")
         private Map<String, Object> dsl;
 
-        @Schema(description = "创建者 ID")
+        @Schema(description = "Người sáng tạo ID")
         @JsonProperty("user_id")
         private String userId;
 
-        @Schema(description = "画布分类")
+        @Schema(description = "Phân loại vải")
         @JsonProperty("canvas_category")
         private String canvasCategory;
 
-        @Schema(description = "创建时间 (时间戳)")
+        @Schema(description = "thời gian sáng tạo (Dấu thời gian)")
         @JsonProperty("create_time")
         private Long createTime;
 
-        @Schema(description = "更新时间 (时间戳)")
+        @Schema(description = "Thời gian cập nhật (Dấu thời gian)")
         @JsonProperty("update_time")
         private Long updateTime;
     }
 
-    // ========== 2. Webhook 调试与追踪 - 对应 RAGFlow_Agent接口详解 ==========
+    // ========== 2. Gỡ lỗi và theo dõi Webhook - giải thích chi tiết về giao diện RAGFlow_Agent tương ứng ===========
     @Data
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-    @Schema(description = "Webhook 触发请求 (参数动态)")
+    @Schema(description = "Webhook yêu cầu kích hoạt (Động lực tham số)")
     public static class WebhookTriggerReq implements Serializable {
-        @Schema(description = "输入变量", requiredMode = Schema.RequiredMode.REQUIRED)
-        @NotNull(message = "输入变量不能为空")
+        @Schema(description = "biến đầu vào", requiredMode = Schema.RequiredMode.REQUIRED)
+        @NotNull(message = "Biến đầu vào không được để trống")
         @JsonProperty("inputs")
         private Map<String, Object> inputs;
 
-        @Schema(description = "查询词", example = "Hello")
+        @Schema(description = "từ truy vấn", example = "Hello")
         @JsonProperty("query")
         private String query;
     }
@@ -159,9 +159,9 @@ public class AgentDTO {
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-    @Schema(description = "Webhook 追踪请求")
+    @Schema(description = "Webhook Yêu cầu theo dõi")
     public static class WebhookTraceReq implements Serializable {
-        @Schema(description = "时间戳游标", example = "1700000000.0")
+        @Schema(description = "con trỏ dấu thời gian", example = "1700000000.0")
         @JsonProperty("since_ts")
         private Double sinceTs;
 
@@ -174,21 +174,21 @@ public class AgentDTO {
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-    @Schema(description = "Webhook 追踪响应")
+    @Schema(description = "Webhook Theo dõi phản hồi")
     public static class WebhookTraceVO implements Serializable {
         @Schema(description = "Webhook ID")
         @JsonProperty("webhook_id")
         private String webhookId;
 
-        @Schema(description = "是否结束")
+        @Schema(description = "Kết thúc rồi à?")
         @JsonProperty("finished")
         private Boolean finished;
 
-        @Schema(description = "下一次查询的时间戳游标")
+        @Schema(description = "con trỏ dấu thời gian cho truy vấn tiếp theo")
         @JsonProperty("next_since_ts")
         private Double nextSinceTs;
 
-        @Schema(description = "事件列表")
+        @Schema(description = "danh sách sự kiện")
         @JsonProperty("events")
         private List<TraceEvent> events;
 
@@ -196,30 +196,30 @@ public class AgentDTO {
         @Builder
         @NoArgsConstructor
         @AllArgsConstructor
-        @Schema(description = "追踪事件项")
+        @Schema(description = "Theo dõi các mục sự kiện")
         public static class TraceEvent implements Serializable {
-            @Schema(description = "时间戳")
+            @Schema(description = "Dấu thời gian")
             @JsonProperty("ts")
             private Double ts;
 
-            @Schema(description = "事件类型")
+            @Schema(description = "loại sự kiện")
             @JsonProperty("event")
             private String event;
 
-            @Schema(description = "事件数据")
+            @Schema(description = "dữ liệu sự kiện")
             @JsonProperty("data")
             private Object data;
         }
     }
 
-    // ========== 3. Agent 会话 (Session) - 对应 RAGFlow_Agent_Dify接口详解 ==========
+    // ========== 3. Agent Session (Session) - Giải thích chi tiết về giao diện RAGFlow_Agent_Dify tương ứng ===========
     @Data
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-    @Schema(description = "Session 创建请求")
+    @Schema(description = "Session Tạo yêu cầu")
     public static class SessionCreateReq implements Serializable {
-        @Schema(description = "用户 ID")
+        @Schema(description = "người dùng ID")
         @JsonProperty("user_id")
         private String userId;
     }
@@ -228,24 +228,24 @@ public class AgentDTO {
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-    @Schema(description = "Session 列表请求")
+    @Schema(description = "Session yêu cầu danh sách")
     public static class SessionListReq implements Serializable {
-        @Schema(description = "页码", defaultValue = "1")
+        @Schema(description = "Số trang", defaultValue = "1")
         @JsonProperty("page")
         @Builder.Default
         private Integer page = 1;
 
-        @Schema(description = "每页大小", defaultValue = "10")
+        @Schema(description = "kích thước trang", defaultValue = "10")
         @JsonProperty("page_size")
         @Builder.Default
         private Integer pageSize = 10;
 
-        @Schema(description = "排序字段", defaultValue = "create_time")
+        @Schema(description = "trường sắp xếp", defaultValue = "create_time")
         @JsonProperty("orderby")
         @Builder.Default
         private String orderby = "create_time";
 
-        @Schema(description = "是否降序", defaultValue = "true")
+        @Schema(description = "Có thứ tự giảm dần", defaultValue = "true")
         @JsonProperty("desc")
         @Builder.Default
         private Boolean desc = true;
@@ -254,11 +254,11 @@ public class AgentDTO {
         @JsonProperty("id")
         private String id;
 
-        @Schema(description = "用户 ID")
+        @Schema(description = "người dùng ID")
         @JsonProperty("user_id")
         private String userId;
 
-        @Schema(description = "是否返回 DSL")
+        @Schema(description = "Có nên quay lại không DSL")
         @JsonProperty("dsl")
         @Builder.Default
         private Boolean dsl = false;
@@ -268,11 +268,11 @@ public class AgentDTO {
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-    @Schema(description = "Session 批量删除请求")
+    @Schema(description = "Session Yêu cầu xóa hàng loạt")
     public static class SessionBatchDeleteReq implements Serializable {
-        @Schema(description = "会话 ID 列表", requiredMode = Schema.RequiredMode.REQUIRED)
+        @Schema(description = "phiên ID danh sách", requiredMode = Schema.RequiredMode.REQUIRED)
         @JsonProperty("ids")
-        @NotEmpty(message = "ID列表不能为空")
+        @NotEmpty(message = "IDDanh sách không thể trống")
         private List<String> ids;
     }
 
@@ -280,7 +280,7 @@ public class AgentDTO {
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-    @Schema(description = "Session 响应对象")
+    @Schema(description = "Session đối tượng phản hồi")
     public static class SessionVO implements Serializable {
         @Schema(description = "Session ID")
         @JsonProperty("id")
@@ -290,45 +290,45 @@ public class AgentDTO {
         @JsonProperty("agent_id")
         private String agentId;
 
-        @Schema(description = "用户 ID")
+        @Schema(description = "người dùng ID")
         @JsonProperty("user_id")
         private String userId;
 
-        @Schema(description = "来源")
+        @Schema(description = "Nguồn")
         @JsonProperty("source")
         private String source;
 
-        @Schema(description = "DSL 定义")
+        @Schema(description = "DSL độ nét")
         @JsonProperty("dsl")
         private Map<String, Object> dsl;
 
-        @Schema(description = "消息列表")
+        @Schema(description = "Danh sách tin nhắn")
         @JsonProperty("messages")
         private List<Map<String, Object>> messages;
     }
 
-    // ========== 4. Agent 对话 (Completion) - 对应 RAGFlow_Agent_Dify接口详解 ==========
+    // ========== 4. Đối thoại với Agent (Hoàn thành) - Giải thích chi tiết về giao diện RAGFlow_Agent_Dify tương ứng ===========
     @Data
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-    @Schema(description = "Completion 对话请求")
+    @Schema(description = "Completion Yêu cầu hội thoại")
     public static class CompletionReq implements Serializable {
-        @Schema(description = "会话 ID", requiredMode = Schema.RequiredMode.REQUIRED)
-        @NotBlank(message = "会话 ID 不能为空")
+        @Schema(description = "phiên ID", requiredMode = Schema.RequiredMode.REQUIRED)
+        @NotBlank(message = "phiên ID không thể trống")
         @JsonProperty("session_id")
         private String sessionId;
 
-        @Schema(description = "用户问题")
+        @Schema(description = "Sự cố người dùng")
         @JsonProperty("question")
         private String question;
 
-        @Schema(description = "是否流式返回", defaultValue = "true")
+        @Schema(description = "Có phát trực tuyến trả lại hay không", defaultValue = "true")
         @JsonProperty("stream")
         @Builder.Default
         private Boolean stream = true;
 
-        @Schema(description = "是否返回追踪信息", defaultValue = "false")
+        @Schema(description = "Có trả lại thông tin theo dõi hay không", defaultValue = "false")
         @JsonProperty("return_trace")
         @Builder.Default
         private Boolean returnTrace = false;
@@ -338,49 +338,49 @@ public class AgentDTO {
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-    @Schema(description = "Completion 对话响应")
+    @Schema(description = "Completion Phản hồi cuộc trò chuyện")
     public static class CompletionVO implements Serializable {
-        @Schema(description = "会话 ID")
+        @Schema(description = "phiên ID")
         @JsonProperty("id")
         private String id;
 
-        @Schema(description = "回复内容")
+        @Schema(description = "Trả lời nội dung")
         @JsonProperty("content")
         private String content;
 
-        @Schema(description = "引用来源")
+        @Schema(description = "Nguồn trích dẫn")
         @JsonProperty("reference")
         private Map<String, Object> reference;
 
-        @Schema(description = "追踪信息")
+        @Schema(description = "Thông tin theo dõi")
         @JsonProperty("trace")
         private List<Object> trace;
     }
 
-    // ========== 5. Dify 兼容检索 - 对应 RAGFlow_Agent_Dify接口详解 ==========
+    // ========== 5. Tìm kiếm tương thích Dify - giải thích chi tiết về giao diện RAGFlow_Agent_Dify tương ứng ===========
     @Data
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-    @Schema(description = "Dify 兼容检索请求")
+    @Schema(description = "Dify Yêu cầu tìm kiếm tương thích")
     public static class DifyRetrievalReq implements Serializable {
-        @Schema(description = "知识库 ID")
+        @Schema(description = "cơ sở tri thức ID")
         @JsonProperty("knowledge_id")
         private String knowledgeId;
 
-        @Schema(description = "查询词")
+        @Schema(description = "từ truy vấn")
         @JsonProperty("query")
         private String query;
 
-        @Schema(description = "检索设置")
+        @Schema(description = "Truy xuất cài đặt")
         @JsonProperty("retrieval_setting")
         private Map<String, Object> retrievalSetting;
 
-        @Schema(description = "元数据过滤条件")
+        @Schema(description = "Bộ lọc siêu dữ liệu")
         @JsonProperty("metadata_condition")
         private Map<String, Object> metadataCondition;
 
-        @Schema(description = "是否使用知识图谱")
+        @Schema(description = "Có nên sử dụng biểu đồ tri thức hay không")
         @JsonProperty("use_kg")
         private Boolean useKg;
     }
@@ -389,9 +389,9 @@ public class AgentDTO {
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-    @Schema(description = "Dify 兼容检索响应")
+    @Schema(description = "Dify Phản hồi truy xuất tương thích")
     public static class DifyRetrievalVO implements Serializable {
-        @Schema(description = "检索结果列表")
+        @Schema(description = "Danh sách kết quả tìm kiếm")
         @JsonProperty("records")
         private List<Record> records;
 
@@ -399,21 +399,21 @@ public class AgentDTO {
         @Builder
         @NoArgsConstructor
         @AllArgsConstructor
-        @Schema(description = "检索记录")
+        @Schema(description = "Truy xuất hồ sơ")
         public static class Record implements Serializable {
-            @Schema(description = "内容")
+            @Schema(description = "nội dung")
             @JsonProperty("content")
             private String content;
 
-            @Schema(description = "相似度分数")
+            @Schema(description = "điểm tương đồng")
             @JsonProperty("score")
             private Double score;
 
-            @Schema(description = "标题")
+            @Schema(description = "Tiêu đề")
             @JsonProperty("title")
             private String title;
 
-            @Schema(description = "元数据")
+            @Schema(description = "Siêu dữ liệu")
             @JsonProperty("metadata")
             private Map<String, Object> metadata;
         }

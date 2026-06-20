@@ -7,8 +7,8 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * 数据过滤注解
- * Copyright (c) 人人开源 All rights reserved.
+ * Chú thích lọc dữ liệu
+ * Bản quyền (c) Renren Kaiyuan Mọi quyền được bảo lưu.
  * Website: https://www.renren.io
  */
 @Target(ElementType.METHOD)
@@ -16,17 +16,17 @@ import java.lang.annotation.Target;
 @Documented
 public @interface DataFilter {
     /**
-     * 表的别名
+     * bí danh bảng
      */
     String tableAlias() default "";
 
     /**
-     * 用户ID
+     * ID người dùng
      */
     String userId() default "creator";
 
     /**
-     * 部门ID
+     * ID bộ phận
      */
     String deptId() default "dept_id";
 

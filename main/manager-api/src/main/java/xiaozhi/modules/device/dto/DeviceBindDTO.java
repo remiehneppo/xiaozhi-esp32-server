@@ -5,23 +5,23 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 
 /**
- * 设备绑定的DTO
- * 
+ * DTO ràng buộc thiết bị
+ *
  * @author zjy
  * @since 2025-3-28
  */
 @Data
 @AllArgsConstructor
-@Schema(description = "设备连接头信息")
+@Schema(description = "Thông tin đầu nối thiết bị")
 public class DeviceBindDTO {
 
-    @Schema(description = "mac地址")
+    @Schema(description = "macđịa chỉ")
     private String macAddress;
 
-    @Schema(description = "所属用户id")
+    @Schema(description = "người dùngid")
     private Long userId;
 
-    @Schema(description = "智能体id")
+    @Schema(description = "đại lýid")
     private String agentId;
 
 }

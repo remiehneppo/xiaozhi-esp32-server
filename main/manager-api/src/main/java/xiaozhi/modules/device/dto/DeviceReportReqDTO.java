@@ -10,139 +10,139 @@ import java.util.List;
 
 @Setter
 @Getter
-@Schema(description = "设备固件信息上报求请求体")
+@Schema(description = "Nội dung yêu cầu báo cáo thông tin phần mềm cơ sở của thiết bị")
 public class DeviceReportReqDTO implements Serializable {
     private static final long serialVersionUID = 1L;
-    // region 实体属性
-    @Schema(description = "板子固件版本号")
+    // thuộc tính thực thể khu vực
+    @Schema(description = "Số phiên bản chương trình cơ sở của bo mạch")
     private Integer version;
 
-    @Schema(description = "闪存大小（单位：字节）")
+    @Schema(description = "kích thước bộ nhớ flash（đơn vị：Byte）")
     @JsonProperty("flash_size")
     private Integer flashSize;
 
-    @Schema(description = "最小空闲堆内存（字节）")
+    @Schema(description = "Bộ nhớ heap trống tối thiểu（Byte）")
     @JsonProperty("minimum_free_heap_size")
     private Integer minimumFreeHeapSize;
 
-    @Schema(description = "设备 MAC 地址")
+    @Schema(description = "Thiết bị MAC địa chỉ")
     @JsonProperty("mac_address")
     private String macAddress;
 
-    @Schema(description = "设备唯一标识 UUID")
+    @Schema(description = "Mã định danh duy nhất của thiết bị UUID")
     private String uuid;
 
-    @Schema(description = "芯片型号名称")
+    @Schema(description = "Tên mẫu chip")
     @JsonProperty("chip_model_name")
     private String chipModelName;
 
-    @Schema(description = "芯片详细信息")
+    @Schema(description = "Chi tiết chip")
     @JsonProperty("chip_info")
     private ChipInfo chipInfo;
 
-    @Schema(description = "应用程序信息")
+    @Schema(description = "Thông tin ứng dụng")
     private Application application;
 
-    @Schema(description = "分区表列表")
+    @Schema(description = "Danh sách bảng phân vùng")
     @JsonProperty("partition_table")
     private List<Partition> partitionTable;
 
-    @Schema(description = "当前运行的 OTA 分区信息")
+    @Schema(description = "hiện đang chạy OTA Thông tin phân vùng")
     private OtaInfo ota;
 
-    @Schema(description = "板子配置信息")
+    @Schema(description = "Thông tin cấu hình bo mạch")
     private BoardInfo board;
 
     // endregion
 
     @Getter
     @Setter
-    @Schema(description = "芯片信息")
+    @Schema(description = "Thông tin chip")
     public static class ChipInfo {
-        @Schema(description = "芯片模型代码")
+        @Schema(description = "Mã mẫu chip")
         private Integer model;
 
-        @Schema(description = "核心数")
+        @Schema(description = "Số lượng lõi")
         private Integer cores;
 
-        @Schema(description = "硬件修订版本")
+        @Schema(description = "Sửa đổi phần cứng")
         private Integer revision;
 
-        @Schema(description = "芯片功能标志位")
+        @Schema(description = "Bit cờ chức năng chip")
         private Integer features;
     }
 
     @Getter
     @Setter
-    @Schema(description = "板子编译信息")
+    @Schema(description = "Thông tin tổng hợp hội đồng quản trị")
     public static class Application {
-        @Schema(description = "名称")
+        @Schema(description = "Tên")
         private String name;
 
-        @Schema(description = "应用版本号")
+        @Schema(description = "Số phiên bản ứng dụng")
         private String version;
 
-        @Schema(description = "编译时间（UTC ISO格式）")
+        @Schema(description = "thời gian biên dịch（UTC ISOđịnh dạng）")
         @JsonProperty("compile_time")
         private String compileTime;
 
-        @Schema(description = "ESP-IDF 版本号")
+        @Schema(description = "ESP-IDF số phiên bản")
         @JsonProperty("idf_version")
         private String idfVersion;
 
-        @Schema(description = "ELF 文件 SHA256 校验")
+        @Schema(description = "ELF tập tin SHA256 Xác minh")
         @JsonProperty("elf_sha256")
         private String elfSha256;
     }
 
     @Getter
     @Setter
-    @Schema(description = "分区信息")
+    @Schema(description = "Thông tin phân vùng")
     public static class Partition {
-        @Schema(description = "分区标签名")
+        @Schema(description = "Tên nhãn phân vùng")
         private String label;
 
-        @Schema(description = "分区类型")
+        @Schema(description = "Loại phân vùng")
         private Integer type;
 
-        @Schema(description = "子类型")
+        @Schema(description = "tiểu loại")
         private Integer subtype;
 
-        @Schema(description = "起始地址")
+        @Schema(description = "địa chỉ bắt đầu")
         private Integer address;
 
-        @Schema(description = "分区大小")
+        @Schema(description = "Kích thước phân vùng")
         private Integer size;
     }
 
     @Getter
     @Setter
-    @Schema(description = "OTA信息")
+    @Schema(description = "OTAthông tin")
     public static class OtaInfo {
-        @Schema(description = "当前OTA标签")
+        @Schema(description = "hiện tạiOTAnhãn")
         private String label;
     }
 
     @Getter
     @Setter
-    @Schema(description = "板子连接和网络信息")
+    @Schema(description = "Kết nối bo mạch và thông tin mạng")
     public static class BoardInfo {
-        @Schema(description = "板子类型")
+        @Schema(description = "Loại bảng")
         private String type;
 
-        @Schema(description = "连接的 Wi-Fi SSID")
+        @Schema(description = "đã kết nối Wi-Fi SSID")
         private String ssid;
 
-        @Schema(description = "Wi-Fi 信号强度（RSSI）")
+        @Schema(description = "Wi-Fi cường độ tín hiệu（RSSI）")
         private Integer rssi;
 
-        @Schema(description = "Wi-Fi 信道")
+        @Schema(description = "Wi-Fi kênh")
         private Integer channel;
 
-        @Schema(description = "IP 地址")
+        @Schema(description = "IP địa chỉ")
         private String ip;
 
-        @Schema(description = "MAC 地址")
+        @Schema(description = "MAC địa chỉ")
         private String mac;
     }
 }

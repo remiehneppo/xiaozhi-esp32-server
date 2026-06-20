@@ -5,7 +5,7 @@ import lombok.Data;
 @Data
 public class DeviceManualAddDTO {
     private String agentId;
-    private String board;        // 设备型号
-    private String appVersion;   // 固件版本
-    private String macAddress;   // Mac地址
+    private String board;        // Mẫu thiết bị
+    private String appVersion;   // Phiên bản phần mềm
+    private String macAddress;   // Macđịa chỉ
 } 

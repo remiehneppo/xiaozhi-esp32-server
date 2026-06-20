@@ -1,195 +1,195 @@
 package xiaozhi.common.redis;
 
 /**
- * Redis Key 常量类
- * Copyright (c) 人人开源 All rights reserved.
+ * Lớp hằng số Redis Key
+ * Bản quyền (c) Renren Kaiyuan Mọi quyền được bảo lưu.
  * Website: https://www.renren.io
  */
 public class RedisKeys {
     /**
-     * 系统参数Key
+     * Khóa tham số hệ thống
      */
     public static String getSysParamsKey() {
         return "sys:params";
     }
 
     /**
-     * 验证码Key
+     * Mã xác minhKey
      */
     public static String getCaptchaKey(String uuid) {
         return "sys:captcha:" + uuid;
     }
 
     /**
-     * 未注册设备验证码Key
+     * Mã xác minh thiết bị chưa đăng ký Key
      */
     public static String getDeviceCaptchaKey(String captcha) {
         return "sys:device:captcha:" + captcha;
     }
 
     /**
-     * 用户id的Key
+     * Khóa id người dùng
      */
     public static String getUserIdKey(Long userid) {
         return "sys:username:id:" + userid;
     }
 
     /**
-     * 模型名称的Key
+     * Chìa khóa tên model
      */
     public static String getModelNameById(String id) {
         return "model:name:" + id;
     }
 
     /**
-     * 模型配置的Key
+     * Chìa khóa cấu hình mô hình
      */
     public static String getModelConfigById(String id) {
         return "model:data:" + id;
     }
 
     /**
-     * 获取音色名称缓存key
+     * Lấy khóa bộ đệm tên âm sắc
      */
     public static String getTimbreNameById(String id) {
         return "timbre:name:" + id;
     }
 
     /**
-     * 获取设备数量缓存key
+     * Lấy key cache số thiết bị
      */
     public static String getAgentDeviceCountById(String id) {
         return "agent:device:count:" + id;
     }
 
     /**
-     * 获取智能体最后连接时间缓存key
+     * Lấy khóa bộ đệm thời gian kết nối cuối cùng của đại lý
      */
     public static String getAgentDeviceLastConnectedAtById(String id) {
         return "agent:device:lastConnected:" + id;
     }
 
     /**
-     * 获取系统配置缓存key
+     * Lấy key cache cấu hình hệ thống
      */
     public static String getServerConfigKey() {
         return "server:config";
     }
 
     /**
-     * 获取音色详情缓存key
+     * Lấy khóa bộ nhớ đệm chi tiết âm sắc
      */
     public static String getTimbreDetailsKey(String id) {
         return "timbre:details:" + id;
     }
 
     /**
-     * 获取版本号Key
+     * Nhận khóa số phiên bản
      */
     public static String getVersionKey() {
         return "sys:version";
     }
 
     /**
-     * OTA固件ID的Key
+     * Khóa ID chương trình cơ sở OTA
      */
     public static String getOtaIdKey(String uuid) {
         return "ota:id:" + uuid;
     }
 
     /**
-     * OTA固件下载次数的Key
+     * Key số lần tải firmware OTA
      */
     public static String getOtaDownloadCountKey(String uuid) {
         return "ota:download:count:" + uuid;
     }
 
     /**
-     * 获取字典数据的缓存key
+     * Lấy key cache của dữ liệu từ điển
      */
     public static String getDictDataByTypeKey(String dictType) {
         return "sys:dict:data:" + dictType;
     }
 
     /**
-     * 获取智能体音频ID的缓存key
+     * Lấy khóa bộ đệm của ID âm thanh tác nhân
      */
     public static String getAgentAudioIdKey(String uuid) {
         return "agent:audio:id:" + uuid;
     }
 
     /**
-     * 获取短信验证码的缓存key
+     * Lấy khóa bộ đệm của mã xác minh SMS
      */
     public static String getSMSValidateCodeKey(String phone) {
         return "sms:Validate:Code:" + phone;
     }
 
     /**
-     * 获取短信验证码最后发送时间的缓存key
+     * Lấy khóa bộ đệm của lần gửi mã xác minh SMS gần đây nhất
      */
     public static String getSMSLastSendTimeKey(String phone) {
         return "sms:Validate:Code:" + phone + ":last_send_time";
     }
 
     /**
-     * 获取短信验证码今日发送次数的缓存key
+     * Lấy cache key số lượng mã xác minh SMS gửi hôm nay
      */
     public static String getSMSTodayCountKey(String phone) {
         return "sms:Validate:Code:" + phone + ":today_count";
     }
 
     /**
-     * 聊天记录UUID映射的Key
+     * Khóa ánh xạ UUID của bản ghi trò chuyện
      */
     public static String getChatHistoryKey(String uuid) {
         return "agent:chat:history:" + uuid;
     }
 
     /**
-     * 获取音色克隆音频ID的缓存key
+     * Lấy khóa bộ đệm của ID âm thanh nhân bản âm sắc
      */
     public static String getVoiceCloneAudioIdKey(String uuid) {
         return "voiceClone:audio:id:" + uuid;
     }
 
     /**
-     * 获取知识库缓存key
+     * Nhận khóa bộ đệm cơ sở kiến thức
      */
     public static String getKnowledgeBaseCacheKey(String datasetId) {
         return "knowledge:base:" + datasetId;
     }
 
     /**
-     * 获取临时注册设备标记key
+     * Nhận key thẻ thiết bị đăng ký tạm thời
      */
     public static String getTmpRegisterMacKey(String deviceId) {
         return "tmp_register_mac:" + deviceId;
     }
 
     /**
-     * OTA绑定设备
+     * Thiết bị liên kết OTA
      */
     public static String getOtaActivationCode(String activationCode) {
         return "ota:activation:code:" + activationCode;
     }
 
     /**
-     * OTA获取设备mac相关信息
+     * OTA lấy thông tin liên quan đến thiết bị mac
      */
     public static String getOtaDeviceActivationInfo(String deviceId) {
         return "ota:activation:data:" + deviceId;
     }
 
     /**
-     * OTA上传次数
+     * Số lượng tải lên OTA
      */
     public static String getOtaUploadCountKey(Long username) {
         return "ota:upload:count:" + username;
     }
 
     /**
-     * 设备通讯录缓存Key
+     * Khóa bộ đệm sổ địa chỉ thiết bị
      */
     public static String getAddressBookKey() {
         return "device:address_book:all";

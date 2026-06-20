@@ -7,44 +7,44 @@ import java.io.Serializable;
 import java.util.Date;
 
 /**
- * 字典数据VO
+ * Dữ liệu từ điển VO
  */
 @Data
-@Schema(description = "字典数据VO")
+@Schema(description = "dữ liệu từ điểnVO")
 public class SysDictDataVO implements Serializable {
-    @Schema(description = "主键")
+    @Schema(description = "khóa chính")
     private Long id;
 
-    @Schema(description = "字典类型ID")
+    @Schema(description = "loại từ điểnID")
     private Long dictTypeId;
 
-    @Schema(description = "字典标签")
+    @Schema(description = "thẻ từ điển")
     private String dictLabel;
 
-    @Schema(description = "字典值")
+    @Schema(description = "Giá trị từ điển")
     private String dictValue;
 
-    @Schema(description = "备注")
+    @Schema(description = "Bình luận")
     private String remark;
 
-    @Schema(description = "排序")
+    @Schema(description = "sắp xếp")
     private Integer sort;
 
-    @Schema(description = "创建者")
+    @Schema(description = "Người sáng tạo")
     private Long creator;
 
-    @Schema(description = "创建者名称")
+    @Schema(description = "Tên người sáng tạo")
     private String creatorName;
 
-    @Schema(description = "创建时间")
+    @Schema(description = "thời gian sáng tạo")
     private Date createDate;
 
-    @Schema(description = "更新者")
+    @Schema(description = "Trình cập nhật")
     private Long updater;
 
-    @Schema(description = "更新者名称")
+    @Schema(description = "Tên người cập nhật")
     private String updaterName;
 
-    @Schema(description = "更新时间")
+    @Schema(description = "Thời gian cập nhật")
     private Date updateDate;
 }

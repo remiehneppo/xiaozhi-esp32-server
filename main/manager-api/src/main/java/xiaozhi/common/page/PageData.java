@@ -7,24 +7,24 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
 /**
- * 分页工具类
- * Copyright (c) 人人开源 All rights reserved.
+ * Lớp công cụ phân trang
+ * Bản quyền (c) Renren Kaiyuan Mọi quyền được bảo lưu.
  * Website: https://www.renren.io
  */
 @Data
-@Schema(description = "分页数据")
+@Schema(description = "Dữ liệu được phân trang")
 public class PageData<T> implements Serializable {
-    @Schema(description = "总记录数")
+    @Schema(description = "Tổng số hồ sơ")
     private int total;
 
-    @Schema(description = "列表数据")
+    @Schema(description = "Liệt kê dữ liệu")
     private List<T> list;
 
     /**
-     * 分页
+     * Phân trang
      *
-     * @param list  列表数据
-     * @param total 总记录数
+     * dữ liệu danh sách danh sách @param
+     * @param tổng số bản ghi
      */
     public PageData(List<T> list, long total) {
         this.list = list;

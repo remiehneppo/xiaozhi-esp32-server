@@ -4,25 +4,25 @@ import org.jsoup.Jsoup;
 import org.jsoup.safety.Safelist;
 
 /**
- * XSS过滤工具类
- * Copyright (c) 人人开源 All rights reserved.
+ * Lớp công cụ lọc XSS
+ * Bản quyền (c) Renren Kaiyuan Mọi quyền được bảo lưu.
  * Website: https://www.renren.io
  */
 public class XssUtils extends Safelist {
 
     /**
-     * XSS过滤
+     * Lọc XSS
      */
     public static String filter(String html) {
         return Jsoup.clean(html, xssWhitelist());
     }
 
     /**
-     * XSS过滤白名单
+     * Danh sách trắng lọc XSS
      */
     private static Safelist xssWhitelist() {
         return new Safelist()
-                // 支持的标签
+                // Thẻ được hỗ trợ
                 .addTags("a", "b", "blockquote", "br", "caption", "cite", "code", "col", "colgroup", "dd", "div", "dl",
                         "dt", "em", "h1", "h2", "h3", "h4", "h5", "h6", "i", "img", "li", "ol", "p", "pre", "q",
                         "small",
@@ -30,7 +30,7 @@ public class XssUtils extends Safelist {
                         "ul",
                         "embed", "object", "param", "span")
 
-                // 支持的标签属性
+                // Thuộc tính nhãn được hỗ trợ
                 .addAttributes("a", "href", "class", "style", "target", "rel", "nofollow")
                 .addAttributes("blockquote", "cite")
                 .addAttributes("code", "class", "style")
@@ -55,7 +55,7 @@ public class XssUtils extends Safelist {
                 .addAttributes("param", "name", "value")
                 .addAttributes("span", "class", "style")
 
-                // 标签属性对应的协议
+                // Giao thức tương ứng với thuộc tính thẻ
                 .addProtocols("a", "href", "ftp", "http", "https", "mailto")
                 .addProtocols("img", "src", "http", "https")
                 .addProtocols("blockquote", "cite", "http", "https")

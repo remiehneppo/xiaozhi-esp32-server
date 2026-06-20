@@ -11,35 +11,35 @@ import lombok.EqualsAndHashCode;
 import xiaozhi.common.entity.BaseEntity;
 
 /**
- * 字典类型
+ * loại từ điển
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
 @TableName("sys_dict_type")
 public class SysDictTypeEntity extends BaseEntity {
     /**
-     * 字典类型编码
+     * Mã hóa kiểu từ điển
      */
     private String dictType;
     /**
-     * 字典名称
+     * Tên từ điển
      */
     private String dictName;
     /**
-     * 备注
+     * Bình luận
      */
     private String remark;
     /**
-     * 排序
+     * sắp xếp
      */
     private Integer sort;
     /**
-     * 更新者
+     * Trình cập nhật
      */
     @TableField(fill = FieldFill.INSERT_UPDATE)
     private Long updater;
     /**
-     * 更新时间
+     * Thời gian cập nhật
      */
     @TableField(fill = FieldFill.INSERT_UPDATE)
     private Date updateDate;

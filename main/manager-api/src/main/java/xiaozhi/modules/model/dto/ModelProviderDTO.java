@@ -14,46 +14,46 @@ import lombok.Data;
 import xiaozhi.common.validator.group.UpdateGroup;
 
 @Data
-@Schema(description = "模型供应器/商")
+@Schema(description = "nhà cung cấp mô hình/Kinh doanh")
 public class ModelProviderDTO implements Serializable {
-    @Schema(description = "主键")
-    @NotBlank(message = "id不能为空", groups = UpdateGroup.class)
+    @Schema(description = "khóa chính")
+    @NotBlank(message = "idkhông thể trống", groups = UpdateGroup.class)
     private String id;
 
-    @Schema(description = "模型类型(Memory/ASR/VAD/LLM/TTS)")
-    @NotBlank(message = "modelType不能为空")
+    @Schema(description = "Loại mô hình(Memory/ASR/VAD/LLM/TTS)")
+    @NotBlank(message = "modelTypekhông thể trống")
     private String modelType;
 
-    @Schema(description = "供应器类型")
-    @NotBlank(message = "providerCode不能为空")
+    @Schema(description = "loại nhà cung cấp")
+    @NotBlank(message = "providerCodekhông thể trống")
     private String providerCode;
 
-    @Schema(description = "供应器名称")
-    @NotBlank(message = "name不能为空")
+    @Schema(description = "tên nhà cung cấp")
+    @NotBlank(message = "namekhông thể trống")
     private String name;
 
-    @Schema(description = "供应器字段列表(JSON格式)")
+    @Schema(description = "Danh sách trường nhà cung cấp(JSONđịnh dạng)")
     @TableField(typeHandler = JacksonTypeHandler.class)
-    @NotBlank(message = "fields(JSON格式)不能为空")
+    @NotBlank(message = "fields(JSONđịnh dạng)không thể trống")
     private String fields;
 
-    @Schema(description = "排序")
-    @NotNull(message = "sort不能为空")
+    @Schema(description = "sắp xếp")
+    @NotNull(message = "sortkhông thể trống")
     private Integer sort;
 
-    @Schema(description = "更新者")
+    @Schema(description = "Trình cập nhật")
     @TableField(fill = FieldFill.UPDATE)
     private Long updater;
 
-    @Schema(description = "更新时间")
+    @Schema(description = "Thời gian cập nhật")
     @TableField(fill = FieldFill.UPDATE)
     private Date updateDate;
 
-    @Schema(description = "创建者")
+    @Schema(description = "Người sáng tạo")
     @TableField(fill = FieldFill.INSERT)
     private Long creator;
 
-    @Schema(description = "创建时间")
+    @Schema(description = "thời gian sáng tạo")
     @TableField(fill = FieldFill.INSERT)
     private Date createDate;
 }

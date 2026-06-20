@@ -1,4 +1,4 @@
--- 更新小智参数中的默认采样率从 16000 改为 24000
+-- Đã cập nhật tốc độ lấy mẫu mặc định trong thông số Xiaozhi từ 16000 lên 24000
 UPDATE `sys_params`
 SET `param_value` = '{
   "type": "hello",

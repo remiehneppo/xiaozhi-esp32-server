@@ -10,7 +10,7 @@ import xiaozhi.modules.sys.entity.SysDictDataEntity;
 import xiaozhi.modules.sys.vo.SysDictDataItem;
 
 /**
- * 字典数据
+ * dữ liệu từ điển
  */
 @Mapper
 public interface SysDictDataDao extends BaseDao<SysDictDataEntity> {
@@ -18,15 +18,15 @@ public interface SysDictDataDao extends BaseDao<SysDictDataEntity> {
     List<SysDictDataItem> getDictDataByType(String dictType);
 
     /**
-     * 根据字典类型ID获取字典类型编码
-     * 
-     * @param dictTypeId 字典类型ID
-     * @return 字典类型编码
+     * Nhận mã hóa loại từ điển dựa trên ID loại từ điển
+     *
+     * @param dictTypeId ID loại từ điển
+     * @return mã hóa kiểu từ điển
      */
     String getTypeByTypeId(Long dictTypeId);
 
     /**
-     * 根据字典数据ID集合获取字典类型编码集合
+     * Nhận bộ mã hóa loại từ điển dựa trên bộ ID dữ liệu từ điển
      */
     List<String> getDictTypesByIdList(@Param("dictDataIdList") List<Long> dictDataIdList);
 }

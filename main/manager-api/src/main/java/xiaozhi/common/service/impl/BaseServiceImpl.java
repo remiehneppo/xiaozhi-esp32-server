@@ -32,8 +32,8 @@ import xiaozhi.common.service.BaseService;
 import xiaozhi.common.utils.ConvertUtils;
 
 /**
- * 基础服务类，所有Service都要继承
- * Copyright (c) 人人开源 All rights reserved.
+ * Lớp dịch vụ cơ bản, tất cả các dịch vụ phải kế thừa
+ * Bản quyền (c) Renren Kaiyuan Mọi quyền được bảo lưu.
  * Website: https://www.renren.io
  */
 public abstract class BaseServiceImpl<M extends BaseMapper<T>, T> implements BaseService<T> {
@@ -42,20 +42,20 @@ public abstract class BaseServiceImpl<M extends BaseMapper<T>, T> implements Bas
     protected Log log = LogFactory.getLog(getClass());
 
     /**
-     * 获取分页对象
+     * Lấy đối tượng phân trang
      *
-     * @param params            分页查询参数
-     * @param defaultOrderField 默认排序字段
-     * @param isAsc             排序方式
+     * @param params Tham số truy vấn phân trang
+     * @param defaultOrderField trường sắp xếp mặc định
+     * @param phương pháp sắp xếp isAsc
      * @see xiaozhi.common.constant.Constant
-     *      params.put(Constant.PAGE, "1");
-     *      params.put(Constant.LIMIT, "10");
-     *      params.put(Constant.ORDER_FIELD, "field"); // 单个字段
-     *      params.put(Constant.ORDER_FIELD, List.of("field1", "field2")); // 多个字段
-     *      params.put(Constant.ORDER, "asc");
+     * params.put(Constant.PAGE, "1");
+     * params.put(Constant.LIMIT, "10");
+     * params.put(Constant.ORDER_FIELD, "field"); // Trường đơn
+     * params.put(Constant.ORDER_FIELD, List.of("field1", "field2")); // Nhiều trường
+     * params.put(Constant.ORDER, "asc");
      */
     protected IPage<T> getPage(Map<String, Object> params, String defaultOrderField, boolean isAsc) {
-        // 分页参数
+        // Thông số phân trang
         long curPage = 1;
         long limit = 10;
 
@@ -66,26 +66,26 @@ public abstract class BaseServiceImpl<M extends BaseMapper<T>, T> implements Bas
             limit = Long.parseLong((String) params.get(Constant.LIMIT));
         }
 
-        // 分页对象
+        // Đối tượng phân trang
         Page<T> page = new Page<>(curPage, limit);
 
-        // 分页参数
+        // Thông số phân trang
         params.put(Constant.PAGE, page);
 
-        // 排序字段
+        // trường sắp xếp
         Object orderField = params.get(Constant.ORDER_FIELD);
         String order = (String) params.get(Constant.ORDER);
 
         List<String> orderFields = new ArrayList<>();
 
-        // 处理排序字段
+        // Xử lý các trường sắp xếp
         if (orderField instanceof String) {
             orderFields.add((String) orderField);
         } else if (orderField instanceof List) {
             orderFields.addAll((List<String>) orderField);
         }
 
-        // 有排序字段则排序
+        // Sắp xếp nếu có trường sắp xếp
         if (CollectionUtils.isNotEmpty(orderFields)) {
             if (StringUtils.isNotBlank(order) && Constant.ASC.equalsIgnoreCase(order)) {
                 return page.addOrder(OrderItem.ascs(orderFields.toArray(new String[0])));
@@ -94,7 +94,7 @@ public abstract class BaseServiceImpl<M extends BaseMapper<T>, T> implements Bas
             }
         }
 
-        // 没有排序字段，使用默认排序
+        // Không có trường sắp xếp, sử dụng sắp xếp mặc định
         if (StringUtils.isNotBlank(defaultOrderField)) {
             if (isAsc) {
                 page.addOrder(OrderItem.asc(defaultOrderField));
@@ -129,13 +129,13 @@ public abstract class BaseServiceImpl<M extends BaseMapper<T>, T> implements Bas
 
     /**
      * <p>
-     * 判断数据库操作是否成功
+     * Xác định xem hoạt động cơ sở dữ liệu có thành công hay không
      * </p>
      * <p>
-     * 注意！！ 该方法为 Integer 判断，不可传入 int 基本类型
+     * Chú ý! ! Phương thức này được đánh giá bởi Integer và kiểu int cơ bản không thể được truyền vào.
      * </p>
      *
-     * @param result 数据库操作返回影响条数
+     * @param result Số lượng mục bị ảnh hưởng được hoạt động cơ sở dữ liệu trả về
      * @return boolean
      */
     protected static boolean retBool(Integer result) {
@@ -168,7 +168,7 @@ public abstract class BaseServiceImpl<M extends BaseMapper<T>, T> implements Bas
     }
 
     /**
-     * 批量插入
+     * Chèn hàng loạt
      */
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -178,7 +178,7 @@ public abstract class BaseServiceImpl<M extends BaseMapper<T>, T> implements Bas
     }
 
     /**
-     * 执行批量操作
+     * Thực hiện các hoạt động hàng loạt
      */
     @SuppressWarnings("deprecation")
     protected <E> boolean executeBatch(Collection<E> list, int batchSize, BiConsumer<SqlSession, E> consumer) {

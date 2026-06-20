@@ -9,40 +9,40 @@ public class AESUtilsTest {
     @Test
     public void testEncryptAndDecrypt() {
         String key = "xiaozhi1234567890";
-        String plainText = "Hello, 小智!";
+        String plainText = "Hello, Tiểu Trí!";
 
-        System.out.println("原始文本: " + plainText);
-        System.out.println("密钥: " + key);
+        System.out.println("Văn bản gốc: " + plainText);
+        System.out.println("Khóa: " + key);
 
-        // 加密
+        // Mã hóa
         String encrypted = AESUtils.encrypt(key, plainText);
-        System.out.println("加密结果: " + encrypted);
+        System.out.println("Kết quả mã hóa: " + encrypted);
 
-        // 解密
+        // Giải mã
         String decrypted = AESUtils.decrypt(key, encrypted);
-        System.out.println("解密结果: " + decrypted);
+        System.out.println("Kết quả giải mã: " + decrypted);
 
-        // 验证
-        assertEquals(plainText, decrypted, "加解密结果应该一致");
-        System.out.println("加解密一致性: " + plainText.equals(decrypted));
+        // Xác thực
+        assertEquals(plainText, decrypted, "Kết quả mã hóa và giải mã phải khớp nhau");
+        System.out.println("Tính nhất quán của mã hóa/giải mã: " + plainText.equals(decrypted));
     }
 
     @Test
     public void testDifferentKeyLengths() {
         String[] keys = {
-                "1234567890123456", // 16位
-                "123456789012345678901234", // 24位
-                "12345678901234567890123456789012", // 32位
-                "short", // 短密钥
-                "verylongkeythatwillbetruncatedto32bytes" // 长密钥
+                "1234567890123456", // 16 ký tự
+                "123456789012345678901234", // 24 ký tự
+                "12345678901234567890123456789012", // 32 ký tự
+                "short", // Khóa ngắn
+                "verylongkeythatwillbetruncatedto32bytes" // Khóa dài
         };
 
-        String plainText = "测试文本";
+        String plainText = "Văn bản thử nghiệm";
 
         for (String key : keys) {
             String encrypted = AESUtils.encrypt(key, plainText);
             String decrypted = AESUtils.decrypt(key, encrypted);
-            assertEquals(plainText, decrypted, "密钥长度: " + key.length());
+            assertEquals(plainText, decrypted, "Độ dài khóa: " + key.length());
         }
     }
 
@@ -51,35 +51,35 @@ public class AESUtilsTest {
         String key = "xiaozhi1234567890";
         String[] testTexts = {
                 "Hello World",
-                "你好世界",
-                "Hello, 小智!",
-                "特殊字符: !@#$%^&*()",
-                "数字123和中文混合",
+                "Chào thế giới",
+                "Hello, Tiểu Trí!",
+                "Ký tự đặc biệt: !@#$%^&*()",
+                "Số 123 và chữ Trung Quốc hỗn hợp",
                 "Emoji: 😀🎉🚀",
-                "空字符串测试",
+                "Thử nghiệm chuỗi trống",
                 ""
         };
 
         for (String text : testTexts) {
             String encrypted = AESUtils.encrypt(key, text);
             String decrypted = AESUtils.decrypt(key, encrypted);
-            assertEquals(text, decrypted, "测试文本: " + text);
+            assertEquals(text, decrypted, "Văn bản thử nghiệm: " + text);
         }
     }
 
     @Test
     public void testCrossLanguageCompatibility() {
-        // 这些是Python版本生成的加密结果，用于测试跨语言兼容性
+        // Đây là kết quả mã hóa được tạo bởi phiên bản Python, dùng để kiểm tra tính tương thích đa ngôn ngữ
         String key = "xiaozhi1234567890";
-        String plainText = "Hello, 小智!";
+        String plainText = "Hello, Tiểu Trí!";
 
-        // Python版本生成的加密结果（需要运行Python测试后获取）
-        // String pythonEncrypted = "从Python测试中获取的加密结果";
+        // Kết quả mã hóa được tạo bởi phiên bản Python (cần chạy thử nghiệm Python để lấy)
+        // String pythonEncrypted = "Kết quả mã hóa lấy từ thử nghiệm Python";
         // String decrypted = AESUtils.decrypt(key, pythonEncrypted);
-        // assertEquals(plainText, decrypted, "Java应该能解密Python加密的结果");
+        // assertEquals(plainText, decrypted, "Java nên có thể giải mã kết quả mã hóa của Python");
 
-        // 生成Java加密结果供Python测试
+        // Tạo kết quả mã hóa Java để thử nghiệm Python
         String javaEncrypted = AESUtils.encrypt(key, plainText);
-        System.out.println("Java加密结果供Python测试: " + javaEncrypted);
+        System.out.println("Kết quả mã hóa Java để thử nghiệm Python: " + javaEncrypted);
     }
 }

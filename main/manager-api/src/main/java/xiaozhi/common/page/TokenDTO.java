@@ -6,20 +6,20 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
 /**
- * 令牌信息
+ * Thông tin mã thông báo
  *
  * @author Jack
  */
 @Data
-@Schema(description = "令牌信息")
+@Schema(description = "Thông tin mã thông báo")
 public class TokenDTO implements Serializable {
 
-    @Schema(description = "密码")
+    @Schema(description = "Mật khẩu")
     private String token;
 
-    @Schema(description = "过期时间")
+    @Schema(description = "Thời gian hết hạn")
     private int expire;
 
-    @Schema(description = "客户端指纹")
+    @Schema(description = "Dấu vân tay của khách hàng")
     private String clientHash;
 }

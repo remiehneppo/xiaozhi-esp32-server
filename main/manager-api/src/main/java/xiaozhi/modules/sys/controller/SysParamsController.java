@@ -39,14 +39,14 @@ import xiaozhi.modules.sys.service.SysParamsService;
 import xiaozhi.modules.sys.utils.WebSocketValidator;
 
 /**
- * 参数管理
+ * Quản lý thông số
  *
  * @author Mark sunlightcs@gmail.com
  * @since 1.0.0
  */
 @RestController
 @RequestMapping("admin/params")
-@Tag(name = "参数管理")
+@Tag(name = "Quản lý thông số")
 @AllArgsConstructor
 public class SysParamsController {
     private final SysParamsService sysParamsService;
@@ -54,13 +54,13 @@ public class SysParamsController {
     private final RestTemplate restTemplate;
 
     @GetMapping("page")
-    @Operation(summary = "分页")
+    @Operation(summary = "Phân trang")
     @Parameters({
-            @Parameter(name = Constant.PAGE, description = "当前页码，从1开始", in = ParameterIn.QUERY, required = true, ref = "int"),
-            @Parameter(name = Constant.LIMIT, description = "每页显示记录数", in = ParameterIn.QUERY, required = true, ref = "int"),
-            @Parameter(name = Constant.ORDER_FIELD, description = "排序字段", in = ParameterIn.QUERY, ref = "String"),
-            @Parameter(name = Constant.ORDER, description = "排序方式，可选值(asc、desc)", in = ParameterIn.QUERY, ref = "String"),
-            @Parameter(name = "paramCode", description = "参数编码或参数备注", in = ParameterIn.QUERY, ref = "String")
+            @Parameter(name = Constant.PAGE, description = "Số trang hiện tại，từ1bắt đầu", in = ParameterIn.QUERY, required = true, ref = "int"),
+            @Parameter(name = Constant.LIMIT, description = "Hiển thị số bản ghi trên mỗi trang", in = ParameterIn.QUERY, required = true, ref = "int"),
+            @Parameter(name = Constant.ORDER_FIELD, description = "trường sắp xếp", in = ParameterIn.QUERY, ref = "String"),
+            @Parameter(name = Constant.ORDER, description = "Sắp xếp theo，Giá trị tùy chọn(asc、desc)", in = ParameterIn.QUERY, ref = "String"),
+            @Parameter(name = "paramCode", description = "Mã hóa tham số hoặc nhận xét tham số", in = ParameterIn.QUERY, ref = "String")
     })
     @RequiresPermissions("sys:role:superAdmin")
     public Result<PageData<SysParamsDTO>> page(@Parameter(hidden = true) @RequestParam Map<String, Object> params) {
@@ -70,7 +70,7 @@ public class SysParamsController {
     }
 
     @GetMapping("{id}")
-    @Operation(summary = "信息")
+    @Operation(summary = "thông tin")
     @RequiresPermissions("sys:role:superAdmin")
     public Result<SysParamsDTO> get(@PathVariable("id") Long id) {
         SysParamsDTO data = sysParamsService.get(id);
@@ -79,11 +79,11 @@ public class SysParamsController {
     }
 
     @PostMapping
-    @Operation(summary = "保存")
-    @LogOperation("保存")
+    @Operation(summary = "lưu lại")
+    @LogOperation("lưu lại")
     @RequiresPermissions("sys:role:superAdmin")
     public Result<Void> save(@RequestBody SysParamsDTO dto) {
-        // 效验数据
+        // Dữ liệu hiệu quả
         ValidatorUtils.validateEntity(dto, AddGroup.class, DefaultGroup.class);
 
         sysParamsService.save(dto);
@@ -92,29 +92,29 @@ public class SysParamsController {
     }
 
     @PutMapping
-    @Operation(summary = "修改")
-    @LogOperation("修改")
+    @Operation(summary = "sửa đổi")
+    @LogOperation("sửa đổi")
     @RequiresPermissions("sys:role:superAdmin")
     public Result<Void> update(@RequestBody SysParamsDTO dto) {
-        // 效验数据
+        // Dữ liệu hiệu quả
         ValidatorUtils.validateEntity(dto, UpdateGroup.class, DefaultGroup.class);
 
-        // 验证WebSocket地址列表
+        // Xác minh danh sách địa chỉ WebSocket
         validateWebSocketUrls(dto.getParamCode(), dto.getParamValue());
 
-        // 验证OTA地址
+        // Xác minh địa chỉ OTA
         validateOtaUrl(dto.getParamCode(), dto.getParamValue());
 
-        // 验证MCP地址
+        // Xác minh địa chỉ MCP
         validateMcpUrl(dto.getParamCode(), dto.getParamValue());
 
-        // 验证声纹地址
+        // Xác minh địa chỉ giọng nói
         validateVoicePrint(dto.getParamCode(), dto.getParamValue());
 
-        // 校验mqtt密钥长度
+        // Xác minh độ dài khóa mqtt
         validateMqttSecretLength(dto.getParamCode(), dto.getParamValue());
 
-        // 如果是系统功能菜单配置，使用特殊处理
+        // Nếu đó là cấu hình menu chức năng hệ thống, hãy sử dụng quy trình xử lý đặc biệt
         if (Constant.SYSTEM_WEB_MENU.equals(dto.getParamCode())) {
             sysParamsService.updateSystemWebMenu(dto.getParamValue());
         } else {
@@ -125,10 +125,10 @@ public class SysParamsController {
     }
 
     /**
-     * 验证WebSocket地址列表
+     * Xác minh danh sách địa chỉ WebSocket
      *
-     * @param urls WebSocket地址列表，以分号分隔
-     * @return 验证结果
+     * @param urls Danh sách địa chỉ WebSocket, được phân tách bằng dấu chấm phẩy
+     * @return kết quả xác minh
      */
     private void validateWebSocketUrls(String paramCode, String urls) {
         if (!paramCode.equals(Constant.SERVER_WEBSOCKET)) {
@@ -140,17 +140,17 @@ public class SysParamsController {
         }
         for (String url : wsUrls) {
             if (StringUtils.isNotBlank(url)) {
-                // 检查是否包含localhost或127.0.0.1
+                // Kiểm tra xem có bao gồm localhost hoặc 127.0.0.1 không
                 if (url.contains("localhost") || url.contains("127.0.0.1")) {
                     throw new RenException(ErrorCode.WEBSOCKET_URL_LOCALHOST);
                 }
 
-                // 验证WebSocket地址格式
+                // Xác minh định dạng địa chỉ WebSocket
                 if (!WebSocketValidator.validateUrlFormat(url)) {
                     throw new RenException(ErrorCode.WEBSOCKET_URL_FORMAT_ERROR);
                 }
 
-                // 测试WebSocket连接
+                // Kiểm tra kết nối WebSocket
                 if (!WebSocketValidator.testConnection(url)) {
                     throw new RenException(ErrorCode.WEBSOCKET_CONNECTION_FAILED);
                 }
@@ -159,11 +159,11 @@ public class SysParamsController {
     }
 
     @PostMapping("/delete")
-    @Operation(summary = "删除")
-    @LogOperation("删除")
+    @Operation(summary = "Xóa")
+    @LogOperation("Xóa")
     @RequiresPermissions("sys:role:superAdmin")
     public Result<Void> delete(@RequestBody String[] ids) {
-        // 效验数据
+        // Dữ liệu hiệu quả
         AssertUtils.isArrayEmpty(ids, "id");
 
         sysParamsService.delete(ids);
@@ -172,7 +172,7 @@ public class SysParamsController {
     }
 
     /**
-     * 验证OTA地址
+     * Xác minh địa chỉ OTA
      */
     private void validateOtaUrl(String paramCode, String url) {
         if (!paramCode.equals(Constant.SERVER_OTA)) {
@@ -182,12 +182,12 @@ public class SysParamsController {
             return;
         }
 
-        // 检查是否包含localhost或127.0.0.1
+        // Kiểm tra xem có bao gồm localhost hoặc 127.0.0.1 không
         if (url.contains("localhost") || url.contains("127.0.0.1")) {
             throw new RenException(ErrorCode.OTA_URL_LOCALHOST);
         }
 
-        // 验证URL格式
+        // Xác minh định dạng URL
         if (!url.toLowerCase().startsWith("http")) {
             throw new RenException(ErrorCode.OTA_URL_PROTOCOL_ERROR);
         }
@@ -196,12 +196,12 @@ public class SysParamsController {
         }
 
         try {
-            // 发送GET请求
+            // Gửi yêu cầu NHẬN
             ResponseEntity<String> response = restTemplate.getForEntity(url, String.class);
             if (response.getStatusCode() != HttpStatus.OK) {
                 throw new RenException(ErrorCode.OTA_INTERFACE_ACCESS_FAILED);
             }
-            // 检查响应内容是否包含OTA相关信息
+            // Kiểm tra xem nội dung phản hồi có chứa thông tin liên quan đến OTA hay không
             String body = response.getBody();
             if (body == null || !body.contains("OTA")) {
                 throw new RenException(ErrorCode.OTA_INTERFACE_FORMAT_ERROR);
@@ -226,12 +226,12 @@ public class SysParamsController {
         }
 
         try {
-            // 发送GET请求
+            // Gửi yêu cầu NHẬN
             ResponseEntity<String> response = restTemplate.getForEntity(url, String.class);
             if (response.getStatusCode() != HttpStatus.OK) {
                 throw new RenException(ErrorCode.MCP_INTERFACE_ACCESS_FAILED);
             }
-            // 检查响应内容是否包含mcp相关信息
+            // Kiểm tra xem nội dung phản hồi có chứa thông tin liên quan đến mcp không
             String body = response.getBody();
             if (body == null || !body.contains("success")) {
                 throw new RenException(ErrorCode.MCP_INTERFACE_FORMAT_ERROR);
@@ -241,7 +241,7 @@ public class SysParamsController {
         }
     }
 
-    // 验证声纹接口地址是否正常
+    // Xác minh xem địa chỉ giao diện giọng nói có bình thường không
     private void validateVoicePrint(String paramCode, String url) {
         if (!paramCode.equals(Constant.SERVER_VOICE_PRINT)) {
             return;
@@ -255,17 +255,17 @@ public class SysParamsController {
         if (!url.toLowerCase().contains("key")) {
             throw new RenException(ErrorCode.VOICEPRINT_URL_INVALID);
         }
-        // 验证URL格式
+        // Xác minh định dạng URL
         if (!url.toLowerCase().startsWith("http")) {
             throw new RenException(ErrorCode.VOICEPRINT_URL_PROTOCOL_ERROR);
         }
         try {
-            // 发送GET请求
+            // Gửi yêu cầu NHẬN
             ResponseEntity<String> response = restTemplate.getForEntity(url, String.class);
             if (response.getStatusCode() != HttpStatus.OK) {
                 throw new RenException(ErrorCode.VOICEPRINT_INTERFACE_ACCESS_FAILED);
             }
-            // 检查响应内容
+            // Kiểm tra nội dung phản hồi
             String body = response.getBody();
             if (body == null || !body.contains("healthy")) {
                 throw new RenException(ErrorCode.VOICEPRINT_INTERFACE_FORMAT_ERROR);
@@ -275,7 +275,7 @@ public class SysParamsController {
         }
     }
 
-    // 校验mqtt密钥长度和复杂度
+    // Xác minh độ dài và độ phức tạp của khóa mqtt
     private void validateMqttSecretLength(String paramCode, String secret) {
         if (!paramCode.equals(Constant.SERVER_MQTT_SECRET)) {
             return;
@@ -286,11 +286,11 @@ public class SysParamsController {
         if (secret.length() < 8) {
             throw new RenException(ErrorCode.MQTT_SECRET_LENGTH_INSECURE);
         }
-        // 检查是否同时包含大小写字母
+        // Kiểm tra xem nó có chứa cả chữ hoa và chữ thường không
         if (!secret.matches(".*[a-z].*") || !secret.matches(".*[A-Z].*")) {
             throw new RenException(ErrorCode.MQTT_SECRET_CHARACTER_INSECURE);
         }
-        // 不允许包含弱密码
+        // Mật khẩu yếu không được phép
         String[] weakPasswords = { "test", "1234", "admin", "password", "qwerty", "xiaozhi" };
         for (String weakPassword : weakPasswords) {
             if (secret.toLowerCase().contains(weakPassword)) {

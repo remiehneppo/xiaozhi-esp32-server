@@ -29,7 +29,7 @@ import xiaozhi.modules.sys.service.SysUserService;
 import xiaozhi.modules.sys.vo.AdminPageUserVO;
 
 /**
- * 管理员控制层
+ * Lớp kiểm soát quản trị
  *
  * @author zjy
  * @since 2025-3-25
@@ -37,19 +37,19 @@ import xiaozhi.modules.sys.vo.AdminPageUserVO;
 @AllArgsConstructor
 @RestController
 @RequestMapping("/admin")
-@Tag(name = "管理员管理")
+@Tag(name = "Quản lý quản trị viên")
 public class AdminController {
     private final SysUserService sysUserService;
 
     private final DeviceService deviceService;
 
     @GetMapping("/users")
-    @Operation(summary = "分页查找用户")
+    @Operation(summary = "Tìm người dùng theo trang")
     @RequiresPermissions("sys:role:superAdmin")
     @Parameters({
-            @Parameter(name = "mobile", description = "用户手机号码", required = false),
-            @Parameter(name = Constant.PAGE, description = "当前页码，从1开始", required = true),
-            @Parameter(name = Constant.LIMIT, description = "每页显示记录数", required = true),
+            @Parameter(name = "mobile", description = "Số điện thoại di động của người dùng", required = false),
+            @Parameter(name = Constant.PAGE, description = "Số trang hiện tại，từ1bắt đầu", required = true),
+            @Parameter(name = Constant.LIMIT, description = "Hiển thị số bản ghi trên mỗi trang", required = true),
     })
     public Result<PageData<AdminPageUserVO>> pageUser(
             @Parameter(hidden = true) @RequestParam Map<String, Object> params) {
@@ -63,7 +63,7 @@ public class AdminController {
     }
 
     @PutMapping("/users/{id}")
-    @Operation(summary = "重置密码")
+    @Operation(summary = "đặt lại mật khẩu")
     @RequiresPermissions("sys:role:superAdmin")
     public Result<String> update(
             @PathVariable Long id) {
@@ -72,7 +72,7 @@ public class AdminController {
     }
 
     @DeleteMapping("/users/{id}")
-    @Operation(summary = "用户删除")
+    @Operation(summary = "Người dùng xóa")
     @RequiresPermissions("sys:role:superAdmin")
     public Result<Void> delete(@PathVariable Long id) {
         sysUserService.deleteById(id);
@@ -80,21 +80,21 @@ public class AdminController {
     }
 
     @PutMapping("/users/changeStatus/{status}")
-    @Operation(summary = "批量修改用户状态")
+    @Operation(summary = "Sửa đổi trạng thái người dùng theo đợt")
     @RequiresPermissions("sys:role:superAdmin")
-    @Parameter(name = "status", description = "用户状态", required = true)
+    @Parameter(name = "status", description = "Trạng thái người dùng", required = true)
     public Result<Void> changeStatus(@PathVariable Integer status, @RequestBody String[] userIds) {
         sysUserService.changeStatus(status, userIds);
         return new Result<Void>();
     }
 
     @GetMapping("/device/all")
-    @Operation(summary = "分页查找设备")
+    @Operation(summary = "Tìm thiết bị theo trang")
     @RequiresPermissions("sys:role:superAdmin")
     @Parameters({
-            @Parameter(name = "keywords", description = "设备关键词", required = false),
-            @Parameter(name = Constant.PAGE, description = "当前页码，从1开始", required = true),
-            @Parameter(name = Constant.LIMIT, description = "每页显示记录数", required = true),
+            @Parameter(name = "keywords", description = "Từ khóa thiết bị", required = false),
+            @Parameter(name = Constant.PAGE, description = "Số trang hiện tại，từ1bắt đầu", required = true),
+            @Parameter(name = Constant.LIMIT, description = "Hiển thị số bản ghi trên mỗi trang", required = true),
     })
     public Result<PageData<UserShowDeviceListVO>> pageDevice(
             @Parameter(hidden = true) @RequestParam Map<String, Object> params) {

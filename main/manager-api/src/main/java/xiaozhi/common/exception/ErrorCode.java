@@ -1,11 +1,11 @@
 package xiaozhi.common.exception;
 
 /**
- * 错误编码，由5位数字组成，前2位为模块编码，后3位为业务编码
+ * Mã lỗi bao gồm 5 chữ số. 2 chữ số đầu là mã module và 3 chữ số cuối là mã doanh nghiệp.
  * <p>
- * 如：10001（10代表系统模块，001代表业务代码）
+ * Ví dụ: 10001 (10 đại diện cho mô-đun hệ thống, 001 đại diện cho mã doanh nghiệp)
  * </p>
- * Copyright (c) 人人开源 All rights reserved.
+ * Bản quyền (c) Renren Kaiyuan Mọi quyền được bảo lưu.
  * Website: https://www.renren.io
  */
 public interface ErrorCode {
@@ -44,7 +44,7 @@ public interface ErrorCode {
     int DEL_MYSELF_ERROR = 10032;
     int DEVICE_CAPTCHA_ERROR = 10033;
 
-    // 参数校验相关错误码
+    // Mã lỗi liên quan đến xác minh tham số
     int PARAM_VALUE_NULL = 10034;
     int PARAM_TYPE_NULL = 10035;
     int PARAM_TYPE_INVALID = 10036;
@@ -56,7 +56,7 @@ public interface ErrorCode {
     int OTA_DEVICE_NOT_FOUND = 10041;
     int OTA_DEVICE_NEED_BIND = 10042;
 
-    // 新增错误编码
+    // Đã thêm mã lỗi
     int DELETE_DATA_FAILED = 10043;
     int USER_NOT_LOGIN = 10044;
     int WEB_SOCKET_CONNECT_FAILED = 10045;
@@ -67,7 +67,7 @@ public interface ErrorCode {
     int TOKEN_GENERATE_ERROR = 10050;
     int RESOURCE_NOT_FOUND = 10051;
 
-    // 新增错误编码
+    // Đã thêm mã lỗi
     int DEFAULT_AGENT_NOT_FOUND = 10052;
     int AGENT_NOT_FOUND = 10053;
     int VOICEPRINT_API_NOT_CONFIGURED = 10054;
@@ -80,184 +80,184 @@ public interface ErrorCode {
     int ACTIVATION_CODE_EMPTY = 10061;
     int ACTIVATION_CODE_ERROR = 10062;
     int DEVICE_ALREADY_ACTIVATED = 10063;
-    // 默认模型删除错误
+    // Lỗi xóa mô hình mặc định
     int DEFAULT_MODEL_DELETE_ERROR = 10064;
-    // 登录相关错误码
-    int ADD_DATA_FAILED = 10065; // 新增数据失败
-    int UPDATE_DATA_FAILED = 10066; // 修改数据失败
-    int SMS_CAPTCHA_ERROR = 10067; // 短信验证码错误
-    int MOBILE_REGISTER_DISABLED = 10068; // 未开启手机注册
-    int USERNAME_NOT_PHONE = 10069; // 用户名不是手机号码
-    int PHONE_ALREADY_REGISTERED = 10070; // 手机号码已注册
-    int PHONE_NOT_REGISTERED = 10071; // 手机号码未注册
-    int USER_REGISTER_DISABLED = 10072; // 不允许用户注册
-    int RETRIEVE_PASSWORD_DISABLED = 10073; // 未开启找回密码功能
-    int PHONE_FORMAT_ERROR = 10074; // 手机号码格式不正确
-    int SMS_CODE_ERROR = 10075; // 手机验证码错误
+    // Mã lỗi liên quan đến đăng nhập
+    int ADD_DATA_FAILED = 10065; // Không thể thêm dữ liệu
+    int UPDATE_DATA_FAILED = 10066; // Không thể sửa đổi dữ liệu
+    int SMS_CAPTCHA_ERROR = 10067; // Lỗi mã xác minh SMS
+    int MOBILE_REGISTER_DISABLED = 10068; // Đăng ký điện thoại di động không được kích hoạt
+    int USERNAME_NOT_PHONE = 10069; // Tên người dùng không phải là số điện thoại di động
+    int PHONE_ALREADY_REGISTERED = 10070; // Số điện thoại di động đã được đăng ký
+    int PHONE_NOT_REGISTERED = 10071; // Số điện thoại di động chưa được đăng ký
+    int USER_REGISTER_DISABLED = 10072; // Đăng ký người dùng không được phép
+    int RETRIEVE_PASSWORD_DISABLED = 10073; // Chức năng lấy lại mật khẩu chưa được kích hoạt
+    int PHONE_FORMAT_ERROR = 10074; // Định dạng số điện thoại di động không chính xác
+    int SMS_CODE_ERROR = 10075; // Lỗi mã xác minh điện thoại di động
 
-    // 字典类型相关错误码
-    int DICT_TYPE_NOT_EXIST = 10076; // 字典类型不存在
-    int DICT_TYPE_DUPLICATE = 10077; // 字典类型编码重复
+    // Mã lỗi liên quan đến loại từ điển
+    int DICT_TYPE_NOT_EXIST = 10076; // Loại từ điển không tồn tại
+    int DICT_TYPE_DUPLICATE = 10077; // Mã hóa kiểu từ điển trùng lặp
 
-    // 资源处理相关错误码
-    int RESOURCE_READ_ERROR = 10078; // 读取资源失败
+    // Mã lỗi liên quan đến xử lý tài nguyên
+    int RESOURCE_READ_ERROR = 10078; // Không đọc được tài nguyên
 
-    // 智能体相关错误码
-    int LLM_INTENT_PARAMS_MISMATCH = 10079; // LLM大模型和Intent意图识别，选择参数不匹配
+    // Mã lỗi liên quan đến đại lý
+    int LLM_INTENT_PARAMS_MISMATCH = 10079; // LLMmô hình lớn vàIntentNhận dạng ý định，Các tham số lựa chọn không khớp
 
-    // 声纹相关错误码
-    int VOICEPRINT_ALREADY_REGISTERED = 10080; // 此声音声纹已经注册
-    int VOICEPRINT_DELETE_ERROR = 10081; // 删除声纹出现错误
-    int VOICEPRINT_UPDATE_NOT_ALLOWED = 10082; // 声纹修改不允许，声音已注册
-    int VOICEPRINT_UPDATE_ADMIN_ERROR = 10083; // 修改声纹错误，请联系管理员
-    int VOICEPRINT_API_URI_ERROR = 10084; // 声纹接口地址错误
-    int VOICEPRINT_AUDIO_NOT_BELONG_AGENT = 10085; // 音频数据不属于智能体
-    int VOICEPRINT_AUDIO_EMPTY = 10086; // 音频数据为空
-    int VOICEPRINT_REGISTER_REQUEST_ERROR = 10087; // 声纹保存请求失败
-    int VOICEPRINT_REGISTER_PROCESS_ERROR = 10088; // 声纹保存处理失败
-    int VOICEPRINT_UNREGISTER_REQUEST_ERROR = 10089; // 声纹注销请求失败
-    int VOICEPRINT_UNREGISTER_PROCESS_ERROR = 10090; // 声纹注销处理失败
-    int VOICEPRINT_IDENTIFY_REQUEST_ERROR = 10091; // 声纹识别请求失败
+    // Mã lỗi liên quan đến giọng nói
+    int VOICEPRINT_ALREADY_REGISTERED = 10080; // Giọng nói này đã được đăng ký
+    int VOICEPRINT_DELETE_ERROR = 10081; // Đã xảy ra lỗi khi xóa giọng nói
+    int VOICEPRINT_UPDATE_NOT_ALLOWED = 10082; // Không được phép sửa đổi giọng nói，Âm thanh đã được đăng ký
+    int VOICEPRINT_UPDATE_ADMIN_ERROR = 10083; // Sửa lỗi giọng nói，Vui lòng liên hệ với quản trị viên
+    int VOICEPRINT_API_URI_ERROR = 10084; // Lỗi địa chỉ giao diện Voiceprint
+    int VOICEPRINT_AUDIO_NOT_BELONG_AGENT = 10085; // Dữ liệu âm thanh không thuộc về tác nhân
+    int VOICEPRINT_AUDIO_EMPTY = 10086; // Dữ liệu âm thanh trống
+    int VOICEPRINT_REGISTER_REQUEST_ERROR = 10087; // Yêu cầu lưu giọng nói không thành công
+    int VOICEPRINT_REGISTER_PROCESS_ERROR = 10088; // Quá trình lưu giọng nói không thành công
+    int VOICEPRINT_UNREGISTER_REQUEST_ERROR = 10089; // Yêu cầu đăng xuất bằng giọng nói không thành công
+    int VOICEPRINT_UNREGISTER_PROCESS_ERROR = 10090; // Xử lý đăng xuất bằng giọng nói không thành công
+    int VOICEPRINT_IDENTIFY_REQUEST_ERROR = 10091; // Yêu cầu nhận dạng giọng nói không thành công
 
-    int LLM_NOT_EXIST = 10092; // 设置的LLM不存在
-    int MODEL_REFERENCED_BY_AGENT = 10093; // 该模型配置已被智能体引用，无法删除
-    int LLM_REFERENCED_BY_INTENT = 10094; // 该LLM模型已被意图识别配置引用，无法删除
+    int LLM_NOT_EXIST = 10092; // đặtLLMkhông tồn tại
+    int MODEL_REFERENCED_BY_AGENT = 10093; // Cấu hình mô hình đã được đại lý tham khảo，không thể xóa được
+    int LLM_REFERENCED_BY_INTENT = 10094; // cáiLLMMô hình đã được tham chiếu bởi cấu hình nhận dạng ý định，không thể xóa được
 
-    // 服务端管理相关错误码
-    int INVALID_SERVER_ACTION = 10095; // 无效服务端操作
-    int SERVER_WEBSOCKET_NOT_CONFIGURED = 10096; // 未配置服务端WebSocket地址
-    int TARGET_WEBSOCKET_NOT_EXIST = 10097; // 目标WebSocket地址不存在
+    // Mã lỗi liên quan đến quản lý máy chủ
+    int INVALID_SERVER_ACTION = 10095; // Hoạt động của máy chủ không hợp lệ
+    int SERVER_WEBSOCKET_NOT_CONFIGURED = 10096; // Máy chủ chưa được cấu hìnhWebSocketđịa chỉ
+    int TARGET_WEBSOCKET_NOT_EXIST = 10097; // mục tiêuWebSocketĐịa chỉ không tồn tại
 
-    // 参数验证相关错误码
-    int WEBSOCKET_URLS_EMPTY = 10098; // WebSocket地址列表不能为空
-    int WEBSOCKET_URL_LOCALHOST = 10099; // WebSocket地址不能使用localhost或127.0.0.1
-    int WEBSOCKET_URL_FORMAT_ERROR = 10100; // WebSocket地址格式不正确
-    int WEBSOCKET_CONNECTION_FAILED = 10101; // WebSocket连接测试失败
-    int OTA_URL_EMPTY = 10102; // OTA地址不能为空
-    int OTA_URL_LOCALHOST = 10103; // OTA地址不能使用localhost或127.0.0.1
-    int OTA_URL_PROTOCOL_ERROR = 10104; // OTA地址必须以http或https开头
-    int OTA_URL_FORMAT_ERROR = 10105; // OTA地址必须以/ota/结尾
-    int OTA_INTERFACE_ACCESS_FAILED = 10106; // OTA接口访问失败
-    int OTA_INTERFACE_FORMAT_ERROR = 10107; // OTA接口返回内容格式不正确
-    int OTA_INTERFACE_VALIDATION_FAILED = 10108; // OTA接口验证失败
-    int MCP_URL_EMPTY = 10109; // MCP地址不能为空
-    int MCP_URL_LOCALHOST = 10110; // MCP地址不能使用localhost或127.0.0.1
-    int MCP_URL_INVALID = 10111; // 不是正确的MCP地址
-    int MCP_INTERFACE_ACCESS_FAILED = 10112; // MCP接口访问失败
-    int MCP_INTERFACE_FORMAT_ERROR = 10113; // MCP接口返回内容格式不正确
-    int MCP_INTERFACE_VALIDATION_FAILED = 10114; // MCP接口验证失败
-    int VOICEPRINT_URL_EMPTY = 10115; // 声纹接口地址不能为空
-    int VOICEPRINT_URL_LOCALHOST = 10116; // 声纹接口地址不能使用localhost或127.0.0.1
-    int VOICEPRINT_URL_INVALID = 10117; // 不是正确的声纹接口地址
-    int VOICEPRINT_URL_PROTOCOL_ERROR = 10118; // 声纹接口地址必须以http或https开头
-    int VOICEPRINT_INTERFACE_ACCESS_FAILED = 10119; // 声纹接口访问失败
-    int VOICEPRINT_INTERFACE_FORMAT_ERROR = 10120; // 声纹接口返回内容格式不正确
-    int VOICEPRINT_INTERFACE_VALIDATION_FAILED = 10121; // 声纹接口验证失败
-    int MQTT_SECRET_EMPTY = 10122; // mqtt密钥不能为空
-    int MQTT_SECRET_LENGTH_INSECURE = 10123; // mqtt密钥长度不安全
-    int MQTT_SECRET_CHARACTER_INSECURE = 10124; // mqtt密钥必须同时包含大小写字母
-    int MQTT_SECRET_WEAK_PASSWORD = 10125; // mqtt密钥包含弱密码
-    int DICT_LABEL_DUPLICATE = 10128; // 字典标签重复
-    int SM2_KEY_NOT_CONFIGURED = 10129; // SM2密钥未配置
-    int SM2_DECRYPT_ERROR = 10130; // SM2解密失败
-    int MODEL_TYPE_PROVIDE_CODE_NOT_NULL = 10131; // modelType和provideCode不能为空
+    // Mã lỗi liên quan đến xác minh tham số
+    int WEBSOCKET_URLS_EMPTY = 10098; // WebSocketDanh sách địa chỉ không được để trống
+    int WEBSOCKET_URL_LOCALHOST = 10099; // WebSocketĐịa chỉ không thể được sử dụnglocalhosthoặc127.0.0.1
+    int WEBSOCKET_URL_FORMAT_ERROR = 10100; // WebSocketĐịnh dạng địa chỉ không chính xác
+    int WEBSOCKET_CONNECTION_FAILED = 10101; // WebSocketKiểm tra kết nối không thành công
+    int OTA_URL_EMPTY = 10102; // OTAĐịa chỉ không thể trống
+    int OTA_URL_LOCALHOST = 10103; // OTAĐịa chỉ không thể được sử dụnglocalhosthoặc127.0.0.1
+    int OTA_URL_PROTOCOL_ERROR = 10104; // OTAĐịa chỉ phải kết thúc bằnghttphoặchttpsBắt đầu
+    int OTA_URL_FORMAT_ERROR = 10105; // OTAĐịa chỉ phải kết thúc bằng/ota/kết thúc
+    int OTA_INTERFACE_ACCESS_FAILED = 10106; // OTATruy cập giao diện không thành công
+    int OTA_INTERFACE_FORMAT_ERROR = 10107; // OTAĐịnh dạng nội dung được giao diện trả về không chính xác
+    int OTA_INTERFACE_VALIDATION_FAILED = 10108; // OTAXác minh giao diện không thành công
+    int MCP_URL_EMPTY = 10109; // MCPĐịa chỉ không thể trống
+    int MCP_URL_LOCALHOST = 10110; // MCPĐịa chỉ không thể được sử dụnglocalhosthoặc127.0.0.1
+    int MCP_URL_INVALID = 10111; // không đúngMCPđịa chỉ
+    int MCP_INTERFACE_ACCESS_FAILED = 10112; // MCPTruy cập giao diện không thành công
+    int MCP_INTERFACE_FORMAT_ERROR = 10113; // MCPĐịnh dạng nội dung được giao diện trả về không chính xác
+    int MCP_INTERFACE_VALIDATION_FAILED = 10114; // MCPXác minh giao diện không thành công
+    int VOICEPRINT_URL_EMPTY = 10115; // Địa chỉ giao diện giọng nói không được để trống.
+    int VOICEPRINT_URL_LOCALHOST = 10116; // Không thể sử dụng địa chỉ giao diện giọng nói.localhosthoặc127.0.0.1
+    int VOICEPRINT_URL_INVALID = 10117; // Địa chỉ giao diện giọng nói không chính xác
+    int VOICEPRINT_URL_PROTOCOL_ERROR = 10118; // Địa chỉ giao diện voiceprint phải kết thúc bằnghttphoặchttpsBắt đầu
+    int VOICEPRINT_INTERFACE_ACCESS_FAILED = 10119; // Truy cập giao diện giọng nói không thành công
+    int VOICEPRINT_INTERFACE_FORMAT_ERROR = 10120; // Định dạng nội dung được giao diện giọng nói trả về không chính xác.
+    int VOICEPRINT_INTERFACE_VALIDATION_FAILED = 10121; // Xác minh giao diện giọng nói không thành công
+    int MQTT_SECRET_EMPTY = 10122; // mqttChìa khóa không được để trống
+    int MQTT_SECRET_LENGTH_INSECURE = 10123; // mqttĐộ dài khóa không an toàn
+    int MQTT_SECRET_CHARACTER_INSECURE = 10124; // mqttKhóa phải chứa cả chữ hoa và chữ thường
+    int MQTT_SECRET_WEAK_PASSWORD = 10125; // mqttKhóa chứa mật khẩu yếu
+    int DICT_LABEL_DUPLICATE = 10128; // Thẻ từ điển trùng lặp
+    int SM2_KEY_NOT_CONFIGURED = 10129; // SM2Khóa chưa được cấu hình
+    int SM2_DECRYPT_ERROR = 10130; // SM2Giải mã không thành công
+    int MODEL_TYPE_PROVIDE_CODE_NOT_NULL = 10131; // modelTypevàprovideCodekhông thể trống
 
-    // 聊天记录相关错误码
-    int CHAT_HISTORY_NO_PERMISSION = 10132; // 没有权限查看该智能体的聊天记录
-    int CHAT_HISTORY_SESSION_ID_NOT_NULL = 10133; // 会话ID不能为空
-    int CHAT_HISTORY_AGENT_ID_NOT_NULL = 10134; // 智能体ID不能为空
-    int CHAT_HISTORY_DOWNLOAD_FAILED = 10135; // 聊天记录下载失败
-    int DOWNLOAD_LINK_EXPIRED = 10136; // 下载链接已过期或无效
-    int DOWNLOAD_LINK_INVALID = 10137; // 下载链接无效
-    int CHAT_ROLE_USER = 10138; // 用户角色
-    int CHAT_ROLE_AGENT = 10139; // 智能体角色
+    // Mã lỗi liên quan đến lịch sử trò chuyện
+    int CHAT_HISTORY_NO_PERMISSION = 10132; // Không có quyền xem lịch sử trò chuyện của đại lý này
+    int CHAT_HISTORY_SESSION_ID_NOT_NULL = 10133; // phiênIDkhông thể trống
+    int CHAT_HISTORY_AGENT_ID_NOT_NULL = 10134; // đại lýIDkhông thể trống
+    int CHAT_HISTORY_DOWNLOAD_FAILED = 10135; // Tải xuống lịch sử trò chuyện không thành công
+    int DOWNLOAD_LINK_EXPIRED = 10136; // Liên kết tải xuống đã hết hạn hoặc không hợp lệ
+    int DOWNLOAD_LINK_INVALID = 10137; // Liên kết tải xuống không hợp lệ
+    int CHAT_ROLE_USER = 10138; // vai trò người dùng
+    int CHAT_ROLE_AGENT = 10139; // vai trò đại lý
 
-    // 声音克隆相关错误码
-    int VOICE_CLONE_AUDIO_EMPTY = 10140; // 音频文件不能为空
-    int VOICE_CLONE_NOT_AUDIO_FILE = 10141; // 只支持音频文件
-    int VOICE_CLONE_AUDIO_TOO_LARGE = 10142; // 音频文件大小不能超过10MB
-    int VOICE_CLONE_UPLOAD_FAILED = 10143; // 上传失败
-    int VOICE_CLONE_RECORD_NOT_EXIST = 10144; // 声音克隆记录不存在
-    int VOICE_RESOURCE_INFO_EMPTY = 10145; // 音色资源信息不能为空
-    int VOICE_RESOURCE_PLATFORM_NAME_EMPTY = 10146; // 平台名称不能为空
-    int VOICE_RESOURCE_ID_EMPTY = 10147; // 音色ID不能为空
-    int VOICE_RESOURCE_ACCOUNT_EMPTY = 10148; // 归属账号不能为空
-    int VOICE_RESOURCE_DELETE_ID_EMPTY = 10149; // 删除的音色资源ID不能为空
-    int VOICE_RESOURCE_NO_PERMISSION = 10150; // 您没有权限操作该记录
-    int VOICE_CLONE_AUDIO_NOT_UPLOADED = 10151; // 请先上传音频文件
-    int VOICE_CLONE_MODEL_CONFIG_NOT_FOUND = 10152; // 模型配置未找到
-    int VOICE_CLONE_MODEL_TYPE_NOT_FOUND = 10153; // 模型类型未找到
-    int VOICE_CLONE_TRAINING_FAILED = 10154; // 训练失败
-    int VOICE_CLONE_HUOSHAN_CONFIG_MISSING = 10155; // 火山引擎缺少配置
-    int VOICE_CLONE_RESPONSE_FORMAT_ERROR = 10156; // 响应格式错误
-    int VOICE_CLONE_REQUEST_FAILED = 10157; // 请求失败
-    int VOICE_CLONE_PREFIX = 10158; // 复刻音色前缀
-    int VOICE_ID_ALREADY_EXISTS = 10159; // 音色ID已存在
-    int VOICE_CLONE_HUOSHAN_VOICE_ID_ERROR = 10160; // 火山引擎音色ID格式错误
+    // Mã lỗi liên quan đến nhân bản âm thanh
+    int VOICE_CLONE_AUDIO_EMPTY = 10140; // Tệp âm thanh không thể trống
+    int VOICE_CLONE_NOT_AUDIO_FILE = 10141; // Chỉ hỗ trợ tập tin âm thanh
+    int VOICE_CLONE_AUDIO_TOO_LARGE = 10142; // Kích thước tệp âm thanh không thể vượt quá10MB
+    int VOICE_CLONE_UPLOAD_FAILED = 10143; // Tải lên không thành công
+    int VOICE_CLONE_RECORD_NOT_EXIST = 10144; // Bản ghi bản sao âm thanh không tồn tại
+    int VOICE_RESOURCE_INFO_EMPTY = 10145; // Thông tin tài nguyên giai điệu không được để trống
+    int VOICE_RESOURCE_PLATFORM_NAME_EMPTY = 10146; // Tên nền tảng không được để trống
+    int VOICE_RESOURCE_ID_EMPTY = 10147; // âm sắcIDkhông thể trống
+    int VOICE_RESOURCE_ACCOUNT_EMPTY = 10148; // Tài khoản được phân bổ không được để trống
+    int VOICE_RESOURCE_DELETE_ID_EMPTY = 10149; // Đã xóa tài nguyên âm thanhIDkhông thể trống
+    int VOICE_RESOURCE_NO_PERMISSION = 10150; // Bạn không có quyền vận hành bản ghi này
+    int VOICE_CLONE_AUDIO_NOT_UPLOADED = 10151; // Vui lòng tải lên tệp âm thanh trước
+    int VOICE_CLONE_MODEL_CONFIG_NOT_FOUND = 10152; // Không tìm thấy cấu hình mô hình
+    int VOICE_CLONE_MODEL_TYPE_NOT_FOUND = 10153; // Không tìm thấy loại mô hình
+    int VOICE_CLONE_TRAINING_FAILED = 10154; // Đào tạo không thành công
+    int VOICE_CLONE_HUOSHAN_CONFIG_MISSING = 10155; // Động cơ núi lửa thiếu cấu hình
+    int VOICE_CLONE_RESPONSE_FORMAT_ERROR = 10156; // Lỗi định dạng phản hồi
+    int VOICE_CLONE_REQUEST_FAILED = 10157; // Yêu cầu không thành công
+    int VOICE_CLONE_PREFIX = 10158; // Tiền tố giai điệu sao chép
+    int VOICE_ID_ALREADY_EXISTS = 10159; // âm sắcIDĐã tồn tại
+    int VOICE_CLONE_HUOSHAN_VOICE_ID_ERROR = 10160; // Âm thanh động cơ núi lửaIDLỗi định dạng
 
-    // 设备相关错误码
-    int MAC_ADDRESS_ALREADY_EXISTS = 10161; // Mac地址已存在
-    // 模型相关错误码
-    int MODEL_PROVIDER_NOT_EXIST = 10162; // 供应器不存在
+    // Mã lỗi liên quan đến thiết bị
+    int MAC_ADDRESS_ALREADY_EXISTS = 10161; // MacĐịa chỉ đã tồn tại
+    // Mã lỗi liên quan đến mô hình
+    int MODEL_PROVIDER_NOT_EXIST = 10162; // nhà cung cấp không tồn tại
 
-    // 知识库相关错误码
-    int Knowledge_Base_RECORD_NOT_EXISTS = 10163; // 知识库记录不存在
-    int RAG_CONFIG_NOT_FOUND = 10164; // RAG配置未找到
-    int RAG_CONFIG_TYPE_ERROR = 10165; // RAG配置类型错误
-    int RAG_DEFAULT_CONFIG_NOT_FOUND = 10166; // 默认RAG配置未找到
-    int RAG_API_ERROR = 10167; // RAG调用失败
-    int UPLOAD_FILE_ERROR = 10168; // 上传文件失败
-    int NO_PERMISSION = 10169; // 没有权限
-    int KNOWLEDGE_BASE_NAME_EXISTS = 10170; // 同名知识库已存在
-    int RAG_API_ERROR_URL_NULL = 10171; // RAG配置中base_url为空，请完善配置
-    int RAG_API_ERROR_API_KEY_NULL = 10172; // RAG配置中api_key为空，请完善配置
-    int RAG_API_ERROR_API_KEY_INVALID = 10173; // RAG配置中api_key包含占位符，请替换为实际的API密钥
-    int RAG_API_ERROR_URL_INVALID = 10174; // RAG配置中base_url格式不正确，请检查协议是否正确
-    int RAG_DATASET_ID_NOT_NULL = 10176; // RAG配置中dataset_id不能为空
-    int RAG_MODEL_ID_NOT_NULL = 10177; // RAG配置中model_id不能为空
-    int RAG_DATASET_ID_AND_MODEL_ID_NOT_NULL = 10178; // RAG配置中dataset_id和model_id不能为空
-    int RAG_FILE_NAME_NOT_NULL = 10179; // 文件名称不能为空
-    int RAG_FILE_CONTENT_EMPTY = 10180; // 文件内容不能为空
+    // Mã lỗi liên quan đến cơ sở kiến thức
+    int Knowledge_Base_RECORD_NOT_EXISTS = 10163; // Bản ghi cơ sở kiến thức không tồn tại
+    int RAG_CONFIG_NOT_FOUND = 10164; // RAGKhông tìm thấy cấu hình
+    int RAG_CONFIG_TYPE_ERROR = 10165; // RAGLỗi loại cấu hình
+    int RAG_DEFAULT_CONFIG_NOT_FOUND = 10166; // Mặc địnhRAGKhông tìm thấy cấu hình
+    int RAG_API_ERROR = 10167; // RAGcuộc gọi thất bại
+    int UPLOAD_FILE_ERROR = 10168; // Tải tệp lên không thành công
+    int NO_PERMISSION = 10169; // Không có sự cho phép
+    int KNOWLEDGE_BASE_NAME_EXISTS = 10170; // Đã tồn tại cơ sở kiến thức có cùng tên
+    int RAG_API_ERROR_URL_NULL = 10171; // RAGCấu hìnhbase_urltrống rỗng，Vui lòng hoàn tất cấu hình
+    int RAG_API_ERROR_API_KEY_NULL = 10172; // RAGCấu hìnhapi_keytrống rỗng，Vui lòng hoàn tất cấu hình
+    int RAG_API_ERROR_API_KEY_INVALID = 10173; // RAGCấu hìnhapi_keyChứa phần giữ chỗ，Hãy thay thế bằng thực tếAPIchìa khóa
+    int RAG_API_ERROR_URL_INVALID = 10174; // RAGCấu hìnhbase_urlĐịnh dạng không chính xác，Vui lòng kiểm tra xem giao thức có đúng không
+    int RAG_DATASET_ID_NOT_NULL = 10176; // RAGCấu hìnhdataset_idkhông thể trống
+    int RAG_MODEL_ID_NOT_NULL = 10177; // RAGCấu hìnhmodel_idkhông thể trống
+    int RAG_DATASET_ID_AND_MODEL_ID_NOT_NULL = 10178; // RAGCấu hìnhdataset_idvàmodel_idkhông thể trống
+    int RAG_FILE_NAME_NOT_NULL = 10179; // Tên tệp không được để trống
+    int RAG_FILE_CONTENT_EMPTY = 10180; // Nội dung tập tin không thể trống
 
-    // 设备相关错误码（补充）
-    int MCA_NOT_NULL = 10175; // mac地址不能为空
+    // Mã lỗi liên quan đến thiết bị (bổ sung)
+    int MCA_NOT_NULL = 10175; // macĐịa chỉ không thể trống
 
-    // 音色克隆（补充）
-    int VOICE_CLONE_NAME_NOT_NULL = 10181; // 音色克隆名称不能为空
-    int VOICE_CLONE_AUDIO_NOT_FOUND = 10182; // 音色克隆音频不存在
+    // Nhân bản giai điệu (Bổ sung)
+    int VOICE_CLONE_NAME_NOT_NULL = 10181; // Tên bản sao âm thanh không được để trống
+    int VOICE_CLONE_AUDIO_NOT_FOUND = 10182; // Âm thanh nhân bản âm thanh không tồn tại
 
-    // 智能体模板相关错误码(补充)
-    int AGENT_TEMPLATE_NOT_FOUND = 10183; // 默认智能体未找到
+    // Mã lỗi liên quan đến mẫu đại lý (bổ sung)
+    int AGENT_TEMPLATE_NOT_FOUND = 10183; // Không tìm thấy tác nhân mặc định
 
-    // 知识库适配器相关错误码
-    int RAG_ADAPTER_TYPE_NOT_SUPPORTED = 10184; // 不支持的适配器类型
-    int RAG_CONFIG_VALIDATION_FAILED = 10185; // RAG配置验证失败
-    int RAG_ADAPTER_CREATION_FAILED = 10186; // 适配器创建失败
-    int RAG_ADAPTER_INIT_FAILED = 10187; // 适配器初始化失败
-    int RAG_ADAPTER_CONNECTION_FAILED = 10188; // 适配器连接测试失败
-    int RAG_ADAPTER_OPERATION_FAILED = 10189; // 适配器操作失败
-    int RAG_ADAPTER_NOT_FOUND = 10190; // 适配器未找到
-    int RAG_ADAPTER_CACHE_ERROR = 10191; // 适配器缓存错误
-    int RAG_ADAPTER_TYPE_NOT_FOUND = 10192; // 适配器类型未找到
+    // Mã lỗi liên quan đến bộ điều hợp cơ sở kiến thức
+    int RAG_ADAPTER_TYPE_NOT_SUPPORTED = 10184; // Loại bộ chuyển đổi không được hỗ trợ
+    int RAG_CONFIG_VALIDATION_FAILED = 10185; // RAGXác minh cấu hình không thành công
+    int RAG_ADAPTER_CREATION_FAILED = 10186; // Tạo bộ chuyển đổi không thành công
+    int RAG_ADAPTER_INIT_FAILED = 10187; // Khởi tạo bộ điều hợp không thành công
+    int RAG_ADAPTER_CONNECTION_FAILED = 10188; // Kiểm tra kết nối bộ chuyển đổi không thành công
+    int RAG_ADAPTER_OPERATION_FAILED = 10189; // Thao tác bộ chuyển đổi không thành công
+    int RAG_ADAPTER_NOT_FOUND = 10190; // Không tìm thấy bộ chuyển đổi
+    int RAG_ADAPTER_CACHE_ERROR = 10191; // Lỗi bộ nhớ đệm của bộ điều hợp
+    int RAG_ADAPTER_TYPE_NOT_FOUND = 10192; // Không tìm thấy loại bộ điều hợp
 
-    // 设备工具相关错误码
-    int DEVICE_ID_NOT_NULL = 10193; // 设备ID不能为空
-    int DEVICE_NOT_EXIST = 10194; // 设备不存在
-    int OTA_UPLOAD_COUNT_EXCEED = 10195; // OTA上传次数超过限制
+    // Mã lỗi liên quan đến công cụ thiết bị
+    int DEVICE_ID_NOT_NULL = 10193; // Thiết bịIDkhông thể trống
+    int DEVICE_NOT_EXIST = 10194; // Thiết bị không tồn tại
+    int OTA_UPLOAD_COUNT_EXCEED = 10195; // OTASố lượng tải lên vượt quá giới hạn
 
-    // 智能体标签相关错误码
-    int AGENT_TAG_NAME_DUPLICATE = 10196; // 标签名称已存在
-    int AGENT_TAG_NAME_EMPTY = 10197; // 标签名称不能为空
-    int AGENT_TAG_NOT_EXIST = 10198; // 标签不存在
+    // Mã lỗi liên quan đến thẻ đại lý
+    int AGENT_TAG_NAME_DUPLICATE = 10196; // Tên thẻ đã tồn tại
+    int AGENT_TAG_NAME_EMPTY = 10197; // Tên thẻ không được để trống
+    int AGENT_TAG_NOT_EXIST = 10198; // Thẻ không tồn tại
 
-    int RAG_DOCUMENT_PARSING_DELETE_ERROR = 10199; // 文档解析中，禁止删除
+    int RAG_DOCUMENT_PARSING_DELETE_ERROR = 10199; // Phân tích tài liệu，Cấm xóa
 
-    // 智能体MCP相关错误码
-    int MCP_ACCESS_POINT_ADDRESS_NO_PERMISSION = 10200; // 没有权限查看该智能体的MCP接入点地址
-    int MCP_ACCESS_POINT_ADDRESS_NOT_CONFIGURED = 10201; // 请联系管理员进入参数管理配置mcp接入点地址
-    int MCP_ACCESS_POINT_TOOLS_LIST_NO_PERMISSION = 10202; // 没有权限查看该智能体的MCP工具列表
+    // Mã lỗi liên quan đến đại lý MCP
+    int MCP_ACCESS_POINT_ADDRESS_NO_PERMISSION = 10200; // Không có quyền xem đại lýMCPđịa chỉ điểm truy cập
+    int MCP_ACCESS_POINT_ADDRESS_NOT_CONFIGURED = 10201; // Vui lòng liên hệ với quản trị viên để nhập cấu hình quản lý tham sốmcpđịa chỉ điểm truy cập
+    int MCP_ACCESS_POINT_TOOLS_LIST_NO_PERMISSION = 10202; // Không có quyền xem đại lýMCPDanh sách công cụ
 
-    // 替换词相关错误码
-    int CORRECT_WORD_FILE_NAME_EXISTS = 10203; // 文件名已存在
-    int FILE_SIZE_OVER_LIMIT = 10204; // 文件大小超过限制
+    // Mã lỗi liên quan đến từ thay thế
+    int CORRECT_WORD_FILE_NAME_EXISTS = 10203; // tên tập tin đã tồn tại
+    int FILE_SIZE_OVER_LIMIT = 10204; // Kích thước tệp vượt quá giới hạn
 }

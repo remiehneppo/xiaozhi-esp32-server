@@ -11,39 +11,39 @@ import lombok.EqualsAndHashCode;
 import xiaozhi.common.entity.BaseEntity;
 
 /**
- * 参数管理
+ * Quản lý thông số
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
 @TableName("sys_params")
 public class SysParamsEntity extends BaseEntity {
     /**
-     * 参数编码
+     * Mã hóa thông số
      */
     private String paramCode;
     /**
-     * 参数值
+     * Giá trị tham số
      */
     private String paramValue;
     /**
-     * 值类型：string-字符串，number-数字，boolean-布尔，array-数组
+     * Loại giá trị: chuỗi chuỗi, số-số, boolean-Boolean, mảng mảng
      */
     private String valueType;
     /**
-     * 类型 0：系统参数 1：非系统参数
+     * Loại 0: Tham số hệ thống 1: Tham số phi hệ thống
      */
     private Integer paramType;
     /**
-     * 备注
+     * Bình luận
      */
     private String remark;
     /**
-     * 更新者
+     * Trình cập nhật
      */
     @TableField(fill = FieldFill.INSERT_UPDATE)
     private Long updater;
     /**
-     * 更新时间
+     * Thời gian cập nhật
      */
     @TableField(fill = FieldFill.INSERT_UPDATE)
     private Date updateDate;

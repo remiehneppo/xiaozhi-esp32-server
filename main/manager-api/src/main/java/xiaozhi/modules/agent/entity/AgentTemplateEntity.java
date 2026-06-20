@@ -12,135 +12,135 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
 /**
- * 智能体配置模板表
- * 
+ * Bảng mẫu cấu hình đại lý
+ *
  * @TableName ai_agent_template
  */
 @TableName(value = "ai_agent_template")
 @Data
 public class AgentTemplateEntity implements Serializable {
     /**
-     * 智能体唯一标识
+     * Mã định danh duy nhất của đại lý
      */
     @TableId(type = IdType.ASSIGN_UUID)
     private String id;
 
     /**
-     * 智能体编码
+     * mã hóa đại lý
      */
     private String agentCode;
 
     /**
-     * 智能体名称
+     * Tên đại lý
      */
     private String agentName;
 
     /**
-     * 语音识别模型标识
+     * Nhận dạng mô hình nhận dạng giọng nói
      */
     private String asrModelId;
 
     /**
-     * 语音活动检测标识
+     * Logo phát hiện hoạt động giọng nói
      */
     private String vadModelId;
 
     /**
-     * 大语言模型标识
+     * Mã định danh mô hình ngôn ngữ lớn
      */
     private String llmModelId;
 
     /**
-     * VLLM模型标识
+     * Nhận dạng mô hình VLLM
      */
     private String vllmModelId;
 
     /**
-     * 语音合成模型标识
+     * Nhận dạng mô hình tổng hợp giọng nói
      */
     private String ttsModelId;
 
     /**
-     * 音色标识
+     * nhận dạng âm sắc
      */
     private String ttsVoiceId;
 
     /**
-     * 音色语言
+     * ngôn ngữ âm sắc
      */
     private String ttsLanguage;
 
     /**
-     * TTS音量
+     * khối lượng TTS
      */
     private Integer ttsVolume;
 
     /**
-     * TTS语速
+     * Tốc độ nói TTS
      */
     private Integer ttsRate;
 
     /**
-     * TTS音调
+     * giai điệu TTS
      */
     private Integer ttsPitch;
 
     /**
-     * 记忆模型标识
+     * mã định danh mô hình bộ nhớ
      */
     private String memModelId;
 
     /**
-     * 意图模型标识
+     * Mã nhận dạng mô hình ý định
      */
     private String intentModelId;
 
     /**
-     * 聊天记录配置（0不记录 1仅记录文本 2记录文本和语音）
+     * Cấu hình bản ghi trò chuyện (0 không ghi, 1 chỉ ghi văn bản, 2 ghi văn bản và giọng nói)
      */
     private Integer chatHistoryConf;
 
     /**
-     * 角色设定参数
+     * Thông số cài đặt ký tự
      */
     private String systemPrompt;
 
     /**
-     * 总结记忆
+     * Bộ nhớ tóm tắt
      */
     private String summaryMemory;
     /**
-     * 语言编码
+     * mã hóa ngôn ngữ
      */
     private String langCode;
 
     /**
-     * 交互语种
+     * ngôn ngữ tương tác
      */
     private String language;
 
     /**
-     * 排序权重
+     * Phân loại trọng lượng
      */
     private Integer sort;
 
     /**
-     * 创建者 ID
+     * ID người sáng tạo
      */
     private Long creator;
 
     /**
-     * 创建时间
+     * thời gian sáng tạo
      */
     private Date createdAt;
 
     /**
-     * 更新者 ID
+     * ID người cập nhật
      */
     private Long updater;
 
     /**
-     * 更新时间
+     * Thời gian cập nhật
      */
     private Date updatedAt;
 

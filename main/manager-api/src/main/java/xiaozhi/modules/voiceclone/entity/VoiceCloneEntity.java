@@ -15,42 +15,42 @@ import lombok.EqualsAndHashCode;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @TableName("ai_voice_clone")
-@Schema(description = "声音克隆")
+@Schema(description = "nhân bản âm thanh")
 public class VoiceCloneEntity {
 
     @TableId(type = IdType.ASSIGN_UUID)
-    @Schema(description = "唯一标识")
+    @Schema(description = "mã định danh duy nhất")
     private String id;
 
-    @Schema(description = "声音名称")
+    @Schema(description = "tên âm thanh")
     private String name;
 
-    @Schema(description = "模型id")
+    @Schema(description = "người mẫuid")
     private String modelId;
 
-    @Schema(description = "声音id")
+    @Schema(description = "âm thanhid")
     private String voiceId;
 
-    @Schema(description = "语言")
+    @Schema(description = "Ngôn ngữ")
     private String languages;
 
-    @Schema(description = "用户 ID（关联用户表）")
+    @Schema(description = "người dùng ID（Bảng người dùng liên quan）")
     private Long userId;
 
-    @Schema(description = "声音")
+    @Schema(description = "âm thanh")
     private byte[] voice;
 
-    @Schema(description = "训练状态：0待训练 1训练中 2训练成功 3训练失败")
+    @Schema(description = "tình trạng đào tạo：0Để được đào tạo 1trong đào tạo 2Đào tạo thành công 3Đào tạo không thành công")
     private Integer trainStatus;
 
-    @Schema(description = "训练错误原因")
+    @Schema(description = "Nguyên nhân dẫn đến sai sót trong đào tạo")
     private String trainError;
 
-    @Schema(description = "创建者")
+    @Schema(description = "Người sáng tạo")
     @TableField(fill = FieldFill.INSERT)
     private Long creator;
 
-    @Schema(description = "创建时间")
+    @Schema(description = "thời gian sáng tạo")
     @TableField(fill = FieldFill.INSERT)
     private Date createDate;
 }

@@ -13,85 +13,85 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
 /**
- * 文档表 (Shadow DB for RAGFlow Documents)
- * 对应表名: ai_knowledge_document
+ * Bảng tài liệu (Shadow DB cho tài liệu RAGFlow)
+ * Tên bảng tương ứng: ai_know_document
  */
 @Data
 @TableName(value = "ai_rag_knowledge_document", autoResultMap = true)
-@Schema(description = "知识库文档表")
+@Schema(description = "Bảng tài liệu cơ sở kiến thức")
 public class DocumentEntity implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @TableId(type = IdType.ASSIGN_UUID)
-    @Schema(description = "本地唯一ID")
+    @Schema(description = "Chỉ địa phươngID")
     private String id;
 
-    @Schema(description = "知识库ID (关联 ai_rag_dataset.dataset_id)")
+    @Schema(description = "cơ sở tri thứcID (hiệp hội ai_rag_dataset.dataset_id)")
     private String datasetId;
 
-    @Schema(description = "RAGFlow文档ID (远程ID)")
+    @Schema(description = "RAGFlowTài liệuID (từ xaID)")
     private String documentId;
 
-    @Schema(description = "文档名称")
+    @Schema(description = "Tên tài liệu")
     private String name;
 
-    @Schema(description = "文件大小(Bytes)")
+    @Schema(description = "kích thước tập tin(Bytes)")
     private Long size;
 
-    @Schema(description = "文件类型(pdf/doc/txt等)")
+    @Schema(description = "Loại tệp(pdf/doc/txtĐợi đã)")
     private String type;
 
-    @Schema(description = "分块方法")
+    @Schema(description = "Phương pháp chia nhỏ")
     private String chunkMethod;
 
-    @Schema(description = "解析配置(JSON String)")
+    @Schema(description = "Cấu hình phân tích(JSON String)")
     private String parserConfig;
 
-    @Schema(description = "可用状态 (1: 启用/正常, 0: 禁用/失效)")
+    @Schema(description = "Trạng thái sẵn có (1: kích hoạt/bình thường, 0: Vô hiệu hóa/không hợp lệ)")
     private String status;
 
-    @Schema(description = "运行状态 (UNSTART/RUNNING/CANCEL/DONE/FAIL)")
+    @Schema(description = "Trạng thái chạy (UNSTART/RUNNING/CANCEL/DONE/FAIL)")
     private String run;
 
-    @Schema(description = "解析进度 (0.0 ~ 1.0)")
+    @Schema(description = "Tiến trình phân tích cú pháp (0.0 ~ 1.0)")
     private Double progress;
 
-    @Schema(description = "缩略图 (Base64 或 URL)")
+    @Schema(description = "hình thu nhỏ (Base64 hoặc URL)")
     private String thumbnail;
 
-    @Schema(description = "解析耗时 (单位: 秒)")
+    @Schema(description = "Phân tích cần có thời gian (đơn vị: giây)")
     private Double processDuration;
 
-    @Schema(description = "自定义元数据 (JSON 格式)")
+    @Schema(description = "Siêu dữ liệu tùy chỉnh (JSON định dạng)")
     private String metaFields;
 
-    @Schema(description = "来源类型 (local, s3, url 等)")
+    @Schema(description = "Loại nguồn (local, s3, url Đợi đã)")
     private String sourceType;
 
-    @Schema(description = "解析错误信息")
+    @Schema(description = "Phân tích thông báo lỗi")
     private String error;
 
-    @Schema(description = "分块数量")
+    @Schema(description = "Số lượng khối")
     private Integer chunkCount;
 
-    @Schema(description = "Token数量")
+    @Schema(description = "Tokensố lượng")
     private Long tokenCount;
 
-    @Schema(description = "是否启用 (0:禁用 1:启用)")
+    @Schema(description = "Có bật hay không (0:Vô hiệu hóa 1:kích hoạt)")
     private Integer enabled;
 
-    @Schema(description = "创建者")
+    @Schema(description = "Người sáng tạo")
     @TableField(fill = FieldFill.INSERT)
     private Long creator;
 
-    @Schema(description = "创建时间")
+    @Schema(description = "thời gian sáng tạo")
     @TableField(fill = FieldFill.INSERT)
     private Date createdAt;
 
-    @Schema(description = "更新时间")
+    @Schema(description = "Thời gian cập nhật")
     @TableField(fill = FieldFill.UPDATE)
     private Date updatedAt;
 
-    @Schema(description = "最新同步时间")
+    @Schema(description = "Thời gian đồng bộ hóa mới nhất")
     private Date lastSyncAt;
 }

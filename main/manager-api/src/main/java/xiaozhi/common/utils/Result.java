@@ -7,28 +7,28 @@ import lombok.Data;
 import xiaozhi.common.exception.ErrorCode;
 
 /**
- * 响应数据
- * Copyright (c) 人人开源 All rights reserved.
+ * dữ liệu phản hồi
+ * Bản quyền (c) Renren Kaiyuan Mọi quyền được bảo lưu.
  * Website: https://www.renren.io
  */
 @Data
-@Schema(description = "响应")
+@Schema(description = "phản ứng")
 public class Result<T> implements Serializable {
 
     /**
-     * 编码：0表示成功，其他值表示失败
+     * Mã hóa: 0 biểu thị thành công, các giá trị khác biểu thị thất bại
      */
-    @Schema(description = "编码：0表示成功，其他值表示失败")
+    @Schema(description = "mã hóa：0chỉ ra sự thành công，Các giá trị khác cho thấy sự thất bại")
     private int code = 0;
     /**
-     * 消息内容
+     * Nội dung tin nhắn
      */
-    @Schema(description = "消息内容")
+    @Schema(description = "Nội dung tin nhắn")
     private String msg = "success";
     /**
-     * 响应数据
+     * dữ liệu phản hồi
      */
-    @Schema(description = "响应数据")
+    @Schema(description = "dữ liệu phản hồi")
     private T data;
 
     public Result<T> ok(T data) {

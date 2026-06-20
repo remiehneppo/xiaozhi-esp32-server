@@ -32,11 +32,11 @@ import xiaozhi.modules.knowledge.rag.KnowledgeBaseAdapter;
 import xiaozhi.modules.knowledge.rag.RAGFlowClient;
 
 /**
- * RAGFlow知识库适配器实现
+ * Triển khai bộ điều hợp cơ sở tri thức RAGFlow
  * <p>
- * 重构说明 (Refactoring Note):
- * 本类已升级为使用 {@link RAGFlowClient} 统一处理 HTTP 通信。
- * 解决了旧代码中 Timeout 缺失、Error Handling 分散的问题。
+ * Lưu ý tái cấu trúc:
+ * Lớp này đã được nâng cấp để sử dụng {@link RAGFlowClient} nhằm xử lý thống nhất các giao tiếp HTTP.
+ * Đã giải quyết vấn đề thiếu Thời gian chờ và Xử lý lỗi rải rác trong mã cũ.
  * </p>
  */
 @Slf4j
@@ -46,7 +46,7 @@ public class RAGFlowAdapter extends KnowledgeBaseAdapter {
 
     private Map<String, Object> config;
     private ObjectMapper objectMapper;
-    // Client 实例，初始化时创建
+    // Phiên bản máy khách, được tạo trong quá trình khởi tạo
     private RAGFlowClient client;
 
     public RAGFlowAdapter() {
@@ -66,18 +66,18 @@ public class RAGFlowAdapter extends KnowledgeBaseAdapter {
         String baseUrl = getConfigValue(config, "base_url", "baseUrl");
         String apiKey = getConfigValue(config, "api_key", "apiKey");
 
-        // 初始化 Client，默认超时 30s，可通过 config 扩展
+        // Khởi tạo Client, thời gian chờ mặc định là 30s, có thể kéo dài thông qua config
         int timeout = 30;
         Object timeoutObj = getConfigValue(config, "timeout", "timeout");
         if (timeoutObj != null) {
             try {
                 timeout = Integer.parseInt(timeoutObj.toString());
             } catch (Exception e) {
-                log.warn("解析超时配置失败，使用默认值 30s");
+                log.warn("Cấu hình thời gian chờ phân tích cú pháp không thành công，Sử dụng giá trị mặc định 30s");
             }
         }
         this.client = new RAGFlowClient(baseUrl, apiKey, timeout);
-        log.info("RAGFlow适配器初始化完成，Client已就绪");
+        log.info("RAGFlowQuá trình khởi tạo bộ điều hợp đã hoàn tất，ClientSẵn sàng");
     }
 
     @Override
@@ -97,7 +97,7 @@ public class RAGFlowAdapter extends KnowledgeBaseAdapter {
             throw new RenException(ErrorCode.RAG_API_ERROR_API_KEY_NULL);
         }
 
-        if (apiKey.contains("你")) {
+        if (apiKey.contains("bạn")) {
             throw new RenException(ErrorCode.RAG_API_ERROR_API_KEY_INVALID);
         }
 
@@ -109,7 +109,7 @@ public class RAGFlowAdapter extends KnowledgeBaseAdapter {
     }
 
     /**
-     * 辅助方法：支持多种键名获取配置（兼容 camelCase 和 snake_case）
+     * Phương thức phụ trợ: hỗ trợ nhiều tên khóa để lấy cấu hình (tương thích với CamelCase và Snake_case)
      */
     private String getConfigValue(Map<String, Object> config, String snakeKey, String camelKey) {
         if (config.containsKey(snakeKey)) {
@@ -122,15 +122,15 @@ public class RAGFlowAdapter extends KnowledgeBaseAdapter {
     }
 
     /**
-     * 辅助方法：确保 Client 已初始化
+     * Phương thức trợ giúp: Đảm bảo Máy khách được khởi tạo
      */
     private RAGFlowClient getClient() {
         if (this.client == null) {
-            // 尝试重新初始化
+            // Cố gắng khởi động lại
             if (this.config != null) {
                 initialize(this.config);
             } else {
-                throw new RenException(ErrorCode.RAG_CONFIG_NOT_FOUND, "适配器未初始化"); // 应该抛出 RuntimeException
+                throw new RenException(ErrorCode.RAG_CONFIG_NOT_FOUND, "Bộ điều hợp chưa được khởi tạo"); // nên ném RuntimeException
             }
         }
         return this.client;
@@ -146,9 +146,9 @@ public class RAGFlowAdapter extends KnowledgeBaseAdapter {
     @Override
     public PageData<KnowledgeFilesDTO> getDocumentList(String datasetId, DocumentDTO.ListReq req) {
         try {
-            log.info("=== [RAGFlow] 获取文档列表: datasetId={} ===", datasetId);
+            log.info("=== [RAGFlow] Nhận danh sách tài liệu: datasetId={} ===", datasetId);
 
-            // 使用 Jackson 将 DTO 转为 Map 作为查询参数
+            // Sử dụng Jackson để chuyển đổi DTO thành Map làm tham số truy vấn
             @SuppressWarnings("unchecked")
             Map<String, Object> params = objectMapper.convertValue(req, Map.class);
 
@@ -159,7 +159,7 @@ public class RAGFlowAdapter extends KnowledgeBaseAdapter {
                     req.getPageSize() != null ? req.getPageSize() : 10);
 
         } catch (Exception e) {
-            log.error("获取文档列表失败", e);
+            log.error("Không thể lấy danh sách tài liệu", e);
             throw convertToRenException(e);
         }
     }
@@ -167,7 +167,7 @@ public class RAGFlowAdapter extends KnowledgeBaseAdapter {
     @Override
     public DocumentDTO.InfoVO getDocumentById(String datasetId, String documentId) {
         try {
-            log.info("=== [RAGFlow] 获取文档详情: datasetId={}, documentId={} ===", datasetId, documentId);
+            log.info("=== [RAGFlow] Nhận chi tiết tài liệu: datasetId={}, documentId={} ===", datasetId, documentId);
             DocumentDTO.ListReq req = DocumentDTO.ListReq.builder()
                     .id(documentId)
                     .page(1)
@@ -188,7 +188,7 @@ public class RAGFlowAdapter extends KnowledgeBaseAdapter {
             }
             return null;
         } catch (Exception e) {
-            log.error("获取文档详情失败: documentId={}", documentId, e);
+            log.error("Không thể lấy thông tin chi tiết về tài liệu: documentId={}", documentId, e);
             throw convertToRenException(e);
         }
     }
@@ -198,7 +198,7 @@ public class RAGFlowAdapter extends KnowledgeBaseAdapter {
         String datasetId = req.getDatasetId();
         MultipartFile file = req.getFile();
         try {
-            log.info("=== [RAGFlow] 上传文档: datasetId={} ===", datasetId);
+            log.info("=== [RAGFlow] Tải tài liệu lên: datasetId={} ===", datasetId);
 
             MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
             body.add("file", new MultipartFileResource(file));
@@ -210,7 +210,7 @@ public class RAGFlowAdapter extends KnowledgeBaseAdapter {
                 body.add("meta", objectMapper.writeValueAsString(req.getMetaFields()));
             }
             if (req.getChunkMethod() != null) {
-                // 将枚举值转为 RAGFlow 期待的字符串（如 NAIVE -> naive）
+                // Chuyển đổi giá trị liệt kê thành chuỗi mà RAGFlow mong đợi (chẳng hạn như NAIVE -> ngây thơ)
                 body.add("chunk_method", req.getChunkMethod().name().toLowerCase());
             }
             if (req.getParserConfig() != null) {
@@ -227,7 +227,7 @@ public class RAGFlowAdapter extends KnowledgeBaseAdapter {
             return parseUploadResponse(dataObj, datasetId, file);
 
         } catch (Exception e) {
-            log.error("文档上传失败", e);
+            log.error("Tải tài liệu lên không thành công", e);
             throw convertToRenException(e);
         }
     }
@@ -269,11 +269,11 @@ public class RAGFlowAdapter extends KnowledgeBaseAdapter {
     @Override
     public void deleteDocument(String datasetId, DocumentDTO.BatchIdReq req) {
         try {
-            log.info("=== [RAGFlow] 批量删除文档: datasetId={}, count={} ===", datasetId,
+            log.info("=== [RAGFlow] Xóa tài liệu theo đợt: datasetId={}, count={} ===", datasetId,
                     req.getIds() != null ? req.getIds().size() : 0);
             getClient().delete("/api/v1/datasets/" + datasetId + "/documents", req);
         } catch (Exception e) {
-            log.error("批量删除文档失败: datasetId={}", datasetId, e);
+            log.error("Không thể xóa tài liệu hàng loạt: datasetId={}", datasetId, e);
             throw convertToRenException(e);
         }
     }
@@ -281,14 +281,14 @@ public class RAGFlowAdapter extends KnowledgeBaseAdapter {
     @Override
     public boolean parseDocuments(String datasetId, List<String> documentIds) {
         try {
-            log.info("=== [RAGFlow] 解析文档 ===");
+            log.info("=== [RAGFlow] Phân tích tài liệu ===");
             Map<String, Object> body = new HashMap<>();
             body.put("document_ids", documentIds);
 
             getClient().post("/api/v1/datasets/" + datasetId + "/chunks", body);
             return true;
         } catch (Exception e) {
-            log.error("解析文档失败", e);
+            log.error("Không thể phân tích tài liệu", e);
             throw convertToRenException(e);
         }
     }
@@ -296,7 +296,7 @@ public class RAGFlowAdapter extends KnowledgeBaseAdapter {
     @Override
     public ChunkDTO.ListVO listChunks(String datasetId, String documentId, ChunkDTO.ListReq req) {
         try {
-            // [提灯重构] 使用 objectMapper 动态转换查询参数，消除硬编码
+            // [Tái cấu trúc đèn lồng] Sử dụng objectMapper để chuyển đổi động các tham số truy vấn và loại bỏ mã hóa cứng
             Map<String, Object> params = objectMapper.convertValue(req, new TypeReference<Map<String, Object>>() {
             });
 
@@ -305,7 +305,7 @@ public class RAGFlowAdapter extends KnowledgeBaseAdapter {
 
             Object dataObj = response.get("data");
             if (dataObj == null) {
-                log.warn("[RAGFlow] listChunks 响应 data 为空, docId={}", documentId);
+                log.warn("[RAGFlow] listChunks phản ứng data trống rỗng, docId={}", documentId);
                 return ChunkDTO.ListVO.builder()
                         .chunks(new ArrayList<>())
                         .total(0L)
@@ -318,7 +318,7 @@ public class RAGFlowAdapter extends KnowledgeBaseAdapter {
             }
             return result;
         } catch (Exception e) {
-            log.error("获取切片失败: docId={}", documentId, e);
+            log.error("Không thể lấy lát: docId={}", documentId, e);
             throw convertToRenException(e);
         }
     }
@@ -326,18 +326,18 @@ public class RAGFlowAdapter extends KnowledgeBaseAdapter {
     @Override
     public RetrievalDTO.ResultVO retrievalTest(RetrievalDTO.TestReq req) {
         try {
-            // [Production Reinforce] 参数防御性对齐：RAGFlow Python 端对 0 或负数分页敏感
-            // 解决 ValueError('Search does not support negative slicing.')
+            // [Củng cố sản xuất] Căn chỉnh phòng thủ đối số: RAGFlow Python side nhạy cảm với 0 hoặc phân trang phủ định
+            // Giải quyết ValueError('Tìm kiếm không hỗ trợ cắt âm.')
             if (req.getPage() != null && req.getPage() < 1) {
                 req.setPage(1);
             }
             if (req.getPageSize() != null && req.getPageSize() < 1) {
-                req.setPageSize(10); // 默认 10 条
+                req.setPageSize(10); // Mặc định 10 Bài viết
             }
             if (req.getTopK() != null && req.getTopK() < 1) {
-                req.setTopK(1024); // RAGFlow 内部默认 TopK
+                req.setTopK(1024); // RAGFlow mặc định nội bộ TopK
             }
-            // 相似度阈值归一化 (0.0 ~ 1.0)
+            // Chuẩn hóa ngưỡng tương tự (0,0 ~ 1,0)
             if (req.getSimilarityThreshold() != null) {
                 if (req.getSimilarityThreshold() < 0f)
                     req.setSimilarityThreshold(0.2f);
@@ -345,12 +345,12 @@ public class RAGFlowAdapter extends KnowledgeBaseAdapter {
                     req.setSimilarityThreshold(1.0f);
             }
 
-            // [提灯重构] 直接透传强类型 DTO，由 getClient 处理序列化
+            // [Tái tạo đèn lồng] Truyền trực tiếp và minh bạch DTO loại mạnh và getClient xử lý việc tuần tự hóa
             Map<String, Object> response = getClient().post("/api/v1/retrieval", req);
 
             Object dataObj = response.get("data");
             if (dataObj == null) {
-                log.warn("[RAGFlow] retrievalTest 响应 data 为空");
+                log.warn("[RAGFlow] retrievalTest phản ứng data trống rỗng");
                 return RetrievalDTO.ResultVO.builder()
                         .chunks(new ArrayList<>())
                         .docAggs(new ArrayList<>())
@@ -364,7 +364,7 @@ public class RAGFlowAdapter extends KnowledgeBaseAdapter {
             }
             return result;
         } catch (Exception e) {
-            log.error("召回测试失败", e);
+            log.error("Kiểm tra thu hồi không thành công", e);
             throw convertToRenException(e);
         }
     }
@@ -375,7 +375,7 @@ public class RAGFlowAdapter extends KnowledgeBaseAdapter {
             getClient().get("/api/v1/health", null);
             return true;
         } catch (Exception e) {
-            log.error("连接测试失败: {}", e.getMessage());
+            log.error("Kiểm tra kết nối không thành công: {}", e.getMessage());
             return false;
         }
     }
@@ -384,7 +384,7 @@ public class RAGFlowAdapter extends KnowledgeBaseAdapter {
     public Map<String, Object> getStatus() {
         Map<String, Object> status = new HashMap<>();
         status.put("adapterType", getAdapterType());
-        status.put("configKeys", config != null ? config.keySet() : "未配置");
+        status.put("configKeys", config != null ? config.keySet() : "Chưa được định cấu hình");
         status.put("connectionTest", testConnection());
         status.put("lastChecked", new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
         return status;
@@ -393,9 +393,9 @@ public class RAGFlowAdapter extends KnowledgeBaseAdapter {
     @Override
     public Map<String, Object> getSupportedConfig() {
         Map<String, Object> supportedConfig = new HashMap<>();
-        supportedConfig.put("base_url", "RAGFlow API基础URL");
-        supportedConfig.put("api_key", "RAGFlow API密钥");
-        supportedConfig.put("timeout", "请求超时时间（毫秒）");
+        supportedConfig.put("base_url", "RAGFlow APIKhái niệm cơ bảnURL");
+        supportedConfig.put("api_key", "RAGFlow APIchìa khóa");
+        supportedConfig.put("timeout", "Yêu cầu hết thời gian（mili giây）");
         return supportedConfig;
     }
 
@@ -409,8 +409,8 @@ public class RAGFlowAdapter extends KnowledgeBaseAdapter {
     @Override
     public DatasetDTO.InfoVO createDataset(DatasetDTO.CreateReq req) {
         try {
-            // [Production Fix] 强化默认值处理，防止 RAGFlow API 因空字符串或缺失字段报错 (Code 101)
-            // 解决 "Field: <avatar> - Message: <Missing MIME prefix>" 等校验失败
+            // [Sửa lỗi sản xuất] Tăng cường xử lý giá trị mặc định để ngăn API RAGFlow báo cáo lỗi do chuỗi trống hoặc trường bị thiếu (Mã 101)
+            // Giải quyết "Trường: <avatar> - Thông báo: <Thiếu tiền tố MIME>" và các lỗi xác minh khác
             if (StringUtils.isBlank(req.getPermission())) {
                 req.setPermission("me");
             }
@@ -418,33 +418,33 @@ public class RAGFlowAdapter extends KnowledgeBaseAdapter {
                 req.setChunkMethod("naive");
             }
 
-            // 🤖 自动补全嵌入模型：优先使用请求传参，其次使用配置中的默认模型
+            // 🤖 Tự động hoàn thiện các mô hình nhúng: sử dụng tham số yêu cầu trước, sau đó sử dụng mô hình mặc định trong cấu hình
             if (StringUtils.isBlank(req.getEmbeddingModel())) {
                 String defaultModel = (String) getConfigValue(config, "embedding_model", "embeddingModel");
                 if (StringUtils.isNotBlank(defaultModel)) {
-                    log.info("RAGFlow: 使用配置中的默认嵌入模型: {}", defaultModel);
+                    log.info("RAGFlow: Sử dụng mô hình nhúng mặc định trong cấu hình: {}", defaultModel);
                     req.setEmbeddingModel(defaultModel);
                 }
-                // 若配置中也无默认值，则留空由 RAGFlow 服务端自行兜底（或抛出业务异常）
+                // Nếu không có giá trị mặc định trong cấu hình, hãy để trống và để máy chủ RAGFlow xử lý nó (hoặc đưa ra một ngoại lệ nghiệp vụ)
             }
 
-            // 🖼️ 自动补全头像：若为空则提供一个 1x1 透明像素，防止 RAGFlow 校验 MIME Prefix 失败
+            // 🖼️ Hình đại diện tự động hoàn thành: Nếu trống, hãy cung cấp pixel trong suốt 1x1 để ngăn RAGFlow không xác minh Tiền tố MIME
             if (StringUtils.isBlank(req.getAvatar())) {
                 req.setAvatar(
                         "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==");
             }
 
-            // 直接将强类型请求对象传给 Client，Jackson 会处理 JsonProperty 映射
+            // Truyền trực tiếp đối tượng yêu cầu được gõ mạnh cho Máy khách và Jackson sẽ xử lý ánh xạ JsonProperty
             Map<String, Object> response = getClient().post("/api/v1/datasets", req);
 
-            // 安全地获取 data 并通过 DatasetDTO.InfoVO 进行全量映射
+            // Lấy dữ liệu một cách an toàn và thực hiện ánh xạ đầy đủ thông qua DatasetDTO.InfoVO
             Object dataObj = response.get("data");
             if (dataObj != null) {
                 return objectMapper.convertValue(dataObj, DatasetDTO.InfoVO.class);
             }
             throw new RenException(ErrorCode.RAG_API_ERROR, "Invalid response from createDataset: missing data object");
         } catch (Exception e) {
-            log.error("创建数据集失败", e);
+            log.error("Không tạo được tập dữ liệu", e);
             throw convertToRenException(e);
         }
     }
@@ -452,7 +452,7 @@ public class RAGFlowAdapter extends KnowledgeBaseAdapter {
     @Override
     public DatasetDTO.InfoVO updateDataset(String datasetId, DatasetDTO.UpdateReq req) {
         try {
-            // RAGFlow API 更新建议路径带 ID
+            // Đường dẫn đề xuất cập nhật API RAGFlow có ID
             Map<String, Object> response = getClient().put("/api/v1/datasets/" + datasetId, req);
 
             Object dataObj = response.get("data");
@@ -461,7 +461,7 @@ public class RAGFlowAdapter extends KnowledgeBaseAdapter {
             }
             return null;
         } catch (Exception e) {
-            log.error("更新数据集失败", e);
+            log.error("Không thể cập nhật tập dữ liệu", e);
             throw convertToRenException(e);
         }
     }
@@ -469,7 +469,7 @@ public class RAGFlowAdapter extends KnowledgeBaseAdapter {
     @Override
     public DatasetDTO.BatchOperationVO deleteDataset(DatasetDTO.BatchIdReq req) {
         try {
-            // RAGFlow 批量删除接口使用 DELETE /api/v1/datasets
+            // Giao diện xóa hàng loạt RAGFlow sử dụng DELETE /api/v1/datasets
             Map<String, Object> response = getClient().delete("/api/v1/datasets", req);
 
             Object dataObj = response.get("data");
@@ -478,7 +478,7 @@ public class RAGFlowAdapter extends KnowledgeBaseAdapter {
             }
             return null;
         } catch (Exception e) {
-            log.error("批量删除数据集失败", e);
+            log.error("Không thể xóa tập dữ liệu theo đợt", e);
             throw convertToRenException(e);
         }
     }
@@ -492,7 +492,7 @@ public class RAGFlowAdapter extends KnowledgeBaseAdapter {
             }
             return 0;
         } catch (Exception e) {
-            log.warn("获取文档数量失败: {}", e.getMessage());
+            log.warn("Không thể lấy được số lượng tài liệu: {}", e.getMessage());
             return 0;
         }
     }
@@ -514,10 +514,10 @@ public class RAGFlowAdapter extends KnowledgeBaseAdapter {
                     return objectMapper.convertValue(list.get(0), DatasetDTO.InfoVO.class);
                 }
             }
-            // RAGFlow 端不存在该数据集
+            // Tập dữ liệu không tồn tại ở phía RAGFlow
             return null;
         } catch (Exception e) {
-            log.warn("获取数据集信息失败: datasetId={}, error={}", datasetId, e.getMessage());
+            log.warn("Không thể lấy được thông tin tập dữ liệu: datasetId={}, error={}", datasetId, e.getMessage());
             return null;
         }
     }
@@ -527,7 +527,7 @@ public class RAGFlowAdapter extends KnowledgeBaseAdapter {
         try {
             getClient().postStream(endpoint, body, onData);
         } catch (Exception e) {
-            log.error("流式请求失败", e);
+            log.error("Yêu cầu phát trực tuyến không thành công", e);
             throw convertToRenException(e);
         }
     }
@@ -535,20 +535,20 @@ public class RAGFlowAdapter extends KnowledgeBaseAdapter {
     @Override
     public Object postSearchBotAsk(Map<String, Object> config, Object body,
             Consumer<String> onData) {
-        // SearchBot 实际上是 Dataset 检索的一种封装，或者是未公开的 API？
-        // 假设 RAGFlow 没有显式的 /searchbots 接口供 SDK 调用，而是 Dataset Retrieval 或者 Chat。
-        // 但根据 BotDTO，它是 /api/v1/searchbots/ask (假设)
-        // 这里的 config 可能是覆盖用的，或者我们只是用 adapter 实例已有的 client。
-        // 但 Bot 可能使用不同的 API Key？通常 Adapter 实例绑定了一个 Key。
-        // 如果 Bot 使用系统 Key，则直接用 getClient()。
+        // SearchBot thực sự là một trình bao bọc xung quanh việc truy xuất Tập dữ liệu hay nó là một API không có giấy tờ?
+        // Giả sử rằng RAGFlow không có giao diện /searchbots rõ ràng để SDK gọi mà là Truy xuất tập dữ liệu hoặc Trò chuyện.
+        // Nhưng theo BotDTO thì đó là /api/v1/searchbots/ask (giả sử)
+        // Cấu hình ở đây có thể bị ghi đè hoặc chúng tôi chỉ sử dụng ứng dụng khách hiện có của phiên bản bộ điều hợp.
+        // Nhưng có lẽ Bot sử dụng Khóa API khác? Thông thường, phiên bản Adaptor được liên kết với một Khóa.
+        // Nếu Bot sử dụng Khóa hệ thống, hãy sử dụng trực tiếp getClient().
 
-        // 暂时假设 endpoint /api/v1/searchbots/ask 存在（或者类似的）
-        // 如果是流式:
+        // Giả sử bây giờ điểm cuối /api/v1/searchbots/ask tồn tại (hoặc tương tự)
+        // Nếu phát trực tuyến:
         try {
             getClient().postStream("/api/v1/searchbots/ask", body, onData);
             return null;
         } catch (Exception e) {
-            log.error("SearchBot Ask 失败", e);
+            log.error("SearchBot Ask thất bại", e);
             throw convertToRenException(e);
         }
     }
@@ -556,17 +556,17 @@ public class RAGFlowAdapter extends KnowledgeBaseAdapter {
     @Override
     public void postAgentBotCompletion(Map<String, Object> config, String agentId, Object body,
             Consumer<String> onData) {
-        // AgentBot 对应 /api/v1/agentbots/{id}/completions
+        // AgentBot tương ứng với /api/v1/agentbots/{id}/completions
         try {
             getClient().postStream("/api/v1/agentbots/" + agentId + "/completions", body, onData);
         } catch (Exception e) {
-            log.error("AgentBot Completion 失败", e);
+            log.error("AgentBot Completion thất bại", e);
             throw convertToRenException(e);
         }
     }
 
-    // 复用原有的辅助解析方法，保持兼容
-    // [Bug Fix] 不再吞掉反序列化异常，避免上层误判"文档已删除"
+    // Sử dụng lại các phương pháp phân tích cú pháp phụ trợ ban đầu để duy trì khả năng tương thích
+    // [Sửa lỗi] Không còn nuốt các ngoại lệ khử lưu huỳnh để tránh bị lớp trên đánh giá sai rằng "tài liệu đã bị xóa"
     private PageData<KnowledgeFilesDTO> parseDocumentListResponse(Object dataObj, long curPage, long pageSize) {
         if (dataObj == null) {
             return new PageData<>(new ArrayList<>(), 0);
@@ -575,18 +575,18 @@ public class RAGFlowAdapter extends KnowledgeBaseAdapter {
         Map<String, Object> dataMap = (Map<String, Object>) dataObj;
         List<Map<String, Object>> documents = (List<Map<String, Object>>) dataMap.get("docs");
         if (documents == null || documents.isEmpty()) {
-            // RAGFlow 明确返回了空文档列表，这是合法的"真空"
+            // RAGFlow trả về rõ ràng một danh sách tài liệu trống, đây là một "chân không" hợp pháp
             return new PageData<>(new ArrayList<>(), 0);
         }
 
         List<KnowledgeFilesDTO> list = new ArrayList<>();
         for (Object docObj : documents) {
             try {
-                // 单文档转换容错：一个文档反序列化失败不影响其他文档
+                // Dung sai lỗi chuyển đổi một tài liệu: việc không giải tuần tự hóa một tài liệu không ảnh hưởng đến các tài liệu khác
                 DocumentDTO.InfoVO info = objectMapper.convertValue(docObj, DocumentDTO.InfoVO.class);
                 list.add(mapToKnowledgeFilesDTO(info, null));
             } catch (Exception e) {
-                log.warn("[RAGFlow] 单文档 DTO 转换失败，跳过该文档: {}", e.getMessage());
+                log.warn("[RAGFlow] tài liệu duy nhất DTO Chuyển đổi không thành công，Bỏ qua tài liệu này: {}", e.getMessage());
             }
         }
 
@@ -601,7 +601,7 @@ public class RAGFlowAdapter extends KnowledgeBaseAdapter {
     private KnowledgeFilesDTO parseUploadResponse(Object dataObj, String datasetId, MultipartFile file) {
         KnowledgeFilesDTO result = null;
 
-        // 尝试从响应数据中提取文档ID (documentId)
+        // Cố gắng trích xuất ID tài liệu (documentId) từ dữ liệu phản hồi
         if (dataObj != null) {
             try {
                 DocumentDTO.InfoVO info = null;
@@ -618,13 +618,13 @@ public class RAGFlowAdapter extends KnowledgeBaseAdapter {
                     result = mapToKnowledgeFilesDTO(info, datasetId);
                 }
             } catch (Exception e) {
-                log.warn("解析上传响应数据失败: {}", e.getMessage());
+                log.warn("Không thể phân tích cú pháp dữ liệu phản hồi tải lên: {}", e.getMessage());
             }
         }
 
         if (result == null) {
-            log.error("未能从RAGFlow响应中提取到documentId，响应内容: {}", dataObj);
-            // 这里应该返回一个最小化的包含基础信息的 DTO 而不是 null，防止上游 NPE
+            log.error("Không thể nhận được từRAGFlowTrích từ phản hồidocumentId，Nội dung phản hồi: {}", dataObj);
+            // Một DTO được thu nhỏ chứa thông tin cơ bản phải được trả về thay vì null để ngăn NPE ngược dòng.
             result = new KnowledgeFilesDTO();
             result.setDatasetId(datasetId);
             result.setName(file.getOriginalFilename());
@@ -636,8 +636,8 @@ public class RAGFlowAdapter extends KnowledgeBaseAdapter {
     }
 
     /**
-     * 将 RAGFlow 的强类型 InfoVO 映射到内部使用的 KnowledgeFilesDTO
-     * 确保所有可用字段（名称、大小、状态、配置等）都得到全量同步
+     * Ánh xạ InfoVO được gõ mạnh của RAGFlow tới KnowledgeFilesDTO được sử dụng nội bộ
+     * Đảm bảo rằng tất cả các trường có sẵn (tên, kích thước, trạng thái, cấu hình, v.v.) được đồng bộ hóa hoàn toàn
      */
     private KnowledgeFilesDTO mapToKnowledgeFilesDTO(DocumentDTO.InfoVO info, String datasetId) {
         KnowledgeFilesDTO dto = new KnowledgeFilesDTO();
@@ -650,7 +650,7 @@ public class RAGFlowAdapter extends KnowledgeBaseAdapter {
         dto.setName(info.getName());
         dto.setFileSize(info.getSize());
 
-        // 状态映射
+        // lập bản đồ trạng thái
         if (info.getRun() != null) {
             dto.setRun(info.getRun().name());
         }
@@ -658,10 +658,10 @@ public class RAGFlowAdapter extends KnowledgeBaseAdapter {
         if (StringUtils.isNotBlank(info.getStatus())) {
             dto.setStatus(info.getStatus());
         } else {
-            dto.setStatus("1"); // 默认启用
+            dto.setStatus("1"); // Được bật theo mặc định
         }
 
-        // 时间同步
+        // Đồng bộ hóa thời gian
         if (info.getCreateTime() != null) {
             dto.setCreatedAt(new Date(info.getCreateTime()));
         }
@@ -669,16 +669,16 @@ public class RAGFlowAdapter extends KnowledgeBaseAdapter {
             dto.setUpdatedAt(new Date(info.getUpdateTime()));
         }
 
-        // 核心元数据补齐 (Issue 1)
+        // Hoàn thành siêu dữ liệu cốt lõi (Số 1)
         dto.setProgress(info.getProgress());
         dto.setThumbnail(info.getThumbnail());
         dto.setProcessDuration(info.getProcessDuration());
         dto.setSourceType(info.getSourceType());
         dto.setChunkCount(info.getChunkCount() != null ? info.getChunkCount().intValue() : 0);
         dto.setTokenCount(info.getTokenCount());
-        dto.setError(info.getProgressMsg()); // 将进度描述映射为错误信息提示
+        dto.setError(info.getProgressMsg()); // Ánh xạ mô tả tiến trình tới lời nhắc thông báo lỗi
 
-        // 扩展字段同步
+        // Đồng bộ hóa trường mở rộng
         dto.setMetaFields(info.getMetaFields());
         if (info.getChunkMethod() != null) {
             dto.setChunkMethod(info.getChunkMethod().name().toLowerCase());

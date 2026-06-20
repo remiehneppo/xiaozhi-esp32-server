@@ -20,7 +20,7 @@ import xiaozhi.common.utils.Result;
 import xiaozhi.modules.sys.service.SysParamsService;
 
 /**
- * Config API 过滤器
+ * Bộ lọc API cấu hình
  */
 @Slf4j
 @RequiredArgsConstructor
@@ -29,7 +29,7 @@ public class ServerSecretFilter extends AuthenticatingFilter {
 
     @Override
     protected ServerSecretToken createToken(ServletRequest request, ServletResponse response) {
-        // 获取请求token
+        // Nhận mã thông báo yêu cầu
         String token = getRequestToken((HttpServletRequest) request);
 
         if (StringUtils.isBlank(token)) {
@@ -42,7 +42,7 @@ public class ServerSecretFilter extends AuthenticatingFilter {
 
     @Override
     protected boolean isAccessAllowed(ServletRequest request, ServletResponse response, Object mappedValue) {
-        // 对OPTIONS请求放行
+        // Phát hành yêu cầu OPTIONS
         if (((HttpServletRequest) request).getMethod().equals(RequestMethod.OPTIONS.name())) {
             return true;
         }
@@ -51,19 +51,19 @@ public class ServerSecretFilter extends AuthenticatingFilter {
 
     @Override
     protected boolean onAccessDenied(ServletRequest servletRequest, ServletResponse servletResponse) throws Exception {
-        // 获取token并校验
+        // Nhận mã thông báo và xác minh
         String token = getRequestToken((HttpServletRequest) servletRequest);
         if (StringUtils.isBlank(token)) {
-            // token为空，返回401
-            this.sendUnauthorizedResponse((HttpServletResponse) servletResponse, "服务器密钥不能为空");
+            // Mã thông báo trống và 401 được trả về.
+            this.sendUnauthorizedResponse((HttpServletResponse) servletResponse, "Khóa máy chủ không được để trống");
             return false;
         }
 
-        // 验证token是否匹配
+        // Xác minh sự trùng khớp của mã thông báo
         String serverSecret = getServerSecret();
         if (StringUtils.isBlank(serverSecret) || !serverSecret.equals(token)) {
-            // token无效，返回401
-            this.sendUnauthorizedResponse((HttpServletResponse) servletResponse, "无效的服务器密钥");
+            // Mã thông báo không hợp lệ và 401 được trả về.
+            this.sendUnauthorizedResponse((HttpServletResponse) servletResponse, "Khóa máy chủ không hợp lệ");
             return false;
         }
 
@@ -71,7 +71,7 @@ public class ServerSecretFilter extends AuthenticatingFilter {
     }
 
     /**
-     * 发送未授权响应
+     * Gửi phản hồi trái phép
      */
     private void sendUnauthorizedResponse(HttpServletResponse response, String message) {
         response.setContentType("application/json;charset=utf-8");
@@ -82,16 +82,16 @@ public class ServerSecretFilter extends AuthenticatingFilter {
             String json = JsonUtils.toJsonString(new Result<Void>().error(ErrorCode.UNAUTHORIZED, message));
             response.getWriter().print(json);
         } catch (IOException e) {
-            log.error("响应输出失败", e);
+            log.error("Đầu ra phản hồi không thành công", e);
         }
     }
 
     /**
-     * 获取请求的token
+     * Nhận mã thông báo được yêu cầu
      */
     private String getRequestToken(HttpServletRequest httpRequest) {
         String token = null;
-        // 从header中获取token
+        // Nhận mã thông báo từ tiêu đề
         String authorization = httpRequest.getHeader("Authorization");
         if (StringUtils.isNotBlank(authorization) && authorization.startsWith("Bearer ")) {
             token = authorization.replace("Bearer ", "");

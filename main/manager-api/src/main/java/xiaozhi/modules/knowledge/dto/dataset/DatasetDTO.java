@@ -11,438 +11,438 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.validation.constraints.*;
 
 /**
- * 知识库管理聚合 DTO
+ * DTO tổng hợp quản lý cơ sở tri thức
  * <p>
- * 容器类，内含知识库模块所有请求/响应对象的静态内部类定义。
+ * Lớp vùng chứa chứa các định nghĩa lớp nội bộ tĩnh cho tất cả các đối tượng yêu cầu/phản hồi của mô-đun cơ sở kiến thức.
  * </p>
  */
-@Schema(description = "知识库管理聚合 DTO")
+@Schema(description = "Tổng hợp quản lý cơ sở tri thức DTO")
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class DatasetDTO {
 
-    // ========== 通用内部类 ==========
+    // ========== Các lớp bên trong chung ===========
 
     /**
-     * 解析器配置
+     * Cấu hình trình phân tích cú pháp
      */
     @Data
     @NoArgsConstructor
     @AllArgsConstructor
     @Builder
-    @Schema(description = "解析器配置")
+    @Schema(description = "Cấu hình trình phân tích cú pháp")
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static class ParserConfig implements Serializable {
 
-        @Schema(description = "分块 token 数量", example = "128")
+        @Schema(description = "Cắt nhỏ token số lượng", example = "128")
         @JsonProperty("chunk_token_num")
         private Integer chunkTokenNum;
 
-        @Schema(description = "分隔符", example = "\\n!?;。；！？")
+        @Schema(description = "dấu phân cách", example = "\\n!?;。；！？")
         private String delimiter;
 
-        @Schema(description = "布局识别模型: DeepDOC / Simple", example = "DeepDOC")
+        @Schema(description = "mô hình nhận dạng bố cục: DeepDOC / Simple", example = "DeepDOC")
         @JsonProperty("layout_recognize")
         private String layoutRecognize;
 
-        @Schema(description = "是否将 Excel 转为 HTML", example = "false")
+        @Schema(description = "liệu có nên Excel chuyển đổi thành HTML", example = "false")
         private Boolean html4excel;
 
-        @Schema(description = "自动生成关键词数量 (0 表示关闭)", example = "0")
+        @Schema(description = "Tự động tạo số lượng từ khóa (0 có nghĩa là đóng cửa)", example = "0")
         @JsonProperty("auto_keywords")
         private Integer autoKeywords;
 
-        @Schema(description = "自动生成问题数量 (0 表示关闭)", example = "0")
+        @Schema(description = "Tự động tạo số lượng câu hỏi (0 có nghĩa là đóng cửa)", example = "0")
         @JsonProperty("auto_questions")
         private Integer autoQuestions;
     }
 
-    // ========== 请求类 ==========
+    // ========== Yêu cầu lớp ===========
 
     /**
-     * 创建知识库请求 (映射接口 1: create)
+     * Tạo yêu cầu cơ sở kiến thức (giao diện ánh xạ 1: tạo)
      */
     @Data
     @NoArgsConstructor
     @AllArgsConstructor
     @Builder
-    @Schema(description = "创建知识库请求")
+    @Schema(description = "Tạo yêu cầu cơ sở kiến thức")
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static class CreateReq implements Serializable {
 
-        @NotBlank(message = "知识库名称不能为空")
-        @Schema(description = "知识库名称", requiredMode = Schema.RequiredMode.REQUIRED, example = "my_dataset")
+        @NotBlank(message = "Tên cơ sở kiến thức không được để trống")
+        @Schema(description = "Tên cơ sở kiến thức", requiredMode = Schema.RequiredMode.REQUIRED, example = "my_dataset")
         private String name;
 
-        @Schema(description = "知识库头像 (Base64 编码)", example = "")
+        @Schema(description = "Hình đại diện cơ sở kiến thức (Base64 mã hóa)", example = "")
         private String avatar;
 
-        @Schema(description = "知识库描述", example = "用于存储产品文档")
+        @Schema(description = "Mô tả cơ sở kiến thức", example = "Dùng để lưu trữ tài liệu sản phẩm")
         private String description;
 
-        @Schema(description = "嵌入模型名称", example = "BAAI/bge-large-zh-v1.5")
+        @Schema(description = "Nhúng tên mẫu", example = "BAAI/bge-large-zh-v1.5")
         @JsonProperty("embedding_model")
         private String embeddingModel;
 
-        @Schema(description = "权限设置: me / team", example = "me")
+        @Schema(description = "Cài đặt quyền: me / team", example = "me")
         private String permission;
 
-        @Schema(description = "分块方法: naive / manual / qa / table / paper / book / laws / presentation / picture / one / knowledge_graph / email", example = "naive")
+        @Schema(description = "Phương pháp chia nhỏ: naive / manual / qa / table / paper / book / laws / presentation / picture / one / knowledge_graph / email", example = "naive")
         @JsonProperty("chunk_method")
         private String chunkMethod;
 
-        @Schema(description = "解析器配置")
+        @Schema(description = "Cấu hình trình phân tích cú pháp")
         @JsonProperty("parser_config")
         private ParserConfig parserConfig;
     }
 
     /**
-     * 更新知识库请求 (映射接口 4: update)
+     * Yêu cầu cập nhật cơ sở tri thức (giao diện ánh xạ 4: cập nhật)
      */
     @Data
     @NoArgsConstructor
     @AllArgsConstructor
     @Builder
-    @Schema(description = "更新知识库请求")
+    @Schema(description = "Yêu cầu cập nhật cơ sở kiến thức")
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static class UpdateReq implements Serializable {
 
-        @Schema(description = "知识库名称", example = "updated_dataset")
+        @Schema(description = "Tên cơ sở kiến thức", example = "updated_dataset")
         private String name;
 
-        @Schema(description = "知识库头像 (Base64 编码)", example = "")
+        @Schema(description = "Hình đại diện cơ sở kiến thức (Base64 mã hóa)", example = "")
         private String avatar;
 
-        @Schema(description = "知识库描述", example = "更新后的描述")
+        @Schema(description = "Mô tả cơ sở kiến thức", example = "Đã cập nhật mô tả")
         private String description;
 
-        @Schema(description = "权限设置: me / team", example = "team")
+        @Schema(description = "Cài đặt quyền: me / team", example = "team")
         private String permission;
 
-        @Schema(description = "嵌入模型名称", example = "BAAI/bge-large-zh-v1.5")
+        @Schema(description = "Nhúng tên mẫu", example = "BAAI/bge-large-zh-v1.5")
         @JsonProperty("embedding_model")
         private String embeddingModel;
 
-        @Schema(description = "分块方法: naive / manual / qa / table / paper / book / laws / presentation / picture / one / knowledge_graph / email", example = "naive")
+        @Schema(description = "Phương pháp chia nhỏ: naive / manual / qa / table / paper / book / laws / presentation / picture / one / knowledge_graph / email", example = "naive")
         @JsonProperty("chunk_method")
         private String chunkMethod;
 
-        @Schema(description = "解析器配置")
+        @Schema(description = "Cấu hình trình phân tích cú pháp")
         @JsonProperty("parser_config")
         private ParserConfig parserConfig;
 
         @JsonInclude(JsonInclude.Include.NON_NULL)
-        @Schema(description = "PageRank 权重 (0-100)", example = "50")
+        @Schema(description = "PageRank trọng lượng (0-100)", example = "50")
         private Integer pagerank;
     }
 
     /**
-     * 查询知识库列表请求 (映射接口 3: list_datasets)
+     * Truy vấn yêu cầu danh sách cơ sở kiến thức (giao diện ánh xạ 3: list_datasets)
      */
     @Data
     @NoArgsConstructor
     @AllArgsConstructor
     @Builder
-    @Schema(description = "查询知识库列表请求")
+    @Schema(description = "Truy vấn Yêu cầu danh sách cơ sở kiến thức")
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static class ListReq implements Serializable {
 
-        @Schema(description = "页码 (从 1 开始)", example = "1")
+        @Schema(description = "Số trang (từ 1 bắt đầu)", example = "1")
         private Integer page;
 
-        @Schema(description = "每页数量", example = "30")
+        @Schema(description = "Số lượng mỗi trang", example = "30")
         @JsonProperty("page_size")
         private Integer pageSize;
 
-        @Schema(description = "排序字段: create_time / update_time", example = "create_time")
+        @Schema(description = "trường sắp xếp: create_time / update_time", example = "create_time")
         private String orderby;
 
-        @Schema(description = "是否降序", example = "true")
+        @Schema(description = "Có thứ tự giảm dần", example = "true")
         private Boolean desc;
 
-        @Schema(description = "按名称过滤 (模糊匹配)", example = "my_dataset")
+        @Schema(description = "Lọc theo tên (kết hợp mờ)", example = "my_dataset")
         private String name;
 
-        @Schema(description = "按知识库 ID 过滤", example = "abc123")
+        @Schema(description = "Theo cơ sở tri thức ID bộ lọc", example = "abc123")
         private String id;
     }
 
     /**
-     * 批量删除知识库请求 (映射接口 2: delete)
+     * Xóa hàng loạt yêu cầu cơ sở tri thức (giao diện ánh xạ 2: xóa)
      */
     @Data
     @NoArgsConstructor
     @AllArgsConstructor
     @Builder
-    @Schema(description = "批量删除知识库请求")
+    @Schema(description = "Xóa hàng loạt yêu cầu cơ sở kiến thức")
     public static class BatchIdReq implements Serializable {
 
-        @NotNull(message = "知识库 ID 列表不能为空")
-        @Size(min = 1, message = "至少需要一个知识库 ID")
-        @Schema(description = "知识库 ID 列表", requiredMode = Schema.RequiredMode.REQUIRED, example = "[\"id1\", \"id2\"]")
+        @NotNull(message = "cơ sở tri thức ID Danh sách không thể trống")
+        @Size(min = 1, message = "Cần có ít nhất một nền tảng kiến thức ID")
+        @Schema(description = "cơ sở tri thức ID danh sách", requiredMode = Schema.RequiredMode.REQUIRED, example = "[\"id1\", \"id2\"]")
         private List<String> ids;
     }
 
     /**
-     * 运行 GraphRAG 请求
+     * Chạy yêu cầu GraphRAG
      */
     @Data
     @NoArgsConstructor
     @AllArgsConstructor
     @Builder
-    @Schema(description = "运行 GraphRAG 请求")
+    @Schema(description = "chạy GraphRAG Yêu cầu")
     public static class RunGraphRagReq implements Serializable {
 
-        @Schema(description = "实体类型列表", example = "[\"person\", \"organization\"]")
+        @Schema(description = "Danh sách loại thực thể", example = "[\"person\", \"organization\"]")
         @JsonProperty("entity_types")
         private List<String> entityTypes;
 
-        @Schema(description = "构建方法: light / fast / full", example = "light")
+        @Schema(description = "Phương pháp xây dựng: light / fast / full", example = "light")
         private String method;
     }
 
     /**
-     * 运行 RAPTOR 请求
+     * Chạy yêu cầu RAPTOR
      */
     @Data
     @NoArgsConstructor
     @AllArgsConstructor
     @Builder
-    @Schema(description = "运行 RAPTOR 请求")
+    @Schema(description = "chạy RAPTOR Yêu cầu")
     public static class RunRaptorReq implements Serializable {
 
-        @Schema(description = "最大聚类数", example = "64")
+        @Schema(description = "Số lượng cụm tối đa", example = "64")
         @JsonProperty("max_cluster")
         private Integer maxCluster;
 
-        @Schema(description = "自定义提示词", example = "请总结以下内容...")
+        @Schema(description = "Từ nhắc nhở tùy chỉnh", example = "Xin tóm tắt như sau...")
         private String prompt;
     }
 
     /**
-     * 异步任务 ID 响应 VO (映射接口 7/8: run_graphrag/run_raptor)
+     * ID không đồng bộ phản hồi nhiệm vụ VO (giao diện ánh xạ 7/8: run_graphrag/run_raptor)
      */
     @Data
     @NoArgsConstructor
     @AllArgsConstructor
     @Builder
-    @Schema(description = "异步任务 ID 响应")
+    @Schema(description = "không đồng bộID nhiệm vụ phản ứng")
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static class TaskIdVO implements Serializable {
 
-        @Schema(description = "GraphRAG 任务 ID", example = "task_uuid_12345678")
+        @Schema(description = "GraphRAG ID nhiệm vụ", example = "task_uuid_12345678")
         @JsonProperty("graphrag_task_id")
         private String graphragTaskId;
 
-        @Schema(description = "RAPTOR 任务 ID", example = "task_uuid_87654321")
+        @Schema(description = "RAPTOR ID nhiệm vụ", example = "task_uuid_87654321")
         @JsonProperty("raptor_task_id")
         private String raptorTaskId;
     }
 
-    // ========== 响应类 ==========
+    // ========== Lớp phản hồi ===========
 
     /**
-     * 知识库详情 VO (映射接口 1/3 的返回数据项)
+     * Chi tiết cơ sở kiến thức VO (trả về các mục dữ liệu của 1/3 giao diện ánh xạ)
      */
     @Data
     @NoArgsConstructor
     @AllArgsConstructor
     @Builder
-    @Schema(description = "知识库详情 VO")
+    @Schema(description = "Chi tiết cơ sở kiến thức VO")
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static class InfoVO implements Serializable {
 
-        @Schema(description = "知识库 ID", example = "abc123")
+        @Schema(description = "cơ sở tri thức ID", example = "abc123")
         private String id;
 
-        @Schema(description = "知识库名称", example = "my_dataset")
+        @Schema(description = "Tên cơ sở kiến thức", example = "my_dataset")
         private String name;
 
-        @Schema(description = "知识库头像 (Base64 编码)", example = "")
+        @Schema(description = "Hình đại diện cơ sở kiến thức (Base64 mã hóa)", example = "")
         private String avatar;
 
-        @Schema(description = "租户 ID", example = "tenant_001")
+        @Schema(description = "người thuê nhà ID", example = "tenant_001")
         @JsonProperty("tenant_id")
         private String tenantId;
 
-        @Schema(description = "知识库描述", example = "用于存储产品文档")
+        @Schema(description = "Mô tả cơ sở kiến thức", example = "Dùng để lưu trữ tài liệu sản phẩm")
         private String description;
 
-        @Schema(description = "嵌入模型名称", example = "BAAI/bge-large-zh-v1.5")
+        @Schema(description = "Nhúng tên mẫu", example = "BAAI/bge-large-zh-v1.5")
         @JsonProperty("embedding_model")
         private String embeddingModel;
 
-        @Schema(description = "权限设置: me / team", example = "me")
+        @Schema(description = "Cài đặt quyền: me / team", example = "me")
         private String permission;
 
-        @Schema(description = "分块方法", example = "naive")
+        @Schema(description = "Phương pháp chia nhỏ", example = "naive")
         @JsonProperty("chunk_method")
         private String chunkMethod;
 
-        @Schema(description = "解析器配置")
+        @Schema(description = "Cấu hình trình phân tích cú pháp")
         @JsonProperty("parser_config")
         private ParserConfig parserConfig;
 
-        @Schema(description = "分块总数", example = "1024")
+        @Schema(description = "Tổng số khối", example = "1024")
         @JsonProperty("chunk_count")
         private Long chunkCount;
 
-        @Schema(description = "文档总数", example = "50")
+        @Schema(description = "Tổng số tài liệu", example = "50")
         @JsonProperty("document_count")
         private Long documentCount;
 
-        @Schema(description = "创建时间 (时间戳)", example = "1700000000000")
+        @Schema(description = "Thời gian tạo (timestamp)", example = "1700000000000")
         @JsonProperty("create_time")
         private Long createTime;
 
-        @Schema(description = "更新时间 (时间戳)", example = "1700000001000")
+        @Schema(description = "Thời gian cập nhật (timestamp)", example = "1700000001000")
         @JsonProperty("update_time")
         private Long updateTime;
 
-        @Schema(description = "总 Token 数", example = "102400")
+        @Schema(description = "tổng cộng Token con số", example = "102400")
         @JsonProperty("token_num")
         private Long tokenNum;
 
-        @Schema(description = "创建日期 (格式: yyyy-MM-dd HH:mm:ss)")
+        @Schema(description = "Ngày tạo (định dạng: yyyy-MM-dd HH:mm:ss)")
         @JsonProperty("create_date")
         private String createDate;
 
-        @Schema(description = "最后更新日期 (格式: yyyy-MM-dd HH:mm:ss)")
+        @Schema(description = "ngày cập nhật lần cuối (định dạng: yyyy-MM-dd HH:mm:ss)")
         @JsonProperty("update_date")
         private String updateDate;
     }
 
     /**
-     * 批量操作响应 VO
+     * VO phản hồi thao tác hàng loạt
      */
     @Data
     @NoArgsConstructor
     @AllArgsConstructor
     @Builder
-    @Schema(description = "批量操作响应 VO")
+    @Schema(description = "VO phản hồi thao tác hàng loạt")
     public static class BatchOperationVO implements Serializable {
 
-        @Schema(description = "成功操作数量", example = "5")
+        @Schema(description = "Số lượng thao tác thành công", example = "5")
         @JsonProperty("success_count")
         private Integer successCount;
 
-        @Schema(description = "错误列表")
+        @Schema(description = "Danh sách lỗi")
         private List<Object> errors;
     }
 
-    // ========== 知识图谱相关 ==========
+    // ========== Liên quan đến Đồ thị tri thức ==========
 
     /**
-     * 知识图谱数据 VO (映射接口 5: knowledge_graph)
+     * VO dữ liệu Đồ thị tri thức (ánh xạ giao diện 5: knowledge_graph)
      */
     @Data
     @NoArgsConstructor
     @AllArgsConstructor
     @Builder
-    @Schema(description = "知识图谱数据 VO")
+    @Schema(description = "Dữ liệu biểu đồ tri thức VO")
     public static class GraphVO implements Serializable {
 
-        @Schema(description = "图谱节点列表")
+        @Schema(description = "Danh sách nút đồ thị")
         private List<Node> nodes;
 
-        @Schema(description = "图谱边列表")
+        @Schema(description = "Danh sách cạnh đồ thị")
         private List<Edge> edges;
 
-        @Schema(description = "思维导图数据")
+        @Schema(description = "Dữ liệu sơ đồ tư duy")
         @JsonProperty("mind_map")
         private Map<String, Object> mindMap;
 
         /**
-         * 图谱节点
+         * Nút đồ thị
          */
         @Data
         @NoArgsConstructor
         @AllArgsConstructor
         @Builder
-        @Schema(description = "图谱节点")
+        @Schema(description = "Nút đồ thị")
         @JsonIgnoreProperties(ignoreUnknown = true)
         public static class Node implements Serializable {
 
-            @Schema(description = "节点 ID", example = "node_001")
+            @Schema(description = "ID nút", example = "node_001")
             private String id;
 
-            @Schema(description = "节点标签", example = "产品")
+            @Schema(description = "Nhãn nút", example = "Sản phẩm")
             private String label;
 
-            @Schema(description = "PageRank 值", example = "0.85")
+            @Schema(description = "Giá trị PageRank", example = "0.85")
             private Double pagerank;
 
-            @Schema(description = "节点颜色", example = "#FF5733")
+            @Schema(description = "Màu sắc nút", example = "#FF5733")
             private String color;
 
-            @Schema(description = "节点图片 URL", example = "https://example.com/icon.png")
+            @Schema(description = "URL hình ảnh nút", example = "https://example.com/icon.png")
             private String img;
         }
 
         /**
-         * 图谱边
+         * Cạnh đồ thị
          */
         @Data
         @NoArgsConstructor
         @AllArgsConstructor
         @Builder
-        @Schema(description = "图谱边")
+        @Schema(description = "Cạnh đồ thị")
         @JsonIgnoreProperties(ignoreUnknown = true)
         public static class Edge implements Serializable {
 
-            @Schema(description = "源节点 ID", example = "node_001")
+            @Schema(description = "nguồnID nút", example = "node_001")
             private String source;
 
-            @Schema(description = "目标节点 ID", example = "node_002")
+            @Schema(description = "mục tiêuID nút", example = "node_002")
             private String target;
 
-            @Schema(description = "边权重", example = "0.75")
+            @Schema(description = "Trọng số cạnh", example = "0.75")
             private Double weight;
 
-            @Schema(description = "边标签 (关系描述)", example = "属于")
+            @Schema(description = "Nhãn cạnh (mô tả quan hệ)", example = "Thuộc về")
             private String label;
         }
     }
 
-    // ========== 异步任务追踪 (GraphRAG/RAPTOR) ==========
+    // ========== Theo dõi nhiệm vụ bất đồng bộ (GraphRAG/RAPTOR) ==========
 
     /**
-     * 异步任务追踪 VO (映射接口 9/10: 任务进度返回)
+     * VO theo dõi nhiệm vụ bất đồng bộ (ánh xạ giao diện 9/10: trả về tiến độ nhiệm vụ)
      */
     @Data
     @NoArgsConstructor
     @AllArgsConstructor
     @Builder
-    @Schema(description = "异步任务追踪 VO")
+    @Schema(description = "Theo dõi tác vụ không đồng bộ VO")
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static class TaskTraceVO implements Serializable {
 
-        @Schema(description = "任务 ID", example = "task_001")
+        @Schema(description = "ID nhiệm vụ", example = "task_001")
         private String id;
 
-        @Schema(description = "文档 ID", example = "doc_001")
+        @Schema(description = "ID tài liệu", example = "doc_001")
         @JsonProperty("doc_id")
         private String docId;
 
-        @Schema(description = "起始页码", example = "1")
+        @Schema(description = "Số trang bắt đầu", example = "1")
         @JsonProperty("from_page")
         private Integer fromPage;
 
-        @Schema(description = "结束页码", example = "10")
+        @Schema(description = "Số trang kết thúc", example = "10")
         @JsonProperty("to_page")
         private Integer toPage;
 
-        @Schema(description = "进度百分比 (0.0 - 1.0)", example = "0.75")
+        @Schema(description = "Phần trăm tiến độ (0.0 - 1.0)", example = "0.75")
         private Double progress;
 
-        @Schema(description = "进度消息", example = "正在处理第 5 页...")
+        @Schema(description = "Thông báo tiến độ", example = "Đang xử lý 5 trang...")
         @JsonProperty("progress_msg")
         private String progressMsg;
 
-        @Schema(description = "创建时间 (时间戳)", example = "1700000000000")
+        @Schema(description = "Thời gian tạo (timestamp)", example = "1700000000000")
         @JsonProperty("create_time")
         private Long createTime;
 
-        @Schema(description = "更新时间 (时间戳)", example = "1700000001000")
+        @Schema(description = "Thời gian cập nhật (timestamp)", example = "1700000001000")
         @JsonProperty("update_time")
         private Long updateTime;
     }

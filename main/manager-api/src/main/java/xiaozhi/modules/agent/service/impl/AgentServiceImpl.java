@@ -100,33 +100,33 @@ public class AgentServiceImpl extends BaseServiceImpl<AgentDao, AgentEntity> imp
             agent.setChatHistoryConf(Constant.ChatHistoryConfEnum.RECORD_TEXT_AUDIO.getCode());
         }
 
-        // 查询上下文源配置
+        // Cấu hình nguồn ngữ cảnh truy vấn
         AgentContextProviderEntity contextProviderEntity = agentContextProviderService.getByAgentId(id);
         if (contextProviderEntity != null) {
             agent.setContextProviders(contextProviderEntity.getContextProviders());
         }
 
-        // 查询替换词文件ID列表
+        // Truy vấn danh sách ID file word thay thế
         List<String> correctWordFileIds = correctWordFileService.getAgentCorrectWordFileIds(id);
         agent.setCorrectWordFileIds(correctWordFileIds);
 
-        // 无需额外查询插件列表，已通过SQL查询出来
+        // Không cần truy vấn thêm danh sách plug-in, nó đã được truy vấn thông qua SQL
         return agent;
     }
 
     @Override
     public boolean insert(AgentEntity entity) {
-        // 如果ID为空，自动生成一个UUID作为ID
+        // Nếu ID trống, UUID sẽ tự động được tạo làm ID.
         if (entity.getId() == null || entity.getId().trim().isEmpty()) {
             entity.setId(UUID.randomUUID().toString().replace("-", ""));
         }
 
-        // 如果智能体编码为空，自动生成一个带前缀的编码
+        // Nếu mã đại lý trống, mã tiền tố sẽ tự động được tạo.
         if (entity.getAgentCode() == null || entity.getAgentCode().trim().isEmpty()) {
             entity.setAgentCode("AGT_" + System.currentTimeMillis());
         }
 
-        // 如果排序字段为空，设置默认值0
+        // Nếu trường sắp xếp trống, hãy đặt giá trị mặc định thành 0
         if (entity.getSort() == null) {
             entity.setSort(0);
         }
@@ -148,10 +148,10 @@ public class AgentServiceImpl extends BaseServiceImpl<AgentDao, AgentEntity> imp
 
         if (StringUtils.isNotBlank(keyword)) {
             queryWrapper.and(w -> {
-                // 按名称搜索
+                // Tìm kiếm theo tên
                 w.like("agent_name", keyword);
 
-                // 按MAC地址搜索：先查设备，再获取对应的智能体ID
+                // Tìm kiếm theo địa chỉ MAC: Kiểm tra thiết bị trước, sau đó lấy ID đại lý tương ứng
                 List<DeviceEntity> devices = Optional
                         .ofNullable(deviceService.searchDevicesByMacAddress(keyword, userId))
                         .orElseGet(ArrayList::new);
@@ -163,7 +163,7 @@ public class AgentServiceImpl extends BaseServiceImpl<AgentDao, AgentEntity> imp
                     w.or().in("id", agentIds);
                 }
 
-                // 按标签名搜索
+                // Tìm kiếm theo tên thẻ
                 List<String> tagAgentIds = agentTagService.getAgentIdsByTagName(keyword);
                 if (ToolUtil.isNotEmpty(tagAgentIds)) {
                     w.or().in("id", tagAgentIds);
@@ -176,7 +176,7 @@ public class AgentServiceImpl extends BaseServiceImpl<AgentDao, AgentEntity> imp
     }
 
     /**
-     * 将AgentEntity转换为AgentDTO
+     * Chuyển đổi AgentEntity thành AgentDTO
      */
     private AgentDTO buildAgentDTO(AgentEntity agent) {
         AgentDTO dto = new AgentDTO();
@@ -184,28 +184,28 @@ public class AgentServiceImpl extends BaseServiceImpl<AgentDao, AgentEntity> imp
         dto.setAgentName(agent.getAgentName());
         dto.setSystemPrompt(agent.getSystemPrompt());
 
-        // 获取 TTS 模型名称
+        // Nhận tên mẫu TTS
         dto.setTtsModelName(modelConfigService.getModelNameById(agent.getTtsModelId()));
 
-        // 获取 LLM 模型名称
+        // Nhận tên mô hình LLM
         dto.setLlmModelName(modelConfigService.getModelNameById(agent.getLlmModelId()));
 
-        // 获取 VLLM 模型名称
+        // Nhận tên mô hình VLLM
         dto.setVllmModelName(modelConfigService.getModelNameById(agent.getVllmModelId()));
 
-        // 获取记忆模型名称
+        // Lấy tên model bộ nhớ
         dto.setMemModelId(agent.getMemModelId());
 
-        // 获取 TTS 音色名称
+        // Nhận tên âm thanh TTS
         dto.setTtsVoiceName(timbreModelService.getTimbreNameById(agent.getTtsVoiceId()));
 
-        // 获取智能体最近的最后连接时长
+        // Nhận thời lượng kết nối cuối cùng của đại lý
         dto.setLastConnectedAt(deviceService.getLatestLastConnectionTime(agent.getId()));
 
-        // 获取设备数量
+        // Lấy số lượng thiết bị
         dto.setDeviceCount(getDeviceCountByAgentId(agent.getId()));
 
-        // 获取标签列表
+        // Nhận danh sách thẻ
         List<AgentTagEntity> tags = agentTagDao.selectByAgentId(agent.getId());
         if (ToolUtil.isNotEmpty(tags)) {
             dto.setTags(tags.stream().map(this::convertTagToDTO).collect(Collectors.toList()));
@@ -227,16 +227,16 @@ public class AgentServiceImpl extends BaseServiceImpl<AgentDao, AgentEntity> imp
             return 0;
         }
 
-        // 先从Redis中获取
+        // Nhận nó từ Redis trước
         Integer cachedCount = (Integer) redisUtils.get(RedisKeys.getAgentDeviceCountById(agentId));
         if (cachedCount != null) {
             return cachedCount;
         }
 
-        // 如果Redis中没有，则从数据库查询
+        // Nếu không có trong Redis, hãy truy vấn từ cơ sở dữ liệu
         Integer deviceCount = agentDao.getDeviceCountByAgentId(agentId);
 
-        // 将结果存入Redis
+        // Lưu trữ kết quả trong Redis
         if (deviceCount != null) {
             redisUtils.set(RedisKeys.getAgentDeviceCountById(agentId), deviceCount, 60);
         }
@@ -257,32 +257,32 @@ public class AgentServiceImpl extends BaseServiceImpl<AgentDao, AgentEntity> imp
         if (SecurityUser.getUser() == null || SecurityUser.getUser().getId() == null) {
             return false;
         }
-        // 获取智能体信息
+        // Nhận thông tin đại lý
         AgentEntity agent = getAgentById(agentId);
         if (agent == null) {
             return false;
         }
 
-        // 如果是超级管理员，直接返回true
+        // Nếu bạn là quản trị viên cấp cao, hãy trực tiếp trả về true.
         if (SecurityUser.getUser().getSuperAdmin() == SuperAdminEnum.YES.value()) {
             return true;
         }
 
-        // 检查是否是智能体的所有者
+        // Kiểm tra xem đại lý có phải là chủ sở hữu không
         return userId.equals(agent.getUserId());
     }
 
-    // 根据id更新智能体信息
+    // Cập nhật thông tin đại lý dựa trên id
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void updateAgentById(String agentId, AgentUpdateDTO dto) {
-        // 先查询现有实体
+        // Trước tiên hãy truy vấn các thực thể hiện có
         AgentEntity existingEntity = this.getAgentById(agentId);
         if (existingEntity == null) {
             throw new RenException(ErrorCode.AGENT_NOT_FOUND);
         }
 
-        // 只更新提供的非空字段
+        // Chỉ cập nhật các trường không rỗng được cung cấp
         if (dto.getAgentName() != null) {
             existingEntity.setAgentName(dto.getAgentName());
         }
@@ -347,22 +347,22 @@ public class AgentServiceImpl extends BaseServiceImpl<AgentDao, AgentEntity> imp
             existingEntity.setSort(dto.getSort());
         }
 
-        // 更新函数插件信息
+        // Cập nhật thông tin plug-in chức năng
         List<AgentUpdateDTO.FunctionInfo> functions = dto.getFunctions();
         if (functions != null) {
-            // 1. 收集本次提交的 pluginId
+            // 1. Thu thập pluginId của bài gửi này
             List<String> newPluginIds = functions.stream()
                     .map(AgentUpdateDTO.FunctionInfo::getPluginId)
                     .toList();
 
-            // 2. 查询当前agent现有的所有映射
+            // 2. Truy vấn tất cả các ánh xạ hiện có của tác nhân hiện tại
             List<AgentPluginMapping> existing = agentPluginMappingService.list(
                     new QueryWrapper<AgentPluginMapping>()
                             .eq("agent_id", agentId));
             Map<String, AgentPluginMapping> existMap = existing.stream()
                     .collect(Collectors.toMap(AgentPluginMapping::getPluginId, Function.identity()));
 
-            // 3. 构造所有要 保存或更新 的实体
+            // 3. Xây dựng tất cả các thực thể cần lưu hoặc cập nhật
             List<AgentPluginMapping> allToPersist = functions.stream().map(info -> {
                 AgentPluginMapping m = new AgentPluginMapping();
                 m.setAgentId(agentId);
@@ -370,13 +370,13 @@ public class AgentServiceImpl extends BaseServiceImpl<AgentDao, AgentEntity> imp
                 m.setParamInfo(JsonUtils.toJsonString(info.getParamInfo()));
                 AgentPluginMapping old = existMap.get(info.getPluginId());
                 if (old != null) {
-                    // 已存在，设置id表示更新
+                    // Đã tồn tại, đặt id để cho biết cập nhật
                     m.setId(old.getId());
                 }
                 return m;
             }).toList();
 
-            // 4. 拆分：已有ID的走更新，无ID的走插入
+            // 4. Tách: cập nhật nếu có ID, chèn nếu không có ID
             List<AgentPluginMapping> toUpdate = allToPersist.stream()
                     .filter(m -> m.getId() != null)
                     .toList();
@@ -391,7 +391,7 @@ public class AgentServiceImpl extends BaseServiceImpl<AgentDao, AgentEntity> imp
                 agentPluginMappingService.saveBatch(toInsert);
             }
 
-            // 5. 删除本次不在提交列表里的插件映射
+            // 5. Xóa các ánh xạ plug-in không có trong danh sách gửi lần này
             List<Long> toDelete = existing.stream()
                     .filter(old -> !newPluginIds.contains(old.getPluginId()))
                     .map(AgentPluginMapping::getId)
@@ -401,23 +401,23 @@ public class AgentServiceImpl extends BaseServiceImpl<AgentDao, AgentEntity> imp
             }
         }
 
-        // 设置更新者信息
+        // Đặt thông tin cập nhật
         UserDetail user = SecurityUser.getUser();
         existingEntity.setUpdater(user.getId());
         existingEntity.setUpdatedAt(new Date());
 
-        // 更新记忆策略
-        // 删除所有记录
+        // Cập nhật chiến lược bộ nhớ
+        // Xóa tất cả hồ sơ
         if (existingEntity.getMemModelId() != null && existingEntity.getMemModelId().equals(Constant.MEMORY_NO_MEM)) {
             agentChatHistoryService.deleteByAgentId(existingEntity.getId(), true, true);
             existingEntity.setSummaryMemory("");
-            // 删除记忆
+            // xóa bộ nhớ
         } else if (existingEntity.getMemModelId() != null
                 && existingEntity.getMemModelId().equals(Constant.MEMORY_MEM_REPORT_ONLY)) {
             existingEntity.setSummaryMemory("");
         }
 
-        // 更新上下文源配置
+        // Cập nhật cấu hình nguồn ngữ cảnh
         if (dto.getContextProviders() != null) {
             AgentContextProviderEntity contextEntity = new AgentContextProviderEntity();
             contextEntity.setAgentId(agentId);
@@ -425,7 +425,7 @@ public class AgentServiceImpl extends BaseServiceImpl<AgentDao, AgentEntity> imp
             agentContextProviderService.saveOrUpdateByAgentId(contextEntity);
         }
 
-        // 更新替换词文件关联
+        // Cập nhật liên kết tệp từ thay thế
         if (dto.getCorrectWordFileIds() != null) {
             correctWordFileService.saveAgentCorrectWords(agentId, dto.getCorrectWordFileIds());
         }
@@ -438,11 +438,11 @@ public class AgentServiceImpl extends BaseServiceImpl<AgentDao, AgentEntity> imp
     }
 
     /**
-     * 验证大语言模型和意图识别的参数是否符合匹配
-     * 
-     * @param llmModelId    大语言模型id
-     * @param intentModelId 意图识别id
-     * @return T 匹配 : F 不匹配
+     * Xác minh xem các tham số của mô hình ngôn ngữ lớn và nhận dạng ý định có khớp với nhau không
+     *
+     * @param llmModelId id mô hình ngôn ngữ lớn
+     * @paramintModelId id nhận dạng ý định
+     * @return T khớp: F không khớp
      */
     private boolean validateLLMIntentParams(String llmModelId, String intentModelId) {
         if (StringUtils.isBlank(llmModelId)) {
@@ -450,24 +450,24 @@ public class AgentServiceImpl extends BaseServiceImpl<AgentDao, AgentEntity> imp
         }
         ModelConfigEntity llmModelData = modelConfigService.selectById(llmModelId);
         String type = llmModelData.getConfigJson().get("type").toString();
-        // 如果查询大语言模型是openai或者ollama，意图识别选参数都可以
+        // Nếu mô hình ngôn ngữ lớn truy vấn là openai hoặc ollama, thì có thể chọn tham số nhận dạng ý định.
         if ("openai".equals(type) || "ollama".equals(type)) {
             return true;
         }
-        // 除了openai和ollama的类型，不可以选择id为Intent_function_call（函数调用）的意图识别
+        // Ngoài các loại openai và ollama, không thể chọn nhận dạng ý định bằng id Intent_function_call (gọi hàm).
         return !"Intent_function_call".equals(intentModelId);
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
     public String createAgent(AgentCreateDTO dto) {
-        // 转换为实体
+        // Chuyển đổi thành thực thể
         AgentEntity entity = ConvertUtils.sourceToTarget(dto, AgentEntity.class);
 
-        // 获取默认模板
+        // Nhận mẫu mặc định
         AgentTemplateEntity template = agentTemplateService.getDefaultTemplate();
         if (template != null) {
-            // 设置模板中的默认值
+            // Đặt giá trị mặc định trong mẫu
             entity.setAsrModelId(template.getAsrModelId());
             entity.setVadModelId(template.getVadModelId());
             entity.setLlmModelId(template.getLlmModelId());
@@ -495,13 +495,13 @@ public class AgentServiceImpl extends BaseServiceImpl<AgentDao, AgentEntity> imp
             entity.setSystemPrompt(template.getSystemPrompt());
             entity.setSummaryMemory(template.getSummaryMemory());
 
-            // 根据记忆模型类型设置默认的chatHistoryConf值
+            // Đặt giá trị chatHistoryConf mặc định dựa trên loại mô hình bộ nhớ
             if (template.getMemModelId() != null) {
                 if (template.getMemModelId().equals("Memory_nomem")) {
-                    // 无记忆功能的模型，默认不记录聊天记录
+                    // Model không có chức năng bộ nhớ, lịch sử trò chuyện không được ghi lại theo mặc định
                     entity.setChatHistoryConf(0);
                 } else {
-                    // 有记忆功能的模型，默认记录文本和语音
+                    // Model có chức năng bộ nhớ mặc định ghi lại văn bản và giọng nói
                     entity.setChatHistoryConf(2);
                 }
             } else {
@@ -519,18 +519,18 @@ public class AgentServiceImpl extends BaseServiceImpl<AgentDao, AgentEntity> imp
             }
         }
 
-        // 设置用户ID和创建者信息
+        // Đặt ID người dùng và thông tin người tạo
         UserDetail user = SecurityUser.getUser();
         entity.setUserId(user.getId());
         entity.setCreator(user.getId());
         entity.setCreatedAt(new Date());
 
-        // 保存智能体
+        // Lưu đại lý
         insert(entity);
 
-        // 设置默认插件
+        // Đặt plugin mặc định
         List<AgentPluginMapping> toInsert = new ArrayList<>();
-        // 播放音乐、查天气、查新闻
+        // Chơi nhạc, kiểm tra thời tiết, kiểm tra tin tức
         String[] pluginIds = new String[] { "SYSTEM_PLUGIN_MUSIC", "SYSTEM_PLUGIN_WEATHER",
                 "SYSTEM_PLUGIN_NEWS_NEWSNOW" };
         for (String pluginId : pluginIds) {
@@ -552,7 +552,7 @@ public class AgentServiceImpl extends BaseServiceImpl<AgentDao, AgentEntity> imp
             mapping.setAgentId(entity.getId());
             toInsert.add(mapping);
         }
-        // 保存默认插件
+        // Lưu plugin mặc định
         agentPluginMappingService.saveBatch(toInsert);
         return entity.getId();
     }

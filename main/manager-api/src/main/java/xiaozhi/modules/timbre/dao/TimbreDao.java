@@ -7,8 +7,8 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import xiaozhi.modules.timbre.entity.TimbreEntity;
 
 /**
- * 音色持久层定义
- * 
+ * Định nghĩa lớp kiên trì âm sắc
+ *
  * @author zjy
  * @since 2025-3-21
  */

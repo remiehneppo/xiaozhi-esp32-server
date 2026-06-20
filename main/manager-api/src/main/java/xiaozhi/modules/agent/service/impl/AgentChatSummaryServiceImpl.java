@@ -32,8 +32,8 @@ import xiaozhi.modules.model.entity.ModelConfigEntity;
 import xiaozhi.modules.model.service.ModelConfigService;
 
 /**
- * 智能体聊天记录总结服务实现类
- * 实现Python端mem_local_short.py中的总结逻辑
+ * Lớp triển khai dịch vụ tóm tắt bản ghi cuộc trò chuyện của tổng đài viên
+ * Triển khai logic tóm tắt trong mem_local_short.py ở phía Python
  */
 @Service
 @RequiredArgsConstructor
@@ -48,45 +48,45 @@ public class AgentChatSummaryServiceImpl implements AgentChatSummaryService {
     private final LLMService llmService;
     private final ModelConfigService modelConfigService;
 
-    // 总结规则常量
-    private static final int MAX_SUMMARY_LENGTH = 1800; // 最大总结长度
+    // Hằng số quy tắc tóm tắt
+    private static final int MAX_SUMMARY_LENGTH = 1800; // Độ dài tóm tắt tối đa
     private static final Pattern JSON_PATTERN = Pattern.compile("\\{.*?\\}", Pattern.DOTALL);
-    private static final Pattern DEVICE_CONTROL_PATTERN = Pattern.compile("设备控制|设备操作|控制设备|设备状态",
+    private static final Pattern DEVICE_CONTROL_PATTERN = Pattern.compile("Kiểm soát thiết bị|Vận hành thiết bị|thiết bị điều khiển|Trạng thái thiết bị",
             Pattern.CASE_INSENSITIVE);
-    private static final Pattern WEATHER_PATTERN = Pattern.compile("天气|温度|湿度|降雨|气象", Pattern.CASE_INSENSITIVE);
-    private static final Pattern DATE_PATTERN = Pattern.compile("日期|时间|星期|月份|年份", Pattern.CASE_INSENSITIVE);
+    private static final Pattern WEATHER_PATTERN = Pattern.compile("thời tiết|nhiệt độ|Độ ẩm|lượng mưa|Khí tượng học", Pattern.CASE_INSENSITIVE);
+    private static final Pattern DATE_PATTERN = Pattern.compile("Ngày|thời gian|tuần|tháng|Năm", Pattern.CASE_INSENSITIVE);
 
     private AgentChatSummaryDTO generateChatSummary(String sessionId) {
         try {
-            System.out.println("开始生成会话 " + sessionId + " 的聊天记录总结");
+            System.out.println("Bắt đầu tạo phiên " + sessionId + " Tóm tắt lịch sử trò chuyện");
 
-            // 1. 根据sessionId获取聊天记录
+            // 1. Nhận bản ghi trò chuyện dựa trên sessionId
             List<AgentChatHistoryDTO> chatHistory = getChatHistoryBySessionId(sessionId);
             if (chatHistory == null || chatHistory.isEmpty()) {
-                return new AgentChatSummaryDTO(sessionId, "未找到该会话的聊天记录");
+                return new AgentChatSummaryDTO(sessionId, "Không tìm thấy lịch sử trò chuyện cho cuộc trò chuyện này");
             }
 
-            // 2. 获取智能体信息
+            // 2. Lấy thông tin đại lý
             String agentId = getAgentIdFromSession(sessionId, chatHistory);
             if (StringUtils.isBlank(agentId)) {
-                return new AgentChatSummaryDTO(sessionId, "无法获取智能体信息");
+                return new AgentChatSummaryDTO(sessionId, "Không thể lấy được thông tin đại lý");
             }
 
-            // 3. 提取关键对话内容
+            // 3. Trích xuất nội dung hội thoại chính
             List<String> meaningfulMessages = extractMeaningfulMessages(chatHistory);
             if (meaningfulMessages.isEmpty()) {
-                return new AgentChatSummaryDTO(sessionId, "没有有效的对话内容可总结");
+                return new AgentChatSummaryDTO(sessionId, "Không có nội dung hội thoại hợp lệ để tóm tắt");
             }
 
-            // 4. 生成总结（generateSummaryFromMessages方法已包含长度限制逻辑）
+            // 4. Tạo bản tóm tắt (phương thức generateSummaryFromMessages đã chứa logic giới hạn độ dài)
             String summary = generateSummaryFromMessages(meaningfulMessages, agentId);
 
-            log.info("成功生成会话 {} 的聊天记录总结，长度: {} 字符", sessionId, summary.length());
+            log.info("Phiên được tạo thành công {} Tóm tắt lịch sử trò chuyện，chiều dài: {} nhân vật", sessionId, summary.length());
             return new AgentChatSummaryDTO(sessionId, agentId, summary);
 
         } catch (Exception e) {
-            log.error("生成会话 {} 的聊天记录总结时发生错误: {}", sessionId, e.getMessage());
-            return new AgentChatSummaryDTO(sessionId, "生成总结时发生错误: " + e.getMessage());
+            log.error("Tạo phiên {} Đã xảy ra lỗi khi tóm tắt lịch sử trò chuyện của: {}", sessionId, e.getMessage());
+            return new AgentChatSummaryDTO(sessionId, "Đã xảy ra lỗi khi tạo bản tóm tắt: " + e.getMessage());
         }
     }
 
@@ -95,7 +95,7 @@ public class AgentChatSummaryServiceImpl implements AgentChatSummaryService {
         try {
             DeviceEntity device = getDeviceBySessionId(sessionId);
             if (device == null) {
-                log.info("未找到与会话 {} 关联的设备", sessionId);
+                log.info("không tìm thấy phiên {} Thiết bị liên kết", sessionId);
                 return false;
             }
 
@@ -103,7 +103,7 @@ public class AgentChatSummaryServiceImpl implements AgentChatSummaryService {
             String memModelId = agentService.getAgentById(agentId).getMemModelId();
 
             if (memModelId == null || memModelId.equals(Constant.MEMORY_MEM_REPORT_ONLY)) {
-                log.info("会话 {} 使用仅上报聊天记录模式，跳过记忆总结", sessionId);
+                log.info("phiên {} Sử dụng chế độ lịch sử trò chuyện chỉ báo cáo，Bỏ qua tóm tắt bộ nhớ", sessionId);
                 return true;
             }
 
@@ -119,18 +119,18 @@ public class AgentChatSummaryServiceImpl implements AgentChatSummaryService {
                             setSummaryMemory(summaryDTO.getSummary());
                         }
                     });
-                    log.info("成功保存会话 {} 的聊天记录总结到智能体 {}", sessionId, agentId);
+                    log.info("Đã lưu phiên thành công {} Các bản ghi trò chuyện được tóm tắt cho đại lý {}", sessionId, agentId);
                 } else {
-                    log.info("生成总结失败: {}", summaryDTO.getErrorMessage());
+                    log.info("Không tạo được bản tóm tắt: {}", summaryDTO.getErrorMessage());
                 }
             } else {
-                log.info("会话 {} 使用 {} 模式，跳过记忆总结", sessionId, memModelId);
+                log.info("phiên {} sử dụng {} chế độ，Bỏ qua tóm tắt bộ nhớ", sessionId, memModelId);
             }
 
             return true;
 
         } catch (Exception e) {
-            log.error("保存会话 {} 的聊天记录总结时发生错误: {}", sessionId, e.getMessage());
+            log.error("lưu phiên {} Đã xảy ra lỗi khi tóm tắt lịch sử trò chuyện của: {}", sessionId, e.getMessage());
             return false;
         }
     }
@@ -138,10 +138,10 @@ public class AgentChatSummaryServiceImpl implements AgentChatSummaryService {
     @Override
     public boolean generateAndSaveChatTitle(String sessionId) {
         try {
-            // 自动获取agentId
+            // Tự động lấy AgentId
             String agentId = findAgentIdBySessionId(sessionId);
             if (StringUtils.isBlank(agentId)) {
-                log.warn("会话 {} 无法获取智能体信息，跳过标题生成", sessionId);
+                log.warn("phiên {} Không thể lấy được thông tin đại lý，Bỏ qua việc tạo tiêu đề", sessionId);
                 return false;
             }
 
@@ -157,7 +157,7 @@ public class AgentChatSummaryServiceImpl implements AgentChatSummaryService {
 
             StringBuilder conversation = new StringBuilder();
             for (int i = 0; i < meaningfulMessages.size(); i++) {
-                conversation.append("消息").append(i + 1).append(": ").append(meaningfulMessages.get(i)).append("\n");
+                conversation.append("tin tức").append(i + 1).append(": ").append(meaningfulMessages.get(i)).append("\n");
             }
 
             String slmModelId = getSlmModelId(agentId);
@@ -165,12 +165,12 @@ public class AgentChatSummaryServiceImpl implements AgentChatSummaryService {
 
             if (StringUtils.isNotBlank(title)) {
                 agentChatTitleService.saveOrUpdateTitle(sessionId, title);
-                log.info("成功保存会话 {} 的标题: {}", sessionId, title);
+                log.info("Đã lưu phiên thành công {} tiêu đề: {}", sessionId, title);
                 return true;
             }
             return false;
         } catch (Exception e) {
-            log.error("生成会话 {} 的标题时发生错误: {}", sessionId, e.getMessage());
+            log.error("Tạo phiên {} Đã xảy ra lỗi với tiêu đề: {}", sessionId, e.getMessage());
             return false;
         }
     }
@@ -188,21 +188,21 @@ public class AgentChatSummaryServiceImpl implements AgentChatSummaryService {
 
             String slmModelId = agentInfo.getSlmModelId();
             if (StringUtils.isNotBlank(slmModelId)) {
-                log.info("会话 {} 使用SLM模型: {}", agentId, slmModelId);
+                log.info("phiên {} sử dụngSLMngười mẫu: {}", agentId, slmModelId);
                 return slmModelId;
             }
 
             ModelConfigEntity defaultLlmConfig = getDefaultLLMConfig();
             if (defaultLlmConfig != null) {
-                log.info("会话 {} 使用默认LLM模型: {}", agentId, defaultLlmConfig.getId());
+                log.info("phiên {} Sử dụng mặc địnhLLMngười mẫu: {}", agentId, defaultLlmConfig.getId());
                 return defaultLlmConfig.getId();
             }
 
             String llmModelId = agentInfo.getLlmModelId();
-            log.info("会话 {} 使用LLM模型(最终回退): {}", agentId, llmModelId);
+            log.info("phiên {} sử dụngLLMngười mẫu(quay lại cuối cùng): {}", agentId, llmModelId);
             return llmModelId;
         } catch (Exception e) {
-            log.error("获取智能体slm模型ID失败，agentId: {}, 错误: {}", agentId, e.getMessage());
+            log.error("Nhận đại lýslmngười mẫuIDthất bại，agentId: {}, Lỗi: {}", agentId, e.getMessage());
             return null;
         }
     }
@@ -222,35 +222,35 @@ public class AgentChatSummaryServiceImpl implements AgentChatSummaryService {
 
             return llmConfigs.get(0);
         } catch (Exception e) {
-            log.error("获取默认LLM配置失败: {}", e.getMessage());
+            log.error("Nhận mặc địnhLLMCấu hình không thành công: {}", e.getMessage());
             return null;
         }
     }
 
     /**
-     * 根据会话ID获取聊天记录
+     * Nhận lịch sử trò chuyện dựa trên ID phiên
      */
     private List<AgentChatHistoryDTO> getChatHistoryBySessionId(String sessionId) {
         try {
-            // 这里需要根据sessionId获取聊天记录
-            // 由于现有接口需要agentId，我们需要先找到关联的agentId
+            // Tại đây bạn cần lấy bản ghi trò chuyện dựa trên sessionId
+            // Vì giao diện hiện tại yêu cầu ID tác nhân nên trước tiên chúng ta cần tìm ID tác nhân được liên kết
             String agentId = findAgentIdBySessionId(sessionId);
             if (StringUtils.isBlank(agentId)) {
                 return null;
             }
             return agentChatHistoryService.getChatHistoryBySessionId(agentId, sessionId);
         } catch (Exception e) {
-            log.error("获取会话 {} 的聊天记录失败: {}", sessionId, e.getMessage());
+            log.error("Nhận phiên {} Lịch sử trò chuyện không thành công: {}", sessionId, e.getMessage());
             return null;
         }
     }
 
     /**
-     * 根据会话ID查找关联的智能体ID
+     * Tìm ID tác nhân được liên kết dựa trên ID phiên
      */
     private String findAgentIdBySessionId(String sessionId) {
         try {
-            // 查询该会话的第一条记录获取agentId
+            // Truy vấn bản ghi đầu tiên của phiên để lấy AgentId
             QueryWrapper<AgentChatHistoryEntity> wrapper = new QueryWrapper<>();
             wrapper.select("agent_id")
                     .eq("session_id", sessionId)
@@ -259,27 +259,27 @@ public class AgentChatSummaryServiceImpl implements AgentChatSummaryService {
             AgentChatHistoryEntity entity = agentChatHistoryService.getOne(wrapper);
             return entity != null ? entity.getAgentId() : null;
         } catch (Exception e) {
-            log.error("根据会话ID {} 查找智能体ID失败: {}", sessionId, e.getMessage());
+            log.error("Theo phiênID {} Tìm một đại lýIDthất bại: {}", sessionId, e.getMessage());
             return null;
         }
     }
 
     /**
-     * 从会话中获取智能体ID
+     * Nhận ID đại lý từ phiên
      */
     private String getAgentIdFromSession(String sessionId, List<AgentChatHistoryDTO> chatHistory) {
-        // 直接从数据库查询智能体ID
+        // Truy vấn ID đại lý trực tiếp từ cơ sở dữ liệu
         return findAgentIdBySessionId(sessionId);
     }
 
     /**
-     * 提取有意义的对话内容（只提取用户消息，排除AI回复）
+     * Trích xuất nội dung hội thoại có ý nghĩa (chỉ trích xuất tin nhắn của người dùng, loại trừ phản hồi của AI)
      */
     private List<String> extractMeaningfulMessages(List<AgentChatHistoryDTO> chatHistory) {
         List<String> meaningfulMessages = new ArrayList<>();
 
         for (AgentChatHistoryDTO message : chatHistory) {
-            // 只处理用户消息（chatType = 1）
+            // Chỉ xử lý tin nhắn của người dùng (chatType = 1)
             if (message.getChatType() != null && message.getChatType() == 1) {
                 String content = extractContentFromMessage(message);
                 if (isMeaningfulMessage(content)) {
@@ -292,7 +292,7 @@ public class AgentChatSummaryServiceImpl implements AgentChatSummaryService {
     }
 
     /**
-     * 从消息中提取内容（处理JSON格式）
+     * Trích xuất nội dung từ tin nhắn (xử lý định dạng JSON)
      */
     private String extractContentFromMessage(AgentChatHistoryDTO message) {
         String content = message.getContent();
@@ -300,11 +300,11 @@ public class AgentChatSummaryServiceImpl implements AgentChatSummaryService {
             return "";
         }
 
-        // 处理JSON格式内容（与前端ChatHistoryDialog.vue逻辑一致）
+        // Xử lý nội dung có định dạng JSON (nhất quán về mặt logic với giao diện ChatHistoryDialog.vue)
         Matcher matcher = JSON_PATTERN.matcher(content);
         if (matcher.find()) {
             String jsonContent = matcher.group();
-            // 简化处理：提取JSON中的文本内容
+            // Xử lý đơn giản: trích xuất nội dung văn bản trong JSON
             return extractTextFromJson(jsonContent);
         }
 
@@ -312,10 +312,10 @@ public class AgentChatSummaryServiceImpl implements AgentChatSummaryService {
     }
 
     /**
-     * 从JSON中提取文本内容
+     * Trích xuất nội dung văn bản từ JSON
      */
     private String extractTextFromJson(String jsonContent) {
-        // 简化处理：提取"content"字段的值
+        // Xử lý đơn giản: trích xuất giá trị của trường "nội dung"
         Pattern contentPattern = Pattern.compile("\"content\"\s*:\s*\"([^\"]*)\"");
         Matcher matcher = contentPattern.matcher(jsonContent);
         if (matcher.find()) {
@@ -325,62 +325,62 @@ public class AgentChatSummaryServiceImpl implements AgentChatSummaryService {
     }
 
     /**
-     * 判断是否为有意义的消息
+     * Xác định xem tin nhắn có ý nghĩa hay không
      */
     private boolean isMeaningfulMessage(String content) {
         if (StringUtils.isBlank(content)) {
             return false;
         }
 
-        // 排除设备控制信息
+        // Loại trừ thông tin điều khiển thiết bị
         if (DEVICE_CONTROL_PATTERN.matcher(content).find()) {
             return false;
         }
 
-        // 排除日期天气等无关内容
+        // Loại trừ nội dung không liên quan như ngày tháng, thời tiết, v.v.
         if (WEATHER_PATTERN.matcher(content).find() || DATE_PATTERN.matcher(content).find()) {
             return false;
         }
 
-        // 排除过短的消息
+        // Loại trừ những tin nhắn quá ngắn
         return content.length() >= 5;
     }
 
     /**
-     * 从消息生成总结
+     * Tạo bản tóm tắt từ tin nhắn
      */
     private String generateSummaryFromMessages(List<String> messages, String agentId) {
         if (messages.isEmpty()) {
-            return "本次对话内容较少，没有需要总结的重要信息。";
+            return "Cuộc trò chuyện này có ít nội dung hơn，Không có thông tin quan trọng để tóm tắt。";
         }
 
-        // 构建完整的对话内容
+        // Xây dựng một cuộc trò chuyện hoàn chỉnh
         StringBuilder conversation = new StringBuilder();
         for (int i = 0; i < messages.size(); i++) {
-            conversation.append("消息").append(i + 1).append(": ").append(messages.get(i)).append("\n");
+            conversation.append("tin tức").append(i + 1).append(": ").append(messages.get(i)).append("\n");
         }
 
         try {
-            // 获取当前智能体的历史记忆
+            // Lấy ký ức lịch sử của đại lý hiện tại
             String historyMemory = getCurrentAgentMemory(agentId);
 
-            // 调用LLM服务进行智能总结，传递agentId以获取正确的模型配置
+            // Gọi dịch vụ LLM để tóm tắt thông minh, chuyển AgentId để có cấu hình mô hình chính xác
             String summary = callJavaLLMForSummaryWithHistory(conversation.toString(), historyMemory, agentId);
 
-            // 应用总结规则：限制最大长度
+            // Áp dụng quy tắc tóm tắt: giới hạn độ dài tối đa
             if (summary.length() > MAX_SUMMARY_LENGTH) {
                 summary = summary.substring(0, MAX_SUMMARY_LENGTH) + "...";
             }
 
             return summary;
         } catch (Exception e) {
-            log.error("调用Java端LLM服务失败: {}", e.getMessage());
-            throw new RuntimeException("LLM服务不可用，无法生成聊天总结");
+            log.error("gọiJavakết thúcLLMDịch vụ không thành công: {}", e.getMessage());
+            throw new RuntimeException("LLMDịch vụ không có sẵn，Không thể tạo tóm tắt trò chuyện");
         }
     }
 
     /**
-     * 获取当前智能体的历史记忆
+     * Lấy ký ức lịch sử của đại lý hiện tại
      */
     private String getCurrentAgentMemory(String agentId) {
         try {
@@ -388,74 +388,74 @@ public class AgentChatSummaryServiceImpl implements AgentChatSummaryService {
                 return null;
             }
 
-            // 获取智能体信息
+            // Nhận thông tin đại lý
             AgentInfoVO agentInfo = agentService.getAgentById(agentId);
             if (agentInfo == null) {
                 return null;
             }
 
-            // 返回智能体的当前总结记忆
+            // Trả về bộ nhớ tóm tắt hiện tại của tác nhân
             return agentInfo.getSummaryMemory();
         } catch (Exception e) {
-            log.error("获取智能体历史记忆失败，agentId: {}, 错误: {}", agentId, e.getMessage());
+            log.error("Không thể lấy được bộ nhớ lịch sử đại lý，agentId: {}, Lỗi: {}", agentId, e.getMessage());
             return null;
         }
     }
 
     /**
-     * 调用Java端LLM服务进行智能总结（支持历史记忆合并）
+     * Gọi dịch vụ LLM phía Java để có bản tóm tắt thông minh (hỗ trợ hợp nhất bộ nhớ lịch sử)
      */
     private String callJavaLLMForSummaryWithHistory(String conversation, String historyMemory, String agentId) {
         try {
             String modelId = getSlmModelId(agentId);
 
             if (StringUtils.isBlank(modelId)) {
-                log.info("未找到SLM模型，使用默认LLM服务");
+                log.info("không tìm thấySLMngười mẫu，Sử dụng mặc địnhLLMdịch vụ");
                 return llmService.generateSummaryWithHistory(conversation, historyMemory, null, null);
             }
 
             String summary = llmService.generateSummaryWithHistory(conversation, historyMemory, null, modelId);
 
-            if (StringUtils.isNotBlank(summary) && !summary.equals("服务暂不可用") && !summary.equals("总结生成失败")) {
+            if (StringUtils.isNotBlank(summary) && !summary.equals("Dịch vụ tạm thời không khả dụng") && !summary.equals("Tạo bản tóm tắt không thành công")) {
                 return summary;
             }
 
-            throw new RuntimeException("Java端LLM服务返回异常: " + summary);
+            throw new RuntimeException("Javakết thúcLLMDịch vụ trả về ngoại lệ: " + summary);
 
         } catch (Exception e) {
-            log.error("调用Java端LLM服务异常，agentId: {}, 错误: {}", agentId, e.getMessage());
+            log.error("gọiJavakết thúcLLMNgoại lệ dịch vụ，agentId: {}, Lỗi: {}", agentId, e.getMessage());
             throw e;
         }
     }
 
     /**
-     * 调用Java端LLM服务进行智能总结
+     * Gọi dịch vụ LLM phía Java để có bản tóm tắt thông minh
      */
     private String callJavaLLMForSummary(String conversation, String agentId) {
         try {
             String modelId = getSlmModelId(agentId);
 
             if (StringUtils.isBlank(modelId)) {
-                log.info("未找到SLM模型，使用默认LLM服务");
+                log.info("không tìm thấySLMngười mẫu，Sử dụng mặc địnhLLMdịch vụ");
                 return llmService.generateSummary(conversation);
             }
 
             String summary = llmService.generateSummaryWithModel(conversation, modelId);
 
-            if (StringUtils.isNotBlank(summary) && !summary.equals("服务暂不可用") && !summary.equals("总结生成失败")) {
+            if (StringUtils.isNotBlank(summary) && !summary.equals("Dịch vụ tạm thời không khả dụng") && !summary.equals("Tạo bản tóm tắt không thành công")) {
                 return summary;
             }
 
-            throw new RuntimeException("Java端LLM服务返回异常: " + summary);
+            throw new RuntimeException("Javakết thúcLLMDịch vụ trả về ngoại lệ: " + summary);
 
         } catch (Exception e) {
-            log.error("调用Java端LLM服务异常，agentId: {}, 错误: {}", agentId, e.getMessage());
+            log.error("gọiJavakết thúcLLMNgoại lệ dịch vụ，agentId: {}, Lỗi: {}", agentId, e.getMessage());
             throw e;
         }
     }
 
     /**
-     * 获取记忆总结的LLM模型ID
+     * Lấy ID mô hình LLM của bản tóm tắt bộ nhớ
      */
     private String getMemorySummaryModelId(String agentId) {
         try {
@@ -463,46 +463,46 @@ public class AgentChatSummaryServiceImpl implements AgentChatSummaryService {
                 return null;
             }
 
-            // 获取智能体信息
+            // Nhận thông tin đại lý
             AgentInfoVO agentInfo = agentService.getAgentById(agentId);
             if (agentInfo == null) {
                 return null;
             }
 
-            // 获取智能体的记忆模型ID
+            // Lấy ID mô hình bộ nhớ của tác nhân
             String memModelId = agentInfo.getMemModelId();
             if (StringUtils.isBlank(memModelId)) {
                 return null;
             }
 
-            // 获取记忆模型配置
+            // Nhận cấu hình mô hình bộ nhớ
             ModelConfigEntity memModelConfig = modelConfigService.getModelByIdFromCache(memModelId);
             if (memModelConfig == null || memModelConfig.getConfigJson() == null) {
                 return null;
             }
 
-            // 从记忆模型配置中提取对应的LLM模型ID
+            // Trích xuất ID mô hình LLM tương ứng từ cấu hình mô hình bộ nhớ
             Map<String, Object> configMap = memModelConfig.getConfigJson();
             String llmModelId = (String) configMap.get("llm");
 
             if (StringUtils.isBlank(llmModelId)) {
-                // 如果记忆模型没有配置独立的LLM，则使用智能体的默认LLM模型
+                // Nếu mô hình bộ nhớ không được định cấu hình bằng LLM riêng thì mô hình LLM mặc định của tác nhân sẽ được sử dụng.
                 return agentInfo.getLlmModelId();
             }
 
             return llmModelId;
         } catch (Exception e) {
-            log.error("获取记忆总结LLM模型ID失败，agentId: {}, 错误: {}", agentId, e.getMessage());
+            log.error("Nhận tóm tắt bộ nhớLLMngười mẫuIDthất bại，agentId: {}, Lỗi: {}", agentId, e.getMessage());
             return null;
         }
     }
 
     /**
-     * 根据会话ID获取设备信息
+     * Nhận thông tin thiết bị dựa trên ID phiên
      */
     private DeviceEntity getDeviceBySessionId(String sessionId) {
         try {
-            // 查询该会话的第一条记录获取macAddress
+            // Truy vấn bản ghi đầu tiên của phiên để lấy macAddress
             QueryWrapper<AgentChatHistoryEntity> wrapper = new QueryWrapper<>();
             wrapper.select("mac_address")
                     .eq("session_id", sessionId)
@@ -514,7 +514,7 @@ public class AgentChatSummaryServiceImpl implements AgentChatSummaryService {
             }
             return null;
         } catch (Exception e) {
-            log.error("根据会话ID {} 查找设备信息失败: {}", sessionId, e.getMessage());
+            log.error("Theo phiênID {} Không tìm thấy thông tin thiết bị: {}", sessionId, e.getMessage());
             return null;
         }
     }

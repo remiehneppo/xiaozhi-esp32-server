@@ -40,28 +40,28 @@ public class ModelProviderServiceImpl extends BaseServiceImpl<ModelProviderDao, 
 
     @Override
     public List<ModelProviderDTO> getPluginList() {
-        // 1. 获取插件列表
+        // 1. Lấy danh sách plug-in
         LambdaQueryWrapper<ModelProviderEntity> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(ModelProviderEntity::getModelType, "Plugin");
         List<ModelProviderEntity> providerEntities = modelProviderDao.selectList(queryWrapper);
         List<ModelProviderDTO> resultList = ConvertUtils.sourceToTarget(providerEntities, ModelProviderDTO.class);
 
-        // 2. 获取当前用户的知识库列表并追加到结果中
+        // 2. Lấy danh sách cơ sở kiến thức của người dùng hiện tại và thêm nó vào kết quả
         UserDetail userDetail = SecurityUser.getUser();
         if (userDetail != null && userDetail.getId() != null) {
-            // 查询当前用户的知识库
+            // Truy vấn cơ sở kiến thức của người dùng hiện tại
             LambdaQueryWrapper<KnowledgeBaseEntity> kbQueryWrapper = new LambdaQueryWrapper<>();
             kbQueryWrapper.eq(KnowledgeBaseEntity::getCreator, userDetail.getId());
-            kbQueryWrapper.eq(KnowledgeBaseEntity::getStatus, 1); // 只获取启用状态的知识库
+            kbQueryWrapper.eq(KnowledgeBaseEntity::getStatus, 1); // Chỉ nhận cơ sở kiến thức được kích hoạt
             List<KnowledgeBaseEntity> knowledgeBases = knowledgeBaseDao.selectList(kbQueryWrapper);
 
-            // 将知识库转换为ModelProviderDTO格式并添加到结果列表
+            // Chuyển đổi cơ sở kiến thức sang định dạng ModelProviderDTO và thêm vào danh sách kết quả
             for (KnowledgeBaseEntity kb : knowledgeBases) {
                 ModelProviderDTO dto = new ModelProviderDTO();
                 dto.setId(kb.getId());
                 dto.setModelType("Rag");
-                dto.setName("[知识库]" + kb.getName());
-                dto.setProviderCode("ragflow"); // 假设所有RAG都使用ragflow
+                dto.setName("[cơ sở tri thức]" + kb.getName());
+                dto.setProviderCode("ragflow"); // Giả sử tất cảRAGSử dụng cả hairagflow
                 dto.setFields("[]");
                 dto.setSort(0);
                 dto.setCreateDate(kb.getCreatedAt());
@@ -132,7 +132,7 @@ public class ModelProviderServiceImpl extends BaseServiceImpl<ModelProviderDao, 
         modelProviderDTO.setUpdater(user.getId());
         modelProviderDTO.setCreateDate(new Date());
         modelProviderDTO.setUpdateDate(new Date());
-        // 去除Fields左右的双引号
+        // Xóa dấu ngoặc kép xung quanh Trường
 
         modelProviderDTO.setFields(modelProviderDTO.getFields());
         ModelProviderEntity entity = ConvertUtils.sourceToTarget(modelProviderDTO, ModelProviderEntity.class);

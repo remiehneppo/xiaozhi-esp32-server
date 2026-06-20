@@ -9,174 +9,174 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.validation.constraints.*;
 
 /**
- * 切片管理聚合 DTO
+ * DTO tổng hợp quản lý lát cắt
  */
-@Schema(description = "切片管理聚合 DTO")
+@Schema(description = "Tổng hợp quản lý lát cắt DTO")
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ChunkDTO {
 
     /**
-     * 新增切片请求参数
+     * Đã thêm tham số yêu cầu lát
      */
     @Data
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-    @Schema(description = "新增切片请求参数")
+    @Schema(description = "Đã thêm tham số yêu cầu lát")
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static class AddReq implements Serializable {
         private static final long serialVersionUID = 1L;
 
-        @Schema(description = "切片内容", requiredMode = Schema.RequiredMode.REQUIRED)
-        @NotBlank(message = "切片内容不能为空")
+        @Schema(description = "nội dung lát", requiredMode = Schema.RequiredMode.REQUIRED)
+        @NotBlank(message = "Nội dung lát cắt không được để trống")
         private String content;
 
-        @Schema(description = "重要关键词列表")
+        @Schema(description = "Danh sách từ khóa quan trọng")
         @JsonProperty("important_keywords")
         private List<String> importantKeywords;
 
-        @Schema(description = "预设问题列表")
+        @Schema(description = "Danh sách câu hỏi mặc định")
         private List<String> questions;
     }
 
     /**
-     * 更新切片请求参数
+     * Cập nhật tham số yêu cầu lát
      */
     @Data
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-    @Schema(description = "更新切片请求参数")
+    @Schema(description = "Cập nhật tham số yêu cầu lát")
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static class UpdateReq implements Serializable {
         private static final long serialVersionUID = 1L;
 
-        @Schema(description = "新的切片内容")
+        @Schema(description = "Nội dung lát cắt mới")
         private String content;
 
-        @Schema(description = "更新关键词列表 (覆盖原有列表)")
+        @Schema(description = "Cập nhật danh sách từ khóa (Ghi đè danh sách ban đầu)")
         @JsonProperty("important_keywords")
         private List<String> importantKeywords;
 
-        @Schema(description = "启用/禁用 (true: 启用, false: 禁用)")
+        @Schema(description = "kích hoạt/Vô hiệu hóa (true: kích hoạt, false: Vô hiệu hóa)")
         private Boolean available;
     }
 
     /**
-     * 获取切片列表请求参数
+     * Nhận tham số yêu cầu danh sách lát
      */
     @Data
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-    @Schema(description = "获取切片列表请求参数")
+    @Schema(description = "Nhận tham số yêu cầu danh sách lát")
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static class ListReq implements Serializable {
         private static final long serialVersionUID = 1L;
 
-        @Schema(description = "页码 (默认 1)")
+        @Schema(description = "Số trang (Mặc định 1)")
         private Integer page;
 
-        @Schema(description = "每页数量 (默认 30)")
+        @Schema(description = "Số lượng mỗi trang (Mặc định 30)")
         @JsonProperty("page_size")
         private Integer pageSize;
 
-        @Schema(description = "搜索关键词 (全文检索)")
+        @Schema(description = "Tìm kiếm từ khóa (Tìm kiếm toàn văn)")
         private String keywords;
 
-        @Schema(description = "精确切片 ID")
+        @Schema(description = "Cắt chính xác ID")
         private String id;
     }
 
     /**
-     * 批量删除切片请求参数
+     * Xóa các tham số yêu cầu lát theo lô
      */
     @Data
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-    @Schema(description = "批量删除切片请求参数")
+    @Schema(description = "Xóa các tham số yêu cầu lát theo lô")
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static class RemoveReq implements Serializable {
         private static final long serialVersionUID = 1L;
 
-        @Schema(description = "切片 ID 列表", requiredMode = Schema.RequiredMode.REQUIRED)
+        @Schema(description = "lát ID danh sách", requiredMode = Schema.RequiredMode.REQUIRED)
         @JsonProperty("chunk_ids")
-        @NotEmpty(message = "切片ID列表不能为空")
+        @NotEmpty(message = "látIDDanh sách không thể trống")
         private List<String> chunkIds;
     }
 
     /**
-     * 文档切片信息 VO
+     * Thông tin lát tài liệu VO
      */
     @Data
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-    @Schema(description = "文档切片信息")
+    @Schema(description = "Thông tin lát tài liệu")
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static class InfoVO implements Serializable {
         private static final long serialVersionUID = 1L;
 
-        @Schema(description = "切片 ID (通常为 document_id + 索引)", requiredMode = Schema.RequiredMode.REQUIRED)
+        @Schema(description = "lát ID (Thông thường document_id + chỉ mục)", requiredMode = Schema.RequiredMode.REQUIRED)
         private String id;
 
-        @Schema(description = "切片文本内容 (全文检索的主要对象)", requiredMode = Schema.RequiredMode.REQUIRED)
+        @Schema(description = "Cắt nội dung văn bản (Đối tượng chính của tìm kiếm toàn văn)", requiredMode = Schema.RequiredMode.REQUIRED)
         private String content;
 
-        @Schema(description = "所属文档 ID", requiredMode = Schema.RequiredMode.REQUIRED)
+        @Schema(description = "Tài liệu thuộc sở hữu ID", requiredMode = Schema.RequiredMode.REQUIRED)
         @JsonProperty("document_id")
         private String documentId;
 
-        @Schema(description = "文档名称 / 关键词")
+        @Schema(description = "Tên tài liệu / từ khóa")
         @JsonProperty("docnm_kwd")
         private String docnmKwd;
 
-        @Schema(description = "重要关键词列表 (用于关键词增强检索)")
+        @Schema(description = "Danh sách từ khóa quan trọng (Được sử dụng cho tìm kiếm nâng cao từ khóa)")
         @JsonProperty("important_keywords")
         private List<String> importantKeywords;
 
-        @Schema(description = "预设问题列表 (用于 Q&A 模式增强)")
+        @Schema(description = "Danh sách câu hỏi mặc định (dùng cho Q&A Cải tiến chế độ)")
         private List<String> questions;
 
-        @Schema(description = "关联的图片 ID")
+        @Schema(description = "Hình ảnh liên quan ID")
         @JsonProperty("image_id")
         private String imageId;
 
-        @Schema(description = "所属知识库 ID")
+        @Schema(description = "Cơ sở tri thức thuộc về ID")
         @JsonProperty("dataset_id")
         private String datasetId;
 
-        @Schema(description = "切片是否可用 (true: 参与检索, false: 被禁用)")
+        @Schema(description = "Miếng này có sẵn không? (true: Tham gia tìm kiếm, false: bị vô hiệu hóa)")
         private Boolean available;
 
-        @Schema(description = "切片在原文中的位置索引列表 (RAGFlow返回嵌套数组, 如 [[start, end, filename]])")
+        @Schema(description = "Danh sách chỉ mục vị trí của slice trong văn bản gốc (RAGFlowTrả về mảng lồng nhau, Chẳng hạn như [[start, end, filename]])")
         private List<List<Object>> positions;
 
-        @Schema(description = "Token ID 列表")
+        @Schema(description = "Token ID danh sách")
         @JsonProperty("token")
         private List<Integer> token;
     }
 
     /**
-     * 分片列表聚合响应
+     * Phản hồi tổng hợp về danh sách được chia nhỏ
      */
     @Data
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-    @Schema(description = "分片列表聚合响应")
+    @Schema(description = "Phản hồi tổng hợp về danh sách được chia nhỏ")
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static class ListVO implements Serializable {
         private static final long serialVersionUID = 1L;
 
-        @Schema(description = "切片信息列表")
+        @Schema(description = "Danh sách thông tin lát")
         private List<InfoVO> chunks;
 
-        @Schema(description = "关联的文档详细信息")
+        @Schema(description = "Chi tiết tài liệu liên quan")
         private DocumentDTO.InfoVO doc;
 
-        @Schema(description = "总记录数")
+        @Schema(description = "Tổng số hồ sơ")
         private Long total;
     }
 }

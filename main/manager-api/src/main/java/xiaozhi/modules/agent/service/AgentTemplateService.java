@@ -6,37 +6,37 @@ import xiaozhi.modules.agent.entity.AgentTemplateEntity;
 
 /**
  * @author chenerlei
- * @description 针对表【ai_agent_template(智能体配置模板表)】的数据库操作Service
+ * @description Dịch vụ vận hành cơ sở dữ liệu cho bảng [ai_agent_template (bảng mẫu cấu hình tác nhân)]
  * @createDate 2025-03-22 11:48:18
  */
 public interface AgentTemplateService extends IService<AgentTemplateEntity> {
 
     /**
-     * 获取默认模板
-     * 
-     * @return 默认模板实体
+     * Nhận mẫu mặc định
+     *
+     * @return thực thể mẫu mặc định
      */
     AgentTemplateEntity getDefaultTemplate();
 
     /**
-     * 更新默认模板中的模型ID
-     * 
-     * @param modelType 模型类型
-     * @param modelId   模型ID
+     * Cập nhật ID mẫu trong mẫu mặc định
+     *
+     * @param modelType loại mô hình
+     * @param modelId ID mô hình
      */
     void updateDefaultTemplateModelId(String modelType, String modelId);
 
     /**
-     * 删除模板后重新排序剩余模板
-     * 
-     * @param deletedSort 被删除模板的排序值
+     * Sắp xếp lại các mẫu còn lại sau khi xóa chúng
+     *
+     * @param đã xóaSắp xếp sắp xếp giá trị của các mẫu đã xóa
      */
     void reorderTemplatesAfterDelete(Integer deletedSort);
 
     /**
-     * 获取下一个可用的排序序号（寻找最小的未使用序号）
-     * 
-     * @return 下一个可用的排序序号
+     * Lấy số sắp xếp có sẵn tiếp theo (tìm số thứ tự nhỏ nhất chưa sử dụng)
+     *
+     * @return số sắp xếp có sẵn tiếp theo
      */
     Integer getNextAvailableSort();
 }

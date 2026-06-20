@@ -8,39 +8,39 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
 @Data
-@Schema(description = "模型供应器/商")
+@Schema(description = "nhà cung cấp mô hình/Kinh doanh")
 public class ModelConfigDTO implements Serializable {
 
     @Serial
     private static final long serialVersionUID = 1L;
 
-    @Schema(description = "主键")
+    @Schema(description = "khóa chính")
     private String id;
 
-    @Schema(description = "模型类型(Memory/ASR/VAD/LLM/TTS)")
+    @Schema(description = "Loại mô hình(Memory/ASR/VAD/LLM/TTS)")
     private String modelType;
 
-    @Schema(description = "模型编码(如AliLLM、DoubaoTTS)")
+    @Schema(description = "mã hóa mô hình(Chẳng hạn nhưAliLLM、DoubaoTTS)")
     private String modelCode;
 
-    @Schema(description = "模型名称")
+    @Schema(description = "Tên mẫu")
     private String modelName;
 
-    @Schema(description = "是否默认配置(0否 1是)")
+    @Schema(description = "Nó có được cấu hình theo mặc định không?(0Không 1Có)")
     private Integer isDefault;
 
-    @Schema(description = "是否启用")
+    @Schema(description = "Có bật hay không")
     private Integer isEnabled;
 
-    @Schema(description = "模型配置(JSON格式)")
+    @Schema(description = "Cấu hình mô hình(JSONđịnh dạng)")
     private JSONObject configJson;
 
-    @Schema(description = "官方文档链接")
+    @Schema(description = "Liên kết tài liệu chính thức")
     private String docLink;
 
-    @Schema(description = "备注")
+    @Schema(description = "Bình luận")
     private String remark;
 
-    @Schema(description = "排序")
+    @Schema(description = "sắp xếp")
     private Integer sort;
 }

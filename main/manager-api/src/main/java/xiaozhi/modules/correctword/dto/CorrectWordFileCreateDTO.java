@@ -8,17 +8,17 @@ import jakarta.validation.constraints.NotEmpty;
 import lombok.Data;
 
 @Data
-@Schema(description = "创建替换词文件DTO")
+@Schema(description = "Tạo một tập tin từ thay thếDTO")
 public class CorrectWordFileCreateDTO {
 
-    @NotBlank(message = "文件名不能为空")
-    @Schema(description = "文件名")
+    @NotBlank(message = "Tên tệp không được để trống")
+    @Schema(description = "tên tập tin")
     private String fileName;
 
-    @NotEmpty(message = "替换词内容不能为空")
-    @Schema(description = "替换词内容，每条格式：原词|替换词")
+    @NotEmpty(message = "Nội dung từ thay thế không được để trống")
+    @Schema(description = "Thay thế nội dung từ，Mỗi định dạng：từ gốc|từ thay thế")
     private List<String> content;
 
-    @Schema(description = "文件大小（字节），不能超过1MB")
+    @Schema(description = "kích thước tập tin（Byte），không thể vượt quá1MB")
     private Long fileSize;
 }

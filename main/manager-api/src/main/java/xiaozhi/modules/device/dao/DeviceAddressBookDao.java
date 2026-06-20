@@ -13,17 +13,17 @@ import xiaozhi.modules.device.entity.DeviceAddressBookEntity;
 public interface DeviceAddressBookDao extends BaseMapper<DeviceAddressBookEntity> {
 
     /**
-     * 获取设备通讯录列表
+     * Lấy danh sách sổ địa chỉ thiết bị
      */
     List<DeviceAddressBookEntity> getAddressBookList(@Param("macAddress") String macAddress);
 
     /**
-     * 更新别名
+     * Cập nhật bí danh
      */
     void updateAlias(@Param("macAddress") String macAddress, @Param("targetMac") String targetMac, @Param("alias") String alias);
 
     /**
-     * 更新权限
+     * Cập nhật quyền
      */
     void updatePermission(@Param("macAddress") String macAddress, @Param("targetMac") String targetMac, @Param("hasPermission") Boolean hasPermission);
 }

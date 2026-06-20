@@ -1,7 +1,7 @@
 package xiaozhi.common.utils;
 
 /**
- * 返回响应体工具类
+ * Trả về lớp công cụ nội dung phản hồi
  */
 public class ResultUtils
 {

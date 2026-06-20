@@ -30,19 +30,19 @@ public class SystemInitConfig {
 
     @PostConstruct
     public void init() {
-        // 检查版本号
+        // Kiểm tra số phiên bản
         String redisVersion = (String) redisUtils.get(RedisKeys.getVersionKey());
         if (!Constant.VERSION.equals(redisVersion)) {
-            // 如果版本不一致，清空Redis
+            // Nếu các phiên bản không nhất quán, hãy xóa Redis
             redisUtils.emptyAll();
-            // 存储新版本号
+            // Lưu trữ số phiên bản mới
             redisUtils.set(RedisKeys.getVersionKey(), Constant.VERSION);
         }
 
         sysParamsService.initServerSecret();
         configService.getConfig(false);
 
-        // 初始化设备通讯录缓存
+        // Khởi tạo bộ đệm sổ địa chỉ thiết bị
         deviceAddressBookService.refreshCache();
     }
 }

@@ -5,23 +5,23 @@ import jakarta.validation.constraints.Min;
 import lombok.Data;
 
 /**
- * 管理员分页用户的参数DTO
- * 
+ * Tham số DTO cho người dùng phân trang quản trị viên
+ *
  * @author zjy
  * @since 2025-3-21
  */
 @Data
-@Schema(description = "管理员分页用户的参数DTO")
+@Schema(description = "Thông số người dùng phân trang quản trịDTO")
 public class AdminPageUserDTO {
 
-    @Schema(description = "手机号码")
+    @Schema(description = "Số điện thoại di động")
     private String mobile;
 
-    @Schema(description = "页数")
+    @Schema(description = "Số trang")
     @Min(value = 0, message = "{sort.number}")
     private String page;
 
-    @Schema(description = "显示列数")
+    @Schema(description = "Hiển thị số cột")
     @Min(value = 0, message = "{sort.number}")
     private String limit;
 }

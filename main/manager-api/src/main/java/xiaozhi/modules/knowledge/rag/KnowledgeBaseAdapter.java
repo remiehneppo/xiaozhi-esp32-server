@@ -13,70 +13,70 @@ import xiaozhi.modules.knowledge.dto.document.RetrievalDTO;
 import java.util.function.Consumer;
 
 /**
- * 知识库API适配器抽象基类
- * 定义通用的知识库操作接口，支持多种后端API实现
+ * Lớp cơ sở trừu tượng của Bộ điều hợp API cơ sở kiến thức
+ * Xác định giao diện vận hành cơ sở kiến thức chung và hỗ trợ nhiều triển khai API back-end
  */
 public abstract class KnowledgeBaseAdapter {
 
         /**
-         * 获取适配器类型标识
-         * 
-         * @return 适配器类型（如：ragflow, milvus, pinecone等）
+         * Nhận mã định danh loại bộ điều hợp
+         *
+         * @return loại bộ chuyển đổi (chẳng hạn như: ragflow, milvus,pinecone, v.v.)
          */
         public abstract String getAdapterType();
 
         /**
-         * 初始化适配器配置
-         * 
-         * @param config 配置参数
+         * Khởi tạo cấu hình bộ chuyển đổi
+         *
+         * Tham số cấu hình @param config
          */
         public abstract void initialize(Map<String, Object> config);
 
         /**
-         * 验证配置是否有效
-         * 
-         * @param config 配置参数
-         * @return 验证结果
+         * Xác minh rằng cấu hình hợp lệ
+         *
+         * Tham số cấu hình @param config
+         * @return kết quả xác minh
          */
         public abstract boolean validateConfig(Map<String, Object> config);
 
         /**
-         * 分页查询文档列表
-         * 
-         * @param datasetId   知识库ID
-         * @param queryParams 查询参数
-         * @param page        页码
-         * @param limit       每页数量
-         * @return 分页数据
+         * Truy vấn danh sách tài liệu theo trang
+         *
+         * @paramdatadataID cơ sở kiến thức ID
+         * Tham số truy vấn @param queryParams
+         * @param số trang
+         * Số giới hạn @param trên mỗi trang
+         * @return dữ liệu được phân trang
          */
         public abstract PageData<KnowledgeFilesDTO> getDocumentList(String datasetId,
                         DocumentDTO.ListReq req);
 
         /**
-         * 根据文档ID获取文档详情
-         * 
-         * @param datasetId  知识库ID
-         * @param documentId 文档ID
-         * @return 文档详情 (强类型 InfoVO)
+         * Nhận chi tiết tài liệu dựa trên ID tài liệu
+         *
+         * @paramdatadataID cơ sở kiến thức ID
+         * @param documentId ID tài liệu
+         * @return chi tiết tài liệu (được gõ mạnh InfoVO)
          */
         public abstract DocumentDTO.InfoVO getDocumentById(String datasetId, String documentId);
 
         /**
-         * 上传文档到知识库
-         * 
-         * @param req 上传请求参数
-         * @return 上传的文档信息
+         * Tải tài liệu lên cơ sở tri thức
+         *
+         * @param req tham số yêu cầu tải lên
+         * @return thông tin tài liệu đã tải lên
          */
         public abstract KnowledgeFilesDTO uploadDocument(DocumentDTO.UploadReq req);
 
         /**
-         * 根据状态分页查询文档列表
-         * 
-         * @param datasetId 知识库ID
-         * @param status    文档解析状态
-         * @param page      页码
-         * @param limit     每页数量
-         * @return 分页数据
+         * Truy vấn danh sách tài liệu theo trạng thái trang
+         *
+         * @paramdatadataID cơ sở kiến thức ID
+         * Trạng thái phân tích tài liệu trạng thái @param
+         * @param số trang
+         * Số giới hạn @param trên mỗi trang
+         * @return dữ liệu được phân trang
          */
         public abstract PageData<KnowledgeFilesDTO> getDocumentListByStatus(String datasetId,
                         Integer status,
@@ -84,140 +84,140 @@ public abstract class KnowledgeBaseAdapter {
                         Integer limit);
 
         /**
-         * 删除文档 (支持批量删除)
-         * 
-         * @param datasetId 知识库ID
-         * @param req       包含文档ID列表的请求对象
+         * Xóa tài liệu (hỗ trợ xóa hàng loạt)
+         *
+         * @paramdatadataID cơ sở kiến thức ID
+         * Đối tượng yêu cầu @param req chứa danh sách ID tài liệu
          */
         public abstract void deleteDocument(String datasetId, DocumentDTO.BatchIdReq req);
 
         /**
-         * 解析文档（切块）
-         * 
-         * @param datasetId   知识库ID
-         * @param documentIds 文档ID列表
-         * @return 解析结果
+         * Phân tích tài liệu (cắt thành từng đoạn)
+         *
+         * @paramdatadataID cơ sở kiến thức ID
+         * @param documentIds danh sách ID tài liệu
+         * @return kết quả phân tích cú pháp
          */
         public abstract boolean parseDocuments(String datasetId, List<String> documentIds);
 
         /**
-         * 列出指定文档的切片
-         * 
-         * @param datasetId  知识库ID
-         * @param documentId 文档ID
-         * @param req        列表请求参数 (分页、关键词等)
-         * @return 切片列表VO
+         * Liệt kê các lát của tài liệu được chỉ định
+         *
+         * @paramdatadataID cơ sở kiến thức ID
+         * @param documentId ID tài liệu
+         * @param req liệt kê các tham số yêu cầu (phân trang, từ khóa, v.v.)
+         * @return danh sách lát VO
          */
         public abstract ChunkDTO.ListVO listChunks(String datasetId,
                         String documentId,
                         ChunkDTO.ListReq req);
 
         /**
-         * 召回测试 - 从知识库中检索相关切片
-         * 
-         * @param req 检索测试请求参数
-         * @return 召回测试结果
+         * Kiểm tra thu hồi - truy xuất các phần có liên quan từ cơ sở kiến thức
+         *
+         * @param req truy xuất các tham số yêu cầu kiểm tra
+         * @return thu hồi kết quả kiểm tra
          */
         public abstract RetrievalDTO.ResultVO retrievalTest(
                         RetrievalDTO.TestReq req);
 
         /**
-         * 测试连接
-         * 
-         * @return 连接测试结果
+         * kết nối thử nghiệm
+         *
+         * @return kết quả kiểm tra kết nối
          */
         public abstract boolean testConnection();
 
         /**
-         * 获取适配器状态信息
-         * 
-         * @return 状态信息
+         * Nhận thông tin trạng thái bộ điều hợp
+         *
+         * @return thông tin trạng thái
          */
         public abstract Map<String, Object> getStatus();
 
         /**
-         * 获取支持的配置参数
-         * 
-         * @return 配置参数说明
+         * Nhận thông số cấu hình được hỗ trợ
+         *
+         * @return mô tả tham số cấu hình
          */
         public abstract Map<String, Object> getSupportedConfig();
 
         /**
-         * 获取默认配置
-         * 
-         * @return 默认配置
+         * Nhận cấu hình mặc định
+         *
+         * @return cấu hình mặc định
          */
         public abstract Map<String, Object> getDefaultConfig();
 
         /**
-         * 创建数据集
-         * 
-         * @param req 创建参数
-         * @return 数据集详情
+         * Tạo một tập dữ liệu
+         *
+         * @param req tạo tham số
+         * @return chi tiết tập dữ liệu
          */
         public abstract DatasetDTO.InfoVO createDataset(DatasetDTO.CreateReq req);
 
         /**
-         * 更新数据集
-         * 
-         * @param datasetId 数据集ID
-         * @param req       更新参数
-         * @return 数据集详情
+         * Cập nhật tập dữ liệu
+         *
+         * @param tập dữ liệuId ID tập dữ liệu
+         * @param req thông số cập nhật
+         * @return chi tiết tập dữ liệu
          */
         public abstract DatasetDTO.InfoVO updateDataset(String datasetId, DatasetDTO.UpdateReq req);
 
         /**
-         * 删除数据集
-         * 
-         * @param req 删除请求参数（包含ID列表）
-         * @return 批量操作结果
+         * Xóa tập dữ liệu
+         *
+         * @param req xóa tham số yêu cầu (bao gồm danh sách ID)
+         * @return kết quả hoạt động hàng loạt
          */
         public abstract DatasetDTO.BatchOperationVO deleteDataset(DatasetDTO.BatchIdReq req);
 
         /**
-         * 获取数据集的文档数量
+         * Lấy số lượng tài liệu trong một tập dữ liệu
          *
-         * @param datasetId 数据集ID
-         * @return 文档数量
+         * @param tập dữ liệuId ID tập dữ liệu
+         * @return số lượng tài liệu
          */
         public abstract Integer getDocumentCount(String datasetId);
 
         /**
-         * 获取数据集完整信息（名称、简介、文档数量等）
-         * 用于检测 RAGFlow 端是否已删除、同步名称/简介变更
+         * Nhận thông tin đầy đủ về tập dữ liệu (tên, phần giới thiệu, số lượng tài liệu, v.v.)
+         * Được sử dụng để phát hiện xem đầu RAGFlow có bị xóa hay không và đồng bộ hóa các thay đổi tên/hồ sơ
          *
-         * @param datasetId 数据集ID
-         * @return 数据集详情，若 RAGFlow 端不存在则返回 null
+         * @param tập dữ liệuId ID tập dữ liệu
+         * @return Chi tiết tập dữ liệu, nếu đầu RAGFlow không tồn tại, trả về null
          */
         public abstract DatasetDTO.InfoVO getDatasetInfo(String datasetId);
 
         /**
-         * 发送流式请求 (SSE)
-         * 
-         * @param endpoint API端点
-         * @param body     请求体
-         * @param onData   数据回调
+         * Gửi yêu cầu phát trực tuyến (SSE)
+         *
+         * Điểm cuối API điểm cuối @param
+         * @param nội dung yêu cầu nội dung
+         * @param onData gọi lại dữ liệu
          */
         public abstract void postStream(String endpoint, Object body, Consumer<String> onData);
 
         /**
-         * SearchBot 提问
+         * SearchBot đã đặt câu hỏi
          *
-         * @param config RAG配置
-         * @param body   请求体
-         * @param onData 数据回调
-         * @return 响应对象
+         * @param config Cấu hình RAG
+         * @param nội dung yêu cầu nội dung
+         * @param onData gọi lại dữ liệu
+         * @return đối tượng phản hồi
          */
         public abstract Object postSearchBotAsk(Map<String, Object> config, Object body,
                         Consumer<String> onData);
 
         /**
-         * AgentBot 对话
+         * Đối thoại AgentBot
          *
-         * @param config  RAG配置
+         * @param config Cấu hình RAG
          * @param agentId Agent ID
-         * @param body    请求体
-         * @param onData  数据回调
+         * @param nội dung yêu cầu nội dung
+         * @param onData gọi lại dữ liệu
          */
         public abstract void postAgentBotCompletion(Map<String, Object> config, String agentId, Object body,
                         Consumer<String> onData);

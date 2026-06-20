@@ -36,7 +36,7 @@ import xiaozhi.modules.device.vo.UserShowDeviceListVO;
 import xiaozhi.modules.security.user.SecurityUser;
 import xiaozhi.modules.sys.service.SysParamsService;
 
-@Tag(name = "设备管理")
+@Tag(name = "Quản lý thiết bị")
 @RestController
 @RequestMapping("/device")
 public class DeviceController {
@@ -54,7 +54,7 @@ public class DeviceController {
     }
 
     @PostMapping("/bind/{agentId}/{deviceCode}")
-    @Operation(summary = "绑定设备")
+    @Operation(summary = "Thiết bị liên kết")
     @RequiresPermissions("sys:role:normal")
     public Result<Void> bindDevice(@PathVariable String agentId, @PathVariable String deviceCode) {
         deviceService.deviceActivation(agentId, deviceCode);
@@ -62,13 +62,13 @@ public class DeviceController {
     }
 
     @PostMapping("/register")
-    @Operation(summary = "注册设备")
+    @Operation(summary = "Đăng ký thiết bị")
     public Result<String> registerDevice(@RequestBody DeviceRegisterDTO deviceRegisterDTO) {
         String macAddress = deviceRegisterDTO.getMacAddress();
         if (StringUtils.isBlank(macAddress)) {
             return new Result<String>().error(ErrorCode.MCA_NOT_NULL);
         }
-        // 生成六位验证码
+        // Tạo mã xác minh gồm sáu chữ số
         String code;
         String key;
         String existsMac = null;
@@ -83,7 +83,7 @@ public class DeviceController {
     }
 
     @GetMapping("/bind/{agentId}")
-    @Operation(summary = "获取已绑定设备")
+    @Operation(summary = "Nhận các thiết bị bị ràng buộc")
     @RequiresPermissions("sys:role:normal")
     public Result<List<UserShowDeviceListVO>> getUserDevices(@PathVariable String agentId) {
         UserDetail user = SecurityUser.getUser();
@@ -92,18 +92,18 @@ public class DeviceController {
     }
 
     @PostMapping("/bind/{agentId}")
-    @Operation(summary = "设备在线接口")
+    @Operation(summary = "Giao diện trực tuyến của thiết bị")
     @RequiresPermissions("sys:role:normal")
     public Result<String> forwardToMqttGateway(@PathVariable String agentId, @RequestBody String requestBody) {
         try {
             return new Result<String>().ok(deviceService.getDeviceOnlineData(agentId));
         } catch (Exception e) {
-            return new Result<String>().error("转发请求失败: " + e.getMessage());
+            return new Result<String>().error("Yêu cầu chuyển tiếp không thành công: " + e.getMessage());
         }
     }
 
     @PostMapping("/unbind")
-    @Operation(summary = "解绑设备")
+    @Operation(summary = "Hủy liên kết thiết bị")
     @RequiresPermissions("sys:role:normal")
     public Result<Void> unbindDevice(@RequestBody DeviceUnBindDTO unDeviveBind) {
         UserDetail user = SecurityUser.getUser();
@@ -112,16 +112,16 @@ public class DeviceController {
     }
 
     @PutMapping("/update/{id}")
-    @Operation(summary = "更新设备信息")
+    @Operation(summary = "Cập nhật thông tin thiết bị")
     @RequiresPermissions("sys:role:normal")
     public Result<Void> updateDeviceInfo(@PathVariable String id, @Valid @RequestBody DeviceUpdateDTO deviceUpdateDTO) {
         DeviceEntity entity = deviceService.selectById(id);
         if (entity == null) {
-            return new Result<Void>().error("设备不存在");
+            return new Result<Void>().error("Thiết bị không tồn tại");
         }
         UserDetail user = SecurityUser.getUser();
         if (!entity.getUserId().equals(user.getId())) {
-            return new Result<Void>().error("设备不存在");
+            return new Result<Void>().error("Thiết bị không tồn tại");
         }
         BeanUtils.copyProperties(deviceUpdateDTO, entity);
         deviceService.updateById(entity);
@@ -129,7 +129,7 @@ public class DeviceController {
     }
 
     @PostMapping("/manual-add")
-    @Operation(summary = "手动添加设备")
+    @Operation(summary = "Thêm thiết bị theo cách thủ công")
     @RequiresPermissions("sys:role:normal")
     public Result<Void> manualAddDevice(@RequestBody @Valid DeviceManualAddDTO dto) {
         UserDetail user = SecurityUser.getUser();
@@ -138,7 +138,7 @@ public class DeviceController {
     }
 
     @PostMapping("/tools/list/{deviceId}")
-    @Operation(summary = "获取设备工具列表")
+    @Operation(summary = "Nhận danh sách công cụ thiết bị")
     @RequiresPermissions("sys:role:normal")
     public Result<Object> getDeviceTools(@PathVariable String deviceId) {
         Object toolsData = deviceService.getDeviceTools(deviceId);
@@ -150,7 +150,7 @@ public class DeviceController {
     }
 
     @PostMapping("/tools/call/{deviceId}")
-    @Operation(summary = "调用设备工具")
+    @Operation(summary = "Công cụ thiết bị gọi")
     @RequiresPermissions("sys:role:normal")
     public Result<Object> callDeviceTool(@PathVariable String deviceId,
             @Valid @RequestBody DeviceToolsCallReqDTO request) {
@@ -168,24 +168,24 @@ public class DeviceController {
     }
 
     @GetMapping("/address-book/{macAddress}")
-    @Operation(summary = "获取设备通讯录")
+    @Operation(summary = "Nhận sổ địa chỉ thiết bị")
     @RequiresPermissions("sys:role:normal")
     public Result<Object> getAddressBook(@PathVariable String macAddress) {
         return new Result<Object>().ok(deviceAddressBookService.getAddressBookList(macAddress));
     }
 
     @GetMapping("/address-book/lookup")
-    @Operation(summary = "根据昵称查找目标设备")
+    @Operation(summary = "Tìm thiết bị mục tiêu dựa trên biệt danh")
     public Result<Map<String, String>> lookupByNickname(String callerMac, String nickname) {
         Map<String, String> result = deviceAddressBookService.lookupByNickname(callerMac, nickname);
         if (result == null) {
-            return new Result<Map<String, String>>().error("未找到对应设备");
+            return new Result<Map<String, String>>().error("Không tìm thấy thiết bị tương ứng");
         }
         return new Result<Map<String, String>>().ok(result);
     }
 
     @PutMapping("/address-book/alias")
-    @Operation(summary = "更新设备通讯录别名")
+    @Operation(summary = "Cập nhật bí danh sổ địa chỉ thiết bị")
     @RequiresPermissions("sys:role:normal")
     public Result<Void> updateAlias(@Valid @RequestBody DeviceAddressBookAliasDTO dto) {
         deviceAddressBookService.saveOrUpdate(dto.getMacAddress(), dto.getTargetMac(), dto.getAlias(), null);
@@ -193,7 +193,7 @@ public class DeviceController {
     }
 
     @PutMapping("/address-book/permission")
-    @Operation(summary = "更新设备通讯录权限")
+    @Operation(summary = "Cập nhật quyền sổ địa chỉ thiết bị")
     @RequiresPermissions("sys:role:normal")
     public Result<Void> updatePermission(@Valid @RequestBody DeviceAddressBookPermissionDTO dto) {
         deviceAddressBookService.saveOrUpdate(dto.getMacAddress(), dto.getTargetMac(), null, dto.getHasPermission());
@@ -201,7 +201,7 @@ public class DeviceController {
     }
 
     @GetMapping("/call/forward")
-    @Operation(summary = "转发呼叫请求到网关")
+    @Operation(summary = "Chuyển tiếp yêu cầu cuộc gọi đến cổng")
     public Result<Map<String, Object>> forwardCallRequest(String callerMac, String targetMac, String callerNickname) {
         Map<String, Object> result = deviceService.forwardCallRequest(callerMac, targetMac, callerNickname);
         return new Result<Map<String, Object>>().ok(result);

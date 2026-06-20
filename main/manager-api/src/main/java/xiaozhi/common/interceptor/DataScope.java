@@ -1,8 +1,8 @@
 package xiaozhi.common.interceptor;
 
 /**
- * 数据范围
- * Copyright (c) 人人开源 All rights reserved.
+ * phạm vi dữ liệu
+ * Bản quyền (c) Renren Kaiyuan Mọi quyền được bảo lưu.
  * Website: https://www.renren.io
  */
 public class DataScope {

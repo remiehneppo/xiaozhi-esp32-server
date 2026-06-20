@@ -93,7 +93,7 @@ public class ModelConfigServiceImpl extends BaseServiceImpl<ModelConfigDao, Mode
         long pageSize = Long.parseLong(limit);
         Page<ModelConfigEntity> pageInfo = new Page<>(curPage, pageSize);
 
-        // 添加排序规则：先按is_enabled降序，再按sort升序
+        // Thêm quy tắc sắp xếp: đầu tiên nhấn is_enabled theo thứ tự giảm dần, sau đó nhấn sắp xếp theo thứ tự tăng dần
         pageInfo.addOrder(OrderItem.desc("is_enabled"), OrderItem.asc("sort"));
 
         IPage<ModelConfigEntity> modelConfigEntityIPage = modelConfigDao.selectPage(
@@ -107,28 +107,28 @@ public class ModelConfigServiceImpl extends BaseServiceImpl<ModelConfigDao, Mode
 
     @Override
     public ModelConfigDTO edit(String modelType, String provideCode, String id, ModelConfigBodyDTO modelConfigBodyDTO) {
-        // 1. 参数验证
+        // 1. Xác minh thông số
         validateEditParameters(modelType, provideCode, id, modelConfigBodyDTO);
 
-        // 2. 验证模型提供者
+        // 2. Xác minh nhà cung cấp mô hình
         validateModelProvider(modelType, provideCode);
 
-        // 3. 获取原始配置（不经过敏感数据处理）
+        // 3. Lấy cấu hình gốc (không xử lý dữ liệu nhạy cảm)
         ModelConfigEntity originalEntity = getOriginalConfigFromDb(id);
 
-        // 4. 验证LLM配置
+        // 4. Xác minh cấu hình LLM
         validateLlmConfiguration(modelConfigBodyDTO);
 
-        // 5. 准备更新实体并处理敏感数据
+        // 5. Chuẩn bị cập nhật các thực thể và xử lý dữ liệu nhạy cảm
         ModelConfigEntity modelConfigEntity = prepareUpdateEntity(modelConfigBodyDTO, originalEntity, modelType, id);
 
-        // 6. 执行数据库更新
+        // 6. Thực hiện cập nhật cơ sở dữ liệu
         modelConfigDao.updateById(modelConfigEntity);
 
-        // 7. 清除缓存
+        // 7. Xóa bộ nhớ đệm
         clearModelCache(id);
 
-        // 8. 返回处理后的数据（包含敏感数据掩码）
+        // 8. Trả về dữ liệu đã xử lý (bao gồm cả mặt nạ dữ liệu nhạy cảm)
         return buildResponseDTO(modelConfigEntity);
     }
 
@@ -230,7 +230,7 @@ public class ModelConfigServiceImpl extends BaseServiceImpl<ModelConfigDao, Mode
     }
 
     /**
-     * 验证编辑参数
+     * Xác minh thông số chỉnh sửa
      */
     private void validateEditParameters(String modelType, String provideCode, String id,
             ModelConfigBodyDTO modelConfigBodyDTO) {
@@ -246,7 +246,7 @@ public class ModelConfigServiceImpl extends BaseServiceImpl<ModelConfigDao, Mode
     }
 
     /**
-     * 验证添加参数
+     * Xác minh các tham số đã thêm
      */
     private void validateAddParameters(String modelType, String provideCode, ModelConfigBodyDTO modelConfigBodyDTO) {
         if (StringUtils.isBlank(modelType) || StringUtils.isBlank(provideCode)) {
@@ -256,19 +256,19 @@ public class ModelConfigServiceImpl extends BaseServiceImpl<ModelConfigDao, Mode
             throw new RenException(ErrorCode.PARAMS_GET_ERROR);
         }
         if (StringUtils.isBlank(modelConfigBodyDTO.getId())) {
-            // 参照 MP @TableId AutoUUID 策略使用
+            // Tham khảo cách sử dụng chiến lược MP @TableId AutoUUID
             // com.baomidou.mybatisplus.core.incrementer.DefaultIdentifierGenerator(UUID.replace("-",""))
-            // 进行分配默认模型ID
+            // Gán ID mẫu mặc định
             modelConfigBodyDTO.setId(DefaultIdentifierGenerator.getInstance().nextUUID(ModelConfigEntity.class));
         }
     }
 
     /**
-     * 设置默认模型
+     * Đặt mô hình mặc định
      */
     @Override
     public void setDefaultModel(String modelType, int isDefault) {
-        // 参数验证
+        // Xác thực tham số
         if (StringUtils.isBlank(modelType)) {
             throw new RenException(ErrorCode.MODEL_TYPE_PROVIDE_CODE_NOT_NULL);
         }
@@ -278,12 +278,12 @@ public class ModelConfigServiceImpl extends BaseServiceImpl<ModelConfigDao, Mode
         modelConfigDao.update(entity, new QueryWrapper<ModelConfigEntity>()
                 .eq("model_type", modelType));
 
-        // 清除相关缓存
+        // Xóa bộ nhớ đệm liên quan
         clearModelCacheByType(modelType);
     }
 
     /**
-     * 验证模型提供者
+     * Xác thực nhà cung cấp mô hình
      */
     private void validateModelProvider(String modelType, String provideCode) {
         List<ModelProviderDTO> providerList = modelProviderService.getList(modelType, provideCode);
@@ -293,7 +293,7 @@ public class ModelConfigServiceImpl extends BaseServiceImpl<ModelConfigDao, Mode
     }
 
     /**
-     * 从数据库获取原始配置（不经过敏感数据处理）
+     * Lấy cấu hình gốc từ cơ sở dữ liệu (không xử lý dữ liệu nhạy cảm)
      */
     private ModelConfigEntity getOriginalConfigFromDb(String id) {
         ModelConfigEntity originalEntity = modelConfigDao.selectById(id);
@@ -304,7 +304,7 @@ public class ModelConfigServiceImpl extends BaseServiceImpl<ModelConfigDao, Mode
     }
 
     /**
-     * 验证LLM配置
+     * Xác minh cấu hình LLM
      */
     private void validateLlmConfiguration(ModelConfigBodyDTO modelConfigBodyDTO) {
         if (modelConfigBodyDTO.getConfigJson() != null && modelConfigBodyDTO.getConfigJson().containsKey("llm")) {
@@ -321,7 +321,7 @@ public class ModelConfigServiceImpl extends BaseServiceImpl<ModelConfigDao, Mode
                 throw new RenException(ErrorCode.LLM_NOT_EXIST);
             }
 
-            // 验证LLM类型
+            // Xác minh loại LLM
             JSONObject configJson = modelConfigEntity.getConfigJson();
             if (configJson != null && configJson.containsKey("type")) {
                 String type = configJson.get("type").toString();
@@ -333,47 +333,47 @@ public class ModelConfigServiceImpl extends BaseServiceImpl<ModelConfigDao, Mode
     }
 
     /**
-     * 准备更新实体，处理敏感数据
+     * Chuẩn bị cập nhật thực thể, xử lý dữ liệu nhạy cảm
      */
     private ModelConfigEntity prepareUpdateEntity(ModelConfigBodyDTO modelConfigBodyDTO,
             ModelConfigEntity originalEntity,
             String modelType,
             String id) {
-        // 1. 复制原始实体，保留所有原始数据（包括敏感信息）
+        // 1. Sao chép thực thể gốc, giữ lại toàn bộ dữ liệu gốc (bao gồm cả thông tin nhạy cảm)
         ModelConfigEntity modelConfigEntity = ConvertUtils.sourceToTarget(originalEntity, ModelConfigEntity.class);
         modelConfigEntity.setId(id);
         modelConfigEntity.setModelType(modelType);
 
-        // 2. 只更新非敏感字段
+        // 2. Chỉ cập nhật các trường không nhạy cảm
         modelConfigEntity.setModelName(modelConfigBodyDTO.getModelName());
         modelConfigEntity.setSort(modelConfigBodyDTO.getSort());
         modelConfigEntity.setIsEnabled(modelConfigBodyDTO.getIsEnabled());
         modelConfigEntity.setRemark(modelConfigBodyDTO.getRemark());
-        // 3. 处理配置JSON，仅更新非敏感字段和明确修改的敏感字段
+        // 3. Xử lý cấu hình JSON và chỉ cập nhật các trường không nhạy cảm và các trường nhạy cảm được sửa đổi rõ ràng
         if (modelConfigBodyDTO.getConfigJson() != null && originalEntity.getConfigJson() != null) {
             JSONObject originalJson = originalEntity.getConfigJson();
-            JSONObject updatedJson = new JSONObject(originalJson); // 基于原始JSON进行修改
+            JSONObject updatedJson = new JSONObject(originalJson); // Dựa trên bản gốcJSONThực hiện thay đổi
 
-            // 遍历更新的JSON，只更新非敏感字段或确实被修改的敏感字段
+            // Lặp lại JSON đã cập nhật và chỉ cập nhật các trường không nhạy cảm hoặc các trường nhạy cảm thực sự đã được sửa đổi
             for (String key : modelConfigBodyDTO.getConfigJson().keySet()) {
                 Object value = modelConfigBodyDTO.getConfigJson().get(key);
 
-                // 如果是敏感字段，需要确认是否真的被修改（前端传入的可能是掩码后的值）
+                // Nếu đó là trường nhạy cảm, bạn cần xác nhận xem nó có thực sự được sửa đổi hay không (giá trị được truyền vào bởi giao diện người dùng có thể là giá trị bị che)
                 if (SensitiveDataUtils.isSensitiveField(key)) {
 
                     if (value instanceof String && !SensitiveDataUtils.isMaskedValue((String) value)) {
                         updatedJson.put(key, value);
                     }
                 } else if (value instanceof JSONObject) {
-                    // 递归处理嵌套JSON
+                    // Xử lý đệ quy JSON lồng nhau
                     mergeJson(updatedJson, key, (JSONObject) value);
                 } else {
-                    // 非敏感字段直接更新
+                    // Các trường không nhạy cảm được cập nhật trực tiếp
                     updatedJson.put(key, value);
                 }
             }
 
-            // 删除在新JSON中不存在的非敏感字段
+            // Xóa các trường không nhạy cảm không tồn tại trong JSON mới
             for (String oldKey : originalJson.keySet().toArray(new String[0])) {
                 if (!modelConfigBodyDTO.getConfigJson().containsKey(oldKey)
                         && !SensitiveDataUtils.isSensitiveField(oldKey)) {
@@ -387,37 +387,37 @@ public class ModelConfigServiceImpl extends BaseServiceImpl<ModelConfigDao, Mode
         return modelConfigEntity;
     }
 
-    // 辅助方法：判断值是否是掩码格式
+    // Phương pháp phụ trợ: Xác định xem giá trị có ở định dạng mặt nạ hay không
     private boolean isMaskedValue(String value) {
         if (value == null)
             return false;
-        // 简单判断是否包含掩码的特征（***）
+        // Đơn giản chỉ cần xác định xem nó có chứa các tính năng bị che giấu hay không (***)
         return value.contains("***");
     }
 
-    // 辅助方法：递归合并 JSON，保留原始敏感字段
+    // Phương thức trợ giúp: Hợp nhất đệ quy JSON, giữ lại các trường nhạy cảm ban đầu
     private void mergeJson(JSONObject original, String key, JSONObject updated) {
-        // 空值检查
+        // Kiểm tra giá trị null
         if (original == null || updated == null) {
-            log.warn("mergeJson: original 或 updated 为 null");
+            log.warn("mergeJson: original hoặc updated cho null");
             return;
         }
 
-        // 如果 original 中不存在 key，创建一个新的 JSON 对象
+        // Nếu khóa không tồn tại trong bản gốc, hãy tạo một đối tượng JSON mới
         if (!original.containsKey(key)) {
             original.put(key, new JSONObject());
         }
 
-        // 获取 original 中的子对象
+        // Lấy các đối tượng con trong bản gốc
         Object originalValue = original.get(key);
         JSONObject originalChild;
 
-        // 检查 originalValue 是否是 JSONObject 类型
+        // Kiểm tra xem giá trị gốc có thuộc loại JSONObject không
         if (originalValue instanceof JSONObject) {
             originalChild = (JSONObject) originalValue;
         } else {
-            // 如果不是 JSONObject 类型，记录警告并创建新的 JSON 对象
-            log.warn("mergeJson: key '{}' 的值不是 JSONObject 类型 (实际类型：{})，将创建新对象",
+            // Nếu không thuộc loại JSONObject, hãy ghi lại cảnh báo và tạo đối tượng JSON mới
+            log.warn("mergeJson: key '{}' Giá trị của không phải là JSONObject loại (loại thực tế：{})，Đối tượng mới sẽ được tạo",
                     key, originalValue != null ? originalValue.getClass().getSimpleName() : "null");
             originalChild = new JSONObject();
             original.put(key, originalChild);
@@ -435,7 +435,7 @@ public class ModelConfigServiceImpl extends BaseServiceImpl<ModelConfigDao, Mode
             }
         }
 
-        // 删除在新 JSON 中不存在的非敏感子字段
+        // Xóa các trường con không nhạy cảm không tồn tại trong JSON mới
         for (String oldChildKey : originalChild.keySet().toArray(new String[0])) {
             if (!updated.containsKey(oldChildKey) && !SensitiveDataUtils.isSensitiveField(oldChildKey)) {
                 originalChild.remove(oldChildKey);
@@ -444,7 +444,7 @@ public class ModelConfigServiceImpl extends BaseServiceImpl<ModelConfigDao, Mode
     }
 
     /**
-     * 准备新增实体
+     * Chuẩn bị thêm các thực thể mới
      */
     private ModelConfigEntity prepareAddEntity(ModelConfigBodyDTO modelConfigBodyDTO, String modelType) {
         ModelConfigEntity modelConfigEntity = ConvertUtils.sourceToTarget(modelConfigBodyDTO, ModelConfigEntity.class);
@@ -454,7 +454,7 @@ public class ModelConfigServiceImpl extends BaseServiceImpl<ModelConfigDao, Mode
     }
 
     /**
-     * 构建返回的DTO，处理敏感数据
+     * Xây dựng DTO được trả về và xử lý dữ liệu nhạy cảm
      */
     private ModelConfigDTO buildResponseDTO(ModelConfigEntity entity) {
         ModelConfigDTO dto = ConvertUtils.sourceToTarget(entity, ModelConfigDTO.class);
@@ -465,14 +465,14 @@ public class ModelConfigServiceImpl extends BaseServiceImpl<ModelConfigDao, Mode
     }
 
     /**
-     * 处理敏感字段
+     * Xử lý các trường nhạy cảm
      */
     private JSONObject maskSensitiveFields(JSONObject configJson) {
         return SensitiveDataUtils.maskSensitiveFields(configJson);
     }
 
     /**
-     * 清除模型缓存
+     * Xóa bộ nhớ đệm mô hình
      */
     private void clearModelCache(String id) {
         redisUtils.delete(RedisKeys.getModelConfigById(id));
@@ -480,7 +480,7 @@ public class ModelConfigServiceImpl extends BaseServiceImpl<ModelConfigDao, Mode
     }
 
     /**
-     * 按模型类型清除缓存
+     * Xóa bộ nhớ đệm theo loại mô hình
      */
     private void clearModelCacheByType(String modelType) {
         List<ModelConfigEntity> entities = modelConfigDao.selectList(
@@ -491,7 +491,7 @@ public class ModelConfigServiceImpl extends BaseServiceImpl<ModelConfigDao, Mode
     }
 
     /**
-     * 检查智能体配置是否有引用
+     * Kiểm tra xem cấu hình tác nhân có tham chiếu không
      */
     private void checkAgentReference(String modelId) {
         List<AgentEntity> agents = agentDao.selectList(
@@ -518,7 +518,7 @@ public class ModelConfigServiceImpl extends BaseServiceImpl<ModelConfigDao, Mode
     }
 
     /**
-     * 检查意图识别配置是否有引用
+     * Kiểm tra xem cấu hình nhận dạng ý định có tham chiếu không
      */
     private void checkIntentConfigReference(String modelId) {
         ModelConfigEntity modelConfig = modelConfigDao.selectById(modelId);
@@ -535,7 +535,7 @@ public class ModelConfigServiceImpl extends BaseServiceImpl<ModelConfigDao, Mode
     }
 
     /**
-     * 获取符合条件的TTS平台列表
+     * Nhận danh sách các nền tảng TTS đủ điều kiện
      */
     @Override
     public List<Map<String, Object>> getTtsPlatformList() {
@@ -543,7 +543,7 @@ public class ModelConfigServiceImpl extends BaseServiceImpl<ModelConfigDao, Mode
     }
 
     /**
-     * 根据模型类型获取所有启用的模型配置
+     * Nhận tất cả các cấu hình mô hình được kích hoạt dựa trên loại mô hình
      */
     @Override
     public List<ModelConfigEntity> getEnabledModelsByType(String modelType) {

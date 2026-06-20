@@ -6,7 +6,7 @@ import xiaozhi.common.dao.BaseDao;
 import xiaozhi.modules.sys.entity.SysUserEntity;
 
 /**
- * 系统用户
+ * người dùng hệ thống
  */
 @Mapper
 public interface SysUserDao extends BaseDao<SysUserEntity> {

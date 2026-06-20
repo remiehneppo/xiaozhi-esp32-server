@@ -8,61 +8,61 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
 /**
- * 文档 DTO
+ * Tài liệu DTO
  */
 @Data
-@Schema(description = "知识库文档")
+@Schema(description = "Tài liệu cơ sở tri thức")
 public class DocumentDTO implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    @Schema(description = "本地ID")
+    @Schema(description = "địa phươngID")
     private String id;
 
-    @Schema(description = "知识库ID")
+    @Schema(description = "cơ sở tri thứcID")
     private String datasetId;
 
-    @Schema(description = "RAGFlow文档ID")
+    @Schema(description = "RAGFlowTài liệuID")
     private String documentId;
 
-    @Schema(description = "文档名称")
+    @Schema(description = "Tên tài liệu")
     private String name;
 
-    @Schema(description = "文件大小")
+    @Schema(description = "kích thước tập tin")
     private Long size;
 
-    @Schema(description = "文件类型")
+    @Schema(description = "Loại tệp")
     private String type;
 
-    @Schema(description = "分块方法")
+    @Schema(description = "Phương pháp chia nhỏ")
     private String chunkMethod;
 
-    @Schema(description = "解析配置")
+    @Schema(description = "Cấu hình phân tích")
     private Map<String, Object> parserConfig;
 
-    @Schema(description = "处理状态 (1:解析中 3:成功 4:失败)")
+    @Schema(description = "Trạng thái xử lý (1:Phân tích cú pháp 3:sự thành công 4:thất bại)")
     private Integer status;
 
-    @Schema(description = "错误信息")
+    @Schema(description = "thông báo lỗi")
     private String error;
 
-    @Schema(description = "分块数量")
+    @Schema(description = "Số lượng khối")
     private Integer chunkCount;
 
-    @Schema(description = "Token数量")
+    @Schema(description = "Tokensố lượng")
     private Long tokenCount;
 
-    @Schema(description = "是否启用")
+    @Schema(description = "Có bật hay không")
     private Integer enabled;
 
-    @Schema(description = "创建时间")
+    @Schema(description = "thời gian sáng tạo")
     private Date createdAt;
 
-    @Schema(description = "更新时间")
+    @Schema(description = "Thời gian cập nhật")
     private Date updatedAt;
 
-    @Schema(description = "上传进度 (虚拟字段)")
+    @Schema(description = "Tiến trình tải lên (trường ảo)")
     private Double progress;
 
-    @Schema(description = "缩略图/预览图 (虚拟字段)")
+    @Schema(description = "hình thu nhỏ/Xem trước (trường ảo)")
     private String thumbnail;
 }

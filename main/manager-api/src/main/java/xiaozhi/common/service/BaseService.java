@@ -6,8 +6,8 @@ import java.util.Collection;
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
 
 /**
- * 基础服务接口，所有Service接口都要继承
- * Copyright (c) 人人开源 All rights reserved.
+ * Giao diện dịch vụ cơ bản, tất cả các giao diện Dịch vụ phải kế thừa
+ * Bản quyền (c) Renren Kaiyuan Mọi quyền được bảo lưu.
  * Website: https://www.renren.io
  */
 public interface BaseService<T> {
@@ -15,95 +15,95 @@ public interface BaseService<T> {
 
     /**
      * <p>
-     * 插入一条记录（选择字段，策略插入）
+     * Chèn bản ghi (chọn trường, chèn theo chiến lược)
      * </p>
      *
-     * @param entity 实体对象
+     * @param đối tượng thực thể thực thể
      */
     boolean insert(T entity);
 
     /**
      * <p>
-     * 插入（批量），该方法不支持 Oracle、SQL Server
+     * Insert (batch), phương pháp này không hỗ trợ Oracle, SQL Server
      * </p>
      *
-     * @param entityList 实体对象集合
+     * @param Bộ sưu tập đối tượng thực thể danh sách thực thể
      */
     boolean insertBatch(Collection<T> entityList);
 
     /**
      * <p>
-     * 插入（批量），该方法不支持 Oracle、SQL Server
+     * Insert (batch), phương pháp này không hỗ trợ Oracle, SQL Server
      * </p>
      *
-     * @param entityList 实体对象集合
-     * @param batchSize  插入批次数量
+     * @param Bộ sưu tập đối tượng thực thể danh sách thực thể
+     * @param batchSize chèn kích thước lô
      */
     boolean insertBatch(Collection<T> entityList, int batchSize);
 
     /**
      * <p>
-     * 根据 ID 选择修改
+     * Chọn chỉnh sửa dựa trên ID
      * </p>
      *
-     * @param entity 实体对象
+     * @param đối tượng thực thể thực thể
      */
     boolean updateById(T entity);
 
     /**
      * <p>
-     * 根据 whereEntity 条件，更新记录
+     * Cập nhật bản ghi dựa trên điều kiện WhereEntity
      * </p>
      *
-     * @param entity        实体对象
-     * @param updateWrapper 实体对象封装操作类
-     *                      {@link com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper}
+     * @param đối tượng thực thể thực thể
+     * @param updateWrapper Lớp hoạt động đóng gói đối tượng thực thể
+     * {@link com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper}
      */
     boolean update(T entity, Wrapper<T> updateWrapper);
 
     /**
      * <p>
-     * 根据ID 批量更新
+     * Cập nhật hàng loạt dựa trên ID
      * </p>
      *
-     * @param entityList 实体对象集合
+     * @param Bộ sưu tập đối tượng thực thể danh sách thực thể
      */
     boolean updateBatchById(Collection<T> entityList);
 
     /**
      * <p>
-     * 根据ID 批量更新
+     * Cập nhật hàng loạt dựa trên ID
      * </p>
      *
-     * @param entityList 实体对象集合
-     * @param batchSize  更新批次数量
+     * @param Bộ sưu tập đối tượng thực thể danh sách thực thể
+     * @param batchSize cập nhật kích thước lô
      */
     boolean updateBatchById(Collection<T> entityList, int batchSize);
 
     /**
      * <p>
-     * 根据 ID 查询
+     * Truy vấn theo ID
      * </p>
      *
-     * @param id 主键ID
+     * @param id ID khóa chính
      */
     T selectById(Serializable id);
 
     /**
      * <p>
-     * 根据 ID 删除
+     * Xóa theo ID
      * </p>
      *
-     * @param id 主键ID
+     * @param id ID khóa chính
      */
     boolean deleteById(Serializable id);
 
     /**
      * <p>
-     * 删除（根据ID 批量删除）
+     * Xóa (xóa hàng loạt dựa trên ID)
      * </p>
      *
-     * @param idList 主键ID列表
+     * @param idList danh sách ID khóa chính
      */
     boolean deleteBatchIds(Collection<? extends Serializable> idList);
 }

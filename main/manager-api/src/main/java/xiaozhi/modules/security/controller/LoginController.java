@@ -44,13 +44,13 @@ import xiaozhi.modules.sys.service.SysUserService;
 import xiaozhi.modules.sys.vo.SysDictDataItem;
 
 /**
- * 登录控制层
+ * Đăng nhập vào lớp điều khiển
  */
 @Slf4j
 @AllArgsConstructor
 @RestController
 @RequestMapping("/user")
-@Tag(name = "登录管理")
+@Tag(name = "Quản lý đăng nhập")
 public class LoginController {
     private final SysUserService sysUserService;
     private final SysUserTokenService sysUserTokenService;
@@ -59,18 +59,18 @@ public class LoginController {
     private final SysDictDataService sysDictDataService;
 
     @GetMapping("/captcha")
-    @Operation(summary = "验证码")
+    @Operation(summary = "Mã xác minh")
     public void captcha(HttpServletResponse response, String uuid) throws IOException {
-        // uuid不能为空
+        // uuid không được để trống
         AssertUtils.isBlank(uuid, ErrorCode.IDENTIFIER_NOT_NULL);
-        // 生成验证码
+        // Tạo mã xác minh
         captchaService.create(response, uuid);
     }
 
     @PostMapping("/smsVerification")
-    @Operation(summary = "短信验证码")
+    @Operation(summary = "Mã xác minh SMS")
     public Result<Void> smsVerification(@RequestBody SmsVerificationDTO dto) {
-        // 验证图形验证码
+        // Xác minh mã xác minh đồ họa
         boolean validate = captchaService.validate(dto.getCaptchaId(), dto.getCaptcha(), false);
         if (!validate) {
             throw new RenException(ErrorCode.SMS_CAPTCHA_ERROR);
@@ -81,29 +81,29 @@ public class LoginController {
         if (!isMobileRegister) {
             throw new RenException(ErrorCode.MOBILE_REGISTER_DISABLED);
         }
-        // 发送短信验证码
+        // Gửi mã xác minh qua SMS
         captchaService.sendSMSValidateCode(dto.getPhone());
         return new Result<>();
     }
 
     @PostMapping("/login")
-    @Operation(summary = "登录")
+    @Operation(summary = "Đăng nhập")
     public Result<TokenDTO> login(@RequestBody LoginDTO login) {
         String password = login.getPassword();
 
-        // 使用工具类解密并验证验证码
+        // Sử dụng các lớp công cụ để giải mã và xác minh mã xác minh
         String actualPassword = Sm2DecryptUtil.decryptAndValidateCaptcha(
                 password, login.getCaptchaId(), captchaService, sysParamsService);
 
         login.setPassword(actualPassword);
 
-        // 按照用户名获取用户
+        // Nhận người dùng theo tên người dùng
         SysUserDTO userDTO = sysUserService.getByUsername(login.getUsername());
-        // 判断用户是否存在
+        // Xác định xem người dùng có tồn tại hay không
         if (userDTO == null) {
             throw new RenException(ErrorCode.ACCOUNT_PASSWORD_ERROR);
         }
-        // 判断密码是否正确，不一样则进入if
+        // Xác định xem mật khẩu có đúng không, nếu không thì nhập if
         if (!PasswordUtils.matches(login.getPassword(), userDTO.getPassword())) {
             throw new RenException(ErrorCode.ACCOUNT_PASSWORD_ERROR);
         }
@@ -111,7 +111,7 @@ public class LoginController {
     }
 
     @PostMapping("/register")
-    @Operation(summary = "注册")
+    @Operation(summary = "Đăng ký")
     public Result<Void> register(@RequestBody LoginDTO login) {
         if (!sysUserService.getAllowUserRegister()) {
             throw new RenException(ErrorCode.USER_REGISTER_DISABLED);
@@ -119,30 +119,30 @@ public class LoginController {
 
         String password = login.getPassword();
 
-        // 使用工具类解密并验证验证码
+        // Sử dụng các lớp công cụ để giải mã và xác minh mã xác minh
         String actualPassword = Sm2DecryptUtil.decryptAndValidateCaptcha(
                 password, login.getCaptchaId(), captchaService, sysParamsService);
 
         login.setPassword(actualPassword);
 
-        // 是否开启手机注册
+        // Có bật đăng ký điện thoại di động hay không
         Boolean isMobileRegister = sysParamsService
                 .getValueObject(Constant.SysMSMParam.SERVER_ENABLE_MOBILE_REGISTER.getValue(), Boolean.class);
         boolean validate;
         if (isMobileRegister) {
-            // 验证用户是否是手机号码
+            // Xác minh xem người dùng có số điện thoại di động hay không
             boolean validPhone = ValidatorUtils.isValidPhone(login.getUsername());
             if (!validPhone) {
                 throw new RenException(ErrorCode.USERNAME_NOT_PHONE);
             }
-            // 验证短信验证码是否正常
+            // Xác minh xem mã xác minh SMS có bình thường không
             validate = captchaService.validateSMSValidateCode(login.getUsername(), login.getMobileCaptcha(), false);
             if (!validate) {
                 throw new RenException(ErrorCode.SMS_CODE_ERROR);
             }
         }
 
-        // 按照用户名获取用户
+        // Nhận người dùng theo tên người dùng
         SysUserDTO userDTO = sysUserService.getByUsername(login.getUsername());
         if (userDTO != null) {
             throw new RenException(ErrorCode.PHONE_ALREADY_REGISTERED);
@@ -155,7 +155,7 @@ public class LoginController {
     }
 
     @GetMapping("/info")
-    @Operation(summary = "用户信息获取")
+    @Operation(summary = "Lấy thông tin người dùng")
     public Result<UserDetail> info() {
         UserDetail user = SecurityUser.getUser();
         Result<UserDetail> result = new Result<>();
@@ -164,9 +164,9 @@ public class LoginController {
     }
 
     @PutMapping("/change-password")
-    @Operation(summary = "修改用户密码")
+    @Operation(summary = "Thay đổi mật khẩu người dùng")
     public Result<?> changePassword(@RequestBody PasswordDTO passwordDTO) {
-        // 判断非空
+        // Bản án không trống rỗng
         ValidatorUtils.validateEntity(passwordDTO);
         Long userId = SecurityUser.getUserId();
         sysUserTokenService.changePassword(userId, passwordDTO);
@@ -174,37 +174,37 @@ public class LoginController {
     }
 
     @PutMapping("/retrieve-password")
-    @Operation(summary = "找回密码")
+    @Operation(summary = "Lấy lại mật khẩu")
     public Result<?> retrievePassword(@RequestBody RetrievePasswordDTO dto) {
-        // 是否开启手机注册
+        // Có bật đăng ký điện thoại di động hay không
         Boolean isMobileRegister = sysParamsService
                 .getValueObject(Constant.SysMSMParam.SERVER_ENABLE_MOBILE_REGISTER.getValue(), Boolean.class);
         if (!isMobileRegister) {
             throw new RenException(ErrorCode.RETRIEVE_PASSWORD_DISABLED);
         }
-        // 判断非空
+        // Bản án không trống rỗng
         ValidatorUtils.validateEntity(dto);
-        // 验证用户是否是手机号码
+        // Xác minh xem người dùng có số điện thoại di động hay không
         boolean validPhone = ValidatorUtils.isValidPhone(dto.getPhone());
         if (!validPhone) {
             throw new RenException(ErrorCode.PHONE_FORMAT_ERROR);
         }
 
-        // 按照用户名获取用户
+        // Nhận người dùng theo tên người dùng
         SysUserDTO userDTO = sysUserService.getByUsername(dto.getPhone());
         if (userDTO == null) {
             throw new RenException(ErrorCode.PHONE_NOT_REGISTERED);
         }
-        // 验证短信验证码是否正常
+        // Xác minh xem mã xác minh SMS có bình thường không
         boolean validate = captchaService.validateSMSValidateCode(dto.getPhone(), dto.getCode(), false);
-        // 判断是否通过验证
+        // Xác định xem việc xác minh có được thông qua hay không
         if (!validate) {
             throw new RenException(ErrorCode.SMS_CODE_ERROR);
         }
 
         String password = dto.getPassword();
 
-        // 使用工具类解密并验证验证码
+        // Sử dụng các lớp công cụ để giải mã và xác minh mã xác minh
         String actualPassword = Sm2DecryptUtil.decryptAndValidateCaptcha(
                 password, dto.getCaptchaId(), captchaService, sysParamsService);
 
@@ -215,7 +215,7 @@ public class LoginController {
     }
 
     @GetMapping("/pub-config")
-    @Operation(summary = "公共配置")
+    @Operation(summary = "cấu hình công khai")
     public Result<Map<String, Object>> pubConfig() {
         Map<String, Object> config = new HashMap<>();
         config.put("enableMobileRegister", sysParamsService
@@ -229,14 +229,14 @@ public class LoginController {
         config.put("beianGaNum", sysParamsService.getValue(Constant.SysBaseParam.BEIAN_GA_NUM.getValue(), true));
         config.put("name", sysParamsService.getValue(Constant.SysBaseParam.SERVER_NAME.getValue(), true));
 
-        // SM2公钥
+        // Khóa công khai SM2
         String publicKey = sysParamsService.getValue(Constant.SM2_PUBLIC_KEY, true);
         if (StringUtils.isBlank(publicKey)) {
             throw new RenException(ErrorCode.SM2_KEY_NOT_CONFIGURED);
         }
         config.put("sm2PublicKey", publicKey);
 
-        // 获取system-web.menu参数配置
+        // Nhận cấu hình tham số system-web.menu
         String menuConfig = sysParamsService.getValue("system-web.menu", true);
         if (StringUtils.isNotBlank(menuConfig)) {
             config.put("systemWebMenu", JsonUtils.parseObject(menuConfig, Object.class));

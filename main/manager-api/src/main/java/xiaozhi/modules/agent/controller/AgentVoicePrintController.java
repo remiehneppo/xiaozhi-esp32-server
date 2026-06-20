@@ -27,7 +27,7 @@ import xiaozhi.modules.agent.vo.AgentVoicePrintVO;
 import xiaozhi.modules.security.user.SecurityUser;
 import xiaozhi.modules.sys.service.SysParamsService;
 
-@Tag(name = "智能体声纹管理")
+@Tag(name = "Quản lý giọng nói thông minh")
 @AllArgsConstructor
 @RestController
 @RequestMapping("/agent/voice-print")
@@ -36,7 +36,7 @@ public class AgentVoicePrintController {
     private final SysParamsService sysParamsService;
 
     @PostMapping
-    @Operation(summary = "创建智能体的声纹")
+    @Operation(summary = "Tạo giọng nói của đại lý")
     @RequiresPermissions("sys:role:normal")
     public Result<Void> save(@RequestBody @Valid AgentVoicePrintSaveDTO dto) {
         boolean b = agentVoicePrintService.insert(dto);
@@ -47,7 +47,7 @@ public class AgentVoicePrintController {
     }
 
     @PutMapping
-    @Operation(summary = "更新智能体的对应声纹")
+    @Operation(summary = "Cập nhật giọng nói tương ứng của đại lý")
     @RequiresPermissions("sys:role:normal")
     public Result<Void> update(@RequestBody @Valid AgentVoicePrintUpdateDTO dto) {
         Long userId = SecurityUser.getUserId();
@@ -59,11 +59,11 @@ public class AgentVoicePrintController {
     }
 
     @DeleteMapping("/{id}")
-    @Operation(summary = "删除智能体对应声纹")
+    @Operation(summary = "Xóa giọng nói tương ứng với đại lý")
     @RequiresPermissions("sys:role:normal")
     public Result<Void> delete(@PathVariable String id) {
         Long userId = SecurityUser.getUserId();
-        // 先删除关联的设备
+        // Trước tiên hãy xóa thiết bị được liên kết
         boolean delete = agentVoicePrintService.delete(userId, id);
         if (delete) {
             return new Result<>();
@@ -72,7 +72,7 @@ public class AgentVoicePrintController {
     }
 
     @GetMapping("/list/{id}")
-    @Operation(summary = "获取用户指定智能体声纹列表")
+    @Operation(summary = "Lấy danh sách giọng nói của các tác nhân do người dùng chỉ định")
     @RequiresPermissions("sys:role:normal")
     public Result<List<AgentVoicePrintVO>> list(@PathVariable String id) {
         String voiceprintUrl = sysParamsService.getValue("server.voice_print", true);

@@ -5,27 +5,27 @@ import java.time.LocalDateTime;
 import lombok.Data;
 
 /**
- * 智能体会话列表DTO
+ * Danh sách phiên đại lý DTO
  */
 @Data
 public class AgentChatSessionDTO {
     /**
-     * 会话ID
+     * ID phiên
      */
     private String sessionId;
 
     /**
-     * 会话时间
+     * thời gian phiên
      */
     private LocalDateTime createdAt;
 
     /**
-     * 聊天条数
+     * Số lượng cuộc trò chuyện
      */
     private Integer chatCount;
 
     /**
-     * 会话标题
+     * Tiêu đề phiên
      */
     private String title;
 }

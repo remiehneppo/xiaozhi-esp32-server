@@ -37,7 +37,7 @@ import xiaozhi.common.exception.RenException;
 
 /**
  * RAGFlow HTTP Client
- * 统一处理HTTP通信、鉴权、超时与错误解析
+ * Xử lý thống nhất giao tiếp HTTP, xác thực, thời gian chờ và phân tích lỗi
  */
 @Slf4j
 public class RAGFlowClient {
@@ -47,7 +47,7 @@ public class RAGFlowClient {
     private final RestTemplate restTemplate;
     private final ObjectMapper objectMapper;
 
-    // 默认超时时间 (秒)
+    // Thời gian chờ mặc định (giây)
     private static final int DEFAULT_TIMEOUT = 30;
 
     public RAGFlowClient(String baseUrl, String apiKey) {
@@ -58,25 +58,25 @@ public class RAGFlowClient {
         this.baseUrl = baseUrl.endsWith("/") ? baseUrl.substring(0, baseUrl.length() - 1) : baseUrl;
         this.apiKey = apiKey;
         this.objectMapper = new ObjectMapper();
-        // [Reinforce] 兼容 RAGFlow 返回的 RFC 1123 日期格式 (如: Tue, 10 Feb 2026 10:27:35 GMT)
+        // [Củng cố] Tương thích với định dạng ngày RFC 1123 được RAGFlow trả về (ví dụ: Thứ Ba, ngày 10 tháng 2 năm 2026 10:27:35 GMT)
         this.objectMapper
                 .setDateFormat(new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss 'GMT'", Locale.US));
         this.objectMapper.setTimeZone(TimeZone.getTimeZone("GMT"));
 
-        // 优先从 Spring 上下文中获取池化的 RestTemplate Bean (Issue 3: 连接池化)
+        // Ưu tiên lấy RestTemplate Bean được gộp từ bối cảnh Spring (Vấn đề 3: Nhóm kết nối)
         RestTemplate pooledTemplate = null;
         try {
             pooledTemplate = xiaozhi.common.utils.SpringContextUtils.getBean(RestTemplate.class);
         } catch (Exception e) {
-            log.warn("无法从 SpringContext 获取池化 RestTemplate，将退化为简单连接模式: {}", e.getMessage());
+            log.warn("Không thể truy cập từ SpringContext Nhận tổng hợp RestTemplate，Sẽ thoái hóa thành chế độ kết nối đơn giản: {}", e.getMessage());
         }
 
         if (false) { // Force new RestTemplate for debugging
             this.restTemplate = pooledTemplate;
-            log.debug("RAGFlowClient 已成功挂载全局池化 RestTemplate");
+            log.debug("RAGFlowClient Tổng hợp toàn cầu được gắn thành công RestTemplate");
         } else {
-            // 兜底方案：配置超时并创建简单 RestTemplate
-            log.info("RAGFlowClient 初始化: 使用独立 RestTemplate (Debug Mode)");
+            // Một giải pháp hoàn hảo: Định cấu hình thời gian chờ và tạo RestTemplate đơn giản
+            log.info("RAGFlowClient khởi tạo: Sử dụng độc lập RestTemplate (Debug Mode)");
             SimpleClientHttpRequestFactory factory = new SimpleClientHttpRequestFactory();
             factory.setConnectTimeout(timeoutSeconds * 1000);
             factory.setReadTimeout(timeoutSeconds * 1000);
@@ -85,7 +85,7 @@ public class RAGFlowClient {
     }
 
     /**
-     * 发送 GET 请求
+     * Gửi yêu cầu NHẬN
      */
     public Map<String, Object> get(String endpoint, Map<String, Object> queryParams) {
         String url = buildUrl(endpoint, queryParams);
@@ -94,7 +94,7 @@ public class RAGFlowClient {
     }
 
     /**
-     * 发送 POST 请求 (JSON)
+     * Gửi yêu cầu POST (JSON)
      */
     public Map<String, Object> post(String endpoint, Object body) {
         String url = buildUrl(endpoint, null);
@@ -109,7 +109,7 @@ public class RAGFlowClient {
     }
 
     /**
-     * 发送 DELETE 请求
+     * Gửi yêu cầu XÓA
      */
     public Map<String, Object> delete(String endpoint, Object body) {
         String url = buildUrl(endpoint, null);
@@ -118,7 +118,7 @@ public class RAGFlowClient {
     }
 
     /**
-     * 发送 PUT 请求
+     * Gửi yêu cầu PUT
      */
     public Map<String, Object> put(String endpoint, Object body) {
         String url = buildUrl(endpoint, null);
@@ -127,7 +127,7 @@ public class RAGFlowClient {
     }
 
     /**
-     * 发送 Multipart 请求 (文件上传)
+     * Gửi yêu cầu nhiều phần (tải lên tệp)
      */
     public Map<String, Object> postMultipart(String endpoint, MultiValueMap<String, Object> parts) {
         String url = buildUrl(endpoint, null);
@@ -136,7 +136,7 @@ public class RAGFlowClient {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.MULTIPART_FORM_DATA);
         headers.setBearerAuth(apiKey);
-        // 为了防止中文文件名乱码，某些环境可能需要设置 Charset，但在 Multipart 中通常由 Part header 控制
+        // Để tránh tên tệp tiếng Trung bị cắt xén, một số môi trường có thể cần đặt Bộ ký tự, nhưng trong Multipart, nó thường được điều khiển bởi tiêu đề Phần.
 
         HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(parts, headers);
 
@@ -147,7 +147,7 @@ public class RAGFlowClient {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.setBearerAuth(apiKey);
-        // 强制 UTF-8
+        // Buộc UTF-8
         headers.setAcceptCharset(Collections.singletonList(StandardCharsets.UTF_8));
 
         HttpEntity<Object> requestEntity = new HttpEntity<>(body, headers);
@@ -178,12 +178,12 @@ public class RAGFlowClient {
                 throw new RenException(ErrorCode.RAG_API_ERROR, msg != null ? msg : "Unknown RAGFlow Error");
             }
 
-            // 返回 data 字段，如果 data 不存在则返回整个 map (视具体情况，通常 RAGFlow 返回 code=0, data=...)
-            // 兼容性处理：如果 external caller 需要 check code，这里已经 check 过了。
-            // 统一返回 wrap 了 code 的 map 还是只返回 data?
-            // 根据分析报告，旧逻辑 check code==0 后取 data.
-            // 这里我们返回整个 Map，让 Adapter 决定怎么取，或者我们直接在这里剥离？
-            // 建议：为了灵活性，返回全量 Map，但在 Client 层做 code!=0 的抛错。
+            // Trả về trường dữ liệu hoặc toàn bộ bản đồ nếu dữ liệu không tồn tại (thường RAGFlow trả về code=0, data=... tùy theo tình huống)
+            // Xử lý tương thích: Nếu người gọi bên ngoài cần kiểm tra mã, mã đó đã được kiểm tra tại đây.
+            // Chúng ta có nên trả lại một bản đồ được bao bọc bằng mã một cách thống nhất hay chỉ trả về dữ liệu?
+            // Theo báo cáo phân tích, logic cũ kiểm tra code==0 rồi lấy dữ liệu.
+            // Ở đây chúng tôi trả lại toàn bộ Bản đồ và để Bộ điều hợp quyết định cách lấy nó hay chúng tôi chỉ loại bỏ nó ở đây?
+            // Đề xuất: Để linh hoạt, hãy trả lại Bản đồ đầy đủ nhưng đưa ra lỗi mã!=0 ở lớp Máy khách.
             return map;
 
         } catch (RenException re) {
@@ -213,24 +213,24 @@ public class RAGFlowClient {
                                         StandardCharsets.UTF_8.name()))
                                 .append("&");
                     } catch (UnsupportedEncodingException e) {
-                        log.warn("参数编码失败: k={}, v={}", k, v);
+                        log.warn("Mã hóa tham số không thành công: k={}, v={}", k, v);
                         sb.append(k).append("=").append(v).append("&");
                     }
                 }
             });
-            // 移除最后一个 &
+            // Xóa & cuối cùng
             sb.setLength(sb.length() - 1);
         }
         return sb.toString();
     }
 
     /**
-     * 发送流式 POST 请求 (SSE)
-     * 使用 Java 21 HttpClient 实现
+     * Gửi yêu cầu POST phát trực tuyến (SSE)
+     * Được triển khai bằng Java 21 HttpClient
      *
-     * @param endpoint API端点
-     * @param body     请求体
-     * @param onData   数据回调（每收到一行数据调用一次）
+     * Điểm cuối API điểm cuối @param
+     * @param nội dung yêu cầu nội dung
+     * @param onData gọi lại dữ liệu (được gọi sau khi nhận được mỗi hàng dữ liệu)
      */
     public void postStream(String endpoint, Object body, Consumer<String> onData) {
         try {
@@ -250,7 +250,7 @@ public class RAGFlowClient {
                     .POST(HttpRequest.BodyPublishers.ofString(jsonBody, StandardCharsets.UTF_8))
                     .build();
 
-            // 发送请求并处理流式响应
+            // Gửi yêu cầu và xử lý phản hồi phát trực tuyến
             httpClient.send(request, HttpResponse.BodyHandlers.ofInputStream())
                     .body()
                     .transferTo(new OutputStream() {

@@ -6,35 +6,35 @@ import xiaozhi.common.exception.ErrorCode;
 import xiaozhi.common.exception.RenException;
 
 /**
- * SQL过滤
- * Copyright (c) 人人开源 All rights reserved.
+ * Lọc SQL
+ * Bản quyền (c) Renren Kaiyuan Mọi quyền được bảo lưu.
  * Website: https://www.renren.io
  */
 public class SqlFilter {
 
     /**
-     * SQL注入过滤
+     * Lọc tiêm SQL
      *
-     * @param str 待验证的字符串
+     * @param str Chuỗi cần được xác minh
      */
     public static String sqlInject(String str) {
         if (StringUtils.isBlank(str)) {
             return null;
         }
-        // 去掉'|"|;|\字符
+        // Xóa các ký tự '|"|;|\
         str = StringUtils.replace(str, "'", "");
         str = StringUtils.replace(str, "\"", "");
         str = StringUtils.replace(str, ";", "");
         str = StringUtils.replace(str, "\\", "");
 
-        // 转换成小写
+        // Chuyển sang chữ thường
         str = str.toLowerCase();
 
-        // 非法字符
+        // Ký tự không hợp lệ
         String[] keywords = { "master", "truncate", "insert", "select", "delete", "update", "declare", "alter",
                 "drop" };
 
-        // 判断是否包含非法字符
+        // Xác định xem nó có chứa các ký tự không hợp lệ
         for (String keyword : keywords) {
             if (str.contains(keyword)) {
                 throw new RenException(ErrorCode.INVALID_SYMBOL);

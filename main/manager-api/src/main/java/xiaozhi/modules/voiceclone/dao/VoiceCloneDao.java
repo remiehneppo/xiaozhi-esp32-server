@@ -10,16 +10,16 @@ import xiaozhi.modules.model.dto.VoiceDTO;
 import xiaozhi.modules.voiceclone.entity.VoiceCloneEntity;
 
 /**
- * 声音克隆
+ * nhân bản âm thanh
  */
 @Mapper
 public interface VoiceCloneDao extends BaseMapper<VoiceCloneEntity> {
     /**
-     * 获取用户训练成功的音色列表
-     * 
-     * @param modelId 模型ID
-     * @param userId  用户ID
-     * @return 训练成功的音色列表
+     * Lấy danh sách âm sắc được người dùng huấn luyện thành công
+     *
+     * @param modelId ID mô hình
+     * @param userId ID người dùng
+     * @return Danh sách các âm sắc được huấn luyện thành công
      */
     List<VoiceDTO> getTrainSuccess(String modelId, Long userId);
 

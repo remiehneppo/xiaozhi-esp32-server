@@ -7,8 +7,8 @@ import xiaozhi.common.exception.ErrorCode;
 import xiaozhi.common.exception.RenException;
 
 /**
- * 生成token
- * Copyright (c) 人人开源 All rights reserved.
+ * Tạo mã thông báo
+ * Bản quyền (c) Renren Kaiyuan Mọi quyền được bảo lưu.
  * Website: https://www.renren.io
  */
 public class TokenGenerator {

@@ -9,8 +9,8 @@ import org.springframework.beans.BeanUtils;
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * 转换工具类
- * Copyright (c) 人人开源 All rights reserved.
+ * Lớp công cụ chuyển đổi
+ * Bản quyền (c) Renren Kaiyuan Mọi quyền được bảo lưu.
  * Website: https://www.renren.io
  */
 @Slf4j

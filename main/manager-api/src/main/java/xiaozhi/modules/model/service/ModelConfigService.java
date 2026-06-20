@@ -26,41 +26,41 @@ public interface ModelConfigService extends BaseService<ModelConfigEntity> {
     void delete(String id);
 
     /**
-     * 根据ID获取模型名称
-     * 
-     * @param id 模型ID
-     * @return 模型名称
+     * Nhận tên model dựa trên ID
+     *
+     * ID mô hình @param id
+     * @return tên mẫu
      */
     String getModelNameById(String id);
 
     /**
-     * 根据ID获取模型配置
-     * 
-     * @param id 模型ID
-     * @return 模型配置实体
+     * Nhận cấu hình mô hình dựa trên ID
+     *
+     * ID mô hình @param id
+     * Thực thể cấu hình mô hình @return
      */
     ModelConfigEntity getModelByIdFromCache(String id);
 
     /**
-     * 设置默认模型
+     * Đặt mô hình mặc định
      *
-     * @param modelType 模型类型
-     * @param isDefault 是否默认（1:是，0:否）
+     * @param modelType loại mô hình
+     * @param isDefault Là mặc định (1: có, 0: không)
      */
     void setDefaultModel(String modelType, int isDefault);
 
     /**
-     * 获取符合条件的TTS平台列表
+     * Nhận danh sách các nền tảng TTS đủ điều kiện
      *
-     * @return TTS平台列表(id和modelName)
+     * @return Danh sách nền tảng TTS (id và modelName)
      */
     List<Map<String, Object>> getTtsPlatformList();
 
     /**
-     * 根据模型类型获取所有启用的模型配置
+     * Nhận tất cả các cấu hình mô hình được kích hoạt dựa trên loại mô hình
      *
-     * @param modelType 模型类型（如：LLM, TTS, ASR等）
-     * @return 启用的模型配置列表
+     * @param modelType loại mô hình (chẳng hạn như: LLM, TTS, ASR, v.v.)
+     * Danh sách cấu hình mô hình đã bật @return
      */
     List<ModelConfigEntity> getEnabledModelsByType(String modelType);
 }

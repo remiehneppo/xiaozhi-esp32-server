@@ -18,7 +18,7 @@ import xiaozhi.modules.sys.service.SysUserService;
 @Slf4j
 @SpringBootTest
 @ActiveProfiles("dev")
-@DisplayName("设备测试")
+@DisplayName("Thử nghiệm thiết bị")
 public class DeviceTest {
 
     @Autowired
@@ -35,18 +35,18 @@ public class DeviceTest {
     }
 
     @Test
-    @DisplayName("测试写入设备信息")
+    @DisplayName("Thử nghiệm ghi thông tin thiết bị")
     public void testWriteDeviceInfo() {
-        log.info("开始测试写入设备信息...");
-        // 模拟设备MAC地址
+        log.info("Bắt đầu thử nghiệm ghi thông tin thiết bị...");
+        // Mô phỏng địa chỉ MAC của thiết bị
         String macAddress = "00:11:22:33:44:66";
-        // 模拟设备验证码
+        // Mô phỏng mã xác thực của thiết bị
         String deviceCode = "123456";
 
         HashMap<String, Object> map = new HashMap<>();
         map.put("mac_address", macAddress);
         map.put("activation_code", deviceCode);
-        map.put("board", "硬件型号");
+        map.put("board", "Mẫu phần cứng");
         map.put("app_version", "0.3.13");
 
         String safeDeviceId = macAddress.replace(":", "_").toLowerCase();
@@ -56,18 +56,18 @@ public class DeviceTest {
         String redisKey = "ota:activation:code:" + deviceCode;
         log.info("Redis Key: {}", redisKey);
 
-        // 将设备信息写入Redis
+        // Ghi thông tin thiết bị vào Redis
         redisUtils.set(redisKey, macAddress, 300);
-        log.info("设备信息已写入Redis");
+        log.info("Thông tin thiết bị đã được ghi vào Redis");
 
-        // 验证是否写入成功
+        // Xác thực việc ghi thành công
         String savedMacAddress = (String) redisUtils.get(redisKey);
-        log.info("从Redis读取的MAC地址: {}", savedMacAddress);
+        log.info("Địa chỉ MAC đọc từ Redis: {}", savedMacAddress);
 
-        // 使用断言验证
-        Assertions.assertNotNull(savedMacAddress, "从Redis读取的MAC地址不应为空");
-        Assertions.assertEquals(macAddress, savedMacAddress, "保存的MAC地址与原始MAC地址不匹配");
+        // Sử dụng khẳng định để xác thực
+        Assertions.assertNotNull(savedMacAddress, "Địa chỉ MAC đọc từ Redis không được để trống");
+        Assertions.assertEquals(macAddress, savedMacAddress, "Địa chỉ MAC đã lưu không khớp với địa chỉ MAC gốc");
 
-        log.info("测试完成");
+        log.info("Thử nghiệm hoàn tất");
     }
 }

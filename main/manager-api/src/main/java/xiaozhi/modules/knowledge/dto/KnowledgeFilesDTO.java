@@ -10,82 +10,82 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 
 @Data
-@Schema(description = "知识库文档")
+@Schema(description = "Tài liệu cơ sở tri thức")
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class KnowledgeFilesDTO implements Serializable {
 
     @Serial
     private static final long serialVersionUID = 1L;
-    @Schema(description = "唯一标识")
+    @Schema(description = "mã định danh duy nhất")
     private String id;
 
-    @Schema(description = "文档ID")
+    @Schema(description = "Tài liệuID")
     private String documentId;
 
-    @Schema(description = "知识库ID")
+    @Schema(description = "cơ sở tri thứcID")
     private String datasetId;
 
-    @Schema(description = "文档名称")
+    @Schema(description = "Tên tài liệu")
     private String name;
 
-    @Schema(description = "文档类型")
+    @Schema(description = "Loại tài liệu")
     private String fileType;
 
-    @Schema(description = "文件大小（字节）")
+    @Schema(description = "kích thước tập tin（Byte）")
     private Long fileSize;
 
-    @Schema(description = "文件路径")
+    @Schema(description = "đường dẫn tập tin")
     private String filePath;
 
-    @Schema(description = "解析进度 (0.0 ~ 1.0)")
+    @Schema(description = "Tiến trình phân tích cú pháp (0.0 ~ 1.0)")
     private Double progress;
 
-    @Schema(description = "缩略图 (Base64 或 URL)")
+    @Schema(description = "hình thu nhỏ (Base64 hoặc URL)")
     private String thumbnail;
 
-    @Schema(description = "解析耗时 (单位: 秒)")
+    @Schema(description = "Phân tích cần có thời gian (đơn vị: giây)")
     private Double processDuration;
 
-    @Schema(description = "来源类型 (local, s3, url 等)")
+    @Schema(description = "Loại nguồn (local, s3, url Đợi đã)")
     private String sourceType;
 
-    @Schema(description = "元数据字段 (Map 格式)")
+    @Schema(description = "trường siêu dữ liệu (Map định dạng)")
     private Map<String, Object> metaFields;
 
-    @Schema(description = "分块方法")
+    @Schema(description = "Phương pháp chia nhỏ")
     private String chunkMethod;
 
-    @Schema(description = "解析器配置")
+    @Schema(description = "Cấu hình trình phân tích cú pháp")
     private Map<String, Object> parserConfig;
 
-    @Schema(description = "可用状态 (1: 启用/正常, 0: 禁用/失效)")
+    @Schema(description = "Trạng thái sẵn có (1: kích hoạt/bình thường, 0: Vô hiệu hóa/không hợp lệ)")
     private String status;
 
-    @Schema(description = "运行状态 (UNSTART/RUNNING/CANCEL/DONE/FAIL)")
+    @Schema(description = "Trạng thái chạy (UNSTART/RUNNING/CANCEL/DONE/FAIL)")
     private String run;
 
-    @Schema(description = "创建者")
+    @Schema(description = "Người sáng tạo")
     private Long creator;
 
-    @Schema(description = "创建时间")
+    @Schema(description = "thời gian sáng tạo")
     private Date createdAt;
 
-    @Schema(description = "更新者")
+    @Schema(description = "Trình cập nhật")
     private Long updater;
 
-    @Schema(description = "更新时间")
+    @Schema(description = "Thời gian cập nhật")
     private Date updatedAt;
 
-    @Schema(description = "分块数量")
+    @Schema(description = "Số lượng khối")
     private Integer chunkCount;
 
-    @Schema(description = "Token数量")
+    @Schema(description = "Tokensố lượng")
     private Long tokenCount;
 
-    @Schema(description = "解析错误信息")
+    @Schema(description = "Phân tích thông báo lỗi")
     private String error;
 
-    // 文档解析状态常量定义
+    // Định nghĩa hằng số trạng thái phân tích tài liệu
     private static final Integer STATUS_UNSTART = 0;
     private static final Integer STATUS_RUNNING = 1;
     private static final Integer STATUS_CANCEL = 2;
@@ -93,14 +93,14 @@ public class KnowledgeFilesDTO implements Serializable {
     private static final Integer STATUS_FAIL = 4;
 
     /**
-     * 获取文档解析状态码（基于run字段转换）
+     * Nhận mã trạng thái phân tích tài liệu (dựa trên chuyển đổi trường chạy)
      */
     public Integer getParseStatusCode() {
         if (run == null) {
             return STATUS_UNSTART;
         }
 
-        // RAGFlow根据run字段的值直接映射到对应的状态码
+        // RAGFlow ánh xạ trực tiếp tới mã trạng thái tương ứng dựa trên giá trị của trường chạy.
         switch (run.toUpperCase()) {
             case "RUNNING":
                 return STATUS_RUNNING;

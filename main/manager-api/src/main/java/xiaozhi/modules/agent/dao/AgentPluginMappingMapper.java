@@ -8,7 +8,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import java.util.List;
 
 /**
-* @description 针对表【ai_agent_plugin_mapping(Agent与插件的唯一映射表)】的数据库操作Mapper
+* @description Hoạt động cơ sở dữ liệu Ánh xạ cho bảng [ai_agent_plugin_mapping (bảng ánh xạ duy nhất giữa Tác nhân và trình cắm)]
 * @createDate 2025-05-25 22:33:17
 * @Entity xiaozhi.modules.agent.entity.AgentPluginMapping
 */

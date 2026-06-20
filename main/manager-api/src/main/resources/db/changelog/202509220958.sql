@@ -1,19 +1,19 @@
 delete from `ai_model_config` where id = 'LLM_XunfeiSparkLLM';
-INSERT INTO `ai_model_config` VALUES ('LLM_XunfeiSparkLLM', 'LLM', '讯飞星火认知大模型', '讯飞星火认知大模型', 0, 1, '{"type": "openai", "model_name": "generalv3.5", "base_url": "https://spark-api-open.xf-yun.com/v1", "api_password": "你的api_password", "temperature": 0.5, "max_tokens": 2048, "top_p": 1.0, "frequency_penalty": 0.0}', 'https://www.xfyun.cn/doc/spark/HTTP%E8%B0%83%E7%94%A8%E6%96%87%E6%A1%A3.html', '讯飞星火认知大模型，支持多轮对话、文本生成等功能', 14, NULL, NULL, NULL, NULL);
+INSERT INTO `ai_model_config` VALUES ('LLM_XunfeiSparkLLM', 'LLM', 'Mô hình lớn nhận thức iFlytek Spark', 'Mô hình lớn nhận thức iFlytek Spark', 0, 1, '{"type": "openai", "model_name": "generalv3.5", "base_url": "https://spark-api-open.xf-yun.com/v1", "api_password": "của bạnapi_password", "temperature": 0.5, "max_tokens": 2048, "top_p": 1.0, "frequency_penalty": 0.0}', 'https://www.xfyun.cn/doc/spark/HTTP%E8%B0%83%E7%94%A8%E6%96%87%E6%A1%A3.html', 'Mô hình lớn nhận thức iFlytek Spark，Hỗ trợ nhiều vòng đối thoại、Tạo văn bản và các chức năng khác', 14, NULL, NULL, NULL, NULL);
 
--- 更新讯飞星火认知大模型配置的说明文档
+-- Tài liệu cập nhật cho cấu hình mô hình lớn nhận thức của iFlytek Spark
 UPDATE `ai_model_config` SET
 `doc_link` = 'https://www.xfyun.cn/doc/spark/HTTP%E8%B0%83%E7%94%A8%E6%96%87%E6%A1%A3.html',
-`remark` = '讯飞星火认知大模型配置说明：
-1. 登录讯飞开放平台 https://www.xfyun.cn/，每一个模型对应每一个api_password,更改模型时需要查看对应模型的api_password
-2. 创建星火认知大模型应用获取API Password
-3. 参数说明：
-   - api_password: API Password，在讯飞开放平台创建应用后获得
-   - model_name: 模型名称，支持generalv3.5、generalv3等版本
-   - base_url: API地址，默认https://spark-api-open.xf-yun.com/v1
-   - temperature: 温度参数，控制生成随机性，范围0-1，默认0.5
-   - max_tokens: 最大输出token数，默认2048
-   - top_p: 核心采样参数，控制词汇多样性，默认1.0
-   - frequency_penalty: 频率惩罚，降低重复内容，默认0.0
-4. 每一个模型对应每一个api_password,更改模型时需要查看对应模型的api_password。
+`remark` = 'Hướng dẫn cấu hình mô hình lớn nhận thức iFlytek Spark：
+1. Đăng nhập vào nền tảng mở iFlytek https://www.xfyun.cn/，Mỗi mô hình tương ứng với mỗiapi_password,Khi thay đổi model cần kiểm tra model tương ứngapi_password
+2. Tạo ứng dụng mô hình lớn nhận thức Spark Nhận đượcAPI Password
+3. Mô tả thông số：
+   - api_password: API Password，Nhận được sau khi tạo ứng dụng trên nền tảng mở iFlytek
+   - model_name: Tên mẫu，hỗ trợgeneralv3.5、generalv3Các phiên bản khác
+   - base_url: APIđịa chỉ，Mặc địnhhttps://spark-api-open.xf-yun.com/v1
+   - temperature: Thông số nhiệt độ，Kiểm soát tính ngẫu nhiên của thế hệ，phạm vi0-1，Mặc định0.5
+   - max_tokens: sản lượng tối đatokencon số，Mặc định2048
+   - top_p: Thông số lấy mẫu lõi，Kiểm soát sự đa dạng từ vựng，Mặc định1.0
+   - frequency_penalty: hình phạt tần số，Giảm nội dung trùng lặp，Mặc định0.0
+4. Mỗi mô hình tương ứng với mỗiapi_password,Khi thay đổi model cần kiểm tra model tương ứngapi_password。
 ' WHERE `id` = 'LLM_XunfeiSparkLLM';

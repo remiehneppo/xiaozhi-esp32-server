@@ -1,7 +1,7 @@
 package xiaozhi.modules.sys.enums;
 
 /**
- * 超级管理员枚举
+ * Bảng liệt kê siêu quản trị viên
  */
 public enum SuperAdminEnum {
     YES(1),

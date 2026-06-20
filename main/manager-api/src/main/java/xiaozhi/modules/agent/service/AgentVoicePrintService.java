@@ -7,43 +7,43 @@ import xiaozhi.modules.agent.dto.AgentVoicePrintUpdateDTO;
 import xiaozhi.modules.agent.vo.AgentVoicePrintVO;
 
 /**
- * 智能体声纹处理service
+ * Dịch vụ xử lý giọng nói thông minh
  *
  * @author zjy
  */
 public interface AgentVoicePrintService {
     /**
-     * 添加智能体新的声纹
+     * Thêm giọng nói mới cho đại lý
      *
-     * @param dto 保存智能体声纹的数据
-     * @return T:成功 F：失败
+     * @param dto lưu dữ liệu giọng nói của tổng đài viên
+     * @return T: thành công F: thất bại
      */
     boolean insert(AgentVoicePrintSaveDTO dto);
 
     /**
-     * 删除智能体的指的声纹
+     * Xóa dấu vân tay của đặc vụ
      *
-     * @param userId       当前登录的用户id
-     * @param voicePrintId 声纹id
-     * @return 是否成功 T:成功 F：失败
+     * @param userId hiện đã đăng nhập id người dùng
+     * @param voicePrintId id giọng nói
+     * @return Có thành công không T: Thành công F: Thất bại
      */
     boolean delete(Long userId, String voicePrintId);
 
     /**
-     * 获取指定智能体的所有声纹数据
+     * Nhận tất cả dữ liệu giọng nói của tác nhân được chỉ định
      *
-     * @param userId  当前登录的用户id
-     * @param agentId 智能体id
-     * @return 声纹数据集合
+     * @param userId hiện đã đăng nhập id người dùng
+     * @param AgentId id đại lý
+     * @return Thu thập dữ liệu Voiceprint
      */
     List<AgentVoicePrintVO> list(Long userId, String agentId);
 
     /**
-     * 更新智能体的指的声纹数据
+     * Cập nhật dữ liệu giọng nói ngón tay của đại lý
      *
-     * @param userId 当前登录的用户id
-     * @param dto    修改的声纹的数据
-     * @return 是否成功 T:成功 F：失败
+     * @param userId hiện đã đăng nhập id người dùng
+     * @param dto đã sửa đổi dữ liệu giọng nói
+     * @return Có thành công không T: Thành công F: Thất bại
      */
     boolean update(Long userId, AgentVoicePrintUpdateDTO dto);
 

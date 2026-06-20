@@ -6,7 +6,7 @@
     <packaging>jar</packaging>
     <version>0.0.1</version>
     <name>xiaozhi-esp32-api</name>
-    <description>小智后台管理系统</description>
+    <description>Hệ thống quản trị nền tảng Xiaozhi</description>
 
 	<parent>
 		<groupId>org.springframework.boot</groupId>
@@ -70,7 +70,7 @@
                 </exclusion>
             </exclusions>
         </dependency>
-        <!-- 验证码工具包 -->
+        <!-- Bộ công cụ mã xác thực -->
         <dependency>
             <groupId>com.github.whvcse</groupId>
             <artifactId>easy-captcha</artifactId>
@@ -158,7 +158,7 @@
             <artifactId>spring-boot-configuration-processor</artifactId>
             <optional>true</optional>
         </dependency>
-        <!-- mysql驱动 -->
+        <!-- Driver MySQL -->
         <dependency>
             <groupId>com.mysql</groupId>
             <artifactId>mysql-connector-j</artifactId>
@@ -199,7 +199,7 @@
             <artifactId>knife4j-openapi3-jakarta-spring-boot-starter</artifactId>
             <version>${knife4j.version}</version>
         </dependency>
-        <!-- BouncyCastle SM2加密 -->
+        <!-- Mã hóa BouncyCastle SM2 -->
         <dependency>
             <groupId>org.bouncycastle</groupId>
             <artifactId>bcprov-jdk18on</artifactId>
@@ -211,7 +211,7 @@
             <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
             <version>${springdoc.version}</version>
         </dependency>
-        <!-- 日常工具包 -->
+        <!-- Bộ công cụ hàng ngày -->
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
@@ -226,13 +226,13 @@
             <groupId>com.fasterxml.jackson.datatype</groupId>
             <artifactId>jackson-datatype-jsr310</artifactId>
         </dependency>
-        <!-- 阿里云短信sdk -->
+        <!-- SDK SMS Alibaba Cloud -->
         <dependency>
             <groupId>com.aliyun</groupId>
             <artifactId>dysmsapi20170525</artifactId>
             <version>${aliyun-sms-version}</version>
         </dependency>
-        <!-- 阿里云短信sdk使用的okio:1.15.0版本有安全漏洞：GHSA-w33c-445m-f8w7 现在升级成3.4.0安全版本-->
+        <!-- Phiên bản okio:1.15.0 của SDK SMS Alibaba Cloud có lỗ hổng bảo mật: GHSA-w33c-445m-f8w7. Đã nâng cấp lên phiên bản bảo mật 3.4.0 -->
         <dependency>
             <groupId>com.squareup.okio</groupId>
             <artifactId>okio</artifactId>
@@ -240,7 +240,7 @@
         </dependency>
     </dependencies>
 
-    <!-- 阿里云maven仓库 -->
+    <!-- Kho Maven Alibaba Cloud -->
     <repositories>
         <repository>
             <id>public</id>

@@ -13,69 +13,69 @@ import lombok.Data;
 
 @Data
 @TableName(value = "ai_rag_dataset", autoResultMap = true)
-@Schema(description = "知识库知识库表")
+@Schema(description = "Bảng cơ sở kiến thức cơ sở kiến thức")
 public class KnowledgeBaseEntity {
 
     @TableId(type = IdType.ASSIGN_UUID)
-    @Schema(description = "唯一标识")
+    @Schema(description = "mã định danh duy nhất")
     private String id;
 
-    @Schema(description = "知识库ID")
+    @Schema(description = "cơ sở tri thứcID")
     private String datasetId;
 
 //    @Deprecated
-    @Schema(description = "RAG模型配置ID (连接RAGFlow的凭证指针)")
+    @Schema(description = "RAGCấu hình mô hìnhID (kết nốiRAGFlowcon trỏ thông tin xác thực)")
     private String ragModelId;
 
-    @Schema(description = "租户ID")
+    @Schema(description = "người thuê nhàID")
     private String tenantId;
 
-    @Schema(description = "知识库名称")
+    @Schema(description = "Tên cơ sở kiến thức")
     private String name;
 
-    @Schema(description = "知识库头像(Base64)")
+    @Schema(description = "Hình đại diện cơ sở kiến thức(Base64)")
     private String avatar;
 
-    @Schema(description = "知识库描述")
+    @Schema(description = "Mô tả cơ sở kiến thức")
     private String description;
 
-    @Schema(description = "嵌入模型名称")
+    @Schema(description = "Nhúng tên mẫu")
     private String embeddingModel;
 
-    @Schema(description = "权限设置: me/team")
+    @Schema(description = "Cài đặt quyền: me/team")
     private String permission;
 
-    @Schema(description = "分块方法")
+    @Schema(description = "Phương pháp chia nhỏ")
     private String chunkMethod;
 
-    @Schema(description = "解析器配置(JSON String)")
+    @Schema(description = "Cấu hình trình phân tích cú pháp(JSON String)")
     private String parserConfig;
 
-    @Schema(description = "分块总数")
+    @Schema(description = "Tổng số khối")
     private Long chunkCount;
 
-    @Schema(description = "文档总数")
+    @Schema(description = "Tổng số tài liệu")
     private Long documentCount;
 
-    @Schema(description = "总Token数")
+    @Schema(description = "tổng cộngTokencon số")
     private Long tokenNum;
 
-    @Schema(description = "状态(0:禁用 1:启用)")
+    @Schema(description = "Trạng thái(0:Vô hiệu hóa 1:kích hoạt)")
     private Integer status;
 
-    @Schema(description = "创建者")
+    @Schema(description = "Người sáng tạo")
     @TableField(fill = FieldFill.INSERT)
     private Long creator;
 
-    @Schema(description = "创建时间")
+    @Schema(description = "thời gian sáng tạo")
     @TableField(fill = FieldFill.INSERT)
     private Date createdAt;
 
-    @Schema(description = "更新者")
+    @Schema(description = "Trình cập nhật")
     @TableField(fill = FieldFill.UPDATE)
     private Long updater;
 
-    @Schema(description = "更新时间")
+    @Schema(description = "Thời gian cập nhật")
     @TableField(fill = FieldFill.UPDATE)
     private Date updatedAt;
 }

@@ -7,7 +7,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import xiaozhi.modules.agent.entity.AgentChatAudioEntity;
 
 /**
- * {@link AgentChatAudioEntity} 智能体聊天音频数据Dao对象
+ * {@link AgentChatAudioEntity} Dữ liệu âm thanh trò chuyện của tác nhân Đối tượng Dao
  *
  * @author Goody
  * @version 1.0, 2025/5/8

@@ -5,21 +5,21 @@ import xiaozhi.modules.agent.entity.AgentContextProviderEntity;
 
 public interface AgentContextProviderService extends BaseService<AgentContextProviderEntity> {
     /**
-     * 根据智能体ID获取上下文源配置
-     * @param agentId 智能体ID
-     * @return 上下文源配置实体
+     * Nhận cấu hình nguồn ngữ cảnh dựa trên ID tác nhân
+     * @param ID đại lý ID đại lý
+     * @return thực thể cấu hình nguồn ngữ cảnh
      */
     AgentContextProviderEntity getByAgentId(String agentId);
 
     /**
-     * 保存或更新上下文源配置
-     * @param entity 实体
+     * Lưu hoặc cập nhật cấu hình nguồn ngữ cảnh
+     * @param thực thể thực thể
      */
     void saveOrUpdateByAgentId(AgentContextProviderEntity entity);
 
     /**
-     * 根据智能体ID删除上下文源配置
-     * @param agentId 智能体ID
+     * Xóa cấu hình nguồn ngữ cảnh dựa trên ID tác nhân
+     * @param ID đại lý ID đại lý
      */
     void deleteByAgentId(String agentId);
 }

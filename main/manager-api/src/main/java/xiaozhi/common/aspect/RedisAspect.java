@@ -11,8 +11,8 @@ import xiaozhi.common.exception.ErrorCode;
 import xiaozhi.common.exception.RenException;
 
 /**
- * Redis切面处理类
- * Copyright (c) 人人开源 All rights reserved.
+ * Lớp xử lý khía cạnh Redis
+ * Bản quyền (c) Renren Kaiyuan Mọi quyền được bảo lưu.
  * Website: https://www.renren.io
  */
 @Slf4j
@@ -20,7 +20,7 @@ import xiaozhi.common.exception.RenException;
 @Component
 public class RedisAspect {
     /**
-     * 是否开启redis缓存 true开启 false关闭
+     * Có bật redis cache true hay không để bật false để đóng
      */
     @Value("${renren.redis.open}")
     private boolean open;

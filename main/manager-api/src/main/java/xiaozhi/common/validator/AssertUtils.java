@@ -12,8 +12,8 @@ import xiaozhi.common.exception.ErrorCode;
 import xiaozhi.common.exception.RenException;
 
 /**
- * 校验工具类
- * Copyright (c) 人人开源 All rights reserved.
+ * Công cụ xác minh
+ * Bản quyền (c) Renren Kaiyuan Mọi quyền được bảo lưu.
  * Website: https://www.renren.io
  */
 public class AssertUtils {

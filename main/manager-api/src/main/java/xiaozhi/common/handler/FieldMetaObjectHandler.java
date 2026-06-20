@@ -12,8 +12,8 @@ import xiaozhi.common.user.UserDetail;
 import xiaozhi.modules.security.user.SecurityUser;
 
 /**
- * 公共字段，自动填充值
- * Copyright (c) 人人开源 All rights reserved.
+ * Các trường công khai, giá trị tự động điền
+ * Bản quyền (c) Renren Kaiyuan Mọi quyền được bảo lưu.
  * Website: https://www.renren.io
  */
 @Component
@@ -30,9 +30,9 @@ public class FieldMetaObjectHandler implements MetaObjectHandler {
         UserDetail user = SecurityUser.getUser();
         Date date = new Date();
 
-        // 创建者
+        // Người sáng tạo
         strictInsertFill(metaObject, CREATOR, Long.class, user.getId());
-        // 创建时间 - 支持createDate和createdAt两种字段名
+        // Thời gian tạo - hỗ trợ hai tên trường: createDate và createAt
         if (metaObject.hasSetter(CREATE_DATE)) {
             strictInsertFill(metaObject, CREATE_DATE, Date.class, date);
         }
@@ -40,9 +40,9 @@ public class FieldMetaObjectHandler implements MetaObjectHandler {
             strictInsertFill(metaObject, "createdAt", Date.class, date);
         }
 
-        // 更新者
+        // Trình cập nhật
         strictInsertFill(metaObject, UPDATER, Long.class, user.getId());
-        // 更新时间 - 支持updateDate和updatedAt两种字段名
+        // Thời gian cập nhật - hỗ trợ hai tên trường:updateDate vàupdateAt
         if (metaObject.hasSetter(UPDATE_DATE)) {
             strictInsertFill(metaObject, UPDATE_DATE, Date.class, date);
         }
@@ -50,7 +50,7 @@ public class FieldMetaObjectHandler implements MetaObjectHandler {
             strictInsertFill(metaObject, "updatedAt", Date.class, date);
         }
 
-        // 数据标识
+        // Nhận dạng dữ liệu
         strictInsertFill(metaObject, DATA_OPERATION, String.class, Constant.DataOperation.INSERT.getValue());
     }
 
@@ -58,9 +58,9 @@ public class FieldMetaObjectHandler implements MetaObjectHandler {
     public void updateFill(MetaObject metaObject) {
         Date date = new Date();
 
-        // 更新者
+        // Trình cập nhật
         strictUpdateFill(metaObject, UPDATER, Long.class, SecurityUser.getUserId());
-        // 更新时间 - 支持updateDate和updatedAt两种字段名
+        // Thời gian cập nhật - hỗ trợ hai tên trường:updateDate vàupdateAt
         if (metaObject.hasSetter(UPDATE_DATE)) {
             strictUpdateFill(metaObject, UPDATE_DATE, Date.class, date);
         }
@@ -68,7 +68,7 @@ public class FieldMetaObjectHandler implements MetaObjectHandler {
             strictUpdateFill(metaObject, "updatedAt", Date.class, date);
         }
 
-        // 数据标识
+        // Nhận dạng dữ liệu
         strictInsertFill(metaObject, DATA_OPERATION, String.class, Constant.DataOperation.UPDATE.getValue());
     }
 }

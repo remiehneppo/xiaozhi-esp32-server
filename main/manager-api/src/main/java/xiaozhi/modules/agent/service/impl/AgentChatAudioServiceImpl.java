@@ -9,7 +9,7 @@ import xiaozhi.modules.agent.entity.AgentChatAudioEntity;
 import xiaozhi.modules.agent.service.AgentChatAudioService;
 
 /**
- * 智能体聊天音频数据表处理service {@link AgentChatAudioService} impl
+ * Dịch vụ xử lý bảng dữ liệu âm thanh trò chuyện của tổng đài viên {@link AgentChatAudioService} được triển khai
  *
  * @author Goody
  * @version 1.0, 2025/5/8

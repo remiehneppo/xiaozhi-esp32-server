@@ -8,19 +8,19 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import lombok.Data;
 
 /**
- * XSS 配置项
- * Copyright (c) 人人开源 All rights reserved.
+ * Các mục cấu hình XSS
+ * Bản quyền (c) Renren Kaiyuan Mọi quyền được bảo lưu.
  * Website: https://www.renren.io
  */
 @Data
 @ConfigurationProperties(prefix = "renren.xss")
 public class XssProperties {
     /**
-     * 是否开启 XSS
+     * Có bật XSS hay không
      */
     private boolean enabled;
     /**
-     * 排除的URL列表
+     * Danh sách URL bị loại trừ
      */
     private List<String> excludeUrls = Collections.emptyList();
 }

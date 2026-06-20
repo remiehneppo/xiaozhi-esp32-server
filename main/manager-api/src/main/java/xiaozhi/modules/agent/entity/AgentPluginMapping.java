@@ -11,42 +11,42 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
 /**
- * Agent与插件的唯一映射表
- * 
+ * Bảng ánh xạ duy nhất giữa Tác nhân và trình cắm
+ *
  * @TableName ai_agent_plugin_mapping
  */
 @Data
 @TableName(value = "ai_agent_plugin_mapping")
-@Schema(description = "Agent与插件的唯一映射表")
+@Schema(description = "AgentBảng ánh xạ duy nhất tới các plugin")
 public class AgentPluginMapping implements Serializable {
     /**
-     * 主键
+     * khóa chính
      */
     @TableId(type = IdType.ASSIGN_ID)
-    @Schema(description = "映射信息主键ID")
+    @Schema(description = "Khóa chính thông tin ánh xạID")
     private Long id;
 
     /**
-     * 智能体ID
+     * ID đại lý
      */
-    @Schema(description = "智能体ID")
+    @Schema(description = "đại lýID")
     private String agentId;
 
     /**
-     * 插件ID
+     * Mã plugin
      */
-    @Schema(description = "插件ID")
+    @Schema(description = "trình cắm thêmID")
     private String pluginId;
 
     /**
-     * 插件参数(Json)格式
+     * Định dạng tham số trình cắm (Json)
      */
-    @Schema(description = "插件参数(Json)格式")
+    @Schema(description = "Thông số trình cắm(Json)định dạng")
     private String paramInfo;
 
-    // 冗余字段，用于方便在根据id查询插件时，对照查出插件的Provider_code,详见dao层xml文件
+    // Trường dự phòng, được sử dụng để tạo điều kiện thuận lợi cho việc kiểm tra Provider_code của trình cắm khi truy vấn trình cắm dựa trên ID. Để biết chi tiết, hãy xem tệp xml lớp dao.
     @TableField(exist = false)
-    @Schema(description = "插件provider_code, 对应表ai_model_provider")
+    @Schema(description = "trình cắm thêmprovider_code, Bảng tương ứngai_model_provider")
     private String providerCode;
 
     @TableField(exist = false)

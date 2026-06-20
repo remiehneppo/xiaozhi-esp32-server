@@ -6,15 +6,15 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
 /**
- * 字典数据VO
+ * Dữ liệu từ điển VO
  */
 @Data
-@Schema(description = "字典数据项")
+@Schema(description = "Mục dữ liệu từ điển")
 public class SysDictDataItem implements Serializable {
 
-    @Schema(description = "字典标签")
+    @Schema(description = "thẻ từ điển")
     private String name;
 
-    @Schema(description = "字典值")
+    @Schema(description = "Giá trị từ điển")
     private String key;
 }

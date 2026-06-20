@@ -9,354 +9,354 @@ import jakarta.validation.constraints.*;
 import org.springframework.web.multipart.MultipartFile;
 
 /**
- * 文件管理聚合 DTO
+ * Tổng hợp quản lý tệp DTO
  * <p>
- * 容器类，内含文件模块所有请求/响应对象的静态内部类定义。
+ * Lớp vùng chứa chứa các định nghĩa lớp tĩnh bên trong cho tất cả các đối tượng yêu cầu/phản hồi của mô-đun tệp.
  * </p>
  */
-@Schema(description = "文件管理聚合 DTO")
+@Schema(description = "Tổng hợp quản lý tập tin DTO")
 public class FileDTO {
 
-    // ========== 请求类 ==========
+    // ========== Yêu cầu lớp ===========
 
     /**
-     * 文件上传请求 (对应接口 1: upload)
+     * Yêu cầu upload file (tương ứng với giao diện 1: upload)
      */
     @Data
     @NoArgsConstructor
     @AllArgsConstructor
     @Builder
-    @Schema(description = "文件上传请求")
+    @Schema(description = "Yêu cầu tải tập tin lên")
     public static class UploadReq implements Serializable {
 
-        @NotNull(message = "文件不能为空")
-        @Schema(description = "上传的文件", requiredMode = Schema.RequiredMode.REQUIRED)
+        @NotNull(message = "Tệp không thể trống")
+        @Schema(description = "Tệp đã tải lên", requiredMode = Schema.RequiredMode.REQUIRED)
         private MultipartFile file;
 
-        @Schema(description = "父文件夹 ID (为空则上传到根目录)", example = "folder_001")
+        @Schema(description = "thư mục mẹ ID (Nếu trống, tải lên thư mục gốc)", example = "folder_001")
         @JsonProperty("parent_id")
         private String parentId;
     }
 
     /**
-     * 新建文件夹请求 (对应接口 2: create)
+     * Yêu cầu thư mục mới (tương ứng với giao diện 2: tạo)
      */
     @Data
     @NoArgsConstructor
     @AllArgsConstructor
     @Builder
-    @Schema(description = "新建文件夹请求")
+    @Schema(description = "Yêu cầu thư mục mới")
     public static class CreateReq implements Serializable {
 
-        @NotBlank(message = "文件夹名称不能为空")
-        @Schema(description = "文件夹名称", requiredMode = Schema.RequiredMode.REQUIRED, example = "新建文件夹")
+        @NotBlank(message = "Tên thư mục không được để trống")
+        @Schema(description = "tên thư mục", requiredMode = Schema.RequiredMode.REQUIRED, example = "Tạo thư mục mới")
         private String name;
 
-        @Schema(description = "父文件夹 ID (为空则创建在根目录)", example = "folder_001")
+        @Schema(description = "thư mục mẹ ID (Nếu trống, nó sẽ được tạo trong thư mục gốc.)", example = "folder_001")
         @JsonProperty("parent_id")
         private String parentId;
 
-        @NotBlank(message = "类型不能为空")
-        @Schema(description = "类型: FOLDER", requiredMode = Schema.RequiredMode.REQUIRED, example = "FOLDER")
+        @NotBlank(message = "Loại không được để trống")
+        @Schema(description = "loại: FOLDER", requiredMode = Schema.RequiredMode.REQUIRED, example = "FOLDER")
         @Builder.Default
         private String type = "FOLDER";
     }
 
     /**
-     * 重命名请求 (对应接口 6: rename)
+     * Yêu cầu đổi tên (tương ứng với giao diện 6: đổi tên)
      */
     @Data
     @NoArgsConstructor
     @AllArgsConstructor
     @Builder
-    @Schema(description = "重命名请求")
+    @Schema(description = "Yêu cầu đổi tên")
     public static class RenameReq implements Serializable {
 
-        @NotBlank(message = "文件 ID 不能为空")
-        @Schema(description = "文件/文件夹 ID", requiredMode = Schema.RequiredMode.REQUIRED, example = "file_001")
+        @NotBlank(message = "tập tin ID không thể trống")
+        @Schema(description = "tập tin/thư mục ID", requiredMode = Schema.RequiredMode.REQUIRED, example = "file_001")
         @JsonProperty("file_id")
         private String fileId;
 
-        @NotBlank(message = "新名称不能为空")
-        @Schema(description = "新名称", requiredMode = Schema.RequiredMode.REQUIRED, example = "重命名后的文件")
+        @NotBlank(message = "Tên mới không được để trống")
+        @Schema(description = "tên mới", requiredMode = Schema.RequiredMode.REQUIRED, example = "Đã đổi tên tệp")
         private String name;
     }
 
     /**
-     * 移动请求 (对应接口 7: move)
+     * Yêu cầu di chuyển (tương ứng với giao diện 7: di chuyển)
      */
     @Data
     @NoArgsConstructor
     @AllArgsConstructor
     @Builder
-    @Schema(description = "移动请求")
+    @Schema(description = "yêu cầu di chuyển")
     public static class MoveReq implements Serializable {
 
-        @NotEmpty(message = "源文件 ID 列表不能为空")
-        @Schema(description = "源文件/文件夹 ID 列表", requiredMode = Schema.RequiredMode.REQUIRED, example = "[\"file_001\", \"file_002\"]")
+        @NotEmpty(message = "tập tin nguồn ID Danh sách không thể trống")
+        @Schema(description = "tập tin nguồn/thư mục ID danh sách", requiredMode = Schema.RequiredMode.REQUIRED, example = "[\"file_001\", \"file_002\"]")
         @JsonProperty("src_file_ids")
         private List<String> srcFileIds;
 
-        @NotBlank(message = "目标文件夹 ID 不能为空")
-        @Schema(description = "目标文件夹 ID", requiredMode = Schema.RequiredMode.REQUIRED, example = "folder_002")
+        @NotBlank(message = "thư mục đích ID không thể trống")
+        @Schema(description = "thư mục đích ID", requiredMode = Schema.RequiredMode.REQUIRED, example = "folder_002")
         @JsonProperty("dest_file_id")
         private String destFileId;
     }
 
     /**
-     * 批量删除请求 (对应接口 8: rm)
+     * Yêu cầu xóa hàng loạt (tương ứng với giao diện 8:rm)
      */
     @Data
     @NoArgsConstructor
     @AllArgsConstructor
     @Builder
-    @Schema(description = "批量删除请求")
+    @Schema(description = "Yêu cầu xóa hàng loạt")
     public static class RemoveReq implements Serializable {
 
-        @NotEmpty(message = "文件 ID 列表不能为空")
-        @Schema(description = "文件/文件夹 ID 列表", requiredMode = Schema.RequiredMode.REQUIRED, example = "[\"file_001\", \"file_002\"]")
+        @NotEmpty(message = "tập tin ID Danh sách không thể trống")
+        @Schema(description = "tập tin/thư mục ID danh sách", requiredMode = Schema.RequiredMode.REQUIRED, example = "[\"file_001\", \"file_002\"]")
         @JsonProperty("file_ids")
         private List<String> fileIds;
     }
 
     /**
-     * 导入知识库请求 (对应接口 9: convert)
+     * Nhập yêu cầu cơ sở tri thức (tương ứng với giao diện 9:chuyển đổi)
      */
     @Data
     @NoArgsConstructor
     @AllArgsConstructor
     @Builder
-    @Schema(description = "导入知识库请求")
+    @Schema(description = "Nhập yêu cầu cơ sở kiến thức")
     public static class ConvertReq implements Serializable {
 
-        @NotEmpty(message = "文件 ID 列表不能为空")
-        @Schema(description = "文件 ID 列表", requiredMode = Schema.RequiredMode.REQUIRED, example = "[\"file_001\", \"file_002\"]")
+        @NotEmpty(message = "tập tin ID Danh sách không thể trống")
+        @Schema(description = "tập tin ID danh sách", requiredMode = Schema.RequiredMode.REQUIRED, example = "[\"file_001\", \"file_002\"]")
         @JsonProperty("file_ids")
         private List<String> fileIds;
 
-        @NotEmpty(message = "知识库 ID 列表不能为空")
-        @Schema(description = "目标知识库 ID 列表", requiredMode = Schema.RequiredMode.REQUIRED, example = "[\"kb_001\"]")
+        @NotEmpty(message = "cơ sở tri thức ID Danh sách không thể trống")
+        @Schema(description = "cơ sở tri thức mục tiêu ID danh sách", requiredMode = Schema.RequiredMode.REQUIRED, example = "[\"kb_001\"]")
         @JsonProperty("kb_ids")
         private List<String> kbIds;
     }
 
     /**
-     * 列表查询请求 (对应接口 3: list_files)
+     * Yêu cầu truy vấn danh sách (tương ứng với giao diện 3: list_files)
      */
     @Data
     @NoArgsConstructor
     @AllArgsConstructor
     @Builder
-    @Schema(description = "列表查询请求")
+    @Schema(description = "Danh sách yêu cầu truy vấn")
     public static class ListReq implements Serializable {
 
-        @Schema(description = "父文件夹 ID (为空则查询根目录)", example = "folder_001")
+        @Schema(description = "thư mục mẹ ID (Nếu trống, truy vấn thư mục gốc)", example = "folder_001")
         @JsonProperty("parent_id")
         private String parentId;
 
-        @Schema(description = "关键词搜索", example = "文档")
+        @Schema(description = "tìm kiếm từ khóa", example = "Tài liệu")
         private String keywords;
 
-        @Schema(description = "页码 (从 1 开始)", example = "1")
+        @Schema(description = "Số trang (từ 1 bắt đầu)", example = "1")
         private Integer page;
 
-        @Schema(description = "每页数量", example = "30")
+        @Schema(description = "Số lượng mỗi trang", example = "30")
         @JsonProperty("page_size")
         private Integer pageSize;
 
-        @Schema(description = "排序字段: create_time / update_time / name / size", example = "create_time")
+        @Schema(description = "trường sắp xếp: create_time / update_time / name / size", example = "create_time")
         private String orderby;
 
-        @Schema(description = "是否降序", example = "true")
+        @Schema(description = "Có thứ tự giảm dần", example = "true")
         private Boolean desc;
     }
 
-    // ========== 响应类 ==========
+    // ========== Lớp phản hồi ===========
 
     /**
-     * 文件/文件夹基础信息 VO
+     * Thông tin cơ bản về tập tin/thư mục VO
      */
     @Data
     @NoArgsConstructor
     @AllArgsConstructor
     @Builder
-    @Schema(description = "文件/文件夹基础信息")
+    @Schema(description = "tập tin/Thông tin cơ bản về thư mục")
     public static class InfoVO implements Serializable {
 
-        @Schema(description = "文件/文件夹 ID", example = "file_001")
+        @Schema(description = "tập tin/thư mục ID", example = "file_001")
         private String id;
 
-        @Schema(description = "父文件夹 ID", example = "folder_001")
+        @Schema(description = "thư mục mẹ ID", example = "folder_001")
         @JsonProperty("parent_id")
         private String parentId;
 
-        @Schema(description = "租户 ID", example = "tenant_001")
+        @Schema(description = "người thuê nhà ID", example = "tenant_001")
         @JsonProperty("tenant_id")
         private String tenantId;
 
-        @Schema(description = "创建者 ID", example = "user_001")
+        @Schema(description = "Người sáng tạo ID", example = "user_001")
         @JsonProperty("created_by")
         private String createdBy;
 
-        @Schema(description = "类型: FOLDER / FILE", example = "FOLDER")
+        @Schema(description = "loại: FOLDER / FILE", example = "FOLDER")
         private String type;
 
-        @Schema(description = "名称", example = "我的文件夹")
+        @Schema(description = "Tên", example = "thư mục của tôi")
         private String name;
 
-        @Schema(description = "路径位置", example = "/root/folder")
+        @Schema(description = "vị trí đường dẫn", example = "/root/folder")
         private String location;
 
-        @Schema(description = "文件大小 (字节)", example = "1024")
+        @Schema(description = "kích thước tập tin (Byte)", example = "1024")
         private Long size;
 
-        @Schema(description = "来源类型", example = "local")
+        @Schema(description = "Loại nguồn", example = "local")
         @JsonProperty("source_type")
         private String sourceType;
 
-        @Schema(description = "创建时间 (时间戳)", example = "1700000000000")
+        @Schema(description = "thời gian sáng tạo (Dấu thời gian)", example = "1700000000000")
         @JsonProperty("create_time")
         private Long createTime;
 
-        @Schema(description = "创建日期 (格式化)", example = "2024-01-15 10:30:00")
+        @Schema(description = "Ngày tạo (định dạng)", example = "2024-01-15 10:30:00")
         @JsonProperty("create_date")
         private String createDate;
 
-        @Schema(description = "更新时间 (时间戳)", example = "1700000001000")
+        @Schema(description = "Thời gian cập nhật (Dấu thời gian)", example = "1700000001000")
         @JsonProperty("update_time")
         private Long updateTime;
 
-        @Schema(description = "更新日期 (格式化)", example = "2024-01-15 11:00:00")
+        @Schema(description = "ngày cập nhật (định dạng)", example = "2024-01-15 11:00:00")
         @JsonProperty("update_date")
         private String updateDate;
 
-        @Schema(description = "文件扩展名", example = "pdf")
+        @Schema(description = "phần mở rộng tập tin", example = "pdf")
         private String extension;
     }
 
     /**
-     * 列表响应 VO (对应接口 3: list_files)
+     * Danh sách phản hồi VO (tương ứng với giao diện 3: list_files)
      */
     @Data
     @NoArgsConstructor
     @AllArgsConstructor
     @Builder
-    @Schema(description = "文件列表响应")
+    @Schema(description = "phản hồi danh sách tập tin")
     public static class ListVO implements Serializable {
 
-        @Schema(description = "总记录数", example = "100")
+        @Schema(description = "Tổng số hồ sơ", example = "100")
         private Long total;
 
-        @Schema(description = "当前父文件夹信息")
+        @Schema(description = "Thông tin thư mục mẹ hiện tại")
         @JsonProperty("parent_folder")
         private InfoVO parentFolder;
 
-        @Schema(description = "文件/文件夹列表")
+        @Schema(description = "tập tin/danh sách thư mục")
         private List<InfoVO> files;
 
-        @Schema(description = "面包屑导航路径")
+        @Schema(description = "Đường dẫn điều hướng Breadcrumb")
         private List<InfoVO> breadcrumb;
     }
 
     /**
-     * 转换结果项 VO (对应接口 9: convert)
+     * Mục kết quả chuyển đổi VO (tương ứng với giao diện 9: chuyển đổi)
      */
     @Data
     @NoArgsConstructor
     @AllArgsConstructor
     @Builder
-    @Schema(description = "文件转换结果项")
+    @Schema(description = "Mục kết quả chuyển đổi tệp")
     public static class ConvertVO implements Serializable {
 
-        @Schema(description = "转换记录 ID", example = "convert_001")
+        @Schema(description = "bản ghi chuyển đổi ID", example = "convert_001")
         private String id;
 
-        @Schema(description = "源文件 ID", example = "file_001")
+        @Schema(description = "tập tin nguồn ID", example = "file_001")
         @JsonProperty("file_id")
         private String fileId;
 
-        @Schema(description = "目标文档 ID", example = "doc_001")
+        @Schema(description = "tài liệu mục tiêu ID", example = "doc_001")
         @JsonProperty("document_id")
         private String documentId;
 
-        @Schema(description = "创建时间 (时间戳)", example = "1700000000000")
+        @Schema(description = "thời gian sáng tạo (Dấu thời gian)", example = "1700000000000")
         @JsonProperty("create_time")
         private Long createTime;
 
-        @Schema(description = "创建日期 (格式化)", example = "2024-01-15 10:30:00")
+        @Schema(description = "Ngày tạo (định dạng)", example = "2024-01-15 10:30:00")
         @JsonProperty("create_date")
         private String createDate;
 
-        @Schema(description = "更新时间 (时间戳)", example = "1700000001000")
+        @Schema(description = "Thời gian cập nhật (Dấu thời gian)", example = "1700000001000")
         @JsonProperty("update_time")
         private Long updateTime;
 
-        @Schema(description = "更新日期 (格式化)", example = "2024-01-15 11:00:00")
+        @Schema(description = "ngày cập nhật (định dạng)", example = "2024-01-15 11:00:00")
         @JsonProperty("update_date")
         private String updateDate;
     }
 
     /**
-     * 转换状态 VO (对应接口 10: get_convert_status)
+     * Trạng thái chuyển đổi VO (tương ứng với giao diện 10: get_convert_status)
      */
     @Data
     @NoArgsConstructor
     @AllArgsConstructor
     @Builder
-    @Schema(description = "文件转换状态")
+    @Schema(description = "Trạng thái chuyển đổi tập tin")
     public static class ConvertStatusVO implements Serializable {
 
-        @Schema(description = "转换状态: pending / processing / completed / failed", example = "completed")
+        @Schema(description = "Trạng thái chuyển tiếp: pending / processing / completed / failed", example = "completed")
         private String status;
 
-        @Schema(description = "转换进度 (0.0 - 1.0)", example = "1.0")
+        @Schema(description = "Tiến trình chuyển đổi (0.0 - 1.0)", example = "1.0")
         private Float progress;
 
-        @Schema(description = "状态消息", example = "转换完成")
+        @Schema(description = "thông báo trạng thái", example = "Đã hoàn tất chuyển đổi")
         private String message;
     }
 
     /**
-     * 面包屑 VO (对应接口 12: all_parent_folder)
+     * Breadcrumbs VO (tương ứng với giao diện 12: all_parent_folder)
      */
     @Data
     @NoArgsConstructor
     @AllArgsConstructor
     @Builder
-    @Schema(description = "面包屑导航 (所有父文件夹)")
+    @Schema(description = "vụn bánh mì (tất cả các thư mục mẹ)")
     public static class BreadcrumbVO implements Serializable {
 
-        @Schema(description = "父文件夹列表 (从根到当前的路径)")
+        @Schema(description = "Danh sách thư mục mẹ (đường dẫn từ gốc đến hiện tại)")
         @JsonProperty("parent_folders")
         private List<InfoVO> parentFolders;
     }
 
     /**
-     * 根目录信息 VO (对应接口 10: get_root_folder)
+     * Thông tin thư mục gốc VO (tương ứng với giao diện 10: get_root_folder)
      */
     @Data
     @NoArgsConstructor
     @AllArgsConstructor
     @Builder
-    @Schema(description = "根目录信息")
+    @Schema(description = "thông tin thư mục gốc")
     public static class RootFolderVO implements Serializable {
 
-        @Schema(description = "根文件夹信息")
+        @Schema(description = "Thông tin thư mục gốc")
         @JsonProperty("root_folder")
         private InfoVO rootFolder;
     }
 
     /**
-     * 父目录信息 VO (对应接口 11: get_parent_folder)
+     * Thông tin thư mục cha VO (tương ứng với giao diện 11: get_parent_folder)
      */
     @Data
     @NoArgsConstructor
     @AllArgsConstructor
     @Builder
-    @Schema(description = "父目录信息")
+    @Schema(description = "Thông tin thư mục cha mẹ")
     public static class ParentFolderVO implements Serializable {
 
-        @Schema(description = "父文件夹信息")
+        @Schema(description = "Thông tin thư mục gốc")
         @JsonProperty("parent_folder")
         private InfoVO parentFolder;
     }

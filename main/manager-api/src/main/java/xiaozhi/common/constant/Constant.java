@@ -3,17 +3,17 @@ package xiaozhi.common.constant;
 import lombok.Getter;
 
 /**
- * 常量
- * Copyright (c) 人人开源 All rights reserved.
+ * hằng số
+ * Bản quyền (c) Renren Kaiyuan Mọi quyền được bảo lưu.
  * Website: https://www.renren.io
  */
 public interface Constant {
     /**
-     * 成功
+     * sự thành công
      */
     int SUCCESS = 1;
     /**
-     * 失败
+     * thất bại
      */
     int FAIL = 0;
     /**
@@ -21,177 +21,177 @@ public interface Constant {
      */
     String OK = "OK";
     /**
-     * 用户标识
+     * ID người dùng
      */
     String USER_KEY = "userId";
     /**
-     * 菜单根节点标识
+     * Mã định danh nút gốc của menu
      */
     Long MENU_ROOT = 0L;
     /**
-     * 部门根节点标识
+     * ID nút gốc của bộ phận
      */
     Long DEPT_ROOT = 0L;
     /**
-     * 数据字典根节点标识
+     * Mã định danh nút gốc của từ điển dữ liệu
      */
     Long DICT_ROOT = 0L;
     /**
-     * 升序
+     * Thứ tự tăng dần
      */
     String ASC = "asc";
     /**
-     * 降序
+     * thứ tự giảm dần
      */
     String DESC = "desc";
     /**
-     * 创建时间字段名
+     * Tên trường thời gian tạo
      */
     String CREATE_DATE = "create_date";
 
     /**
-     * 创建时间字段名
+     * Tên trường thời gian tạo
      */
     String ID = "id";
 
     /**
-     * 数据权限过滤
+     * Lọc quyền dữ liệu
      */
     String SQL_FILTER = "sqlFilter";
 
     /**
-     * 当前页码
+     * Số trang hiện tại
      */
     String PAGE = "page";
     /**
-     * 每页显示记录数
+     * Hiển thị số bản ghi trên mỗi trang
      */
     String LIMIT = "limit";
     /**
-     * 排序字段
+     * trường sắp xếp
      */
     String ORDER_FIELD = "orderField";
     /**
-     * 排序方式
+     * Sắp xếp theo
      */
     String ORDER = "order";
 
     /**
-     * 请求头授权标识
+     * Yêu cầu mã định danh ủy quyền tiêu đề
      */
     String AUTHORIZATION = "Authorization";
 
     /**
-     * 服务器密钥
+     * khóa máy chủ
      */
     String SERVER_SECRET = "server.secret";
 
     /**
-     * SM2公钥
+     * Khóa công khai SM2
      */
     String SM2_PUBLIC_KEY = "server.public_key";
 
     /**
-     * SM2私钥
+     * Khóa riêng SM2
      */
     String SM2_PRIVATE_KEY = "server.private_key";
 
     /**
-     * websocket地址
+     * địa chỉ websocket
      */
     String SERVER_WEBSOCKET = "server.websocket";
 
     /**
-     * mqtt gateway 配置
+     * cấu hình cổng mqtt
      */
     String SERVER_MQTT_GATEWAY = "server.mqtt_gateway";
 
     /**
-     * ota地址
+     * địa chỉ ota
      */
     String SERVER_OTA = "server.ota";
 
     /**
-     * 是否允许用户注册
+     * Có cho phép đăng ký người dùng hay không
      */
     String SERVER_ALLOW_USER_REGISTER = "server.allow_user_register";
 
     /**
-     * 下发六位验证码时显示的控制面板地址
+     * Địa chỉ bảng điều khiển được hiển thị khi cấp mã xác minh gồm sáu chữ số
      */
     String SERVER_FRONTED_URL = "server.fronted_url";
 
     /**
-     * 路径分割符
+     * dấu phân cách đường dẫn
      */
     String FILE_EXTENSION_SEG = ".";
 
     /**
-     * mcp接入点路径
+     * đường dẫn điểm truy cập mcp
      */
     String SERVER_MCP_ENDPOINT = "server.mcp_endpoint";
 
     /**
-     * mcp接入点路径
+     * đường dẫn điểm truy cập mcp
      */
     String SERVER_VOICE_PRINT = "server.voice_print";
 
     /**
-     * mqtt密钥
+     * khóa mqtt
      */
     String SERVER_MQTT_SECRET = "server.mqtt_signature_key";
 
     /**
-     * WebSocket认证开关
+     * Công tắc xác thực WebSocket
      */
     String SERVER_AUTH_ENABLED = "server.auth.enabled";
 
     /**
-     * 系统功能菜单配置
+     * Cấu hình menu chức năng hệ thống
      */
     String SYSTEM_WEB_MENU = "system-web.menu";
 
     /**
-     * 无记忆
+     * không có trí nhớ
      */
     String MEMORY_NO_MEM = "Memory_nomem";
 
     /**
-     * 仅上报聊天记录（不总结记忆）
+     * Chỉ báo cáo lịch sử trò chuyện (không có bộ nhớ tóm tắt)
      */
     String MEMORY_MEM_REPORT_ONLY = "Memory_mem_report_only";
 
     /**
-     * Mem0AI记忆
+     * Bộ nhớ Mem0AI
      */
     String MEMORY_MEM0AI = "Memory_mem0ai";
 
     /**
-     * PowerMem记忆
+     * Bộ nhớ PowerMem
      */
     String MEMORY_POWERMEM = "Memory_powermem";
 
     /**
-     * 火山引擎双声道语音克隆
+     * Nhân bản giọng nói hai tai của động cơ núi lửa
      */
     String VOICE_CLONE_HUOSHAN_DOUBLE_STREAM = "huoshan_double_stream";
 
     /**
-     * RAG配置类型
+     * Loại cấu hình RAG
      */
     String RAG_CONFIG_TYPE = "RAG";
 
     enum SysBaseParam {
         /**
-         * ICP备案号
+         * Số đăng ký ICP
          */
         BEIAN_ICP_NUM("server.beian_icp_num"),
         /**
-         * GA备案号
+         * Số đăng ký GA
          */
         BEIAN_GA_NUM("server.beian_ga_num"),
         /**
-         * 系统名称
+         * Tên hệ thống
          */
         SERVER_NAME("server.name");
 
@@ -207,23 +207,23 @@ public interface Constant {
     }
 
     /**
-     * 训练状态
+     * tình trạng đào tạo
      */
     enum TrainStatus {
         /**
-         * 未训练
+         * Không được đào tạo
          */
         NOT_TRAINED(0),
         /**
-         * 训练中
+         * trong đào tạo
          */
         TRAINING(1),
         /**
-         * 已训练
+         * Được đào tạo
          */
         TRAINED(2),
         /**
-         * 训练失败
+         * Đào tạo không thành công
          */
         TRAIN_FAILED(3);
 
@@ -239,31 +239,31 @@ public interface Constant {
     }
 
     /**
-     * 系统短信
+     * SMS hệ thống
      */
     enum SysMSMParam {
         /**
-         * 阿里云授权keyID
+         * KeyID ủy quyền của Đám mây Alibaba
          */
         ALIYUN_SMS_ACCESS_KEY_ID("aliyun.sms.access_key_id"),
         /**
-         * 阿里云授权密钥
+         * Khóa ủy quyền của Đám mây Alibaba
          */
         ALIYUN_SMS_ACCESS_KEY_SECRET("aliyun.sms.access_key_secret"),
         /**
-         * 阿里云短信签名
+         * Chữ ký SMS trên nền tảng đám mây của Alibaba
          */
         ALIYUN_SMS_SIGN_NAME("aliyun.sms.sign_name"),
         /**
-         * 阿里云短信模板
+         * Mẫu SMS trên nền tảng đám mây của Alibaba
          */
         ALIYUN_SMS_SMS_CODE_TEMPLATE_CODE("aliyun.sms.sms_code_template_code"),
         /**
-         * 单号码最大短信发送条数
+         * Số lượng tin nhắn văn bản tối đa được gửi đến một số
          */
         SERVER_SMS_MAX_SEND_COUNT("server.sms_max_send_count"),
         /**
-         * 是否开启手机注册
+         * Có bật đăng ký điện thoại di động hay không
          */
         SERVER_ENABLE_MOBILE_REGISTER("server.enable_mobile_register");
 
@@ -279,19 +279,19 @@ public interface Constant {
     }
 
     /**
-     * 数据状态
+     * Trạng thái dữ liệu
      */
     enum DataOperation {
         /**
-         * 插入
+         * Chèn
          */
         INSERT("I"),
         /**
-         * 已修改
+         * Đã sửa đổi
          */
         UPDATE("U"),
         /**
-         * 已删除
+         * Đã xóa
          */
         DELETE("D");
 
@@ -308,9 +308,9 @@ public interface Constant {
 
     @Getter
     enum ChatHistoryConfEnum {
-        IGNORE(0, "不记录"),
-        RECORD_TEXT(1, "记录文本"),
-        RECORD_TEXT_AUDIO(2, "文本音频都记录");
+        IGNORE(0, "Không ghi lại"),
+        RECORD_TEXT(1, "ghi lại văn bản"),
+        RECORD_TEXT_AUDIO(2, "Văn bản và âm thanh được ghi lại");
 
         private final int code;
         private final String name;
@@ -322,21 +322,21 @@ public interface Constant {
     }
 
     /**
-     * 版本号
+     * số phiên bản
      */
     public static final String VERSION = "0.9.4";
 
     /**
-     * 无效固件URL
+     * URL chương trình cơ sở không hợp lệ
      */
     String INVALID_FIRMWARE_URL = "http://xiaozhi.server.com:8002/xiaozhi/otaMag/download/NOT_ACTIVATED_FIRMWARE_THIS_IS_A_INVALID_URL";
 
     /**
-     * 字典类型
+     * loại từ điển
      */
     enum DictType {
         /**
-         * 手机区号
+         * Mã vùng điện thoại di động
          */
         MOBILE_AREA("MOBILE_AREA");
 

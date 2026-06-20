@@ -7,24 +7,24 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
 /**
- * 登录表单
+ * Mẫu đăng nhập
  */
 @Data
-@Schema(description = "登录表单")
+@Schema(description = "Mẫu đăng nhập")
 public class LoginDTO implements Serializable {
 
-    @Schema(description = "手机号码")
+    @Schema(description = "Số điện thoại di động")
     @NotBlank(message = "{sysuser.username.require}")
     private String username;
 
-    @Schema(description = "密码")
+    @Schema(description = "Mật khẩu")
     @NotBlank(message = "{sysuser.password.require}")
     private String password;
 
-    @Schema(description = "手机验证码")
+    @Schema(description = "Mã xác minh điện thoại di động")
     private String mobileCaptcha;
 
-    @Schema(description = "唯一标识")
+    @Schema(description = "mã định danh duy nhất")
     @NotBlank(message = "{sysuser.uuid.require}")
     private String captchaId;
 

@@ -15,29 +15,29 @@ import xiaozhi.modules.agent.dto.ContextProviderDTO;
 
 @Data
 @TableName(value = "ai_agent_context_provider", autoResultMap = true)
-@Schema(description = "智能体上下文源配置")
+@Schema(description = "Cấu hình nguồn ngữ cảnh của tác nhân")
 public class AgentContextProviderEntity {
 
     @TableId(type = IdType.ASSIGN_UUID)
-    @Schema(description = "主键")
+    @Schema(description = "khóa chính")
     private String id;
 
-    @Schema(description = "智能体ID")
+    @Schema(description = "đại lýID")
     private String agentId;
 
-    @Schema(description = "上下文源配置")
+    @Schema(description = "Cấu hình nguồn ngữ cảnh")
     @TableField(typeHandler = JacksonTypeHandler.class)
     private List<ContextProviderDTO> contextProviders;
 
-    @Schema(description = "创建者")
+    @Schema(description = "Người sáng tạo")
     private Long creator;
 
-    @Schema(description = "创建时间")
+    @Schema(description = "thời gian sáng tạo")
     private Date createdAt;
 
-    @Schema(description = "更新者")
+    @Schema(description = "Trình cập nhật")
     private Long updater;
 
-    @Schema(description = "更新时间")
+    @Schema(description = "Thời gian cập nhật")
     private Date updatedAt;
 }

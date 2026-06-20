@@ -11,24 +11,24 @@ import org.apache.commons.lang3.StringUtils;
 import cn.hutool.json.JSONObject;
 
 /**
- * 敏感数据处理工具类
+ * Công cụ xử lý dữ liệu nhạy cảm
  */
 public class SensitiveDataUtils {
 
-    // 敏感字段列表
+    // Danh sách trường nhạy cảm
     private static final Set<String> SENSITIVE_FIELDS = new HashSet<>(Arrays.asList(
             "api_key", "personal_access_token", "access_token", "token",
             "secret", "access_key_secret", "secret_key"));
 
     /**
-     * 检查字段是否为敏感字段
+     * Kiểm tra xem một trường có nhạy cảm không
      */
     public static boolean isSensitiveField(String fieldName) {
         return StringUtils.isNotBlank(fieldName) && SENSITIVE_FIELDS.contains(fieldName.toLowerCase());
     }
 
     /**
-     * 隐藏字符串中间部分
+     * Ẩn phần giữa của chuỗi
      */
     public static String maskMiddle(String value) {
         if (StringUtils.isBlank(value) || value.length() == 1) {
@@ -37,10 +37,10 @@ public class SensitiveDataUtils {
 
         int length = value.length();
         if (length <= 8) {
-            // 短字符串保留前2后2
+            // Chuỗi ngắn giữ lại 2 chuỗi đầu và 2 chuỗi cuối
             return value.substring(0, 2) + "****" + value.substring(length - 2);
         } else {
-            // 长字符串保留前4后4
+            // Dây dài giữ lại 4 dây đầu và 4 dây cuối
             int maskLength = length - 8;
             StringBuilder maskBuilder = new StringBuilder();
             for (int i = 0; i < maskLength; i++) {
@@ -51,18 +51,18 @@ public class SensitiveDataUtils {
     }
 
     /**
-     * 判断字符串是否是被掩码处理过的值
+     * Xác định xem một chuỗi có phải là giá trị bị che hay không
      */
     public static boolean isMaskedValue(String value) {
         if (StringUtils.isBlank(value)) {
             return false;
         }
-        // 掩码值至少包含4个连续的*
+        // Giá trị mặt nạ chứa ít nhất 4 ký tự * liên tiếp
         return value.contains("****");
     }
 
     /**
-     * 处理JSONObject中的敏感字段
+     * Xử lý các trường nhạy cảm trong JSONObject
      */
     public static JSONObject maskSensitiveFields(JSONObject jsonObject) {
         if (jsonObject == null) {
@@ -87,8 +87,8 @@ public class SensitiveDataUtils {
     }
 
     /**
-     * 比较两个JSONObject的敏感字段是否相同
-     * 特别针对api_key等敏感字段进行单独比较
+     * So sánh xem các trường nhạy cảm của hai JSONObject có giống nhau không
+     * Đặc biệt tiến hành so sánh riêng biệt cho các trường nhạy cảm như api_key
      */
     public static boolean isSensitiveDataEqual(JSONObject original, JSONObject updated) {
         if (original == null && updated == null) {
@@ -98,7 +98,7 @@ public class SensitiveDataUtils {
             return false;
         }
 
-        // 提取并比较特定敏感字段
+        // Trích xuất và so sánh các trường nhạy cảm cụ thể
         return compareSpecificSensitiveFields(original, updated, "api_key") &&
                 compareSpecificSensitiveFields(original, updated, "personal_access_token") &&
                 compareSpecificSensitiveFields(original, updated, "access_token") &&
@@ -109,24 +109,24 @@ public class SensitiveDataUtils {
     }
 
     /**
-     * 比较两个JSON对象中特定敏感字段是否相同
-     * 遍历整个JSON对象树，查找并比较指定敏感字段
+     * So sánh xem các trường nhạy cảm cụ thể trong hai đối tượng JSON có giống nhau không
+     * Duyệt qua toàn bộ cây đối tượng JSON, tìm và so sánh các trường nhạy cảm được chỉ định
      */
     private static boolean compareSpecificSensitiveFields(JSONObject original, JSONObject updated, String fieldName) {
-        // 提取原始对象中的指定敏感字段
+        // Trích xuất các trường nhạy cảm được chỉ định từ đối tượng ban đầu
         Map<String, String> originalFields = new HashMap<>();
         extractSpecificSensitiveField(original, originalFields, fieldName, "");
 
-        // 提取更新对象中的指定敏感字段
+        // Trích xuất các trường nhạy cảm được chỉ định trong đối tượng cập nhật
         Map<String, String> updatedFields = new HashMap<>();
         extractSpecificSensitiveField(updated, updatedFields, fieldName, "");
 
-        // 如果字段数量不同，说明有增删
+        // Nếu số lượng trường khác nhau nghĩa là có thêm và bớt.
         if (originalFields.size() != updatedFields.size()) {
             return false;
         }
 
-        // 比较每个字段的值
+        // So sánh giá trị của từng trường
         for (Map.Entry<String, String> entry : originalFields.entrySet()) {
             String key = entry.getKey();
             String originalValue = entry.getValue();
@@ -141,7 +141,7 @@ public class SensitiveDataUtils {
     }
 
     /**
-     * 递归提取JSON对象中指定名称的敏感字段
+     * Trích xuất đệ quy các trường nhạy cảm có tên được chỉ định trong đối tượng JSON
      */
     private static void extractSpecificSensitiveField(JSONObject jsonObject, Map<String, String> fieldsMap,
             String targetFieldName, String parentPath) {
@@ -154,10 +154,10 @@ public class SensitiveDataUtils {
             Object value = jsonObject.get(key);
 
             if (value instanceof JSONObject) {
-                // 递归处理嵌套JSON对象
+                // Xử lý đệ quy các đối tượng JSON lồng nhau
                 extractSpecificSensitiveField((JSONObject) value, fieldsMap, targetFieldName, fullPath);
             } else if (value instanceof String && key.equalsIgnoreCase(targetFieldName)) {
-                // 找到目标敏感字段，保存其路径和值
+                // Tìm trường nhạy cảm mục tiêu và lưu đường dẫn cũng như giá trị của nó
                 fieldsMap.put(fullPath, (String) value);
             }
         }

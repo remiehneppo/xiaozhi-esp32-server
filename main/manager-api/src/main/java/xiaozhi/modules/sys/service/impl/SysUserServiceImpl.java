@@ -35,7 +35,7 @@ import xiaozhi.modules.sys.service.SysUserService;
 import xiaozhi.modules.sys.vo.AdminPageUserVO;
 
 /**
- * 系统用户
+ * người dùng hệ thống
  */
 @AllArgsConstructor
 @Service
@@ -72,16 +72,16 @@ public class SysUserServiceImpl extends BaseServiceImpl<SysUserDao, SysUserEntit
     public void save(SysUserDTO dto) {
         SysUserEntity entity = ConvertUtils.sourceToTarget(dto, SysUserEntity.class);
 
-        // 密码强度
+        // Độ mạnh mật khẩu
         if (!isStrongPassword(entity.getPassword())) {
             throw new RenException(ErrorCode.PASSWORD_WEAK_ERROR);
         }
 
-        // 密码加密
+        // Mã hóa mật khẩu
         String password = PasswordUtils.encode(entity.getPassword());
         entity.setPassword(password);
 
-        // 保存用户
+        // lưu người dùng
         Long userCount = getUserCount();
         if (userCount == 0) {
             entity.setSuperAdmin(SuperAdminEnum.YES.value());
@@ -96,11 +96,11 @@ public class SysUserServiceImpl extends BaseServiceImpl<SysUserDao, SysUserEntit
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void deleteById(Long id) {
-        // 删除用户
+        // Xóa người dùng
         baseDao.deleteById(id);
-        // 删除设备
+        // Xóa thiết bị
         deviceService.deleteByUserId(id);
-        // 删除智能体
+        // Xóa đại lý
         agentService.deleteAgentByUserId(id);
     }
 
@@ -113,17 +113,17 @@ public class SysUserServiceImpl extends BaseServiceImpl<SysUserDao, SysUserEntit
             throw new RenException(ErrorCode.TOKEN_INVALID);
         }
 
-        // 判断旧密码是否正确
+        // Xác định xem mật khẩu cũ có đúng không
         if (!PasswordUtils.matches(passwordDTO.getPassword(), sysUserEntity.getPassword())) {
             throw new RenException(ErrorCode.OLD_PASSWORD_ERROR);
         }
 
-        // 新密码强度
+        // Độ mạnh mật khẩu mới
         if (!isStrongPassword(passwordDTO.getNewPassword())) {
             throw new RenException(ErrorCode.PASSWORD_WEAK_ERROR);
         }
 
-        // 密码加密
+        // Mã hóa mật khẩu
         String password = PasswordUtils.encode(passwordDTO.getNewPassword());
         sysUserEntity.setPassword(password);
 
@@ -133,7 +133,7 @@ public class SysUserServiceImpl extends BaseServiceImpl<SysUserDao, SysUserEntit
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void changePasswordDirectly(Long userId, String password) {
-        // 新密码强度
+        // Độ mạnh mật khẩu mới
         if (!isStrongPassword(password)) {
             throw new RenException(ErrorCode.PASSWORD_WEAK_ERROR);
         }
@@ -165,7 +165,7 @@ public class SysUserServiceImpl extends BaseServiceImpl<SysUserDao, SysUserEntit
                 getPage(params, "id", true),
                 new QueryWrapper<SysUserEntity>().like(StringUtils.isNotBlank(dto.getMobile()), "username",
                         dto.getMobile()));
-        // 循环处理page获取回来的数据，返回需要的字段
+        // Lặp lại dữ liệu được lấy từ trang và trả về các trường bắt buộc
         List<AdminPageUserVO> list = page.getRecords().stream().map(user -> {
             AdminPageUserVO adminPageUserVO = new AdminPageUserVO();
             adminPageUserVO.setUserid(user.getId().toString());
@@ -180,7 +180,7 @@ public class SysUserServiceImpl extends BaseServiceImpl<SysUserDao, SysUserEntit
     }
 
     private boolean isStrongPassword(String password) {
-        // 弱密码的正则表达式
+        // Biểu thức chính quy cho mật khẩu yếu
         String weakPasswordRegex = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z]).+$";
         Pattern pattern = Pattern.compile(weakPasswordRegex);
         Matcher matcher = pattern.matcher(password);
@@ -191,28 +191,28 @@ public class SysUserServiceImpl extends BaseServiceImpl<SysUserDao, SysUserEntit
     private static final Random random = new Random();
 
     /**
-     * 生成随机密码
-     * 
-     * @return 随机生成的密码
+     * Tạo mật khẩu ngẫu nhiên
+     *
+     * @return mật khẩu được tạo ngẫu nhiên
      */
     private String generatePassword() {
         StringBuilder password = new StringBuilder();
 
-        // 确保包含至少一个数字
+        // Đảm bảo bao gồm ít nhất một số
         password.append("0123456789".charAt(random.nextInt(10)));
-        // 确保包含至少一个小写字母
+        // Đảm bảo bao gồm ít nhất một chữ cái viết thường
         password.append("abcdefghijklmnopqrstuvwxyz".charAt(random.nextInt(26)));
-        // 确保包含至少一个大写字母
+        // Đảm bảo bao gồm ít nhất một chữ cái viết hoa
         password.append("ABCDEFGHIJKLMNOPQRSTUVWXYZ".charAt(random.nextInt(26)));
-        // 确保包含至少一个特殊符号
+        // Đảm bảo bao gồm ít nhất một ký hiệu đặc biệt
         password.append("!@#$%^&*()".charAt(random.nextInt(10)));
 
-        // 生成剩余的8个字符
+        // Tạo 8 ký tự còn lại
         for (int i = 4; i < 12; i++) {
             password.append(CHARACTERS.charAt(random.nextInt(CHARACTERS.length())));
         }
 
-        // 打乱密码中字符的顺序
+        // Xáo trộn thứ tự các ký tự trong mật khẩu
         char[] passwordChars = password.toString().toCharArray();
         for (int i = 0; i < passwordChars.length; i++) {
             int randomIndex = random.nextInt(passwordChars.length);

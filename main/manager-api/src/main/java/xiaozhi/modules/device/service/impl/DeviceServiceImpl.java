@@ -95,7 +95,7 @@ public class DeviceServiceImpl extends BaseServiceImpl<DeviceDao, DeviceEntity> 
                 redisUtils.set(RedisKeys.getAgentDeviceLastConnectedAtById(agentId), new Date());
             }
         } catch (Exception e) {
-            log.error("异步更新设备连接信息失败", e);
+            log.error("Cập nhật không đồng bộ thông tin kết nối thiết bị không thành công", e);
         }
     }
 
@@ -120,7 +120,7 @@ public class DeviceServiceImpl extends BaseServiceImpl<DeviceDao, DeviceEntity> 
         if (!activationCode.equals(cachedCode)) {
             throw new RenException(ErrorCode.ACTIVATION_CODE_ERROR);
         }
-        // 检查设备有没有被激活
+        // Kiểm tra xem thiết bị đã được kích hoạt chưa
         if (selectById(deviceId) != null) {
             throw new RenException(ErrorCode.DEVICE_ALREADY_ACTIVATED);
         }
@@ -149,51 +149,51 @@ public class DeviceServiceImpl extends BaseServiceImpl<DeviceDao, DeviceEntity> 
         deviceEntity.setLastConnectedAt(currentTime);
         deviceDao.insert(deviceEntity);
 
-        // 清理redis缓存、清除智能体设备数量缓存
+        // Xóa bộ đệm redis và xóa bộ đệm số thiết bị thông minh
         redisUtils.delete(List.of(cacheDeviceKey, deviceKey, RedisKeys.getAgentDeviceCountById(agentId)));
         return true;
     }
 
     /**
-     * 获取设备在线数据
+     * Nhận dữ liệu trực tuyến của thiết bị
      */
     @Override
     public String getDeviceOnlineData(String agentId) {
-        // 从系统参数中获取MQTT网关地址
+        // Nhận địa chỉ cổng MQTT từ các tham số hệ thống
         String mqttGatewayUrl = sysParamsService.getValue("server.mqtt_manager_api", true);
         if (StringUtils.isBlank(mqttGatewayUrl) || "null".equals(mqttGatewayUrl)) {
             return "";
         }
-        // 构建完整的URL
+        // Xây dựng URL hoàn chỉnh
         String url = StrUtil.format("http://{}/api/devices/status", mqttGatewayUrl);
 
-        // 获取当前用户的设备列表
+        // Lấy danh sách thiết bị của người dùng hiện tại
         UserDetail user = SecurityUser.getUser();
         List<DeviceEntity> devices = getUserDevices(user.getId(), agentId);
 
-        // 构建deviceIds数组
+        // Xây dựng mảng deviceIds
         Set<String> deviceIds = devices.stream().map(o -> {
             String macAddress = Optional.ofNullable(o.getMacAddress()).orElse("unknown").replace(":", "_");
             String groupId = Optional.ofNullable(o.getBoard()).orElse("GID_default").replace(":", "_");
             return StrUtil.format("{}@@@{}@@@{}", groupId, macAddress, macAddress);
         }).collect(Collectors.toSet());
 
-        // 构建请求入参
+        // Xây dựng các tham số đầu vào yêu cầu
         Map<String, Set<String>> params = MapUtil
                 .builder(new HashMap<String, Set<String>>())
                 .put("clientIds", deviceIds).build();
 
         if (ToolUtil.isNotEmpty(deviceIds)) {
-            // 发送请求
+            // Gửi yêu cầu
             String resultMessage = HttpRequest.post(url)
                     .header(Header.CONTENT_TYPE, ContentType.JSON.getValue())
                     .header(Header.AUTHORIZATION, "Bearer " + generateBearerToken())
                     .body(JSONUtil.toJsonStr(params))
-                    .timeout(10000) // 超时，毫秒
+                    .timeout(10000) // hết thời gian，mili giây
                     .execute().body();
             return resultMessage;
         }
-        // 返回响应
+        // Trả lời phản hồi
         return "";
     }
 
@@ -204,14 +204,14 @@ public class DeviceServiceImpl extends BaseServiceImpl<DeviceDao, DeviceEntity> 
 
         DeviceEntity deviceById = getDeviceByMacAddress(macAddress);
 
-        // 设备未绑定，则返回当前上传的固件信息（不更新）以此兼容旧固件版本
+        // Nếu thiết bị không bị ràng buộc, thông tin firmware hiện đang tải lên sẽ được trả về (không cập nhật) để tương thích với các phiên bản firmware cũ hơn.
         if (deviceById == null) {
             DeviceReportRespDTO.Firmware firmware = new DeviceReportRespDTO.Firmware();
             firmware.setVersion(deviceReport.getApplication().getVersion());
             firmware.setUrl(Constant.INVALID_FIRMWARE_URL);
             response.setFirmware(firmware);
         } else {
-            // 只有在设备已绑定且autoUpdate不为0的情况下才返回固件升级信息
+            // Thông tin nâng cấp chương trình cơ sở chỉ được trả về khi thiết bị bị ràng buộc và autoUpdate không bằng 0
             if (deviceById.getAutoUpdate() != 0) {
                 String type = deviceReport.getBoard() == null ? null : deviceReport.getBoard().getType();
                 DeviceReportRespDTO.Firmware firmware = buildFirmwareInfo(type,
@@ -220,20 +220,20 @@ public class DeviceServiceImpl extends BaseServiceImpl<DeviceDao, DeviceEntity> 
             }
         }
 
-        // 添加WebSocket配置
+        // Thêm cấu hình WebSocket
         DeviceReportRespDTO.Websocket websocket = new DeviceReportRespDTO.Websocket();
-        // 从系统参数获取WebSocket URL，如果未配置则使用默认值
+        // Lấy URL WebSocket từ tham số hệ thống, sử dụng giá trị mặc định nếu không được định cấu hình
         String wsUrl = sysParamsService.getValue(Constant.SERVER_WEBSOCKET, true);
 
-        // 检查是否启用认证并生成token
+        // Kiểm tra xem xác thực có được bật hay không và tạo mã thông báo
         String authEnabled = sysParamsService.getValue(Constant.SERVER_AUTH_ENABLED, true);
         if ("true".equalsIgnoreCase(authEnabled)) {
             try {
-                // 生成token
+                // Tạo mã thông báo
                 String token = generateWebSocketToken(clientId, macAddress);
                 websocket.setToken(token);
             } catch (Exception e) {
-                log.error("生成WebSocket token失败: {}", e.getMessage());
+                log.error("tạo raWebSocket tokenthất bại: {}", e.getMessage());
                 websocket.setToken("");
             }
         } else {
@@ -241,24 +241,24 @@ public class DeviceServiceImpl extends BaseServiceImpl<DeviceDao, DeviceEntity> 
         }
 
         if (StringUtils.isBlank(wsUrl) || wsUrl.equals("null")) {
-            log.error("WebSocket地址未配置，请登录智控台，在参数管理找到【server.websocket】配置");
+            log.error("WebSocketĐịa chỉ chưa được cấu hình，Vui lòng đăng nhập vào bảng điều khiển thông minh，Tìm thấy trong quản lý tham số【server.websocket】Cấu hình");
             wsUrl = "ws://xiaozhi.server.com:8000/xiaozhi/v1/";
             websocket.setUrl(wsUrl);
         } else {
             String[] wsUrls = wsUrl.split("\\;");
             if (wsUrls.length > 0) {
-                // 随机选择一个WebSocket URL
+                // Chọn ngẫu nhiên một URL WebSocket
                 websocket.setUrl(wsUrls[RandomUtil.randomInt(0, wsUrls.length)]);
             } else {
-                log.error("WebSocket地址未配置，请登录智控台，在参数管理找到【server.websocket】配置");
+                log.error("WebSocketĐịa chỉ chưa được cấu hình，Vui lòng đăng nhập vào bảng điều khiển thông minh，Tìm thấy trong quản lý tham số【server.websocket】Cấu hình");
                 websocket.setUrl("ws://xiaozhi.server.com:8000/xiaozhi/v1/");
             }
         }
 
         response.setWebsocket(websocket);
 
-        // 添加MQTT UDP配置
-        // 从系统参数获取MQTT Gateway地址，仅在配置有效时使用
+        // Thêm cấu hình MQTT UDP
+        // Lấy địa chỉ MQTT Gateway từ tham số hệ thống, chỉ sử dụng khi cấu hình hợp lệ
         String mqttUdpConfig = sysParamsService.getValue(Constant.SERVER_MQTT_GATEWAY, true);
         if (mqttUdpConfig != null && !mqttUdpConfig.equals("null") && !mqttUdpConfig.isEmpty()) {
             try {
@@ -270,19 +270,19 @@ public class DeviceServiceImpl extends BaseServiceImpl<DeviceDao, DeviceEntity> 
                     response.setMqtt(mqtt);
                 }
             } catch (Exception e) {
-                log.error("生成MQTT配置失败: {}", e.getMessage());
+                log.error("tạo raMQTTCấu hình không thành công: {}", e.getMessage());
             }
         }
 
         if (deviceById != null) {
-            // 如果设备存在，则异步更新上次连接时间和版本信息
+            // Nếu thiết bị tồn tại, cập nhật không đồng bộ thông tin phiên bản và thời gian kết nối cuối cùng
             String appVersion = deviceReport.getApplication() != null ? deviceReport.getApplication().getVersion()
                     : null;
-            // 通过Spring代理调用异步方法
+            // Gọi các phương thức không đồng bộ thông qua Spring proxy
             ((DeviceServiceImpl) AopContext.currentProxy()).updateDeviceConnectionInfo(deviceById.getAgentId(),
                     deviceById.getId(), appVersion);
         } else {
-            // 如果设备不存在，则生成激活码
+            // Nếu thiết bị không tồn tại, hãy tạo mã kích hoạt
             DeviceReportRespDTO.Activation code = buildActivation(macAddress, deviceReport);
             response.setActivation(code);
         }
@@ -304,7 +304,7 @@ public class DeviceServiceImpl extends BaseServiceImpl<DeviceDao, DeviceEntity> 
         return devices.stream().map(device -> {
             UserShowDeviceListVO vo = ConvertUtils.sourceToTarget(device, UserShowDeviceListVO.class);
             vo.setDeviceType(device.getBoard());
-            // 设置UTC时间戳供前端使用时区转换
+            // Đặt dấu thời gian UTC cho giao diện người dùng để sử dụng cho chuyển đổi múi giờ
             if (device.getLastConnectedAt() != null) {
                 vo.setLastConnectedAtTimestamp(device.getLastConnectedAt().getTime());
             }
@@ -314,13 +314,13 @@ public class DeviceServiceImpl extends BaseServiceImpl<DeviceDao, DeviceEntity> 
 
     @Override
     public void unbindDevice(Long userId, String deviceId) {
-        // 先查询设备信息，获取agentId
+        // Đầu tiên hãy truy vấn thông tin thiết bị và lấy AgentId.
         DeviceEntity device = baseDao.selectById(deviceId);
         if (device == null) {
             return;
         }
         if (StringUtils.isNotBlank(device.getAgentId())) {
-            // 清除智能体设备数量缓存
+            // Xóa bộ nhớ đệm đếm thiết bị của đại lý
             redisUtils.delete(RedisKeys.getAgentDeviceCountById(device.getAgentId()));
         }
 
@@ -358,26 +358,26 @@ public class DeviceServiceImpl extends BaseServiceImpl<DeviceDao, DeviceEntity> 
         params.put(Constant.LIMIT, dto.getLimit());
         IPage<DeviceEntity> page = baseDao.selectPage(
                 getPage(params, "mac_address", true),
-                // 定义查询条件
+                // Xác định điều kiện truy vấn
                 new QueryWrapper<DeviceEntity>()
-                        // 必须设备关键词查找
+                        // Tìm kiếm từ khóa thiết bị cần thiết
                         .like(StringUtils.isNotBlank(dto.getKeywords()), "alias", dto.getKeywords()));
-        // 循环处理page获取回来的数据，返回需要的字段
+        // Lặp lại dữ liệu được lấy từ trang và trả về các trường bắt buộc
         List<UserShowDeviceListVO> list = page.getRecords().stream().map(device -> {
             UserShowDeviceListVO vo = ConvertUtils.sourceToTarget(device, UserShowDeviceListVO.class);
-            // 把最后修改的时间，改为简短描述的时间
+            // Thay đổi thời gian sửa đổi lần cuối thành thời gian mô tả ngắn gọn
             vo.setRecentChatTime(DateUtils.getShortTime(device.getUpdateDate()));
             sysUserUtilService.assignUsername(device.getUserId(),
                     vo::setBindUserName);
             vo.setDeviceType(device.getBoard());
             vo.setBoard(device.getBoard());
-            // 设置UTC时间戳供前端使用时区转换
+            // Đặt dấu thời gian UTC cho giao diện người dùng để sử dụng cho chuyển đổi múi giờ
             if (device.getLastConnectedAt() != null) {
                 vo.setLastConnectedAtTimestamp(device.getLastConnectedAt().getTime());
             }
             return vo;
         }).toList();
-        // 计算页数
+        // Đếm trang
         return new PageData<>(list, page.getTotal());
     }
 
@@ -414,7 +414,7 @@ public class DeviceServiceImpl extends BaseServiceImpl<DeviceDao, DeviceEntity> 
 
     @Override
     public Date getLatestLastConnectionTime(String agentId) {
-        // 查询是否有缓存时间，有则返回
+        // Truy vấn xem có thời gian bộ đệm hay không và quay lại nếu có
         Date cachedDate = (Date) redisUtils.get(RedisKeys.getAgentDeviceLastConnectedAtById(agentId));
         if (cachedDate != null) {
             return cachedDate;
@@ -462,11 +462,11 @@ public class DeviceServiceImpl extends BaseServiceImpl<DeviceDao, DeviceEntity> 
             dataMap.put("deviceId", deviceId);
             dataMap.put("activation_code", newCode);
 
-            // 写入主数据 key
+            // Viết khóa dữ liệu chính
             String dataKey = getDeviceCacheKey(deviceId);
             redisUtils.set(dataKey, dataMap);
 
-            // 写入反查激活码 key
+            // Viết key mã kích hoạt chống kiểm tra
             String codeKey = RedisKeys.getOtaActivationCode(newCode);
             redisUtils.set(codeKey, deviceId);
         }
@@ -486,18 +486,18 @@ public class DeviceServiceImpl extends BaseServiceImpl<DeviceDao, DeviceEntity> 
         String downloadUrl = null;
 
         if (ota != null) {
-            // 如果设备没有版本信息，或者OTA版本比设备版本新，则返回下载地址
+            // Nếu thiết bị không có thông tin phiên bản hoặc phiên bản OTA mới hơn phiên bản thiết bị thì địa chỉ tải sẽ được trả về.
             if (compareVersions(ota.getVersion(), currentVersion) > 0) {
                 String otaUrl = sysParamsService.getValue(Constant.SERVER_OTA, true);
                 if (StringUtils.isBlank(otaUrl) || otaUrl.equals("null")) {
-                    log.error("OTA地址未配置，请登录智控台，在参数管理找到【server.ota】配置");
-                    // 尝试从请求中获取
+                    log.error("OTAĐịa chỉ chưa được cấu hình，Vui lòng đăng nhập vào bảng điều khiển thông minh，Tìm thấy trong quản lý tham số【server.ota】Cấu hình");
+                    // Cố gắng nhận được từ yêu cầu
                     HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder
                             .getRequestAttributes())
                             .getRequest();
                     otaUrl = request.getRequestURL().toString();
                 }
-                // 将URL中的/ota/替换为/otaMag/download/
+                // Thay thế /ota/ trong URL bằng /otaMag/download/
                 String uuid = UUID.randomUUID().toString();
                 redisUtils.set(RedisKeys.getOtaIdKey(uuid), ota.getId());
                 downloadUrl = otaUrl.replace("/ota/", "/otaMag/download/") + uuid;
@@ -510,11 +510,11 @@ public class DeviceServiceImpl extends BaseServiceImpl<DeviceDao, DeviceEntity> 
     }
 
     /**
-     * 比较两个版本号
-     * 
-     * @param version1 版本1
-     * @param version2 版本2
-     * @return 如果version1 > version2返回1，version1 < version2返回-1，相等返回0
+     * So sánh hai số phiên bản
+     *
+     * @param phiên bản1 phiên bản 1
+     * @param phiên bản2 phiên bản 2
+     * @return Nếu version1 > version2 trả về 1, version1 < version2 trả về -1, nếu bằng nhau trả về 0
      */
     private static int compareVersions(String version1, String version2) {
         if (version1 == null || version2 == null) {
@@ -540,7 +540,7 @@ public class DeviceServiceImpl extends BaseServiceImpl<DeviceDao, DeviceEntity> 
 
     @Override
     public void manualAddDevice(Long userId, DeviceManualAddDTO dto) {
-        // 检查mac是否已存在
+        // Kiểm tra xem mac đã tồn tại chưa
         QueryWrapper<DeviceEntity> wrapper = new QueryWrapper<>();
         wrapper.eq("mac_address", dto.getMacAddress());
         DeviceEntity exist = baseDao.selectOne(wrapper);
@@ -563,7 +563,7 @@ public class DeviceServiceImpl extends BaseServiceImpl<DeviceDao, DeviceEntity> 
         entity.setAutoUpdate(1);
         baseDao.insert(entity);
 
-        // 添加：清除智能体设备数量缓存
+        // Đã thêm: Xóa bộ nhớ đệm đếm thiết bị của đại lý
         redisUtils.delete(RedisKeys.getAgentDeviceCountById(dto.getAgentId()));
     }
 
@@ -576,11 +576,11 @@ public class DeviceServiceImpl extends BaseServiceImpl<DeviceDao, DeviceEntity> 
     }
 
     /**
-     * 生成MQTT密码签名
-     * 
-     * @param content   签名内容 (clientId + '|' + username)
-     * @param secretKey 密钥
-     * @return Base64编码的HMAC-SHA256签名
+     * Tạo chữ ký mật mã MQTT
+     *
+     * Nội dung chữ ký nội dung @param (clientId + '|' + tên người dùng)
+     * @param secretKey khóa
+     * @return Chữ ký HMAC-SHA256 được mã hóa Base64
      */
     private String generatePasswordSignature(String content, String secretKey) throws Exception {
         Mac hmac = Mac.getInstance("HmacSHA256");
@@ -591,63 +591,63 @@ public class DeviceServiceImpl extends BaseServiceImpl<DeviceDao, DeviceEntity> 
     }
 
     /**
-     * 生成WebSocket认证token 遵循Python端AuthManager的实现逻辑：token = signature.timestamp
-     * 
-     * @param clientId 客户端ID
-     * @param username 用户名 (通常为deviceId/macAddress)
-     * @return 认证token字符串
+     * Tạo mã thông báo xác thực WebSocket theo logic triển khai của AuthManager phía Python: token = signature.timestamp
+     *
+     * ID khách hàng @param clientId
+     * @param tên người dùng tên người dùng (thường là deviceId/macAddress)
+     * @return chuỗi mã thông báo xác thực
      */
     public String generateWebSocketToken(String clientId, String username)
             throws NoSuchAlgorithmException, InvalidKeyException {
-        // 从系统参数获取密钥
+        // Lấy key từ tham số hệ thống
         String secretKey = sysParamsService.getValue(Constant.SERVER_SECRET, false);
         if (StringUtils.isBlank(secretKey)) {
-            throw new IllegalStateException("WebSocket认证密钥未配置(server.secret)");
+            throw new IllegalStateException("WebSocketKhóa xác thực chưa được định cấu hình(server.secret)");
         }
 
-        // 获取当前时间戳(秒)
+        // Lấy dấu thời gian hiện tại (giây)
         long timestamp = System.currentTimeMillis() / 1000;
 
-        // 构建签名内容: clientId|username|timestamp
+        // Xây dựng nội dung chữ ký: clientId|tên người dùng|dấu thời gian
         String content = String.format("%s|%s|%d", clientId, username, timestamp);
 
-        // 生成HMAC-SHA256签名
+        // Tạo chữ ký HMAC-SHA256
         Mac hmac = Mac.getInstance("HmacSHA256");
         SecretKeySpec keySpec = new SecretKeySpec(secretKey.getBytes(StandardCharsets.UTF_8), "HmacSHA256");
         hmac.init(keySpec);
         byte[] signature = hmac.doFinal(content.getBytes(StandardCharsets.UTF_8));
 
-        // Base64 URL-safe编码签名(去除填充符=)
+        // Chữ ký được mã hóa an toàn URL Base64 (xóa phần đệm =)
         String signatureBase64 = Base64.getUrlEncoder().withoutPadding().encodeToString(signature);
 
-        // 返回格式: signature.timestamp
+        // Định dạng trả về: signature.timestamp
         return String.format("%s.%d", signatureBase64, timestamp);
     }
 
     /**
-     * 构建MQTT配置信息
-     * 
-     * @param macAddress MAC地址
-     * @param groupId    分组ID
-     * @return MQTT配置对象
+     * Xây dựng thông tin cấu hình MQTT
+     *
+     * @param macĐịa chỉ địa chỉ MAC
+     * @param ID nhóm ID nhóm
+     * @return Đối tượng cấu hình MQTT
      */
     private DeviceReportRespDTO.MQTT buildMqttConfig(String macAddress, String groupId)
             throws Exception {
-        // 从环境变量或系统参数获取签名密钥
+        // Lấy khóa ký từ biến môi trường hoặc tham số hệ thống
         String signatureKey = sysParamsService.getValue("server.mqtt_signature_key", true);
         if (StringUtils.isBlank(signatureKey)) {
-            log.warn("缺少MQTT_SIGNATURE_KEY，跳过MQTT配置生成");
+            log.warn("mất tíchMQTT_SIGNATURE_KEY，bỏ quaMQTTTạo cấu hình");
             return null;
         }
 
-        // 构建客户端ID格式：groupId@@@macAddress@@@uuid
+        // Xây dựng định dạng ID khách hàng: groupId@@@macAddress@@@uuid
         String groupIdSafeStr = groupId.replace(":", "_");
         String deviceIdSafeStr = macAddress.replace(":", "_");
         String mqttClientId = String.format("%s@@@%s@@@%s", groupIdSafeStr, deviceIdSafeStr, deviceIdSafeStr);
 
-        // 构建用户数据（包含IP等信息）
+        // Xây dựng dữ liệu người dùng (bao gồm IP và thông tin khác)
         Map<String, String> userData = new HashMap<>();
-        // 尝试获取客户端IP
+        // Cố gắng lấy IP của khách hàng
         try {
             ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder
                     .getRequestAttributes();
@@ -660,14 +660,14 @@ public class DeviceServiceImpl extends BaseServiceImpl<DeviceDao, DeviceEntity> 
             userData.put("ip", "unknown");
         }
 
-        // 将用户数据编码为Base64 JSON
+        // Mã hóa dữ liệu người dùng thành Base64 JSON
         String userDataJson = new com.fasterxml.jackson.databind.ObjectMapper().writeValueAsString(userData);
         String username = Base64.getEncoder().encodeToString(userDataJson.getBytes(StandardCharsets.UTF_8));
 
-        // 生成密码签名
+        // Tạo chữ ký mật mã
         String password = generatePasswordSignature(mqttClientId + "|" + username, signatureKey);
 
-        // 构建MQTT配置
+        // Xây dựng cấu hình MQTT
         DeviceReportRespDTO.MQTT mqtt = new DeviceReportRespDTO.MQTT();
         mqtt.setClient_id(mqttClientId);
         mqtt.setUsername(username);
@@ -679,7 +679,7 @@ public class DeviceServiceImpl extends BaseServiceImpl<DeviceDao, DeviceEntity> 
     }
 
     /**
-     * 生成BearerToken
+     * Tạo BearerToken
      */
     private String generateBearerToken() {
         try {
@@ -696,48 +696,48 @@ public class DeviceServiceImpl extends BaseServiceImpl<DeviceDao, DeviceEntity> 
 
     @Override
     public Object getDeviceTools(String deviceId) {
-        // 从系统参数中获取MQTT网关地址
+        // Nhận địa chỉ cổng MQTT từ các tham số hệ thống
         String mqttGatewayUrl = sysParamsService.getValue("server.mqtt_manager_api", true);
         if (StringUtils.isBlank(mqttGatewayUrl) || "null".equals(mqttGatewayUrl)) {
             return null;
         }
 
-        // 获取设备信息
+        // Nhận thông tin thiết bị
         DeviceEntity device = baseDao.selectById(deviceId);
         if (device == null) {
             return null;
         }
 
-        // 检查设备是否属于当前用户
+        // Kiểm tra xem thiết bị có thuộc về người dùng hiện tại không
         UserDetail user = SecurityUser.getUser();
         if (!device.getUserId().equals(user.getId())) {
             return null;
         }
 
-        // 构建clientId
+        // Xây dựng clientId
         String macAddress = Optional.ofNullable(device.getMacAddress()).orElse("unknown").replace(":", "_");
         String groupId = Optional.ofNullable(device.getBoard()).orElse("GID_default").replace(":", "_");
         String clientId = StrUtil.format("{}@@@{}@@@{}", groupId, macAddress, macAddress);
 
-        // 构建完整的URL
+        // Xây dựng URL hoàn chỉnh
         String url = StrUtil.format("http://{}/api/commands/{}", mqttGatewayUrl, clientId);
 
-        // 存储所有工具列表
+        // Lưu trữ danh sách tất cả các công cụ
         List<Object> allTools = new ArrayList<>();
         String cursor = null;
 
-        // 循环获取分页数据
+        // Vòng lặp để lấy dữ liệu được phân trang
         while (true) {
-            // 构建params
+            // Xây dựng thông số
             Map<String, Object> paramsMap = MapUtil.builder(new HashMap<String, Object>())
                     .put("withUserTools", true)
                     .build();
-            // 如果有cursor，添加到请求参数中
+            // Nếu có con trỏ, hãy thêm nó vào tham số yêu cầu
             if (StringUtils.isNotBlank(cursor)) {
                 paramsMap.put("cursor", cursor);
             }
 
-            // 构建请求体
+            // Xây dựng nội dung yêu cầu
             Map<String, Object> payload = MapUtil
                     .builder(new HashMap<String, Object>())
                     .put("jsonrpc", "2.0")
@@ -752,15 +752,15 @@ public class DeviceServiceImpl extends BaseServiceImpl<DeviceDao, DeviceEntity> 
                     .put("payload", payload)
                     .build();
 
-            // 发送请求
+            // Gửi yêu cầu
             String resultMessage = HttpRequest.post(url)
                     .header(Header.CONTENT_TYPE, ContentType.JSON.getValue())
                     .header(Header.AUTHORIZATION, "Bearer " + generateBearerToken())
                     .body(JSONUtil.toJsonStr(requestBody))
-                    .timeout(10000) // 超时，毫秒
+                    .timeout(10000) // hết thời gian，mili giây
                     .execute().body();
 
-            // 解析响应
+            // Phân tích phản hồi
             if (StringUtils.isBlank(resultMessage)) {
                 break;
             }
@@ -775,22 +775,22 @@ public class DeviceServiceImpl extends BaseServiceImpl<DeviceDao, DeviceEntity> 
                 break;
             }
 
-            // 获取当前页的工具列表
+            // Lấy danh sách công cụ của trang hiện tại
             JSONArray tools = data.getJSONArray("tools");
             if (tools != null && !tools.isEmpty()) {
                 allTools.addAll(tools);
             }
 
-            // 获取下一页的cursor
+            // Lấy con trỏ của trang tiếp theo
             String nextCursor = data.getStr("nextCursor");
             if (StringUtils.isBlank(nextCursor)) {
-                // 没有下一页了
+                // Không có trang tiếp theo
                 break;
             }
             cursor = nextCursor;
         }
 
-        // 构建返回结果
+        // Xây dựng kết quả trả về
         if (allTools.isEmpty()) {
             return null;
         }
@@ -802,33 +802,33 @@ public class DeviceServiceImpl extends BaseServiceImpl<DeviceDao, DeviceEntity> 
 
     @Override
     public Object callDeviceTool(String deviceId, String toolName, Map<String, Object> arguments) {
-        // 从系统参数中获取MQTT网关地址
+        // Nhận địa chỉ cổng MQTT từ các tham số hệ thống
         String mqttGatewayUrl = sysParamsService.getValue("server.mqtt_manager_api", true);
         if (StringUtils.isBlank(mqttGatewayUrl) || "null".equals(mqttGatewayUrl)) {
             return null;
         }
 
-        // 获取设备信息
+        // Nhận thông tin thiết bị
         DeviceEntity device = baseDao.selectById(deviceId);
         if (device == null) {
             return null;
         }
 
-        // 检查设备是否属于当前用户
+        // Kiểm tra xem thiết bị có thuộc về người dùng hiện tại không
         UserDetail user = SecurityUser.getUser();
         if (!device.getUserId().equals(user.getId())) {
             return null;
         }
 
-        // 构建clientId
+        // Xây dựng clientId
         String macAddress = Optional.ofNullable(device.getMacAddress()).orElse("unknown").replace(":", "_");
         String groupId = Optional.ofNullable(device.getBoard()).orElse("GID_default").replace(":", "_");
         String clientId = StrUtil.format("{}@@@{}@@@{}", groupId, macAddress, macAddress);
 
-        // 构建完整的URL
+        // Xây dựng URL hoàn chỉnh
         String url = StrUtil.format("http://{}/api/commands/{}", mqttGatewayUrl, clientId);
 
-        // 构建请求体
+        // Xây dựng nội dung yêu cầu
         Map<String, Object> params = MapUtil
                 .builder(new HashMap<String, Object>())
                 .put("name", toolName)
@@ -849,15 +849,15 @@ public class DeviceServiceImpl extends BaseServiceImpl<DeviceDao, DeviceEntity> 
                 .put("payload", payload)
                 .build();
 
-        // 发送请求
+        // Gửi yêu cầu
         String resultMessage = HttpRequest.post(url)
                 .header(Header.CONTENT_TYPE, ContentType.JSON.getValue())
                 .header(Header.AUTHORIZATION, "Bearer " + generateBearerToken())
                 .body(JSONUtil.toJsonStr(requestBody))
-                .timeout(10000) // 超时，毫秒
+                .timeout(10000) // hết thời gian，mili giây
                 .execute().body();
 
-        // 解析响应
+        // Phân tích phản hồi
         if (StringUtils.isNotBlank(resultMessage)) {
             cn.hutool.json.JSONObject jsonObject = JSONUtil.parseObj(resultMessage);
             if (jsonObject.getBool("success", false)) {
@@ -896,24 +896,24 @@ public class DeviceServiceImpl extends BaseServiceImpl<DeviceDao, DeviceEntity> 
     public Map<String, Object> forwardCallRequest(String callerMac, String targetMac, String callerNickname) {
         Map<String, Object> result = new HashMap<>();
         result.put("status", "error");
-        result.put("message", "网关配置缺失");
+        result.put("message", "Cấu hình cổng bị thiếu");
 
-        // 从系统参数获取网关配置
+        // Nhận cấu hình cổng từ các tham số hệ thống
         String mqttGatewayUrl = sysParamsService.getValue("server.mqtt_manager_api", true);
         String mqttSignatureKey = sysParamsService.getValue("server.mqtt_signature_key", true);
 
         if (StringUtils.isBlank(mqttGatewayUrl) || "null".equals(mqttGatewayUrl)) {
-            log.error("MQTT网关地址未配置");
-            result.put("message", "MQTT网关地址未配置");
+            log.error("MQTTĐịa chỉ cổng không được cấu hình");
+            result.put("message", "MQTTĐịa chỉ cổng không được cấu hình");
             return result;
         }
         if (StringUtils.isBlank(mqttSignatureKey) || "null".equals(mqttSignatureKey)) {
-            log.error("MQTT签名密钥未配置");
-            result.put("message", "MQTT签名密钥未配置");
+            log.error("MQTTKhóa ký chưa được định cấu hình");
+            result.put("message", "MQTTKhóa ký chưa được định cấu hình");
             return result;
         }
 
-        // 生成token: SHA256(date + secret)
+        // Tạo mã thông báo: SHA256(ngày + bí mật)
         String dateStr = new java.text.SimpleDateFormat("yyyy-MM-dd").format(new Date());
         try {
             java.security.MessageDigest md = java.security.MessageDigest.getInstance("SHA-256");
@@ -928,13 +928,13 @@ public class DeviceServiceImpl extends BaseServiceImpl<DeviceDao, DeviceEntity> 
             }
             String token = hexString.toString();
 
-            // 构建请求体
+            // Xây dựng nội dung yêu cầu
             Map<String, Object> body = new HashMap<>();
             body.put("caller_mac", callerMac);
             body.put("target_mac", targetMac);
             body.put("caller_nickname", callerNickname);
 
-            // 发送请求并获取响应
+            // Gửi yêu cầu và nhận phản hồi
             String url = "http://" + mqttGatewayUrl + "/api/call/request";
             String response = cn.hutool.http.HttpRequest.post(url)
                     .header("Authorization", "Bearer " + token)
@@ -944,7 +944,7 @@ public class DeviceServiceImpl extends BaseServiceImpl<DeviceDao, DeviceEntity> 
                     .execute()
                     .body();
 
-            // 解析网关响应
+            // Phân tích phản hồi của cổng
             if (StringUtils.isNotBlank(response)) {
                 Map<String, Object> gwResult = JSONUtil.parseObj(response);
                 result.put("status", gwResult.get("status"));
@@ -952,8 +952,8 @@ public class DeviceServiceImpl extends BaseServiceImpl<DeviceDao, DeviceEntity> 
             }
             return result;
         } catch (Exception e) {
-            log.error("转发呼叫请求失败: {}", e.getMessage());
-            result.put("message", "呼叫请求转发失败: " + e.getMessage());
+            log.error("Yêu cầu chuyển tiếp cuộc gọi không thành công: {}", e.getMessage());
+            result.put("message", "Chuyển tiếp yêu cầu cuộc gọi không thành công: " + e.getMessage());
             return result;
         }
     }

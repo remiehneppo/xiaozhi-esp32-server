@@ -35,7 +35,7 @@ import xiaozhi.modules.voiceclone.dto.VoiceCloneResponseDTO;
 import xiaozhi.modules.voiceclone.entity.VoiceCloneEntity;
 import xiaozhi.modules.voiceclone.service.VoiceCloneService;
 
-@Tag(name = "音色资源管理", description = "音色资源开通相关接口")
+@Tag(name = "Quản lý tài nguyên âm thanh", description = "Các giao diện liên quan đến kích hoạt tài nguyên giai điệu")
 @Slf4j
 @RestController
 @RequiredArgsConstructor
@@ -46,10 +46,10 @@ public class VoiceCloneController {
     private final RedisUtils redisUtils;
 
     @GetMapping
-    @Operation(summary = "分页查询音色资源")
+    @Operation(summary = "Truy vấn tài nguyên âm sắc theo trang")
     @Parameters({
-            @Parameter(name = Constant.PAGE, description = "当前页码，从1开始", required = true),
-            @Parameter(name = Constant.LIMIT, description = "每页显示记录数", required = true)
+            @Parameter(name = Constant.PAGE, description = "Số trang hiện tại，từ1bắt đầu", required = true),
+            @Parameter(name = Constant.LIMIT, description = "Hiển thị số bản ghi trên mỗi trang", required = true)
     })
     @RequiresPermissions("sys:role:normal")
     public Result<PageData<VoiceCloneResponseDTO>> page(
@@ -62,41 +62,41 @@ public class VoiceCloneController {
     }
 
     @PostMapping("/upload")
-    @Operation(summary = "上传音频进行声音克隆")
+    @Operation(summary = "Tải lên âm thanh để nhân bản âm thanh")
     @Parameters({
-            @Parameter(name = "id", description = "声音克隆记录ID", required = true),
-            @Parameter(name = "voiceFile", description = "音频文件", required = true)
+            @Parameter(name = "id", description = "ghi âm nhân bảnID", required = true),
+            @Parameter(name = "voiceFile", description = "tập tin âm thanh", required = true)
     })
     @RequiresPermissions("sys:role:normal")
     public Result<String> uploadVoice(
             @RequestParam("id") String id,
             @RequestParam("voiceFile") MultipartFile voiceFile) {
         try {
-            // 验证文件
+            // Tài liệu xác minh
             if (voiceFile == null || voiceFile.isEmpty()) {
                 return new Result<String>().error(ErrorCode.VOICE_CLONE_AUDIO_EMPTY);
             }
 
-            // 验证文件类型
+            // Xác minh loại tệp
             String contentType = voiceFile.getContentType();
             if (contentType == null || !contentType.startsWith("audio/")) {
                 return new Result<String>().error(ErrorCode.VOICE_CLONE_NOT_AUDIO_FILE);
             }
 
-            // 加强验证文件扩展名
+            // Xác minh nâng cao phần mở rộng tập tin
             String originalFilename = voiceFile.getOriginalFilename();
             String extension = originalFilename.substring(originalFilename.lastIndexOf(".")).toLowerCase();
             if (!extension.equals(".mp3") && !extension.equals(".wav")) {
-                return new Result<String>().error("只允许上传.mp3和.wav格式的文件");
+                return new Result<String>().error("Chỉ cho phép tải lên.mp3và.wavtập tin định dạng");
             }
 
-            // 验证文件大小 (最大10MB)
+            // Xác minh kích thước tệp (tối đa 10 MB)
             if (voiceFile.getSize() > 10 * 1024 * 1024) {
                 return new Result<String>().error(ErrorCode.VOICE_CLONE_AUDIO_TOO_LARGE);
             }
-            // 检查权限
+            // Kiểm tra quyền
             checkPermission(id);
-            // 调用服务层处理
+            // Xử lý lớp dịch vụ cuộc gọi
             voiceCloneService.uploadVoice(id, voiceFile);
 
             return new Result<String>();
@@ -106,7 +106,7 @@ public class VoiceCloneController {
     }
 
     @PostMapping("/updateName")
-    @Operation(summary = "更新声音克隆名称")
+    @Operation(summary = "Cập nhật tên bản sao âm thanh")
     @RequiresPermissions("sys:role:normal")
     public Result<String> updateName(@RequestBody Map<String, String> params) {
         try {
@@ -119,7 +119,7 @@ public class VoiceCloneController {
             if (name == null || name.isEmpty()) {
                 return new Result<String>().error(ErrorCode.VOICE_CLONE_NAME_NOT_NULL);
             }
-            // 检查权限
+            // Kiểm tra quyền
             checkPermission(id);
 
             voiceCloneService.updateName(id, name);
@@ -131,10 +131,10 @@ public class VoiceCloneController {
     }
 
     @PostMapping("/audio/{id}")
-    @Operation(summary = "获取音频下载ID")
+    @Operation(summary = "Tải xuống âm thanhID")
     @RequiresPermissions("sys:role:normal")
     public Result<String> getAudioId(@PathVariable("id") String id) {
-        // 检查权限
+        // Kiểm tra quyền
         checkPermission(id);
         byte[] audioData = voiceCloneService.getVoiceData(id);
         if (audioData == null) {
@@ -146,7 +146,7 @@ public class VoiceCloneController {
     }
 
     @GetMapping("/play/{uuid}")
-    @Operation(summary = "播放音频")
+    @Operation(summary = "Phát âm thanh")
     public void playVoice(@PathVariable("uuid") String uuid, HttpServletResponse response) {
         try {
             String id = (String) redisUtils.get(RedisKeys.getVoiceCloneAudioIdKey(uuid));
@@ -155,7 +155,7 @@ public class VoiceCloneController {
                 response.setStatus(HttpServletResponse.SC_NOT_FOUND);
                 return;
             }
-            // 获取音频数据
+            // Nhận dữ liệu âm thanh
             byte[] voiceData = voiceCloneService.getVoiceData(id);
 
             if (voiceData == null || voiceData.length == 0) {
@@ -163,27 +163,27 @@ public class VoiceCloneController {
                 return;
             }
 
-            // 设置响应头
+            // Đặt tiêu đề phản hồi
             response.setContentType("audio/wav");
             response.setContentLength(voiceData.length);
             response.setHeader("Content-Disposition", "inline; filename=voice.wav");
 
-            // 写入音频数据
+            // Ghi dữ liệu âm thanh
             response.getOutputStream().write(voiceData);
             response.getOutputStream().flush();
         } catch (Exception e) {
-            log.error("播放音频失败", e);
+            log.error("Không thể phát âm thanh", e);
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         }
     }
 
     @PostMapping("/cloneAudio")
-    @Operation(summary = "复刻音频")
+    @Operation(summary = "Sao chép âm thanh")
     @RequiresPermissions("sys:role:normal")
     public Result<String> cloneAudio(@RequestBody Map<String, String> params) {
         String cloneId = params.get("cloneId");
         checkPermission(cloneId);
-        // 调用服务层进行语音克隆训练
+        // Gọi lớp dịch vụ để đào tạo nhân bản giọng nói
         voiceCloneService.cloneAudio(cloneId);
         return new Result<String>();
     }

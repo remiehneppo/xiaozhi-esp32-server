@@ -6,41 +6,41 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
 /**
- * 音色详情展示VO
- * 
+ * Hiển thị chi tiết âm thanh VO
+ *
  * @author zjy
  * @since 2025-3-21
  */
 @Data
 public class TimbreDetailsVO implements Serializable {
-    @Schema(description = "音色id")
+    @Schema(description = "âm sắcid")
     private String id;
 
-    @Schema(description = "语言")
+    @Schema(description = "Ngôn ngữ")
     private String languages;
 
-    @Schema(description = "音色名称")
+    @Schema(description = "Tên giọng nói")
     private String name;
 
-    @Schema(description = "备注")
+    @Schema(description = "Bình luận")
     private String remark;
 
-    @Schema(description = "参考音频路径")
+    @Schema(description = "Đường dẫn âm thanh tham chiếu")
     private String referenceAudio;
 
-    @Schema(description = "參考文本")
+    @Schema(description = "Văn bản tham khảo")
     private String referenceText;
 
-    @Schema(description = "排序")
+    @Schema(description = "sắp xếp")
     private long sort;
 
-    @Schema(description = "对应 TTS 模型主键")
+    @Schema(description = "tương ứng TTS Khóa chính của mô hình")
     private String ttsModelId;
 
-    @Schema(description = "音色编码")
+    @Schema(description = "mã hóa âm sắc")
     private String ttsVoice;
 
-    @Schema(description = "音频播放地址")
+    @Schema(description = "Địa chỉ phát lại âm thanh")
     private String voiceDemo;
 
 }

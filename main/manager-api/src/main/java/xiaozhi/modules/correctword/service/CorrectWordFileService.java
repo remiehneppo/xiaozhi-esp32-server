@@ -11,86 +11,86 @@ import xiaozhi.modules.correctword.vo.CorrectWordSimpleVO;
 public interface CorrectWordFileService {
 
     /**
-     * 创建替换词文件
+     * Tạo một tập tin từ thay thế
      *
-     * @param dto 创建参数
-     * @return 文件VO
+     * @param dto tạo tham số
+     * @return fileVO
      */
     CorrectWordFileVO createFile(CorrectWordFileCreateDTO dto);
 
     /**
-     * 修改替换词文件（全量替换词条）
+     * Sửa đổi file word thay thế (thay thế tất cả các mục)
      *
-     * @param fileId 文件ID
-     * @param dto    修改参数
+     * @param fileId ID tệp
+     * @param dto sửa đổi tham số
      */
     void updateFile(String fileId, CorrectWordFileCreateDTO dto);
 
     /**
-     * 获取当前用户的替换词文件列表
+     * Lấy danh sách file word thay thế của người dùng hiện tại
      *
-     * @param params 分页参数
-     * @return 分页数据
+     * @param thông số phân trang
+     * @return dữ liệu được phân trang
      */
     PageData<CorrectWordFileVO> listFiles(Map<String, Object> params);
 
     /**
-     * 获取当前用户的替换词文件列表（不分页，用于下拉选择）
+     * Lấy danh sách file word thay thế của người dùng hiện tại (không đánh số trang, dùng để lựa chọn thả xuống)
      *
-     * @return 文件列表
+     * @return danh sách tập tin
      */
     List<CorrectWordFileVO> listAllFiles();
 
     /**
-     * 获取文件原始内容（用于下载）
+     * Lấy nội dung gốc của file (để tải về)
      *
-     * @param fileId 文件ID
-     * @return 文件实体
+     * @param fileId ID tệp
+     * thực thể tệp @return
      */
     CorrectWordFileVO getFileContent(String fileId);
 
     /**
-     * 删除替换词文件及其所有词条和关联记录
+     * Xóa tệp từ thay thế và tất cả các mục nhập và bản ghi liên quan của nó
      *
-     * @param fileId 文件ID
+     * @param fileId ID tệp
      */
     void deleteFile(String fileId);
 
     /**
-     * 删除智能体关联的替换词文件关联记录（不删文件本身）
+     * Xóa bản ghi liên kết tệp từ thay thế được liên kết với tác nhân (không xóa chính tệp đó)
      *
-     * @param agentId 智能体ID
+     * @param ID đại lý ID đại lý
      */
     void deleteMappingsByAgentId(String agentId);
 
     /**
-     * 获取智能体的所有替换词条（精简版，供设备端使用）
+     * Nhận tất cả các điều khoản thay thế của đại lý (phiên bản rút gọn, dành cho sử dụng thiết bị)
      *
-     * @param agentId 智能体ID
-     * @return 替换词列表
+     * @param ID đại lý ID đại lý
+     * @return danh sách từ thay thế
      */
     List<CorrectWordSimpleVO> getAllItemsByAgentId(String agentId);
 
     /**
-     * 获取智能体关联的替换词文件ID列表
+     * Lấy danh sách ID file word thay thế liên kết với tác nhân
      *
-     * @param agentId 智能体ID
-     * @return 文件ID列表
+     * @param ID đại lý ID đại lý
+     * @return danh sách ID tập tin
      */
     List<String> getAgentCorrectWordFileIds(String agentId);
 
     /**
-     * 保存智能体关联的替换词文件（全量替换）
+     * Lưu file word thay thế liên kết với đại lý (thay thế đầy đủ)
      *
-     * @param agentId 智能体ID
-     * @param fileIds 文件ID列表
+     * @param ID đại lý ID đại lý
+     * @param fileIds danh sách ID tệp
      */
     void saveAgentCorrectWords(String agentId, List<String> fileIds);
 
     /**
-     * 批量删除替换词文件
+     * Xóa hàng loạt file word thay thế
      *
-     * @param fileIds 文件ID列表
+     * @param fileIds danh sách ID tệp
      */
     void batchDeleteFiles(List<String> fileIds);
 }

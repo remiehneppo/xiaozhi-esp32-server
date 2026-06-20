@@ -12,20 +12,20 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * 通用工具类
+ * Công cụ chung
  */
 public class ToolUtil {
     private static final Logger logger = LoggerFactory.getLogger(ToolUtil.class);
 
     /**
-     * 对象是否不为空(新增)
+     * Đối tượng có trống không (mới)
      */
     public static boolean isNotEmpty(Object o) {
         return !isEmpty(o);
     }
 
     /**
-     * 对象是否为空
+     * Đối tượng có trống không
      */
     public static boolean isEmpty(Object o) {
         if (o == null) {
@@ -64,7 +64,7 @@ public class ToolUtil {
     }
 
     /**
-     * 对象组中是否存在空对象
+     * Liệu có một đối tượng trống trong nhóm đối tượng
      */
     public static boolean isOneEmpty(Object... os) {
         for (Object o : os) {
@@ -76,7 +76,7 @@ public class ToolUtil {
     }
 
     /**
-     * 对象组中是否全是空对象
+     * Liệu nhóm đối tượng có phải là tất cả các đối tượng trống
      */
     public static boolean isAllEmpty(Object... os) {
         for (Object o : os) {

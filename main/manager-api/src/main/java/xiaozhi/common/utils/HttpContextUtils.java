@@ -18,7 +18,7 @@ import xiaozhi.common.exception.RenException;
 
 /**
  * Http
- * Copyright (c) 人人开源 All rights reserved.
+ * Bản quyền (c) Renren Kaiyuan Mọi quyền được bảo lưu.
  * Website: https://www.renren.io
  */
 public class HttpContextUtils {
@@ -71,7 +71,7 @@ public class HttpContextUtils {
     }
 
     public static String getLanguage() {
-        // 默认语言
+        // Ngôn ngữ mặc định
         String defaultLanguage = "zh-CN";
         // request
         HttpServletRequest request = getHttpServletRequest();
@@ -79,14 +79,14 @@ public class HttpContextUtils {
             return defaultLanguage;
         }
 
-        // 请求语言
+        // Yêu cầu ngôn ngữ
         defaultLanguage = request.getHeader(HttpHeaders.ACCEPT_LANGUAGE);
 
         return defaultLanguage;
     }
 
     /**
-     * 获取客户端的唯一标识
+     * Lấy mã định danh duy nhất của khách hàng
      *
      * @return
      */

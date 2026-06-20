@@ -11,297 +11,297 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.validation.constraints.*;
 
 /**
- * 检索与元数据管理聚合 DTO
+ * Tổng hợp quản lý siêu dữ liệu và truy xuất DTO
  */
-@Schema(description = "检索与元数据管理聚合 DTO")
+@Schema(description = "Tổng hợp quản lý tìm kiếm và siêu dữ liệu DTO")
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class RetrievalDTO {
 
     /**
-     * 文档聚合信息 (VO)
+     * Thông tin tổng hợp tài liệu (VO)
      */
     @Data
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-    @Schema(description = "文档聚合信息")
+    @Schema(description = "Thông tin tổng hợp tài liệu")
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static class DocAggVO implements Serializable {
         private static final long serialVersionUID = 1L;
 
-        @Schema(description = "文档名称")
+        @Schema(description = "Tên tài liệu")
         @JsonProperty("doc_name")
         private String docName;
 
-        @Schema(description = "文档 ID")
+        @Schema(description = "Tài liệu ID")
         @JsonProperty("doc_id")
         private String docId;
 
-        @Schema(description = "数量")
+        @Schema(description = "số lượng")
         private Integer count;
     }
 
     /**
-     * 检索测试请求参数
+     * Truy xuất các tham số yêu cầu kiểm tra
      */
     @Data
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-    @Schema(description = "检索测试请求参数")
+    @Schema(description = "Truy xuất các tham số yêu cầu kiểm tra")
     @JsonIgnoreProperties(ignoreUnknown = true)
     @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class TestReq implements Serializable {
         private static final long serialVersionUID = 1L;
 
-        @Schema(description = "知识库 ID 列表", requiredMode = Schema.RequiredMode.REQUIRED)
+        @Schema(description = "cơ sở tri thức ID danh sách", requiredMode = Schema.RequiredMode.REQUIRED)
         @JsonProperty("dataset_ids")
-        @NotEmpty(message = "知识库ID列表不能为空")
+        @NotEmpty(message = "cơ sở tri thứcIDDanh sách không thể trống")
         private List<String> datasetIds;
 
-        @Schema(description = "文档 ID 列表 (可选，用于限定检索范围)")
+        @Schema(description = "Tài liệu ID danh sách (Tùy chọn，Được sử dụng để giới hạn phạm vi tìm kiếm)")
         @JsonProperty("document_ids")
         private List<String> documentIds;
 
-        @Schema(description = "检索问题", requiredMode = Schema.RequiredMode.REQUIRED)
-        @NotBlank(message = "检索问题不能为空")
+        @Schema(description = "Tìm kiếm câu hỏi", requiredMode = Schema.RequiredMode.REQUIRED)
+        @NotBlank(message = "Câu hỏi tìm kiếm không được để trống")
         private String question;
 
-        @Schema(description = "页码 (默认 1)")
+        @Schema(description = "Số trang (Mặc định 1)")
         private Integer page;
 
-        @Schema(description = "每页数量 (默认 10)")
+        @Schema(description = "Số lượng mỗi trang (Mặc định 10)")
         @JsonProperty("page_size")
         private Integer pageSize;
 
-        @Schema(description = "相似度阈值 (默认 0.2)")
+        @Schema(description = "ngưỡng tương tự (Mặc định 0.2)")
         @JsonProperty("similarity_threshold")
         private Float similarityThreshold;
 
-        @Schema(description = "向量相似度权重 (默认 0.3)")
+        @Schema(description = "Trọng số tương tự của vectơ (Mặc định 0.3)")
         @JsonProperty("vector_similarity_weight")
         private Float vectorSimilarityWeight;
 
-        @Schema(description = "返回 Top K 切片 (默认 1024)")
+        @Schema(description = "Trở lại Top K lát (Mặc định 1024)")
         @JsonProperty("top_k")
         private Integer topK;
 
-        @Schema(description = "重排序模型 ID")
+        @Schema(description = "mô hình sắp xếp lại ID")
         @JsonProperty("rerank_id")
         private String rerankId;
 
-        @Schema(description = "是否高亮关键词")
+        @Schema(description = "Có làm nổi bật từ khóa hay không")
         private Boolean highlight;
 
-        @Schema(description = "是否启用关键词检索")
+        @Schema(description = "Có bật tìm kiếm từ khóa hay không")
         private Boolean keyword;
 
-        @Schema(description = "跨语言翻译列表 (可选)")
+        @Schema(description = "Danh sách dịch đa ngôn ngữ (Tùy chọn)")
         @JsonProperty("cross_languages")
         private List<String> crossLanguages;
 
-        @Schema(description = "元数据过滤条件 (JSON 对象)")
+        @Schema(description = "Bộ lọc siêu dữ liệu (JSON vật thể)")
         @JsonProperty("metadata_condition")
         private Map<String, Object> metadataCondition;
     }
 
     /**
-     * 检索命中结果 (VO)
+     * Truy xuất lượt truy cập (VO)
      */
     @Data
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-    @Schema(description = "检索命中切片详情")
+    @Schema(description = "Truy xuất chi tiết lát truy cập")
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static class HitVO implements Serializable {
         private static final long serialVersionUID = 1L;
 
-        @Schema(description = "切片 ID", requiredMode = Schema.RequiredMode.REQUIRED)
+        @Schema(description = "lát ID", requiredMode = Schema.RequiredMode.REQUIRED)
         private String id;
 
-        @Schema(description = "切片内容", requiredMode = Schema.RequiredMode.REQUIRED)
+        @Schema(description = "nội dung lát", requiredMode = Schema.RequiredMode.REQUIRED)
         private String content;
 
-        @Schema(description = "所属文档 ID", requiredMode = Schema.RequiredMode.REQUIRED)
+        @Schema(description = "Tài liệu thuộc sở hữu ID", requiredMode = Schema.RequiredMode.REQUIRED)
         @JsonProperty("document_id")
         private String documentId;
 
-        @Schema(description = "所属知识库 ID")
+        @Schema(description = "Cơ sở tri thức thuộc về ID")
         @JsonProperty("dataset_id")
         private String datasetId;
 
-        @Schema(description = "文档名称")
+        @Schema(description = "Tên tài liệu")
         @JsonProperty("document_name")
         private String documentName;
 
-        @Schema(description = "文档关键词")
+        @Schema(description = "Từ khóa tài liệu")
         @JsonProperty("document_keyword")
         private String documentKeyword;
 
-        @Schema(description = "综合相似度", requiredMode = Schema.RequiredMode.REQUIRED)
+        @Schema(description = "Sự tương đồng toàn diện", requiredMode = Schema.RequiredMode.REQUIRED)
         private Float similarity;
 
-        @Schema(description = "向量相似度")
+        @Schema(description = "véc tơ tương tự")
         @JsonProperty("vector_similarity")
         private Float vectorSimilarity;
 
-        @Schema(description = "关键词相似度")
+        @Schema(description = "độ tương tự từ khóa")
         @JsonProperty("term_similarity")
         private Float termSimilarity;
 
-        @Schema(description = "索引位置")
+        @Schema(description = "vị trí chỉ số")
         private Integer index;
 
-        @Schema(description = "高亮内容")
+        @Schema(description = "Làm nổi bật nội dung")
         private String highlight;
 
-        @Schema(description = "重要关键词列表")
+        @Schema(description = "Danh sách từ khóa quan trọng")
         @JsonProperty("important_keywords")
         private List<String> importantKeywords;
 
-        @Schema(description = "预设问题列表")
+        @Schema(description = "Danh sách câu hỏi mặc định")
         private List<String> questions;
 
-        @Schema(description = "图片 ID")
+        @Schema(description = "hình ảnh ID")
         @JsonProperty("image_id")
         private String imageId;
 
-        @Schema(description = "位置索引 (RAGFlow返回嵌套数组, 如 [[start, end, filename]])")
+        @Schema(description = "chỉ số vị trí (RAGFlowTrả về mảng lồng nhau, Chẳng hạn như [[start, end, filename]])")
         private Object positions;
     }
 
     /**
-     * 知识库元数据摘要 (VO)
+     * Tóm tắt siêu dữ liệu cơ sở kiến thức (VO)
      */
     @Data
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-    @Schema(description = "知识库元数据摘要信息")
+    @Schema(description = "Thông tin tóm tắt siêu dữ liệu cơ sở kiến thức")
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static class MetaSummaryVO implements Serializable {
         private static final long serialVersionUID = 1L;
 
-        @Schema(description = "文档总数", requiredMode = Schema.RequiredMode.REQUIRED)
+        @Schema(description = "Tổng số tài liệu", requiredMode = Schema.RequiredMode.REQUIRED)
         @JsonProperty("total_doc_count")
         private Long totalDocCount;
 
-        @Schema(description = "Token 总数", requiredMode = Schema.RequiredMode.REQUIRED)
+        @Schema(description = "Token tổng cộng", requiredMode = Schema.RequiredMode.REQUIRED)
         @JsonProperty("total_token_count")
         private Long totalTokenCount;
 
-        @Schema(description = "文件类型分布 (key: 文件后缀, value: 数量)")
+        @Schema(description = "Phân phối loại tệp (key: hậu tố tập tin, value: số lượng)")
         @JsonProperty("file_type_distribution")
         private Map<String, Long> fileTypeDistribution;
 
-        @Schema(description = "文状态分布 (key: 状态码, value: 数量)")
+        @Schema(description = "Phân phối trạng thái văn bản (key: mã trạng thái, value: số lượng)")
         @JsonProperty("status_distribution")
         private Map<String, Long> statusDistribution;
 
-        @Schema(description = "自定义元数据统计 (key: 字段名, value: 数量/值)")
+        @Schema(description = "Thống kê siêu dữ liệu tùy chỉnh (key: Tên trường, value: số lượng/giá trị)")
         @JsonProperty("custom_metadata")
         private Map<String, Object> customMetadata;
     }
 
     /**
-     * 批量更新元数据请求参数
+     * Tham số yêu cầu siêu dữ liệu cập nhật hàng loạt
      */
     @Data
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-    @Schema(description = "批量更新元数据请求参数")
+    @Schema(description = "Tham số yêu cầu siêu dữ liệu cập nhật hàng loạt")
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static class MetaBatchReq implements Serializable {
         private static final long serialVersionUID = 1L;
 
-        @Schema(description = "筛选器: 用于指定要更新的文档范围 (默认全部)")
+        @Schema(description = "bộ lọc: Được sử dụng để chỉ định phạm vi tài liệu sẽ được cập nhật (Mặc định tất cả)")
         private Selector selector;
 
-        @Schema(description = "新增或更新的元数据列表")
+        @Schema(description = "Danh sách siêu dữ liệu mới hoặc cập nhật")
         private List<UpdateItem> updates;
 
-        @Schema(description = "需要删除的元数据键列表")
+        @Schema(description = "Danh sách các khóa siêu dữ liệu cần xóa")
         private List<DeleteItem> deletes;
 
         /**
-         * 文档筛选器
+         * Bộ lọc tài liệu
          */
         @Data
         @Builder
         @NoArgsConstructor
         @AllArgsConstructor
-        @Schema(description = "元数据更新筛选器")
+        @Schema(description = "Bộ lọc cập nhật siêu dữ liệu")
         @JsonIgnoreProperties(ignoreUnknown = true)
         public static class Selector implements Serializable {
             private static final long serialVersionUID = 1L;
 
-            @Schema(description = "指定文档 ID 列表")
+            @Schema(description = "Chỉ định tài liệu ID danh sách")
             @JsonProperty("document_ids")
             private List<String> documentIds;
 
-            @Schema(description = "元数据条件匹配 (key: 字段名, value: 匹配值)")
+            @Schema(description = "Khớp điều kiện siêu dữ liệu (key: Tên trường, value: giá trị phù hợp)")
             @JsonProperty("metadata_condition")
             private Map<String, Object> metadataCondition;
         }
 
         /**
-         * 更新项
+         * Cập nhật mục
          */
         @Data
         @Builder
         @NoArgsConstructor
         @AllArgsConstructor
-        @Schema(description = "元数据更新项")
+        @Schema(description = "Các mục cập nhật siêu dữ liệu")
         @JsonIgnoreProperties(ignoreUnknown = true)
         public static class UpdateItem implements Serializable {
             private static final long serialVersionUID = 1L;
 
-            @Schema(description = "元数据键名", requiredMode = Schema.RequiredMode.REQUIRED)
+            @Schema(description = "Tên khóa siêu dữ liệu", requiredMode = Schema.RequiredMode.REQUIRED)
             private String key;
 
-            @Schema(description = "元数据值", requiredMode = Schema.RequiredMode.REQUIRED)
+            @Schema(description = "giá trị siêu dữ liệu", requiredMode = Schema.RequiredMode.REQUIRED)
             private Object value;
         }
 
         /**
-         * 删除项
+         * Xóa mục
          */
         @Data
         @Builder
         @NoArgsConstructor
         @AllArgsConstructor
-        @Schema(description = "元数据删除项")
+        @Schema(description = "xóa siêu dữ liệu")
         @JsonIgnoreProperties(ignoreUnknown = true)
         public static class DeleteItem implements Serializable {
             private static final long serialVersionUID = 1L;
 
-            @Schema(description = "需删除的元数据键名", requiredMode = Schema.RequiredMode.REQUIRED)
+            @Schema(description = "Tên khóa siêu dữ liệu sẽ bị xóa", requiredMode = Schema.RequiredMode.REQUIRED)
             private String key;
         }
     }
 
     /**
-     * 召回测试结果聚合响应
+     * Thu hồi phản hồi tổng hợp kết quả kiểm tra
      */
     @Data
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-    @Schema(description = "召回测试结果聚合响应")
+    @Schema(description = "Thu hồi phản hồi tổng hợp kết quả kiểm tra")
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static class ResultVO implements Serializable {
         private static final long serialVersionUID = 1L;
 
-        @Schema(description = "检索命中的切片列表")
+        @Schema(description = "Truy xuất danh sách các lát cắt")
         private List<HitVO> chunks;
 
-        @Schema(description = "文档分布统计")
+        @Schema(description = "Thống kê phân phối tài liệu")
         @JsonProperty("doc_aggs")
         private List<DocAggVO> docAggs;
 
-        @Schema(description = "总命中记录数")
+        @Schema(description = "Tổng số bản ghi hit")
         private Long total;
     }
 }

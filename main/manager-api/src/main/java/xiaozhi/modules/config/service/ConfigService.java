@@ -5,27 +5,27 @@ import java.util.Map;
 
 public interface ConfigService {
     /**
-     * 获取服务器配置
+     * Nhận cấu hình máy chủ
      *
-     * @param isCache 是否缓存
-     * @return 配置信息
+     * @param isCache có lưu vào bộ nhớ đệm không
+     * @return thông tin cấu hình
      */
     Object getConfig(Boolean isCache);
 
     /**
-     * 获取智能体模型配置
+     * Nhận cấu hình mô hình đại lý
      *
-     * @param macAddress     MAC地址
-     * @param selectedModule 客户端已实例化的模型
-     * @return 模型配置信息
+     * @param macĐịa chỉ địa chỉ MAC
+     * @param selectedModule Mô hình đã được khách hàng khởi tạo
+     * @return thông tin cấu hình mô hình
      */
     Map<String, Object> getAgentModels(String macAddress, Map<String, String> selectedModule);
 
     /**
-     * 获取智能体替换词
+     * Nhận từ thay thế đại lý
      *
-     * @param macAddress 设备MAC地址
-     * @return 替换词列表，格式如 ["模板1|模板01", "模板2|模板02"]
+     * @param macĐịa chỉ MAC của thiết bị
+     * @return Danh sách từ thay thế, định dạng như ["Mẫu 1|Mẫu 01", "Mẫu 2|Mẫu 02"]
      */
     List<String> getCorrectWords(String macAddress);
 }

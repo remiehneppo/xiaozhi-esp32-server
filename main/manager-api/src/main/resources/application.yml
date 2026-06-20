@@ -13,7 +13,7 @@ server:
         http-only: true
 
 spring:
-  # 环境 dev|test|prod
+  # Môi trường dev|test|prod
   profiles:
     active: dev
   messages:
@@ -46,15 +46,15 @@ renren:
 #mybatis
 mybatis-plus:
   mapper-locations: classpath*:/mapper/**/*.xml
-  #实体扫描，多个package用逗号或者分号分隔
+  #Quét thực thể, phân cách nhiều package bằng dấu phẩy hoặc dấu chấm phẩy
   typeAliasesPackage: xiaozhi.modules.*.entity
   global-config:
-    #数据库相关配置
+    #Cấu hình liên quan đến cơ sở dữ liệu
     db-config:
-      #主键类型
+      #Loại khóa chính
       id-type: ASSIGN_ID
     banner: false
-  #原生配置
+  #Cấu hình gốc
   configuration:
     map-underscore-to-camel-case: true
     cache-enabled: false

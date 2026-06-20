@@ -18,10 +18,10 @@ import xiaozhi.common.validator.group.DefaultGroup;
 import xiaozhi.common.validator.group.UpdateGroup;
 
 /**
- * 字典类型
+ * loại từ điển
  */
 @Data
-@Schema(description = "字典类型")
+@Schema(description = "loại từ điển")
 public class SysDictTypeDTO implements Serializable {
 
     @Schema(description = "id")
@@ -29,27 +29,27 @@ public class SysDictTypeDTO implements Serializable {
     @NotNull(message = "{id.require}", groups = UpdateGroup.class)
     private Long id;
 
-    @Schema(description = "字典类型")
+    @Schema(description = "loại từ điển")
     @NotBlank(message = "{sysdict.type.require}", groups = DefaultGroup.class)
     private String dictType;
 
-    @Schema(description = "字典名称")
+    @Schema(description = "Tên từ điển")
     @NotBlank(message = "{sysdict.name.require}", groups = DefaultGroup.class)
     private String dictName;
 
-    @Schema(description = "备注")
+    @Schema(description = "Bình luận")
     private String remark;
 
-    @Schema(description = "排序")
+    @Schema(description = "sắp xếp")
     @Min(value = 0, message = "{sort.number}", groups = DefaultGroup.class)
     private Integer sort;
 
-    @Schema(description = "创建时间")
+    @Schema(description = "thời gian sáng tạo")
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     @JsonFormat(pattern = DateUtils.DATE_TIME_PATTERN)
     private Date createDate;
 
-    @Schema(description = "更新时间")
+    @Schema(description = "Thời gian cập nhật")
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     @JsonFormat(pattern = DateUtils.DATE_TIME_PATTERN)
     private Date updateDate;

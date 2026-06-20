@@ -11,325 +11,325 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.validation.constraints.*;
 
 /**
- * 文档管理聚合 DTO
+ * Tổng hợp quản lý tài liệu DTO
  */
-@Schema(description = "文档管理聚合 DTO")
+@Schema(description = "Tổng hợp quản lý tài liệu DTO")
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class DocumentDTO {
 
     /**
-     * 上传文档请求参数
+     * Tải lên các thông số yêu cầu tài liệu
      */
     @Data
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-    @Schema(description = "上传文档请求参数")
+    @Schema(description = "Tải lên các thông số yêu cầu tài liệu")
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static class UploadReq implements Serializable {
         private static final long serialVersionUID = 1L;
 
-        @Schema(description = "知识库 ID (必须指定归属)", requiredMode = Schema.RequiredMode.REQUIRED)
+        @Schema(description = "cơ sở tri thức ID (Thuộc tính phải được chỉ định)", requiredMode = Schema.RequiredMode.REQUIRED)
         @JsonProperty("dataset_id")
-        @NotBlank(message = "知识库ID不能为空")
+        @NotBlank(message = "cơ sở tri thứcIDkhông thể trống")
         private String datasetId;
 
-        @Schema(description = "文件名 (如果指定，则覆盖原始文件名)")
+        @Schema(description = "tên tập tin (Nếu được chỉ định，sau đó ghi đè lên tên file gốc)")
         private String name;
 
-        @Schema(description = "分块方法")
+        @Schema(description = "Phương pháp chia nhỏ")
         @JsonProperty("chunk_method")
         private DocumentDTO.InfoVO.ChunkMethod chunkMethod;
 
-        @Schema(description = "解析参数配置")
+        @Schema(description = "Cấu hình tham số phân tích cú pháp")
         @JsonProperty("parser_config")
         private DocumentDTO.InfoVO.ParserConfig parserConfig;
 
-        @Schema(description = "虚拟文件夹路径 (默认为 /)")
+        @Schema(description = "Đường dẫn thư mục ảo (Mặc định là /)")
         @JsonProperty("parent_path")
         private String parentPath;
 
-        @Schema(description = "元数据字段")
+        @Schema(description = "trường siêu dữ liệu")
         @JsonProperty("meta")
         private Map<String, Object> metaFields;
 
-        @Schema(description = "文件二进制流 (支持 PDF, DOCX, TXT, MD 等多种格式)", requiredMode = Schema.RequiredMode.REQUIRED)
-        @NotNull(message = "上传文件不能为空")
+        @Schema(description = "luồng nhị phân của tập tin (hỗ trợ PDF, DOCX, TXT, MD và các định dạng khác)", requiredMode = Schema.RequiredMode.REQUIRED)
+        @NotNull(message = "Tệp tải lên không được để trống")
         private org.springframework.web.multipart.MultipartFile file;
     }
 
     /**
-     * 更新文档请求参数
+     * Cập nhật các tham số yêu cầu tài liệu
      */
     @Data
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-    @Schema(description = "更新文档请求参数")
+    @Schema(description = "Cập nhật các tham số yêu cầu tài liệu")
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static class UpdateReq implements Serializable {
         private static final long serialVersionUID = 1L;
 
-        @Schema(description = "新文档名称 (必须包含文件后缀，且不能更改原始类型)")
+        @Schema(description = "Tên tài liệu mới (Phải chứa hậu tố tập tin，và không thể thay đổi loại ban đầu)")
         private String name;
 
-        @Schema(description = "启用/禁用状态 (true: 启用, false: 禁用; 禁用后不参与检索)")
+        @Schema(description = "kích hoạt/trạng thái khuyết tật (true: kích hoạt, false: Vô hiệu hóa; Không tham gia truy xuất sau khi bị vô hiệu hóa)")
         private Boolean enabled;
 
-        @Schema(description = "新解析方法 (修改此项会重置解析状态)")
+        @Schema(description = "Phương pháp phân tích mới (Việc sửa đổi điều này sẽ đặt lại trạng thái phân tích cú pháp)")
         @JsonProperty("chunk_method")
         private InfoVO.ChunkMethod chunkMethod;
 
-        @Schema(description = "新解析器详细配置 (应与 chunk_method 配套使用)")
+        @Schema(description = "Cấu hình chi tiết trình phân tích cú pháp mới (Nên ở bên chunk_method Được sử dụng cùng nhau)")
         @JsonProperty("parser_config")
         private InfoVO.ParserConfig parserConfig;
     }
 
     /**
-     * 获取文档列表请求参数
+     * Nhận tham số yêu cầu danh sách tài liệu
      */
     @Data
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-    @Schema(description = "获取文档列表请求参数")
+    @Schema(description = "Nhận tham số yêu cầu danh sách tài liệu")
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static class ListReq implements Serializable {
         private static final long serialVersionUID = 1L;
 
-        @Schema(description = "页码 (默认: 1)")
+        @Schema(description = "Số trang (Mặc định: 1)")
         private Integer page;
 
-        @Schema(description = "每页数量 (默认: 30)")
+        @Schema(description = "Số lượng mỗi trang (Mặc định: 30)")
         @JsonProperty("page_size")
         private Integer pageSize;
 
-        @Schema(description = "排序字段 (可选: create_time, name, size; 默认: create_time)")
+        @Schema(description = "trường sắp xếp (Tùy chọn: create_time, name, size; Mặc định: create_time)")
         private String orderby;
 
-        @Schema(description = "是否降序排列 (true: 最新/最大在前; false: 最旧/最小在前; 默认: true)")
+        @Schema(description = "Có sắp xếp theo thứ tự giảm dần hay không (true: Mới nhất/lớn nhất đầu tiên; false: lâu đời nhất/nhỏ nhất đầu tiên; Mặc định: true)")
         private Boolean desc;
 
-        @Schema(description = "精确筛选: 文档 ID")
+        @Schema(description = "Lọc chính xác: Tài liệu ID")
         private String id;
 
-        @Schema(description = "精确筛选: 文档完整名称 (含后缀)")
+        @Schema(description = "Lọc chính xác: Tên đầy đủ của tài liệu (có hậu tố)")
         private String name;
 
-        @Schema(description = "模糊搜索: 文档名称关键词")
+        @Schema(description = "tìm kiếm mờ: Từ khóa tên tài liệu")
         private String keywords;
 
-        @Schema(description = "筛选: 文件后缀列表 (如 ['pdf', 'docx'])")
+        @Schema(description = "Lọc: Danh sách hậu tố tập tin (Chẳng hạn như ['pdf', 'docx'])")
         private List<String> suffix;
 
-        @Schema(description = "筛选: 运行状态列表")
+        @Schema(description = "Lọc: Danh sách trạng thái đang chạy")
         private List<InfoVO.RunStatus> run;
 
-        @Schema(description = "筛选: 起始创建时间 (时间戳, 毫秒)")
+        @Schema(description = "Lọc: Bắt đầu thời gian tạo (Dấu thời gian, mili giây)")
         @JsonProperty("create_time_from")
         private Long createTimeFrom;
 
-        @Schema(description = "筛选: 结束创建时间 (时间戳, 毫秒)")
+        @Schema(description = "Lọc: kết thúc thời gian tạo (Dấu thời gian, mili giây)")
         @JsonProperty("create_time_to")
         private Long createTimeTo;
     }
 
     /**
-     * 批量文档操作请求参数 (用于删除、解析等)
+     * Các tham số yêu cầu thao tác tài liệu hàng loạt (để xóa, phân tích cú pháp, v.v.)
      */
     @Data
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-    @Schema(description = "批量文档操作请求参数")
+    @Schema(description = "Tham số yêu cầu vận hành tài liệu hàng loạt")
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static class BatchIdReq implements Serializable {
         private static final long serialVersionUID = 1L;
 
-        @Schema(description = "文档 ID 列表", requiredMode = Schema.RequiredMode.REQUIRED)
-        @JsonProperty("ids") // 为了兼容性，也可以考虑支持 document_ids，但这里统一叫 ids
+        @Schema(description = "Tài liệu ID danh sách", requiredMode = Schema.RequiredMode.REQUIRED)
+        @JsonProperty("ids") // để tương thích，Bạn cũng có thể xem xét hỗ trợ document_ids，Nhưng ở đây tất cả đều được gọi là ids
         @JsonAlias("document_ids")
-        @NotEmpty(message = "文档ID列表不能为空")
+        @NotEmpty(message = "Tài liệuIDDanh sách không thể trống")
         private List<String> ids;
     }
 
     /**
-     * 知识库文档信息 VO
+     * Thông tin tài liệu cơ sở kiến thức VO
      */
     @Data
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-    @Schema(description = "知识库文档信息")
+    @Schema(description = "Thông tin tài liệu cơ sở kiến thức")
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static class InfoVO implements Serializable {
         private static final long serialVersionUID = 1L;
 
-        @Schema(description = "文档 ID (唯一标识)", requiredMode = Schema.RequiredMode.REQUIRED)
+        @Schema(description = "Tài liệu ID (mã định danh duy nhất)", requiredMode = Schema.RequiredMode.REQUIRED)
         private String id;
 
-        @Schema(description = "文档缩略图 URL (Base64 或 链接)")
+        @Schema(description = "Hình thu nhỏ tài liệu URL (Base64 hoặc liên kết)")
         private String thumbnail;
 
-        @Schema(description = "所属知识库 ID", requiredMode = Schema.RequiredMode.REQUIRED)
+        @Schema(description = "Cơ sở tri thức thuộc về ID", requiredMode = Schema.RequiredMode.REQUIRED)
         @JsonProperty("dataset_id")
         private String datasetId;
 
-        @Schema(description = "文档解析方法 (决定了文档如何被切片)")
+        @Schema(description = "Phương pháp phân tích tài liệu (Xác định cách tài liệu được cắt lát)")
         @JsonProperty("chunk_method")
         private ChunkMethod chunkMethod;
 
-        @Schema(description = "关联的 ETL Pipeline ID (如有)")
+        @Schema(description = "liên quan ETL Pipeline ID (Nếu có)")
         @JsonProperty("pipeline_id")
         private String pipelineId;
 
-        @Schema(description = "文档解析器的详细配置")
+        @Schema(description = "Cấu hình chi tiết của trình phân tích tài liệu")
         @JsonProperty("parser_config")
         private ParserConfig parserConfig;
 
-        @Schema(description = "来源类型 (如 local, s3, url 等)")
+        @Schema(description = "Loại nguồn (Chẳng hạn như local, s3, url Đợi đã)")
         @JsonProperty("source_type")
         private String sourceType;
 
-        @Schema(description = "文档文件类型 (如 pdf, docx, txt)", requiredMode = Schema.RequiredMode.REQUIRED)
+        @Schema(description = "Loại tệp tài liệu (Chẳng hạn như pdf, docx, txt)", requiredMode = Schema.RequiredMode.REQUIRED)
         private String type;
 
-        @Schema(description = "创建者用户 ID")
+        @Schema(description = "Người dùng sáng tạo ID")
         @JsonProperty("created_by")
         private String createdBy;
 
-        @Schema(description = "文档名称 (包含扩展名)", requiredMode = Schema.RequiredMode.REQUIRED)
+        @Schema(description = "Tên tài liệu (Chứa phần mở rộng)", requiredMode = Schema.RequiredMode.REQUIRED)
         private String name;
 
-        @Schema(description = "文件存储路径或位置标识")
+        @Schema(description = "Đường dẫn lưu trữ tệp hoặc mã định danh vị trí")
         private String location;
 
-        @Schema(description = "文件大小 (单位: Bytes)")
+        @Schema(description = "kích thước tập tin (đơn vị: Bytes)")
         private Long size;
 
-        @Schema(description = "包含的 Token 总数 (解析后统计)")
+        @Schema(description = "bao gồm Token tổng cộng (Thống kê sau khi phân tích)")
         @JsonProperty("token_count")
         private Long tokenCount;
 
-        @Schema(description = "包含的切片 (Chunk) 总数")
+        @Schema(description = "Chứa các lát (Chunk) tổng cộng")
         @JsonProperty("chunk_count")
         private Long chunkCount;
 
-        @Schema(description = "解析进度 (0.0 ~ 1.0, 1.0 表示完成)")
+        @Schema(description = "Tiến trình phân tích cú pháp (0.0 ~ 1.0, 1.0 Cho biết sự hoàn thành)")
         private Double progress;
 
-        @Schema(description = "当前进度描述或错误信息")
+        @Schema(description = "Mô tả tiến trình hiện tại hoặc thông báo lỗi")
         @JsonProperty("progress_msg")
         private String progressMsg;
 
-        @Schema(description = "开始处理的时间戳 (RAGFlow返回RFC1123格式)")
+        @Schema(description = "Dấu thời gian khi quá trình xử lý bắt đầu (RAGFlowTrở lạiRFC1123định dạng)")
         @JsonProperty("process_begin_at")
         private String processBeginAt;
 
-        @Schema(description = "处理总耗时 (单位: 秒)")
+        @Schema(description = "Tổng thời gian xử lý (đơn vị: giây)")
         @JsonProperty("process_duration")
         private Double processDuration;
 
-        @Schema(description = "自定义元数据字段 (Key-Value 键值对)")
+        @Schema(description = "Trường siêu dữ liệu tùy chỉnh (Key-Value cặp giá trị khóa)")
         @JsonProperty("meta_fields")
         private Map<String, Object> metaFields;
 
-        @Schema(description = "文件后缀名 (不含点)")
+        @Schema(description = "Phần mở rộng tập tin (Không bao gồm dấu chấm)")
         private String suffix;
 
-        @Schema(description = "文档解析运行状态")
+        @Schema(description = "Trạng thái đang chạy phân tích tài liệu")
         private RunStatus run;
 
-        @Schema(description = "文档可用状态 (1: 启用/正常, 0: 禁用/失效)", requiredMode = Schema.RequiredMode.REQUIRED)
+        @Schema(description = "Tình trạng sẵn có của tài liệu (1: kích hoạt/bình thường, 0: Vô hiệu hóa/không hợp lệ)", requiredMode = Schema.RequiredMode.REQUIRED)
         private String status;
 
-        @Schema(description = "创建时间 (时间戳, 毫秒)", requiredMode = Schema.RequiredMode.REQUIRED)
+        @Schema(description = "thời gian sáng tạo (Dấu thời gian, mili giây)", requiredMode = Schema.RequiredMode.REQUIRED)
         @JsonProperty("create_time")
         private Long createTime;
 
-        @Schema(description = "创建日期 (RAGFlow返回RFC1123格式)")
+        @Schema(description = "Ngày tạo (RAGFlowTrở lạiRFC1123định dạng)")
         @JsonProperty("create_date")
         private String createDate;
 
-        @Schema(description = "最后更新时间 (时间戳, 毫秒)")
+        @Schema(description = "Cập nhật lần cuối (Dấu thời gian, mili giây)")
         @JsonProperty("update_time")
         private Long updateTime;
 
-        @Schema(description = "最后更新日期 (RAGFlow返回RFC1123格式)")
+        @Schema(description = "ngày cập nhật lần cuối (RAGFlowTrở lạiRFC1123định dạng)")
         @JsonProperty("update_date")
         private String updateDate;
 
         /**
-         * 解析方法枚举 (ChunkMethod)
+         * Phân tích phương thức liệt kê (ChunkMethod)
          */
         public enum ChunkMethod {
-            @Schema(description = "通用模式: 适用于大多数纯文本或混合文档")
+            @Schema(description = "Chế độ chung: Hoạt động với hầu hết văn bản thuần túy hoặc tài liệu hỗn hợp")
             @JsonProperty("naive")
             NAIVE,
-            @Schema(description = "手动模式: 允许用户手动编辑切片")
+            @Schema(description = "chế độ thủ công: Cho phép người dùng chỉnh sửa các lát cắt theo cách thủ công")
             @JsonProperty("manual")
             MANUAL,
-            @Schema(description = "问答模式: 专门优化 Q&A 格式的文档")
+            @Schema(description = "Chế độ hỏi đáp: Tối ưu hóa đặc biệt Q&A định dạng tài liệu")
             @JsonProperty("qa")
             QA,
-            @Schema(description = "表格模式: 专门优化 Excel 或 CSV 等表格数据")
+            @Schema(description = "chế độ bảng: Tối ưu hóa đặc biệt Excel hoặc CSV Chờ dữ liệu bảng")
             @JsonProperty("table")
             TABLE,
-            @Schema(description = "论文模式: 针对学术论文排版优化")
+            @Schema(description = "Chế độ tiểu luận: Tối ưu hóa cho định dạng bài viết học thuật")
             @JsonProperty("paper")
             PAPER,
-            @Schema(description = "书籍模式: 针对书籍章节结构优化")
+            @Schema(description = "chế độ sách: Tối ưu hóa cho cấu trúc chương sách")
             @JsonProperty("book")
             BOOK,
-            @Schema(description = "法律法规模式: 针对法律条文结构优化")
+            @Schema(description = "Mô hình pháp lý và quy định: Tối ưu hóa cấu trúc các quy định pháp luật")
             @JsonProperty("laws")
             LAWS,
-            @Schema(description = "演示文稿模式: 针对 PPT 等演示文件优化")
+            @Schema(description = "Chế độ trình bày: Mục tiêu PPT Đang chờ tối ưu hóa tệp trình bày")
             @JsonProperty("presentation")
             PRESENTATION,
-            @Schema(description = "图片模式: 针对图片内容进行 OCR 和描述")
+            @Schema(description = "Chế độ hình ảnh: Nội dung hình ảnh mục tiêu OCR và mô tả")
             @JsonProperty("picture")
             PICTURE,
-            @Schema(description = "整体模式: 将整个文档作为一个切片")
+            @Schema(description = "mô hình tổng thể: Coi toàn bộ tài liệu như một lát cắt")
             @JsonProperty("one")
             ONE,
-            @Schema(description = "知识图谱模式: 提取实体关系构建图谱")
+            @Schema(description = "Mô hình đồ thị tri thức: Trích xuất các mối quan hệ thực thể để xây dựng biểu đồ")
             @JsonProperty("knowledge_graph")
             KNOWLEDGE_GRAPH,
-            @Schema(description = "邮件模式: 针对邮件格式优化")
+            @Schema(description = "Chế độ email: Tối ưu hóa cho các định dạng email")
             @JsonProperty("email")
             EMAIL;
         }
 
         /**
-         * 运行状态枚举 (RunStatus)
+         * Bảng liệt kê RunStatus (RunStatus)
          */
         public enum RunStatus {
-            @Schema(description = "未开始: 等待解析队列")
+            @Schema(description = "Chưa bắt đầu: Đang chờ hàng đợi phân tích cú pháp")
             @JsonProperty("UNSTART")
             UNSTART,
-            @Schema(description = "进行中: 正在解析或索引")
+            @Schema(description = "Đang tiến hành: Phân tích cú pháp hoặc lập chỉ mục")
             @JsonProperty("RUNNING")
             RUNNING,
-            @Schema(description = "已取消: 用户手动取消")
+            @Schema(description = "Đã hủy: Người dùng hủy thủ công")
             @JsonProperty("CANCEL")
             CANCEL,
-            @Schema(description = "已完成: 解析成功")
+            @Schema(description = "Đã hoàn thành: Đã phân tích cú pháp thành công")
             @JsonProperty("DONE")
             DONE,
-            @Schema(description = "失败: 解析过程中出错")
+            @Schema(description = "thất bại: Đã xảy ra lỗi trong quá trình phân tích cú pháp")
             @JsonProperty("FAIL")
             FAIL;
         }
 
         /**
-         * 布局识别模型枚举
+         * Mô hình nhận thức về bố cục Enum
          */
         public enum LayoutRecognize {
-            @Schema(description = "深度文档理解模型: 适合复杂排版")
+            @Schema(description = "Mô hình hiểu tài liệu sâu: Thích hợp cho việc sắp chữ phức tạp")
             @JsonProperty("DeepDOC")
             DeepDOC,
-            @Schema(description = "简单规则模型: 适合纯文本")
+            @Schema(description = "mô hình quy tắc đơn giản: Thích hợp cho văn bản thuần túy")
             @JsonProperty("Simple")
             Simple;
         }
@@ -338,42 +338,42 @@ public class DocumentDTO {
         @Builder
         @NoArgsConstructor
         @AllArgsConstructor
-        @Schema(description = "文档解析器参数配置")
+        @Schema(description = "Cấu hình tham số trình phân tích cú pháp tài liệu")
         @JsonIgnoreProperties(ignoreUnknown = true)
         public static class ParserConfig implements Serializable {
             private static final long serialVersionUID = 1L;
 
-            @Schema(description = "切片最大 Token 数 (建议值: 512, 1024, 2048)")
+            @Schema(description = "Cắt lát tối đa Token con số (Giá trị đề xuất: 512, 1024, 2048)")
             @JsonProperty("chunk_token_num")
             private Integer chunkTokenNum;
 
-            @Schema(description = "分段分隔符 (支持转义字符, 如 \\n)")
+            @Schema(description = "dấu phân cách đoạn văn (Hỗ trợ ký tự thoát, Chẳng hạn như \\n)")
             private String delimiter;
 
-            @Schema(description = "布局识别模型 (DeepDOC/Simple)")
+            @Schema(description = "mô hình nhận dạng bố cục (DeepDOC/Simple)")
             @JsonProperty("layout_recognize")
             private LayoutRecognize layoutRecognize;
 
-            @Schema(description = "是否将 Excel 转换为 HTML 表格")
+            @Schema(description = "liệu có nên Excel Chuyển đổi thành HTML bàn")
             @JsonProperty("html4excel")
             private Boolean html4excel;
 
-            @Schema(description = "自动提取关键词数量 (0 表示不提取)")
+            @Schema(description = "Tự động trích xuất số lượng từ khóa (0 Cho biết không trích xuất)")
             @JsonProperty("auto_keywords")
             private Integer autoKeywords;
 
-            @Schema(description = "自动生成问题数量 (0 表示不生成)")
+            @Schema(description = "Tự động tạo số lượng câu hỏi (0 Cho biết không tạo ra)")
             @JsonProperty("auto_questions")
             private Integer autoQuestions;
 
-            @Schema(description = "自动生成标签数量")
+            @Schema(description = "Tự động tạo số lượng nhãn")
             @JsonProperty("topn_tags")
             private Integer topnTags;
 
-            @Schema(description = "RAPTOR 高级索引配置")
+            @Schema(description = "RAPTOR Cấu hình chỉ mục nâng cao")
             private RaptorConfig raptor;
 
-            @Schema(description = "GraphRAG 知识图谱配置")
+            @Schema(description = "GraphRAG Cấu hình sơ đồ tri thức")
             @JsonProperty("graphrag")
             private GraphRagConfig graphRag;
 
@@ -381,11 +381,11 @@ public class DocumentDTO {
             @Builder
             @NoArgsConstructor
             @AllArgsConstructor
-            @Schema(description = "RAPTOR (递归摘要索引) 配置")
+            @Schema(description = "RAPTOR (Chỉ số tóm tắt đệ quy) Cấu hình")
             @JsonIgnoreProperties(ignoreUnknown = true)
             public static class RaptorConfig implements Serializable {
                 private static final long serialVersionUID = 1L;
-                @Schema(description = "是否启用 RAPTOR 索引")
+                @Schema(description = "Có bật hay không RAPTOR chỉ mục")
                 @JsonProperty("use_raptor")
                 private Boolean useRaptor;
             }
@@ -394,11 +394,11 @@ public class DocumentDTO {
             @Builder
             @NoArgsConstructor
             @AllArgsConstructor
-            @Schema(description = "GraphRAG (图增强检索) 配置")
+            @Schema(description = "GraphRAG (Truy xuất nâng cao đồ thị) Cấu hình")
             @JsonIgnoreProperties(ignoreUnknown = true)
             public static class GraphRagConfig implements Serializable {
                 private static final long serialVersionUID = 1L;
-                @Schema(description = "是否启用 GraphRAG 索引")
+                @Schema(description = "Có bật hay không GraphRAG chỉ mục")
                 @JsonProperty("use_graphrag")
                 private Boolean useGraphRag;
             }

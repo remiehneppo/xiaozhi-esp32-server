@@ -37,14 +37,14 @@ public class ALiYunSmsService implements SmsService {
                     .setPhoneNumbers(phone)
                     .setTemplateParam(String.format("{\"code\":\"%s\"}", VerificationCode));
             RuntimeOptions runtime = new RuntimeOptions();
-            // 复制代码运行请自行打印 API 的返回值
+            // Vui lòng sao chép và chạy mã và tự in giá trị trả về của API.
             SendSmsResponse sendSmsResponse = client.sendSmsWithOptions(sendSmsRequest, runtime);
-            log.info("发送短信响应的requestID: {}", sendSmsResponse.getBody().getRequestId());
+            log.info("Gửi phản hồi qua SMSrequestID: {}", sendSmsResponse.getBody().getRequestId());
         } catch (Exception e) {
-            // 如果发送失败了退还这次发送数
+            // Nếu gửi không thành công thì số lần gửi này sẽ được hoàn lại.
             String todayCountKey = RedisKeys.getSMSTodayCountKey(phone);
             redisUtils.delete(todayCountKey);
-            // 错误 message
+            // thông báo lỗi
             log.error(e.getMessage());
             throw new RenException(ErrorCode.SMS_SEND_FAILED);
         }
@@ -53,8 +53,8 @@ public class ALiYunSmsService implements SmsService {
 
 
     /**
-     * 创建阿里云连接
-     * @return 返回连接对象
+     * Tạo kết nối Đám mây Alibaba
+     * @return trả về đối tượng kết nối
      */
     private Client createClient(){
         String ACCESS_KEY_ID = sysParamsService.getValue(Constant.SysMSMParam
@@ -65,11 +65,11 @@ public class ALiYunSmsService implements SmsService {
             Config config = new Config()
                     .setAccessKeyId(ACCESS_KEY_ID)
                     .setAccessKeySecret(ACCESS_KEY_SECRET);
-            // 配置 Endpoint。中国站请使用dysmsapi.aliyuncs.com
+            // Định cấu hình điểm cuối. Đối với trang web Trung Quốc, vui lòng sử dụng dysmsapi.aliyuncs.com
             config.endpoint = "dysmsapi.aliyuncs.com";
             return new Client(config);
         }catch (Exception e){
-            // 错误 message
+            // thông báo lỗi
             log.error(e.getMessage());
             throw new RenException(ErrorCode.SMS_CONNECTION_FAILED);
         }

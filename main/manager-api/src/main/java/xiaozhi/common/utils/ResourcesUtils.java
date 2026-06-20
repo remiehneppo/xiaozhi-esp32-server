@@ -14,7 +14,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 
 /**
- * 资源处理工具
+ * Công cụ xử lý tài nguyên
  */
 @AllArgsConstructor
 @Slf4j
@@ -23,9 +23,9 @@ public class ResourcesUtils {
     private ResourceLoader resourceLoader;
 
     /**
-     * 读取资源，返回字符串
-     * @param fileName 资源路径：resources下开始
-     * @return 字符串
+     * Đọc tài nguyên và trả về một chuỗi
+     * @param fileName đường dẫn tài nguyên: bắt đầu dưới tài nguyên
+     * @return chuỗi
      */
     public String loadString(String fileName)  {
         Resource resource = resourceLoader.getResource("classpath:" + fileName);
@@ -37,7 +37,7 @@ public class ResourcesUtils {
                 luaScriptBuilder.append(line).append("\n");
             }
         }  catch (IOException e){
-            log.error("方法：loadString()读取资源失败--{}",e.getMessage());
+            log.error("phương pháp：loadString()Không đọc được tài nguyên--{}",e.getMessage());
             throw new RenException(ErrorCode.RESOURCE_READ_ERROR);
         }
         return luaScriptBuilder.toString();

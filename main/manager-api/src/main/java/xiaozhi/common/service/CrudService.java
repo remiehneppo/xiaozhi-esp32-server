@@ -7,8 +7,8 @@ import java.util.Map;
 import xiaozhi.common.page.PageData;
 
 /**
- * CRUD基础服务接口
- * Copyright (c) 人人开源 All rights reserved.
+ * Giao diện dịch vụ cơ bản CRUD
+ * Bản quyền (c) Renren Kaiyuan Mọi quyền được bảo lưu.
  * Website: https://www.renren.io
  */
 public interface CrudService<T, D> extends BaseService<T> {

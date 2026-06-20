@@ -6,7 +6,7 @@ import xiaozhi.common.dao.BaseDao;
 import xiaozhi.modules.sys.entity.SysDictTypeEntity;
 
 /**
- * 字典类型
+ * loại từ điển
  */
 @Mapper
 public interface SysDictTypeDao extends BaseDao<SysDictTypeEntity> {

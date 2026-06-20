@@ -32,8 +32,8 @@ import xiaozhi.modules.voiceclone.dao.VoiceCloneDao;
 import xiaozhi.modules.voiceclone.entity.VoiceCloneEntity;
 
 /**
- * 音色的业务层的实现
- * 
+ * Triển khai lớp kinh doanh âm sắc
+ *
  * @author zjy
  * @since 2025-3-21
  */
@@ -52,11 +52,11 @@ public class TimbreServiceImpl extends BaseServiceImpl<TimbreDao, TimbreEntity> 
         params.put(Constant.LIMIT, dto.getLimit());
         IPage<TimbreEntity> page = baseDao.selectPage(
                 getPage(params, null, true),
-                // 定义查询条件
+                // Xác định điều kiện truy vấn
                 new QueryWrapper<TimbreEntity>()
-                        // 必须按照ttsID查找
+                        // Phải được tìm kiếm theo ttsID
                         .eq("tts_model_id", dto.getTtsModelId())
-                        // 如果有音色名字，按照音色名模糊查找
+                        // Nếu có tên âm sắc, hãy thực hiện tìm kiếm mờ dựa trên tên âm sắc.
                         .like(StringUtils.isNotBlank(dto.getName()), "name", dto.getName()));
 
         return getPageData(page, TimbreDetailsVO.class);
@@ -68,23 +68,23 @@ public class TimbreServiceImpl extends BaseServiceImpl<TimbreDao, TimbreEntity> 
             return null;
         }
 
-        // 先从Redis获取缓存
+        // Đầu tiên hãy lấy bộ đệm từ Redis
         String key = RedisKeys.getTimbreDetailsKey(timbreId);
         TimbreDetailsVO cachedDetails = (TimbreDetailsVO) redisUtils.get(key);
         if (cachedDetails != null) {
             return cachedDetails;
         }
 
-        // 如果缓存中没有，则从数据库获取
+        // Nếu không có trong bộ đệm, hãy lấy nó từ cơ sở dữ liệu
         TimbreEntity entity = baseDao.selectById(timbreId);
         if (entity == null) {
             return null;
         }
 
-        // 转换为VO对象
+        // Chuyển đổi sang đối tượng VO
         TimbreDetailsVO details = ConvertUtils.sourceToTarget(entity, TimbreDetailsVO.class);
 
-        // 存入Redis缓存
+        // Lưu trữ trong bộ đệm Redis
         if (details != null) {
             redisUtils.set(key, details);
         }
@@ -107,7 +107,7 @@ public class TimbreServiceImpl extends BaseServiceImpl<TimbreDao, TimbreEntity> 
         TimbreEntity timbreEntity = ConvertUtils.sourceToTarget(dto, TimbreEntity.class);
         timbreEntity.setId(timbreId);
         baseDao.updateById(timbreEntity);
-        // 删除缓存
+        // Xóa bộ nhớ đệm
         redisUtils.delete(RedisKeys.getTimbreDetailsKey(timbreId));
     }
 
@@ -129,26 +129,26 @@ public class TimbreServiceImpl extends BaseServiceImpl<TimbreDao, TimbreEntity> 
                 .map(entity -> {
                     VoiceDTO dto = new VoiceDTO(entity.getId(), entity.getName());
                     dto.setVoiceDemo(entity.getVoiceDemo());
-                    dto.setLanguages(entity.getLanguages()); // 设置语言类型
-                    dto.setIsClone(false); // 设置为普通音色
+                    dto.setLanguages(entity.getLanguages()); // Đặt loại ngôn ngữ
+                    dto.setIsClone(false); // Đặt thành âm bình thường
                     return dto;
                 })
                 .collect(Collectors.toList());
 
-        // 获取当前登录用户ID
+        // Lấy ID người dùng đã đăng nhập hiện tại
         Long currentUserId = SecurityUser.getUser().getId();
         if (currentUserId != null) {
-            // 查询用户的所有克隆音色记录
+            // Truy vấn tất cả các bản ghi âm sắc nhân bản của người dùng
             List<VoiceDTO> cloneEntities = voiceCloneDao.getTrainSuccess(ttsModelId, currentUserId);
             for (VoiceDTO entity : cloneEntities) {
-                // 只添加训练成功的克隆音色，且模型ID匹配
+                // Chỉ thêm âm thanh nhân bản đã được đào tạo thành công và có ID mẫu phù hợp
                 VoiceDTO voiceDTO = new VoiceDTO();
                 voiceDTO.setId(entity.getId());
                 voiceDTO.setName(MessageUtils.getMessage(ErrorCode.VOICE_CLONE_PREFIX) + entity.getName());
-                // 保留从数据库查询到的voiceDemo字段
+                // Giữ trường voiceDemo được truy vấn từ cơ sở dữ liệu
                 voiceDTO.setVoiceDemo(entity.getVoiceDemo());
                 voiceDTO.setLanguages(entity.getLanguages());
-                voiceDTO.setIsClone(true); // 设置为克隆音色
+                voiceDTO.setIsClone(true); // Đặt làm âm thanh nhân bản
                 redisUtils.set(RedisKeys.getTimbreNameById(voiceDTO.getId()), voiceDTO.getName(),
                         RedisUtils.NOT_EXPIRE);
                 voiceDTOs.add(0, voiceDTO);
@@ -159,10 +159,10 @@ public class TimbreServiceImpl extends BaseServiceImpl<TimbreDao, TimbreEntity> 
     }
 
     /**
-     * 处理是不是tts模型的id
+     * Xử lý xem đó có phải là id của mô hình tts không
      */
     private void isTtsModelId(String ttsModelId) {
-        // 等模型配置那边写好调用方法判断
+        // Đợi cấu hình mô hình viết phán đoán phương thức gọi
     }
 
     @Override
@@ -211,7 +211,7 @@ public class TimbreServiceImpl extends BaseServiceImpl<TimbreDao, TimbreEntity> 
         TimbreEntity entity = list.get(0);
         VoiceDTO dto = new VoiceDTO(entity.getId(), entity.getName());
         dto.setVoiceDemo(entity.getVoiceDemo());
-        dto.setIsClone(false); // 设置为普通音色
+        dto.setIsClone(false); // Đặt thành âm bình thường
         return dto;
     }
 }

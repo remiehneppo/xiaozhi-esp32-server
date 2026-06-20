@@ -9,7 +9,7 @@ import xiaozhi.modules.sys.entity.SysUserEntity;
 import xiaozhi.modules.sys.vo.AdminPageUserVO;
 
 /**
- * 系统用户
+ * người dùng hệ thống
  */
 public interface SysUserService extends BaseService<SysUserEntity> {
 
@@ -20,56 +20,56 @@ public interface SysUserService extends BaseService<SysUserEntity> {
     void save(SysUserDTO dto);
 
     /**
-     * 删除指定用户，且有关联的数据设备和智能体
-     * 
+     * Xóa người dùng được chỉ định và các thiết bị và tác nhân dữ liệu liên quan
+     *
      * @param ids
      */
     void deleteById(Long ids);
 
     /**
-     * 验证是否允许修改密码更改
-     * 
-     * @param userId      用户id
-     * @param passwordDTO 验证密码的参数
+     * Xác minh xem có cho phép thay đổi mật khẩu hay không
+     *
+     * @param userId userid
+     * @param passDTO Tham số xác minh mật khẩu
      */
     void changePassword(Long userId, PasswordDTO passwordDTO);
 
     /**
-     * 直接修改密码，不需要验证
-     * 
-     * @param userId   用户id
-     * @param password 密码
+     * Thay đổi mật khẩu trực tiếp mà không cần xác minh
+     *
+     * @param userId userid
+     * @param mật khẩu mật khẩu
      */
     void changePasswordDirectly(Long userId, String password);
 
     /**
-     * 重置密码
-     * 
-     * @param userId 用户id
-     * @return 随机生成符合规范的密码
+     * đặt lại mật khẩu
+     *
+     * @param userId userid
+     * @return tạo ngẫu nhiên mật khẩu phù hợp với thông số kỹ thuật
      */
     String resetPassword(Long userId);
 
     /**
-     * 管理员分页用户信息
-     * 
-     * @param dto 分页查找参数
-     * @return 用户列表分页数据
+     * Quản trị viên phân trang thông tin người dùng
+     *
+     * @param dto tham số tìm kiếm phân trang
+     * @return dữ liệu phân trang danh sách người dùng
      */
     PageData<AdminPageUserVO> page(AdminPageUserDTO dto);
 
     /**
-     * 批量修改用户状态
-     * 
-     * @param status  用户状态
-     * @param userIds 用户ID数组
+     * Sửa đổi trạng thái người dùng theo đợt
+     *
+     * @param trạng thái trạng thái người dùng
+     * @param userIds mảng ID người dùng
      */
     void changeStatus(Integer status, String[] userIds);
 
     /**
-     * 获取是否允许用户注册
-     * 
-     * @return 是否允许用户注册
+     * Nhận liệu đăng ký người dùng có được phép hay không
+     *
+     * @return xem có cho phép đăng ký người dùng hay không
      */
     boolean getAllowUserRegister();
 }

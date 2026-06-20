@@ -8,40 +8,40 @@ import xiaozhi.modules.device.entity.DeviceAddressBookEntity;
 public interface DeviceAddressBookService {
 
     /**
-     * 获取设备通讯录列表
+     * Lấy danh sách sổ địa chỉ thiết bị
      */
     List<DeviceAddressBookEntity> getAddressBookList(String macAddress);
 
     /**
-     * 获取所有设备的通讯录（全局缓存用）
+     * Nhận sổ địa chỉ của tất cả các thiết bị (đối với bộ nhớ đệm toàn cầu)
      */
     Map<String, Map<String, String>> getAllAddressBooks();
 
     /**
-     * 更新别名
+     * Cập nhật bí danh
      */
     void updateAlias(String macAddress, String targetMac, String alias);
 
     /**
-     * 更新权限
+     * Cập nhật quyền
      */
     void updatePermission(String macAddress, String targetMac, Boolean hasPermission);
 
     /**
-     * 添加或更新通讯录记录
+     * Thêm hoặc cập nhật bản ghi sổ địa chỉ
      */
     void saveOrUpdate(String macAddress, String targetMac, String alias, Boolean hasPermission);
 
     /**
-     * 刷新通讯录缓存
+     * Làm mới bộ đệm sổ địa chỉ
      */
     void refreshCache();
 
     /**
-     * 根据昵称查找目标设备信息
-     * @param callerMac 主叫方MAC地址
-     * @param nickname 被叫方昵称
-     * @return {targetMac: 目标MAC, callerNickname: 目标如何称呼主叫方}
+     * Tìm thông tin thiết bị mục tiêu dựa trên biệt hiệu
+     * @param người gọiMac địa chỉ MAC của bên gọi
+     * @param biệt danh Biệt hiệu của bên được gọi
+     * @return {targetMac: MAC đích, tên người gọi: cách mục tiêu gọi cho người gọi}
      */
     Map<String, String> lookupByNickname(String callerMac, String nickname);
 }

@@ -12,20 +12,20 @@ import xiaozhi.modules.agent.entity.AgentPluginMapping;
 import java.util.List;
 
 /**
- * Agent信息返回体VO
- * 这里直接extend了Agent实体类AgentEntity，后续需要规范返回字段可以copy字段出来
+ * Cơ quan trả lời thông tin đại lý VO
+ * Lớp thực thể Tác nhân AgentEntity được mở rộng trực tiếp ở đây. Nếu sau này bạn cần chuẩn hóa các trường trả về, bạn có thể sao chép các trường đó ra.
  */
 @EqualsAndHashCode(callSuper = true)
 @Data
 public class AgentInfoVO extends AgentEntity
 {
-    @Schema(description = "插件列表Id")
+    @Schema(description = "Danh sách pluginId")
     @TableField(typeHandler = JacksonTypeHandler.class)
     private List<AgentPluginMapping> functions;
 
-    @Schema(description = "上下文源配置")
+    @Schema(description = "Cấu hình nguồn ngữ cảnh")
     private List<ContextProviderDTO> contextProviders;
 
-    @Schema(description = "替换词文件ID列表")
+    @Schema(description = "tập tin từ thay thếIDdanh sách")
     private List<String> correctWordFileIds;
 }

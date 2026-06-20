@@ -21,16 +21,16 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * SM2加密工具类（采用十六进制格式，与chancheng-archive-service项目保持一致）
+ * Lớp công cụ mã hóa SM2 (ở định dạng thập lục phân, phù hợp với dự án dịch vụ lưu trữ chanchen)
  */
 public class SM2Utils {
 
     /**
-     * 公钥常量
+     * Hằng số khóa công khai
      */
     public static final String KEY_PUBLIC_KEY = "publicKey";
     /**
-     * 私钥返回值常量
+     * Hằng số giá trị trả về của khóa riêng
      */
     public static final String KEY_PRIVATE_KEY = "privateKey";
 
@@ -39,78 +39,78 @@ public class SM2Utils {
     }
 
     /**
-     * SM2加密算法
+     * Thuật toán mã hóa SM2
      *
-     * @param publicKey 十六进制公钥
-     * @param data      明文数据
-     * @return 十六进制密文
+     * @param publicKey khóa công khai thập lục phân
+     * @param data dữ liệu văn bản thuần túy
+     * @return bản mã thập lục phân
      */
     public static String encrypt(String publicKey, String data) {
         try {
-            // 获取一条SM2曲线参数
+            // Lấy các tham số của đường cong SM2
             X9ECParameters sm2ECParameters = GMNamedCurves.getByName("sm2p256v1");
-            // 构造ECC算法参数，曲线方程、椭圆曲线G点、大整数N
+            // Xây dựng các thông số thuật toán ECC, phương trình đường cong, đường cong elip điểm G, số nguyên lớn N
             ECDomainParameters domainParameters = new ECDomainParameters(sm2ECParameters.getCurve(), sm2ECParameters.getG(), sm2ECParameters.getN());
-            //提取公钥点
+            // Trích xuất điểm khóa công khai
             ECPoint pukPoint = sm2ECParameters.getCurve().decodePoint(Hex.decode(publicKey));
-            // 公钥前面的02或者03表示是压缩公钥，04表示未压缩公钥, 04的时候，可以去掉前面的04
+            // Số 02 hoặc 03 ở phía trước khóa chung biểu thị khóa chung được nén và 04 biểu thị khóa chung không nén. Khi 04 được sử dụng, 04 trước đó có thể được loại bỏ.
             ECPublicKeyParameters publicKeyParameters = new ECPublicKeyParameters(pukPoint, domainParameters);
 
             SM2Engine sm2Engine = new SM2Engine(SM2Engine.Mode.C1C3C2);
-            // 设置sm2为加密模式
+            // Đặt sm2 sang chế độ mã hóa
             sm2Engine.init(true, new ParametersWithRandom(publicKeyParameters, new SecureRandom()));
 
             byte[] in = data.getBytes(StandardCharsets.UTF_8);
             byte[] arrayOfBytes = sm2Engine.processBlock(in, 0, in.length);
             return Hex.toHexString(arrayOfBytes);
         } catch (Exception e) {
-            throw new RuntimeException("SM2加密失败", e);
+            throw new RuntimeException("SM2Mã hóa không thành công", e);
         }
     }
 
     /**
-     * SM2解密算法
+     * Thuật toán giải mã SM2
      *
-     * @param privateKey 十六进制私钥
-     * @param cipherData 十六进制密文数据
-     * @return 明文
+     * @param PrivateKey Khóa riêng thập lục phân
+     * @param cipherData Dữ liệu văn bản mã hóa thập lục phân
+     * @return văn bản thuần túy
      */
     public static String decrypt(String privateKey, String cipherData) {
         try {
-            // 使用BC库加解密时密文以04开头，传入的密文前面没有04则补上
+            // Khi sử dụng thư viện BC để mã hóa và giải mã, văn bản mã hóa bắt đầu bằng 04. Nếu không có số 04 ở phía trước văn bản mã hóa đến, hãy thêm nó vào.
             if (!cipherData.startsWith("04")) {
                 cipherData = "04" + cipherData;
             }
             byte[] cipherDataByte = Hex.decode(cipherData);
             BigInteger privateKeyD = new BigInteger(privateKey, 16);
-            //获取一条SM2曲线参数
+            // Lấy các tham số của đường cong SM2
             X9ECParameters sm2ECParameters = GMNamedCurves.getByName("sm2p256v1");
-            //构造domain参数
+            // Xây dựng tham số miền
             ECDomainParameters domainParameters = new ECDomainParameters(sm2ECParameters.getCurve(), sm2ECParameters.getG(), sm2ECParameters.getN());
             ECPrivateKeyParameters privateKeyParameters = new ECPrivateKeyParameters(privateKeyD, domainParameters);
 
             SM2Engine sm2Engine = new SM2Engine(SM2Engine.Mode.C1C3C2);
-            // 设置sm2为解密模式
+            // Đặt sm2 sang chế độ giải mã
             sm2Engine.init(false, privateKeyParameters);
 
             byte[] arrayOfBytes = sm2Engine.processBlock(cipherDataByte, 0, cipherDataByte.length);
             return new String(arrayOfBytes, StandardCharsets.UTF_8);
         } catch (Exception e) {
-            throw new RuntimeException("SM2解密失败", e);
+            throw new RuntimeException("SM2Giải mã không thành công", e);
         }
     }
 
     /**
-     * 生成密钥对
+     * Tạo cặp khóa
      */
     public static Map<String, String> createKey() {
         try {
             ECGenParameterSpec sm2Spec = new ECGenParameterSpec("sm2p256v1");
-            // 获取一个椭圆曲线类型的密钥对生成器
+            // Nhận trình tạo cặp khóa kiểu đường cong elip
             KeyPairGenerator kpg = KeyPairGenerator.getInstance("EC", new BouncyCastleProvider());
-            // 使用SM2参数初始化生成器
+            // Khởi tạo trình tạo với tham số SM2
             kpg.initialize(sm2Spec);
-            // 获取密钥对
+            // Nhận cặp khóa
             KeyPair keyPair = kpg.generateKeyPair();
             PublicKey publicKey = keyPair.getPublic();
             BCECPublicKey p = (BCECPublicKey) publicKey;
@@ -122,7 +122,7 @@ public class SM2Utils {
             result.put(KEY_PRIVATE_KEY, Hex.toHexString(s.getD().toByteArray()));
             return result;
         } catch (Exception e) {
-            throw new RuntimeException("生成SM2密钥对失败", e);
+            throw new RuntimeException("tạo raSM2Cặp khóa không thành công", e);
         }
     }
 

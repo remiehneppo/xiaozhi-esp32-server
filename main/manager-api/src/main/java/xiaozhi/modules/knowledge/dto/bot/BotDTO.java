@@ -8,29 +8,29 @@ import java.util.Map;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.*;
 
-@Schema(description = "外部机器人 (Bot) 聚合 DTO")
+@Schema(description = "robot bên ngoài (Bot) sự tổng hợp DTO")
 public class BotDTO {
 
-    // ========== 1. SearchBot (检索机器人) ==========
+    // ========== 1. SearchBot (robot tìm kiếm) ==========
 
-    // 对应 /api/v1/searchbots/ask
+    // Tương ứng với /api/v1/searchbots/ask
     @Data
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-    @Schema(description = "SearchBot 提问请求")
+    @Schema(description = "SearchBot Đặt một câu hỏi")
     public static class SearchAskReq implements Serializable {
-        @Schema(description = "用户问题", requiredMode = Schema.RequiredMode.REQUIRED, example = "What is RAG?")
-        @NotBlank(message = "问题不能为空")
+        @Schema(description = "Sự cố người dùng", requiredMode = Schema.RequiredMode.REQUIRED, example = "What is RAG?")
+        @NotBlank(message = "Câu hỏi không thể trống")
         @JsonProperty("question")
         private String question;
 
-        @Schema(description = "是否返回引用", defaultValue = "false")
+        @Schema(description = "Có trả lại một tài liệu tham khảo hay không", defaultValue = "false")
         @JsonProperty("quote")
         @Builder.Default
         private Boolean quote = false;
 
-        @Schema(description = "是否流式返回", defaultValue = "true")
+        @Schema(description = "Có phát trực tuyến trả lại hay không", defaultValue = "true")
         @JsonProperty("stream")
         @Builder.Default
         private Boolean stream = true;
@@ -40,50 +40,50 @@ public class BotDTO {
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-    @Schema(description = "SearchBot 提问响应")
+    @Schema(description = "SearchBot Trả lời câu hỏi")
     public static class SearchAskVO implements Serializable {
-        @Schema(description = "回答内容")
+        @Schema(description = "Nội dung trả lời")
         @JsonProperty("answer")
         private String answer;
 
-        @Schema(description = "引用来源 (Value 结构通常对应 RetrievalDTO.HitVO)")
+        @Schema(description = "Nguồn trích dẫn (Value Cấu trúc thường tương ứng với RetrievalDTO.HitVO)")
         @JsonProperty("reference")
         private Map<String, Object> reference;
     }
 
-    // 对应 /api/v1/searchbots/related_questions
+    // Tương ứng với /api/v1/searchbots/rel_questions
     @Data
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-    @Schema(description = "相关问题请求")
+    @Schema(description = "Yêu cầu câu hỏi liên quan")
     public static class RelatedQuestionReq implements Serializable {
-        @Schema(description = "用户问题", requiredMode = Schema.RequiredMode.REQUIRED)
-        @NotBlank(message = "问题不能为空")
+        @Schema(description = "Sự cố người dùng", requiredMode = Schema.RequiredMode.REQUIRED)
+        @NotBlank(message = "Câu hỏi không thể trống")
         @JsonProperty("question")
         private String question;
     }
 
-    // 对应 /api/v1/searchbots/mindmap
+    // Tương ứng với /api/v1/searchbots/mindmap
     @Data
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-    @Schema(description = "思维导图请求")
+    @Schema(description = "Yêu cầu bản đồ tư duy")
     public static class MindMapReq implements Serializable {
-        @Schema(description = "用户问题", requiredMode = Schema.RequiredMode.REQUIRED)
-        @NotBlank(message = "问题不能为空")
+        @Schema(description = "Sự cố người dùng", requiredMode = Schema.RequiredMode.REQUIRED)
+        @NotBlank(message = "Câu hỏi không thể trống")
         @JsonProperty("question")
         private String question;
     }
 
-    // ========== 2. AgentBot (嵌入式 Agent) ==========
+    // =========== 2. AgentBot (Tác nhân được nhúng) ==========
 
-    // 对应 /api/v1/agentbots/{id}/inputs
+    // Tương ứng với /api/v1/agentbots/{id}/inputs
     @Data
     @Builder
     @AllArgsConstructor
-    @Schema(description = "AgentBot 输入参数请求")
+    @Schema(description = "AgentBot Yêu cầu tham số đầu vào")
     public static class AgentInputsReq implements Serializable {
     }
 
@@ -91,35 +91,35 @@ public class BotDTO {
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-    @Schema(description = "AgentBot 输入参数定义响应")
+    @Schema(description = "AgentBot Các tham số đầu vào xác định phản hồi")
     public static class AgentInputsVO implements Serializable {
-        @Schema(description = "表单变量定义列表")
+        @Schema(description = "Danh sách định nghĩa biến biểu mẫu")
         @JsonProperty("variables")
         private List<Map<String, Object>> variables;
     }
 
-    // 对应 /api/v1/agentbots/{id}/completions
+    // Tương ứng với /api/v1/agentbots/{id}/completions
     @Data
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-    @Schema(description = "AgentBot 对话请求")
+    @Schema(description = "AgentBot Yêu cầu hội thoại")
     public static class AgentCompletionReq implements Serializable {
-        @Schema(description = "输入参数值")
+        @Schema(description = "Nhập giá trị tham số")
         @JsonProperty("inputs")
         private Map<String, Object> inputs;
 
-        @Schema(description = "用户查询", requiredMode = Schema.RequiredMode.REQUIRED)
-        @NotBlank(message = "查询内容不能为空")
+        @Schema(description = "Truy vấn của người dùng", requiredMode = Schema.RequiredMode.REQUIRED)
+        @NotBlank(message = "Nội dung truy vấn không thể trống")
         @JsonProperty("question")
         private String question;
 
-        @Schema(description = "是否流式返回", defaultValue = "true")
+        @Schema(description = "Có phát trực tuyến trả lại hay không", defaultValue = "true")
         @JsonProperty("stream")
         @Builder.Default
         private Boolean stream = true;
 
-        @Schema(description = "会话 ID")
+        @Schema(description = "phiên ID")
         @JsonProperty("session_id")
         private String sessionId;
     }

@@ -10,97 +10,97 @@ import xiaozhi.modules.knowledge.entity.KnowledgeBaseEntity;
 import xiaozhi.modules.model.entity.ModelConfigEntity;
 
 /**
- * 知识库知识库服务接口
+ * Giao diện dịch vụ cơ sở tri thức
  */
 public interface KnowledgeBaseService extends BaseService<KnowledgeBaseEntity> {
 
     /**
-     * 分页查询知识库列表
-     * 
-     * @param knowledgeBaseDTO 查询条件
-     * @param page             页码
-     * @param limit            每页数量
-     * @return 分页数据
+     * Truy vấn danh sách cơ sở kiến thức theo trang
+     *
+     * @param KnowledgeBaseDTO điều kiện truy vấn
+     * @param số trang
+     * Số giới hạn @param trên mỗi trang
+     * @return dữ liệu được phân trang
      */
     PageData<KnowledgeBaseDTO> getPageList(KnowledgeBaseDTO knowledgeBaseDTO, Integer page, Integer limit);
 
     /**
-     * 根据ID获取知识库详情
-     * 
-     * @param id 知识库ID
-     * @return 知识库详情
+     * Nhận thông tin chi tiết về cơ sở kiến thức dựa trên ID
+     *
+     * @param id ID cơ sở kiến thức
+     * @return chi tiết cơ sở kiến thức
      */
     KnowledgeBaseDTO getById(String id);
 
     /**
-     * 新增知识库
-     * 
-     * @param knowledgeBaseDTO 知识库信息
-     * @return 新增的知识库
+     * Thêm nền tảng kiến thức mới
+     *
+     * @param KnowledgeBaseDTO thông tin cơ sở kiến thức
+     * @return Cơ sở kiến thức mới
      */
     KnowledgeBaseDTO save(KnowledgeBaseDTO knowledgeBaseDTO);
 
     /**
-     * 更新知识库
-     * 
-     * @param knowledgeBaseDTO 知识库信息
-     * @return 更新的知识库
+     * Cập nhật cơ sở kiến thức
+     *
+     * @param KnowledgeBaseDTO thông tin cơ sở kiến thức
+     * @return cập nhật cơ sở kiến thức
      */
     KnowledgeBaseDTO update(KnowledgeBaseDTO knowledgeBaseDTO);
 
     /**
-     * 根据知识库ID查询知识库
-     * 
-     * @param datasetId 知识库ID
-     * @return 知识库详情
+     * Truy vấn cơ sở tri thức dựa trên ID cơ sở tri thức
+     *
+     * @paramdatadataID cơ sở kiến thức ID
+     * @return chi tiết cơ sở kiến thức
      */
     KnowledgeBaseDTO getByDatasetId(String datasetId);
 
     /**
-     * 根据知识库ID集合查询知识库
+     * Truy vấn cơ sở tri thức dựa trên bộ ID cơ sở tri thức
      *
-     * @param datasetIdList 知识库ID集合
-     * @return 知识库详情
+     * @param tập dữ liệuIdList Bộ sưu tập ID cơ sở tri thức
+     * @return chi tiết cơ sở kiến thức
      */
     List<KnowledgeBaseDTO> getByDatasetIdList(List<String> datasetIdList);
 
     /**
-     * 根据知识库ID删除知识库
-     * 
-     * @param datasetId 知识库ID
+     * Xóa cơ sở tri thức dựa trên ID của nó
+     *
+     * @paramdatadataID cơ sở kiến thức ID
      */
     void deleteByDatasetId(String datasetId);
 
     /**
-     * 获取RAG配置信息
-     * 
-     * @param ragModelId RAG模型配置ID
-     * @return RAG配置信息
+     * Nhận thông tin cấu hình RAG
+     *
+     * @param ragModelId ID cấu hình mô hình RAG
+     * @return thông tin cấu hình RAG
      */
     Map<String, Object> getRAGConfig(String ragModelId);
 
     /**
-     * 根据知识库ID获取对应的RAG配置
-     * 
-     * @param datasetId 知识库ID
-     * @return RAG配置
+     * Nhận cấu hình RAG tương ứng dựa trên ID cơ sở kiến thức
+     *
+     * @paramdatadataID cơ sở kiến thức ID
+     * @return cấu hình RAG
      */
     Map<String, Object> getRAGConfigByDatasetId(String datasetId);
 
     /**
-     * 获取RAG模型列表
-     * 
-     * @return RAG模型列表
+     * Nhận danh sách mô hình RAG
+     *
+     * @return danh sách mô hình RAG
      */
     List<ModelConfigEntity> getRAGModels();
 
     /**
-     * 更新知识库统计信息 (用于被文件服务回调)
-     * 
-     * @param datasetId  知识库ID
-     * @param docDelta   文档数增量
-     * @param chunkDelta 分块数增量
-     * @param tokenDelta Token数增量
+     * Cập nhật số liệu thống kê cơ sở kiến thức (được sử dụng bởi lệnh gọi lại dịch vụ tệp)
+     *
+     * @paramdatadataID cơ sở kiến thức ID
+     * @param docDelta tăng số tài liệu
+     * @param chunkDelta tăng số đoạn
+     * @param tokenDelta Tăng số lượng mã thông báo
      */
     void updateStatistics(String datasetId, Integer docDelta, Long chunkDelta, Long tokenDelta);
 }

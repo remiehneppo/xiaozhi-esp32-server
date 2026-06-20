@@ -2,7 +2,7 @@ package xiaozhi.common.utils;
 
 import lombok.Data;
 /**
- * JSON-RPC2.0 格式规范对象
+ * Đối tượng đặc tả định dạng JSON-RPC2.0
  */
 @Data
 public class JsonRpcTwo {

@@ -5,15 +5,15 @@ import org.springframework.context.annotation.Configuration;
 import xiaozhi.modules.knowledge.rag.KnowledgeBaseAdapterFactory;
 
 /**
- * 知识库配置类
- * 配置知识库相关的Bean
+ * Lớp cấu hình cơ sở kiến thức
+ * Định cấu hình các Bean liên quan đến cơ sở kiến thức
  */
 @Configuration
 public class KnowledgeBaseConfig {
 
     /**
-     * 提供KnowledgeBaseAdapterFactory的Bean实例
-     * @return KnowledgeBaseAdapterFactory实例
+     * Cung cấp phiên bản Bean của KnowledgeBaseAdapterFactory
+     * @return Phiên bản KnowledgeBaseAdapterFactory
      */
     @Bean
     public KnowledgeBaseAdapterFactory knowledgeBaseAdapterFactory() {

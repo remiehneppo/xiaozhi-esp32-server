@@ -8,38 +8,38 @@ import java.time.temporal.ChronoUnit;
 import java.util.Date;
 
 /**
- * 日期处理
- * Copyright (c) 人人开源 All rights reserved.
+ * Xử lý ngày
+ * Bản quyền (c) Renren Kaiyuan Mọi quyền được bảo lưu.
  * Website: https://www.renren.io
  */
 public class DateUtils {
     /**
-     * 时间格式(yyyy-MM-dd)
+     * Định dạng thời gian (yyyy-MM-dd)
      */
     public final static String DATE_PATTERN = "yyyy-MM-dd";
     /**
-     * 时间格式(yyyy-MM-dd HH:mm:ss)
+     * Định dạng thời gian (yyyy-MM-dd HH:mm:ss)
      */
     public final static String DATE_TIME_PATTERN = "yyyy-MM-dd HH:mm:ss";
     public final static String DATE_TIME_MILLIS_PATTERN = "yyyy-MM-dd HH:mm:ss.SSS";
 
 
     /**
-     * 日期格式化 日期格式为：yyyy-MM-dd
+     * Định dạng ngày Định dạng ngày là: yyyy-MM-dd
      *
-     * @param date 日期
-     * @return 返回yyyy-MM-dd格式日期
+     * @param ngày ngày
+     * @return Trả về ngày ở định dạng yyyy-MM-dd
      */
     public static String format(Date date) {
         return format(date, DATE_PATTERN);
     }
 
     /**
-     * 日期格式化 日期格式为：yyyy-MM-dd
+     * Định dạng ngày Định dạng ngày là: yyyy-MM-dd
      *
-     * @param date    日期
-     * @param pattern 格式，如：DateUtils.DATE_TIME_PATTERN
-     * @return 返回yyyy-MM-dd格式日期
+     * @param ngày ngày
+     * Định dạng mẫu @param, chẳng hạn như: DateUtils.DATE_TIME_PATTERN
+     * @return Trả về ngày ở định dạng yyyy-MM-dd
      */
     public static String format(Date date, String pattern) {
         if (date != null) {
@@ -50,11 +50,11 @@ public class DateUtils {
     }
 
     /**
-     * 日期解析
+     * Phân tích ngày
      *
-     * @param date    日期
-     * @param pattern 格式，如：DateUtils.DATE_TIME_PATTERN
-     * @return 返回Date
+     * @param ngày ngày
+     * Định dạng mẫu @param, chẳng hạn như: DateUtils.DATE_TIME_PATTERN
+     * @return Ngày trở về
      */
     public static Date parse(String date, String pattern) {
         try {
@@ -79,7 +79,7 @@ public class DateUtils {
     }
 
     /**
-     * 获取简短的时间字符串：10秒前返回刚刚，多少秒前，几小时前，超过一周返回年月日时分秒
+     * Lấy chuỗi thời gian ngắn: 10 giây trước, quay lại ngay bây giờ, bao nhiêu giây trước, vài giờ trước, hơn một tuần, trả về năm, tháng, ngày, giờ, phút và giây
      * @param date
      * @return
      */
@@ -87,29 +87,29 @@ public class DateUtils {
         if (date == null) {
             return null;
         }
-        // 将 Date 转换为 Instant
+        // Chuyển đổi ngày thành tức thì
         LocalDateTime localDateTime = date.toInstant()
-                // 获取系统默认时区
+                // Lấy múi giờ mặc định của hệ thống
                 .atZone(ZoneId.systemDefault())
-                // 转换为 LocalDateTime
+                // Chuyển đổi sang LocalDateTime
                 .toLocalDateTime();
-        // 当前时间
+        // thời điểm hiện tại
         LocalDateTime now = LocalDateTime.now();
-        // 时间差，单位为秒
+        // Chênh lệch thời gian tính bằng giây
         long secondsBetween = ChronoUnit.SECONDS.between(localDateTime, now);
 
         if (secondsBetween <= 10) {
-            return "刚刚";
+            return "ngay bây giờ";
         } else if (secondsBetween < 60) {
-            return secondsBetween + "秒前";
+            return secondsBetween + "vài giây trước";
         } else if (secondsBetween < 60 * 60) {
-            return secondsBetween / 60 + "分钟前";
+            return secondsBetween / 60 + "phút trước";
         } else if (secondsBetween < 86400) {
-            return secondsBetween / 3600 + "小时前";
+            return secondsBetween / 3600 + "giờ trước";
         } else if (secondsBetween < 604800) {
-            return secondsBetween / 86400 + "天前";
+            return secondsBetween / 86400 + "ngày trước";
         } else {
-            // 超过一周，显示完整日期时间
+            // Hơn một tuần, hiển thị đầy đủ ngày giờ
             return format(date,DATE_TIME_PATTERN);
         }
     }

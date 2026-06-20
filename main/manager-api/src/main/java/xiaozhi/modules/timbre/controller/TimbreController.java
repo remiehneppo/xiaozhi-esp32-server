@@ -27,7 +27,7 @@ import xiaozhi.modules.timbre.service.TimbreService;
 import xiaozhi.modules.timbre.vo.TimbreDetailsVO;
 
 /**
- * 音色控制层
+ * lớp điều khiển giai điệu
  *
  * @author zjy
  * @since 2025-3-21
@@ -35,18 +35,18 @@ import xiaozhi.modules.timbre.vo.TimbreDetailsVO;
 @AllArgsConstructor
 @RestController
 @RequestMapping("/ttsVoice")
-@Tag(name = "音色管理")
+@Tag(name = "Quản lý âm thanh")
 public class TimbreController {
     private final TimbreService timbreService;
 
     @GetMapping
-    @Operation(summary = "分页查找")
+    @Operation(summary = "Tìm kiếm theo trang")
     @RequiresPermissions("sys:role:superAdmin")
     @Parameters({
-            @Parameter(name = "ttsModelId", description = "对应 TTS 模型主键", required = true),
-            @Parameter(name = "name", description = "音色名称"),
-            @Parameter(name = Constant.PAGE, description = "当前页码，从1开始", required = true),
-            @Parameter(name = Constant.LIMIT, description = "每页显示记录数", required = true),
+            @Parameter(name = "ttsModelId", description = "tương ứng TTS Khóa chính của mô hình", required = true),
+            @Parameter(name = "name", description = "Tên giọng nói"),
+            @Parameter(name = Constant.PAGE, description = "Số trang hiện tại，từ1bắt đầu", required = true),
+            @Parameter(name = Constant.LIMIT, description = "Hiển thị số bản ghi trên mỗi trang", required = true),
     })
     public Result<PageData<TimbreDetailsVO>> page(
             @Parameter(hidden = true) @RequestParam Map<String, Object> params) {
@@ -62,7 +62,7 @@ public class TimbreController {
     }
 
     @PostMapping
-    @Operation(summary = "音色保存")
+    @Operation(summary = "Tiết kiệm âm thanh")
     @RequiresPermissions("sys:role:superAdmin")
     public Result<Void> save(@RequestBody TimbreDataDTO dto) {
         ValidatorUtils.validateEntity(dto);
@@ -71,7 +71,7 @@ public class TimbreController {
     }
 
     @PutMapping("/{id}")
-    @Operation(summary = "音色修改")
+    @Operation(summary = "Sửa đổi giai điệu")
     @RequiresPermissions("sys:role:superAdmin")
     public Result<Void> update(
             @PathVariable String id,
@@ -82,7 +82,7 @@ public class TimbreController {
     }
 
     @PostMapping("/delete")
-    @Operation(summary = "音色删除")
+    @Operation(summary = "Xóa âm thanh")
     @RequiresPermissions("sys:role:superAdmin")
     public Result<Void> delete(@RequestBody String[] ids) {
         timbreService.delete(ids);

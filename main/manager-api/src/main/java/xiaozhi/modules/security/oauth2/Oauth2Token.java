@@ -4,7 +4,7 @@ import org.apache.shiro.authc.AuthenticationToken;
 
 /**
  * token
- * Copyright (c) 人人开源 All rights reserved.
+ * Bản quyền (c) Renren Kaiyuan Mọi quyền được bảo lưu.
  * Website: https://www.renren.io
  */
 public class Oauth2Token implements AuthenticationToken {

@@ -30,8 +30,8 @@ import xiaozhi.modules.sys.entity.SysUserEntity;
 import xiaozhi.modules.sys.enums.SuperAdminEnum;
 
 /**
- * 认证
- * Copyright (c) 人人开源 All rights reserved.
+ * Chứng nhận
+ * Bản quyền (c) Renren Kaiyuan Mọi quyền được bảo lưu.
  * Website: https://www.renren.io
  */
 @Component
@@ -48,13 +48,13 @@ public class Oauth2Realm extends AuthorizingRealm {
     }
 
     /**
-     * 授权(验证权限时调用)
+     * Ủy quyền (được gọi khi xác minh quyền)
      */
     @Override
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principals) {
         UserDetail user = (UserDetail) principals.getPrimaryPrincipal();
 
-        // 用户权限列表
+        // Danh sách quyền của người dùng
         Set<String> permsSet = new HashSet<>();
 
         if (user.getSuperAdmin() == SuperAdminEnum.YES.value()) {
@@ -70,30 +70,30 @@ public class Oauth2Realm extends AuthorizingRealm {
     }
 
     /**
-     * 认证(登录时调用)
+     * Xác thực (được gọi khi đăng nhập)
      */
     @Override
     protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken token) throws AuthenticationException {
         String accessToken = (String) token.getPrincipal();
 
-        // 根据accessToken，查询用户信息
+        // Truy vấn thông tin người dùng dựa trên accessToken
         SysUserTokenEntity tokenEntity = shiroService.getByToken(accessToken);
-        // token失效
+        // mã thông báo không hợp lệ
         if (tokenEntity == null || tokenEntity.getExpireDate().getTime() < System.currentTimeMillis()) {
             throw new IncorrectCredentialsException(MessageUtils.getMessage(ErrorCode.TOKEN_INVALID));
         }
 
-        // 查询用户信息
+        // Truy vấn thông tin người dùng
         SysUserEntity userEntity = shiroService.getUser(tokenEntity.getUserId());
 
-        // 转换成UserDetail对象
+        // Chuyển đổi sang đối tượng UserDetail
         UserDetail userDetail = ConvertUtils.sourceToTarget(userEntity, UserDetail.class);
 
         userDetail.setToken(accessToken);
 
-        // 账号锁定
+        // Tài khoản bị khóa
         if (userDetail.getStatus() == null) {
-            logger.error("账号状态异常，status 不能为空");
+            logger.error("Trạng thái tài khoản bất thường，status không thể trống");
             throw new DisabledAccountException(MessageUtils.getMessage(ErrorCode.ACCOUNT_DISABLE));
         }
 

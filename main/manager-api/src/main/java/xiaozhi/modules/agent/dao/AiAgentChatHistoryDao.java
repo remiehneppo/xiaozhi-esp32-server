@@ -10,7 +10,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import xiaozhi.modules.agent.entity.AgentChatHistoryEntity;
 
 /**
- * {@link AgentChatHistoryEntity} 智能体聊天历史记录Dao对象
+ * {@link AgentChatHistoryEntity} Lịch sử trò chuyện của đại lý Đối tượng Dao
  *
  * @author Goody
  * @version 1.0, 2025/4/30
@@ -20,31 +20,31 @@ import xiaozhi.modules.agent.entity.AgentChatHistoryEntity;
 public interface AiAgentChatHistoryDao extends BaseMapper<AgentChatHistoryEntity> {
 
     /**
-     * 根据智能体ID删除聊天历史记录
+     * Xóa lịch sử trò chuyện dựa trên ID đại lý
      *
-     * @param agentId 智能体ID
+     * @param ID đại lý ID đại lý
      */
     void deleteHistoryByAgentId(String agentId);
 
     /**
-     * 根据智能体ID删除音频ID
+     * Xóa ID âm thanh dựa trên ID tác nhân
      *
-     * @param agentId 智能体ID
+     * @param ID đại lý ID đại lý
      */
     void deleteAudioIdByAgentId(String agentId);
 
     /**
-     * 根据智能体ID获取所有音频ID列表
+     * Nhận danh sách tất cả ID âm thanh dựa trên ID tác nhân
      *
-     * @param agentId 智能体ID
-     * @return 音频ID列表
+     * @param ID đại lý ID đại lý
+     * @return Danh sách ID âm thanh
      */
     List<String> getAudioIdsByAgentId(String agentId);
 
     /**
-     * 批量删除音频
+     * Xóa âm thanh theo đợt
      *
-     * @param audioIds 音频ID列表
+     * @param audioIds Danh sách ID âm thanh
      */
     void deleteAudioByIds(@Param("audioIds") List<String> audioIds);
 }

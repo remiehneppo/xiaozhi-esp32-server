@@ -16,8 +16,8 @@ import jakarta.annotation.Resource;
 import xiaozhi.common.utils.ResourcesUtils;
 
 /**
- * Redis工具类
- * Copyright (c) 人人开源 All rights reserved.
+ * Lớp công cụ Redis
+ * Bản quyền (c) Renren Kaiyuan Mọi quyền được bảo lưu.
  * Website: https://www.renren.io
  */
 @Component
@@ -29,19 +29,19 @@ public class RedisUtils {
     private ResourcesUtils resourceUtils;
 
     /**
-     * 默认过期时长为24小时，单位：秒
+     * Thời gian hết hạn mặc định là 24 giờ, đơn vị: giây
      */
     public final static long DEFAULT_EXPIRE = 60 * 60 * 24L;
     /**
-     * 过期时长为1小时，单位：秒
+     * Thời gian hết hạn là 1 giờ, đơn vị: giây
      */
     public final static long HOUR_ONE_EXPIRE = (long) 60 * 60;
     /**
-     * 过期时长为6小时，单位：秒
+     * Thời gian hết hạn là 6 giờ, đơn vị: giây
      */
     public final static long HOUR_SIX_EXPIRE = 60 * 60 * 6L;
     /**
-     * 不设置过期时长
+     * Không đặt thời gian hết hạn
      */
     public final static long NOT_EXPIRE = -1L;
 
@@ -153,39 +153,39 @@ public class RedisUtils {
 
 
     /**
-     * 清空所有 Redis 数据库中的所有键
+     * Xóa tất cả các khóa trong tất cả cơ sở dữ liệu Redis
      */
     public void emptyAll() {
-        // Lua 脚本 FLUSHALL是redis清空所有库的命令
+        // Lua script FLUSHALL là lệnh redis để xóa tất cả các thư viện
         String luaScript =resourceUtils.loadString("lua/emptyAll.lua");
 
-        // 创建 DefaultRedisScript 对象
+        // Tạo một đối tượng DefaultRedisScript
         DefaultRedisScript<Void> redisScript = new DefaultRedisScript<>();
-        redisScript.setScriptText(luaScript); // 设置 Lua 脚本内容
-        redisScript.setResultType(Void.class); // 设置返回值类型
+        redisScript.setScriptText(luaScript); // cài đặt Lua Nội dung kịch bản
+        redisScript.setResultType(Void.class); // Đặt loại giá trị trả về
 
-        // 执行 Lua 脚本
-        List<String> keys = Collections.emptyList(); // 如果脚本不依赖 key，可以传入空列表
+        // Thực thi tập lệnh Lua
+        List<String> keys = Collections.emptyList(); // Nếu kịch bản không phụ thuộc vào key，Một danh sách trống có thể được chuyển vào
         redisTemplate.execute(redisScript, keys);
 
     }
 
     /**
-     * 获取在redis指定key的值，如果值为空，着设置key的默认值
-     * @param key redis的key
-     * @param defaultValue 默认值
-     * @param expiresInSecond 过期时间
-     * @return 返回key的值
+     * Lấy giá trị của khóa được chỉ định trong redis. Nếu giá trị trống, hãy đặt giá trị mặc định của khóa.
+     * Khóa @param làm lại khóa
+     * @param defaultValue giá trị mặc định
+     * @param hết hạnInSecond thời gian hết hạn
+     * @return trả về giá trị của khóa
      */
     public String getKeyOrCreate(String key, String defaultValue,Long expiresInSecond) {
-        // Lua 脚本
+        // Tập lệnh Lua
         String luaScript = resourceUtils.loadString("lua/getKeyOrCreate.lua");
 
         DefaultRedisScript<String> redisScript = new DefaultRedisScript<>();
         redisScript.setScriptText(luaScript);
         redisScript.setResultType(String.class);
 
-        // 执行 Lua 脚本
+        // Thực thi tập lệnh Lua
         List<String> keys = Collections.singletonList(key);
         return redisTemplate.execute(redisScript, keys, defaultValue,expiresInSecond);
     }

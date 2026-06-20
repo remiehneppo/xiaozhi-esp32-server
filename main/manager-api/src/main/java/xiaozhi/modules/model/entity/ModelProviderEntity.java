@@ -11,37 +11,37 @@ import lombok.Data;
 
 @Data
 @TableName("ai_model_provider")
-@Schema(description = "模型供应器表")
+@Schema(description = "bảng nhà cung cấp mô hình")
 public class ModelProviderEntity {
 
     @TableId(type = IdType.ASSIGN_UUID)
-    @Schema(description = "主键")
+    @Schema(description = "khóa chính")
     private String id;
 
-    @Schema(description = "模型类型(Memory/ASR/VAD/LLM/TTS)")
+    @Schema(description = "Loại mô hình(Memory/ASR/VAD/LLM/TTS)")
     private String modelType;
 
-    @Schema(description = "供应器类型，如 openai、")
+    @Schema(description = "loại nhà cung cấp，Chẳng hạn như openai、")
     private String providerCode;
 
-    @Schema(description = "供应器名称")
+    @Schema(description = "tên nhà cung cấp")
     private String name;
 
-    @Schema(description = "供应器字段列表(JSON格式)")
+    @Schema(description = "Danh sách trường nhà cung cấp(JSONđịnh dạng)")
     private String fields;
 
-    @Schema(description = "排序")
+    @Schema(description = "sắp xếp")
     private Integer sort;
 
-    @Schema(description = "创建者")
+    @Schema(description = "Người sáng tạo")
     private Long creator;
 
-    @Schema(description = "创建时间")
+    @Schema(description = "thời gian sáng tạo")
     private Date createDate;
 
-    @Schema(description = "更新者")
+    @Schema(description = "Trình cập nhật")
     private Long updater;
 
-    @Schema(description = "更新时间")
+    @Schema(description = "Thời gian cập nhật")
     private Date updateDate;
 }

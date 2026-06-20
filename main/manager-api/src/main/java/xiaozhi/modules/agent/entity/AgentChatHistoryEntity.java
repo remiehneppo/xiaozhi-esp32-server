@@ -13,7 +13,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * 智能体聊天记录表
+ * Bảng ghi cuộc trò chuyện của đại lý
  *
  * @author Goody
  * @version 1.0, 2025/4/30
@@ -26,55 +26,55 @@ import lombok.NoArgsConstructor;
 @TableName(value = "ai_agent_chat_history")
 public class AgentChatHistoryEntity {
     /**
-     * 主键ID
+     * ID khóa chính
      */
     @TableId(type = IdType.AUTO)
     private Long id;
 
     /**
-     * MAC地址
+     * Địa chỉ MAC
      */
     @TableField(value = "mac_address")
     private String macAddress;
 
     /**
-     * 智能体id
+     * Mã đại lý
      */
     @TableField(value = "agent_id")
     private String agentId;
 
     /**
-     * 会话ID
+     * ID phiên
      */
     @TableField(value = "session_id")
     private String sessionId;
 
     /**
-     * 消息类型: 1-用户, 2-智能体
+     * Loại tin nhắn: 1-Người dùng, 2-Agent
      */
     @TableField(value = "chat_type")
     private Byte chatType;
 
     /**
-     * 聊天内容
+     * Nội dung trò chuyện
      */
     @TableField(value = "content")
     private String content;
 
     /**
-     * 音频base64数据
+     * Dữ liệu âm thanh base64
      */
     @TableField(value = "audio_id")
     private String audioId;
 
     /**
-     * 创建时间
+     * thời gian sáng tạo
      */
     @TableField(value = "created_at")
     private Date createdAt;
 
     /**
-     * 更新时间
+     * Thời gian cập nhật
      */
     @TableField(value = "updated_at")
     private Date updatedAt;

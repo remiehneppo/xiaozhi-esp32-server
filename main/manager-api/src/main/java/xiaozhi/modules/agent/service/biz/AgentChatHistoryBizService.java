@@ -3,7 +3,7 @@ package xiaozhi.modules.agent.service.biz;
 import xiaozhi.modules.agent.dto.AgentChatHistoryReportDTO;
 
 /**
- * 智能体聊天历史业务逻辑层
+ * Lớp logic kinh doanh lịch sử trò chuyện của tổng đài viên
  *
  * @author Goody
  * @version 1.0, 2025/4/30
@@ -12,11 +12,11 @@ import xiaozhi.modules.agent.dto.AgentChatHistoryReportDTO;
 public interface AgentChatHistoryBizService {
 
     /**
-     * 聊天上报方法
+     * Phương thức báo cáo trò chuyện
      *
-     * @param agentChatHistoryReportDTO 包含聊天上报所需信息的输入对象
-     *                                  例如：设备MAC地址、文件类型、内容等
-     * @return 上传结果，true表示成功，false表示失败
+     * @param AgentChatHistoryReportDTO đối tượng đầu vào chứa thông tin cần thiết để báo cáo trò chuyện
+     * Ví dụ: địa chỉ MAC của thiết bị, loại tệp, nội dung, v.v.
+     * @return Kết quả upload, true nghĩa là thành công, false nghĩa là thất bại
      */
     Boolean report(AgentChatHistoryReportDTO agentChatHistoryReportDTO);
 }

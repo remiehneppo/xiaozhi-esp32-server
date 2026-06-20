@@ -1,29 +1,29 @@
 package xiaozhi.modules.security.password;
 
 /**
- * 密码工具类
- * Copyright (c) 人人开源 All rights reserved.
+ * Công cụ mật khẩu
+ * Bản quyền (c) Renren Kaiyuan Mọi quyền được bảo lưu.
  * Website: https://www.renren.io
  */
 public class PasswordUtils {
     private static PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
     /**
-     * 加密
+     * Mã hóa
      *
-     * @param str 字符串
-     * @return 返回加密字符串
+     * @param chuỗi chuỗi
+     * @return Trả về chuỗi được mã hóa
      */
     public static String encode(String str) {
         return passwordEncoder.encode(str);
     }
 
     /**
-     * 比较密码是否相等
+     * So sánh mật khẩu cho sự bình đẳng
      *
-     * @param str      明文密码
-     * @param password 加密后密码
-     * @return true：成功 false：失败
+     * @param str mật khẩu văn bản đơn giản
+     * @param mật khẩu mật khẩu được mã hóa
+     * @return true: thành công sai: thất bại
      */
     public static boolean matches(String str, String password) {
         return passwordEncoder.matches(str, password);

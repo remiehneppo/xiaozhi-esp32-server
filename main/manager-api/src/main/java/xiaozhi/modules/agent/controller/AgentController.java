@@ -59,7 +59,7 @@ import xiaozhi.modules.device.entity.DeviceEntity;
 import xiaozhi.modules.device.service.DeviceService;
 import xiaozhi.modules.security.user.SecurityUser;
 
-@Tag(name = "智能体管理")
+@Tag(name = "Quản lý đại lý")
 @AllArgsConstructor
 @RestController
 @RequestMapping("/agent")
@@ -77,24 +77,24 @@ public class AgentController {
     private final CorrectWordFileService correctWordFileService;
 
     @GetMapping("/list")
-    @Operation(summary = "获取用户智能体列表")
+    @Operation(summary = "Lấy danh sách tác nhân người dùng")
     @RequiresPermissions("sys:role:normal")
     public Result<List<AgentDTO>> getUserAgents(
             @RequestParam(value = "keyword", required = false) String keyword,
             @RequestParam(value = "searchType", defaultValue = "name") String searchType) {
         UserDetail user = SecurityUser.getUser();
 
-        // 直接调用整合后的getUserAgents方法，无需再区分搜索和普通查询
+        // Gọi trực tiếp phương thức getUserAgents tích hợp, không cần phân biệt tìm kiếm và truy vấn thông thường
         List<AgentDTO> agents = agentService.getUserAgents(user.getId(), keyword, searchType);
         return new Result<List<AgentDTO>>().ok(agents);
     }
 
     @GetMapping("/all")
-    @Operation(summary = "智能体列表（管理员）")
+    @Operation(summary = "Danh sách đại lý（Quản trị viên）")
     @RequiresPermissions("sys:role:superAdmin")
     @Parameters({
-            @Parameter(name = Constant.PAGE, description = "当前页码，从1开始", required = true),
-            @Parameter(name = Constant.LIMIT, description = "每页显示记录数", required = true),
+            @Parameter(name = Constant.PAGE, description = "Trang hiện tại, bắt đầu từ 1", required = true),
+            @Parameter(name = Constant.LIMIT, description = "Số bản ghi hiển thị trên mỗi trang", required = true),
     })
     public Result<PageData<AgentEntity>> adminAgentList(
             @Parameter(hidden = true) @RequestParam Map<String, Object> params) {
@@ -103,7 +103,7 @@ public class AgentController {
     }
 
     @GetMapping("/{id}")
-    @Operation(summary = "获取智能体详情")
+    @Operation(summary = "Nhận thông tin chi tiết đại lý")
     @RequiresPermissions("sys:role:normal")
     public Result<AgentInfoVO> getAgentById(@PathVariable("id") String id) {
         AgentInfoVO agent = agentService.getAgentById(id);
@@ -111,7 +111,7 @@ public class AgentController {
     }
 
     @PostMapping
-    @Operation(summary = "创建智能体")
+    @Operation(summary = "Tạo một đại lý")
     @RequiresPermissions("sys:role:normal")
     public Result<String> save(@RequestBody @Valid AgentCreateDTO dto) {
         String agentId = agentService.createAgent(dto);
@@ -119,7 +119,7 @@ public class AgentController {
     }
 
     @PutMapping("/saveMemory/{macAddress}")
-    @Operation(summary = "根据设备id更新智能体")
+    @Operation(summary = "Theo thiết bịidCập nhật đại lý")
     public Result<Void> updateByDeviceId(@PathVariable String macAddress, @RequestBody @Valid AgentMemoryDTO dto) {
         DeviceEntity device = deviceService.getDeviceByMacAddress(macAddress);
         if (device == null) {
@@ -132,35 +132,35 @@ public class AgentController {
     }
 
     @PostMapping("/chat-summary/{sessionId}/save")
-    @Operation(summary = "根据会话ID生成聊天记录总结并保存（异步执行）")
+    @Operation(summary = "Theo phiênIDTạo tóm tắt lịch sử trò chuyện và lưu nó（Thực thi không đồng bộ）")
     public Result<Void> generateAndSaveChatSummary(@PathVariable String sessionId) {
         try {
-            // 异步执行总结生成任务，立即返回成功响应
+            // Thực hiện tác vụ tạo tóm tắt một cách không đồng bộ và trả về phản hồi thành công ngay lập tức
             new Thread(() -> {
                 try {
                     agentChatSummaryService.generateAndSaveChatSummary(sessionId);
-                    System.out.println("异步执行会话 " + sessionId + " 的聊天记录总结完成");
+                    System.out.println("Thực hiện phiên không đồng bộ " + sessionId + " Tóm tắt lịch sử trò chuyện đã hoàn thành");
                 } catch (Exception e) {
-                    System.err.println("异步执行会话 " + sessionId + " 的聊天记录总结失败: " + e.getMessage());
+                    System.err.println("Thực hiện phiên không đồng bộ " + sessionId + " Tóm tắt lịch sử trò chuyện không thành công: " + e.getMessage());
                 }
             }).start();
 
-            // 立即返回成功响应，不等待总结生成完成
+            // Trả về phản hồi thành công ngay lập tức mà không cần đợi quá trình tạo tóm tắt hoàn tất
             return new Result<Void>().ok(null);
         } catch (Exception e) {
-            return new Result<Void>().error("启动异步总结生成任务失败: " + e.getMessage());
+            return new Result<Void>().error("Không thể bắt đầu tác vụ tạo tóm tắt không đồng bộ: " + e.getMessage());
         }
     }
 
     @PostMapping("/chat-title/{sessionId}/generate")
-    @Operation(summary = "根据会话ID生成聊天标题")
+    @Operation(summary = "Theo phiênIDTạo tiêu đề trò chuyện")
     public Result<Void> generateAndSaveChatTitle(@PathVariable String sessionId) {
         agentChatSummaryService.generateAndSaveChatTitle(sessionId);
         return new Result<Void>().ok(null);
     }
 
     @PutMapping("/{id}")
-    @Operation(summary = "更新智能体")
+    @Operation(summary = "Cập nhật đại lý")
     @RequiresPermissions("sys:role:normal")
     public Result<Void> update(@PathVariable String id, @RequestBody @Valid AgentUpdateDTO dto) {
         agentService.updateAgentById(id, dto);
@@ -168,26 +168,26 @@ public class AgentController {
     }
 
     @DeleteMapping("/{id}")
-    @Operation(summary = "删除智能体")
+    @Operation(summary = "Xóa đại lý")
     @RequiresPermissions("sys:role:normal")
     public Result<Void> delete(@PathVariable String id) {
-        // 先删除关联的设备
+        // Trước tiên hãy xóa thiết bị được liên kết
         deviceService.deleteByAgentId(id);
-        // 删除关联的聊天记录
+        // Xóa lịch sử trò chuyện liên quan
         agentChatHistoryService.deleteByAgentId(id, true, true);
-        // 删除关联的插件
+        // Xóa các plugin liên quan
         agentPluginMappingService.deleteByAgentId(id);
-        // 删除关联的上下文源配置
+        // Xóa cấu hình nguồn ngữ cảnh liên quan
         agentContextProviderService.deleteByAgentId(id);
-        // 删除关联的替换词文件关联记录
+        // Xóa các bản ghi liên kết tệp từ thay thế được liên kết
         correctWordFileService.deleteMappingsByAgentId(id);
-        // 再删除智能体
+        // Xóa đại lý một lần nữa
         agentService.deleteById(id);
         return new Result<>();
     }
 
     @GetMapping("/template")
-    @Operation(summary = "智能体模板模板列表")
+    @Operation(summary = "Danh sách mẫu đại lý")
     @RequiresPermissions("sys:role:normal")
     public Result<List<AgentTemplateEntity>> templateList() {
         List<AgentTemplateEntity> list = agentTemplateService
@@ -196,11 +196,11 @@ public class AgentController {
     }
 
     @GetMapping("/{id}/sessions")
-    @Operation(summary = "获取智能体会话列表")
+    @Operation(summary = "Lấy danh sách phiên đại lý")
     @RequiresPermissions("sys:role:normal")
     @Parameters({
-            @Parameter(name = Constant.PAGE, description = "当前页码，从1开始", required = true),
-            @Parameter(name = Constant.LIMIT, description = "每页显示记录数", required = true),
+            @Parameter(name = Constant.PAGE, description = "Trang hiện tại, bắt đầu từ 1", required = true),
+            @Parameter(name = Constant.LIMIT, description = "Số bản ghi hiển thị trên mỗi trang", required = true),
     })
     public Result<PageData<AgentChatSessionDTO>> getAgentSessions(
             @PathVariable("id") String id,
@@ -211,59 +211,59 @@ public class AgentController {
     }
 
     @GetMapping("/{id}/chat-history/{sessionId}")
-    @Operation(summary = "获取智能体聊天记录")
+    @Operation(summary = "Nhận lịch sử trò chuyện của đại lý")
     @RequiresPermissions("sys:role:normal")
     public Result<List<AgentChatHistoryDTO>> getAgentChatHistory(
             @PathVariable("id") String id,
             @PathVariable("sessionId") String sessionId) {
-        // 获取当前用户
+        // Nhận người dùng hiện tại
         UserDetail user = SecurityUser.getUser();
 
-        // 检查权限
+        // Kiểm tra quyền
         if (!agentService.checkAgentPermission(id, user.getId())) {
-            return new Result<List<AgentChatHistoryDTO>>().error("没有权限查看该智能体的聊天记录");
+            return new Result<List<AgentChatHistoryDTO>>().error("Không có quyền xem lịch sử trò chuyện của đại lý này");
         }
 
-        // 查询聊天记录
+        // Truy vấn lịch sử trò chuyện
         List<AgentChatHistoryDTO> result = agentChatHistoryService.getChatHistoryBySessionId(id, sessionId);
         return new Result<List<AgentChatHistoryDTO>>().ok(result);
     }
 
     @GetMapping("/{id}/chat-history/user")
-    @Operation(summary = "获取智能体聊天记录（用户）")
+    @Operation(summary = "Nhận lịch sử trò chuyện của đại lý（người dùng）")
     @RequiresPermissions("sys:role:normal")
     public Result<List<AgentChatHistoryUserVO>> getRecentlyFiftyByAgentId(
             @PathVariable("id") String id) {
-        // 获取当前用户
+        // Nhận người dùng hiện tại
         UserDetail user = SecurityUser.getUser();
 
-        // 检查权限
+        // Kiểm tra quyền
         if (!agentService.checkAgentPermission(id, user.getId())) {
-            return new Result<List<AgentChatHistoryUserVO>>().error("没有权限查看该智能体的聊天记录");
+            return new Result<List<AgentChatHistoryUserVO>>().error("Không có quyền xem lịch sử trò chuyện của đại lý này");
         }
 
-        // 查询聊天记录
+        // Truy vấn lịch sử trò chuyện
         List<AgentChatHistoryUserVO> data = agentChatHistoryService.getRecentlyFiftyByAgentId(id);
         return new Result<List<AgentChatHistoryUserVO>>().ok(data);
     }
 
     @GetMapping("/{id}/chat-history/audio")
-    @Operation(summary = "获取音频内容")
+    @Operation(summary = "Nhận nội dung âm thanh")
     @RequiresPermissions("sys:role:normal")
     public Result<String> getContentByAudioId(
             @PathVariable("id") String id) {
-        // 查询聊天记录
+        // Truy vấn lịch sử trò chuyện
         String data = agentChatHistoryService.getContentByAudioId(id);
         return new Result<String>().ok(data);
     }
 
     @PostMapping("/audio/{audioId}")
-    @Operation(summary = "获取音频下载ID")
+    @Operation(summary = "Tải xuống âm thanhID")
     @RequiresPermissions("sys:role:normal")
     public Result<String> getAudioId(@PathVariable("audioId") String audioId) {
         byte[] audioData = agentChatAudioService.getAudio(audioId);
         if (audioData == null) {
-            return new Result<String>().error("音频不存在");
+            return new Result<String>().error("Âm thanh không tồn tại");
         }
         String uuid = UUID.randomUUID().toString();
         redisUtils.set(RedisKeys.getAgentAudioIdKey(uuid), audioId);
@@ -271,7 +271,7 @@ public class AgentController {
     }
 
     @GetMapping("/play/{uuid}")
-    @Operation(summary = "播放音频")
+    @Operation(summary = "Phát âm thanh")
     public ResponseEntity<byte[]> playAudio(@PathVariable("uuid") String uuid) {
 
         String audioId = (String) redisUtils.get(RedisKeys.getAgentAudioIdKey(uuid));
@@ -291,19 +291,19 @@ public class AgentController {
     }
 
     @PostMapping("/tag")
-    @Operation(summary = "创建标签")
+    @Operation(summary = "Tạo thẻ")
     @RequiresPermissions("sys:role:normal")
     public Result<AgentTagEntity> createTag(@RequestBody Map<String, String> params) {
         String tagName = params.get("tagName");
         if (StringUtils.isBlank(tagName)) {
-            return new Result<AgentTagEntity>().error("标签名称不能为空");
+            return new Result<AgentTagEntity>().error("Tên nhãn không thể trống");
         }
         AgentTagEntity tag = agentTagService.saveTag(tagName);
         return new Result<AgentTagEntity>().ok(tag);
     }
 
     @GetMapping("/tag/list")
-    @Operation(summary = "获取所有标签列表")
+    @Operation(summary = "Lấy danh sách tất cả các nhãn")
     @RequiresPermissions("sys:role:normal")
     public Result<List<AgentTagDTO>> getAllTags() {
         List<AgentTagDTO> tags = agentTagService.getAllTags();
@@ -311,7 +311,7 @@ public class AgentController {
     }
 
     @DeleteMapping("/tag/{id}")
-    @Operation(summary = "删除标签")
+    @Operation(summary = "Xóa nhãn")
     @RequiresPermissions("sys:role:normal")
     public Result<Void> deleteTag(@PathVariable String id) {
         agentTagService.deleteTag(id);
@@ -319,7 +319,7 @@ public class AgentController {
     }
 
     @GetMapping("/{id}/tags")
-    @Operation(summary = "获取智能体的标签")
+    @Operation(summary = "Lấy nhãn của thực thể thông minh")
     @RequiresPermissions("sys:role:normal")
     public Result<List<AgentTagDTO>> getAgentTags(@PathVariable String id) {
         List<AgentTagDTO> tags = agentTagService.getTagsByAgentId(id);
@@ -327,7 +327,7 @@ public class AgentController {
     }
 
     @PutMapping("/{id}/tags")
-    @Operation(summary = "保存智能体的标签")
+    @Operation(summary = "Lưu nhãn của thực thể thông minh")
     @RequiresPermissions("sys:role:normal")
     public Result<Void> saveAgentTags(@PathVariable String id, @RequestBody Map<String, Object> params) {
         List<String> tagIds = (List<String>) params.get("tagIds");

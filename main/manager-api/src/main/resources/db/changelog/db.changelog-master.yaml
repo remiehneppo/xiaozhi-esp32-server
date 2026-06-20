@@ -1,6 +1,6 @@
-# 规范约定：
-# id生成根据时间时分，文件名对应id，常变数据可以根据模块命名自定义
-# 每次对数据表进行改动时，只允许新建新对changeSet，不允许对上一个changeSet配置及文件进行修改
+# Thỏa thuận tiêu chuẩn:
+# Id được tạo dựa trên thời gian và giờ, tên tệp tương ứng với id và dữ liệu thay đổi liên tục có thể được tùy chỉnh theo cách đặt tên mô-đun.
+# Mỗi lần thực hiện thay đổi đối với bảng dữ liệu, chỉ được phép tạo một cặp ChangeSet mới và không được phép sửa đổi cấu hình và tệp ChangeSet trước đó.
 databaseChangeLog:
   - changeSet:
       id: 202503141335

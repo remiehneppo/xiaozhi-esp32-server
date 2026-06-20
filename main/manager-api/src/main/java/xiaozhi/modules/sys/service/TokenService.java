@@ -2,7 +2,7 @@ package xiaozhi.modules.sys.service;
 
 public interface TokenService {
     /**
-     * 生成token
+     * Tạo mã thông báo
      *
      * @param userId
      * @return

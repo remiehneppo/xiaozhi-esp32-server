@@ -5,41 +5,41 @@ import java.io.IOException;
 import jakarta.servlet.http.HttpServletResponse;
 
 /**
- * 验证码
- * Copyright (c) 人人开源 All rights reserved.
+ * Mã xác minh
+ * Bản quyền (c) Renren Kaiyuan Mọi quyền được bảo lưu.
  * Website: https://www.renren.io
  */
 public interface CaptchaService {
 
     /**
-     * 图片验证码
+     * Mã xác minh hình ảnh
      */
     void create(HttpServletResponse response, String uuid) throws IOException;
 
     /**
-     * 验证码效验
-     * 
+     * Xác thực mã xác minh
+     *
      * @param uuid   uuid
-     * @param code   验证码
-     * @param delete 是否删除验证码
-     * @return true：成功 false：失败
+     * @param mã xác minh mã
+     * @param delete có xóa mã xác minh không
+     * @return true: thành công sai: thất bại
      */
     boolean validate(String uuid, String code, Boolean delete);
 
     /**
-     * 发送短信验证码
-     * 
-     * @param phone 手机
+     * Gửi mã xác minh qua SMS
+     *
+     * @param điện thoại điện thoại di động
      */
     void sendSMSValidateCode(String phone);
 
     /**
-     * 验证短信验证码
-     * 
-     * @param phone  手机
-     * @param code   验证码
-     * @param delete 是否删除验证码
-     * @return true：成功 false：失败
+     * Xác minh mã xác minh SMS
+     *
+     * @param điện thoại điện thoại di động
+     * @param mã xác minh mã
+     * @param delete có xóa mã xác minh không
+     * @return true: thành công sai: thất bại
      */
     boolean validateSMSValidateCode(String phone, String code, Boolean delete);
 }

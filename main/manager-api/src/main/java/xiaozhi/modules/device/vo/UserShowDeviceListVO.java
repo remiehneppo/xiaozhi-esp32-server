@@ -8,40 +8,40 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
 @Data
-@Schema(description = "用户显示设备列表VO")
+@Schema(description = "Người dùng hiển thị danh sách thiết bịVO")
 public class UserShowDeviceListVO {
 
-    @Schema(description = "app版本")
+    @Schema(description = "appphiên bản")
     private String appVersion;
 
-    @Schema(description = "绑定用户名称")
+    @Schema(description = "Ràng buộc tên người dùng")
     private String bindUserName;
 
-    @Schema(description = "设备型号")
+    @Schema(description = "Mẫu thiết bị")
     private String deviceType;
 
-    @Schema(description = "设备型号(board)")
+    @Schema(description = "Mẫu thiết bị(board)")
     private String board;
 
-    @Schema(description = "设备唯一标识符")
+    @Schema(description = "mã định danh duy nhất của thiết bị")
     private String id;
 
-    @Schema(description = "mac地址")
+    @Schema(description = "macđịa chỉ")
     private String macAddress;
 
-    @Schema(description = "设备别名")
+    @Schema(description = "Bí danh thiết bị")
     private String alias;
 
-    @Schema(description = "开启OTA")
+    @Schema(description = "bật lênOTA")
     private Integer otaUpgrade;
 
-    @Schema(description = "最近对话时间")
+    @Schema(description = "Lần trò chuyện cuối cùng")
     private String recentChatTime;
 
-    @Schema(description = "最后连接时间(UTC毫秒)")
+    @Schema(description = "Lần kết nối cuối cùng(UTCmili giây)")
     private Long lastConnectedAtTimestamp;
 
-    @Schema(description = "绑定时间")
+    @Schema(description = "thời gian ràng buộc")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "UTC")
     private Date createDate;
 

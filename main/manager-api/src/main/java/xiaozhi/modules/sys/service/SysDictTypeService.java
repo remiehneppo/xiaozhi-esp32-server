@@ -10,51 +10,51 @@ import xiaozhi.modules.sys.entity.SysDictTypeEntity;
 import xiaozhi.modules.sys.vo.SysDictTypeVO;
 
 /**
- * 数据字典
+ * từ điển dữ liệu
  */
 public interface SysDictTypeService extends BaseService<SysDictTypeEntity> {
 
     /**
-     * 分页查询字典类型信息
+     * Truy vấn thông tin loại từ điển theo trang
      *
-     * @param params 查询参数，包含分页信息和查询条件
-     * @return 返回分页的字典类型数据
+     * @param tham số truy vấn, bao gồm thông tin phân trang và điều kiện truy vấn
+     * @return trả về dữ liệu loại từ điển được phân trang
      */
     PageData<SysDictTypeVO> page(Map<String, Object> params);
 
     /**
-     * 根据ID获取字典类型信息
+     * Nhận thông tin loại từ điển dựa trên ID
      *
-     * @param id 字典类型ID
-     * @return 返回字典类型对象
+     * ID loại từ điển @param id
+     * @return Trả về một đối tượng kiểu từ điển
      */
     SysDictTypeVO get(Long id);
 
     /**
-     * 保存字典类型信息
+     * Lưu thông tin loại từ điển
      *
-     * @param dto 字典类型数据传输对象
+     * @param dto đối tượng truyền dữ liệu kiểu từ điển
      */
     void save(SysDictTypeDTO dto);
 
     /**
-     * 更新字典类型信息
+     * Cập nhật thông tin loại từ điển
      *
-     * @param dto 字典类型数据传输对象
+     * @param dto đối tượng truyền dữ liệu kiểu từ điển
      */
     void update(SysDictTypeDTO dto);
 
     /**
-     * 删除字典类型信息
+     * Xóa thông tin loại từ điển
      *
-     * @param ids 要删除的字典类型ID数组
+     * @param id mảng ID loại từ điển sẽ bị xóa
      */
     void delete(Long[] ids);
 
     /**
-     * 列出所有字典类型信息
+     * Liệt kê tất cả thông tin loại từ điển
      *
-     * @return 返回字典类型列表
+     * @return Trả về danh sách loại từ điển
      */
     List<SysDictTypeVO> list(Map<String, Object> params);
 }

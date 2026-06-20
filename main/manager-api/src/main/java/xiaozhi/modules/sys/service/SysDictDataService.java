@@ -11,59 +11,59 @@ import xiaozhi.modules.sys.vo.SysDictDataItem;
 import xiaozhi.modules.sys.vo.SysDictDataVO;
 
 /**
- * 数据字典
+ * từ điển dữ liệu
  */
 public interface SysDictDataService extends BaseService<SysDictDataEntity> {
 
     /**
-     * 分页查询数据字典信息
+     * Truy vấn thông tin từ điển dữ liệu theo trang
      *
-     * @param params 查询参数，包含分页信息和查询条件
-     * @return 返回数据字典的分页查询结果
+     * @param tham số truy vấn, bao gồm thông tin phân trang và điều kiện truy vấn
+     * @return Trả về kết quả truy vấn phân trang của từ điển dữ liệu
      */
     PageData<SysDictDataVO> page(Map<String, Object> params);
 
     /**
-     * 根据ID获取数据字典实体
+     * Nhận thực thể từ điển dữ liệu dựa trên ID
      *
-     * @param id 数据字典实体的唯一标识
-     * @return 返回数据字典实体的详细信息
+     * @param id mã định danh duy nhất của thực thể từ điển dữ liệu
+     * @return Trả về chi tiết của thực thể từ điển dữ liệu
      */
     SysDictDataVO get(Long id);
 
     /**
-     * 保存新的数据字典项
+     * Lưu mục từ điển dữ liệu mới
      *
-     * @param dto 数据字典项的保存数据传输对象
+     * @param dto Đối tượng truyền dữ liệu đã lưu của mục từ điển dữ liệu
      */
     void save(SysDictDataDTO dto);
 
     /**
-     * 更新数据字典项
+     * Cập nhật mục từ điển dữ liệu
      *
-     * @param dto 数据字典项的更新数据传输对象
+     * @param dto cập nhật đối tượng truyền dữ liệu của mục từ điển dữ liệu
      */
     void update(SysDictDataDTO dto);
 
     /**
-     * 删除数据字典项
+     * Xóa mục từ điển dữ liệu
      *
-     * @param ids 要删除的数据字典项的ID数组
+     * @param ids Mảng ID của các mục từ điển dữ liệu sẽ bị xóa
      */
     void delete(Long[] ids);
 
     /**
-     * 根据字典类型ID删除对应的字典数据
+     * Xóa dữ liệu từ điển tương ứng theo ID loại từ điển
      *
-     * @param dictTypeId 字典类型ID
+     * @param dictTypeId ID loại từ điển
      */
     void deleteByTypeId(Long dictTypeId);
 
     /**
-     * 根据字典类型获取字典数据列表
+     * Nhận danh sách dữ liệu từ điển dựa trên loại từ điển
      *
-     * @param dictType 字典类型
-     * @return 返回字典数据列表
+     * @param dictType loại từ điển
+     * @return trả về danh sách dữ liệu từ điển
      */
     List<SysDictDataItem> getDictDataByType(String dictType);
 

@@ -11,7 +11,7 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
 /**
- * 智能体声纹表
+ * Bảng in giọng nói thông minh
  *
  * @author zjy
  */
@@ -19,45 +19,45 @@ import lombok.Data;
 @Data
 public class AgentVoicePrintEntity {
     /**
-     * 主键id
+     * id khóa chính
      */
     @TableId(type = IdType.ASSIGN_UUID)
     private String id;
     /**
-     * 关联的智能体id
+     * id đại lý liên kết
      */
     private String agentId;
     /**
-     * 关联的音频id
+     * id âm thanh được liên kết
      */
     private String audioId;
     /**
-     * 声纹来源的人姓名
+     * Tên của người có giọng nói đến từ
      */
     private String sourceName;
     /**
-     * 描述声纹来源的人
+     * Người mô tả nguồn gốc của giọng nói
      */
     private String introduce;
 
     /**
-     * 创建者
+     * Người sáng tạo
      */
     @TableField(fill = FieldFill.INSERT)
     private Long creator;
     /**
-     * 创建时间
+     * thời gian sáng tạo
      */
     @TableField(fill = FieldFill.INSERT)
     private Date createDate;
 
     /**
-     * 更新者
+     * Trình cập nhật
      */
     @TableField(fill = FieldFill.INSERT_UPDATE)
     private Long updater;
     /**
-     * 更新时间
+     * Thời gian cập nhật
      */
     @TableField(fill = FieldFill.INSERT_UPDATE)
     private Date updateDate;

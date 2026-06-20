@@ -9,7 +9,7 @@ import xiaozhi.modules.sys.dto.SysParamsDTO;
 import xiaozhi.modules.sys.entity.SysParamsEntity;
 
 /**
- * 参数管理
+ * Quản lý thông số
  */
 public interface SysParamsService extends BaseService<SysParamsEntity> {
 
@@ -26,46 +26,46 @@ public interface SysParamsService extends BaseService<SysParamsEntity> {
     void delete(String[] ids);
 
     /**
-     * 根据参数编码，获取参数的value值
+     * Lấy giá trị của tham số dựa trên mã hóa tham số
      *
-     * @param paramCode 参数编码
-     * @param fromCache 是否从缓存中获取
+     * @param mã hóa tham số paramCode
+     * @param fromCache Có lấy được từ bộ đệm hay không
      */
     String getValue(String paramCode, Boolean fromCache);
 
     /**
-     * 根据参数编码，获取value的Object对象
+     * Theo mã hóa tham số, lấy đối tượng Object có giá trị
      *
-     * @param paramCode 参数编码
-     * @param clazz     Object对象
+     * @param mã hóa tham số paramCode
+     * @param clazz Đối tượng
      */
     <T> T getValueObject(String paramCode, Class<T> clazz);
 
     /**
-     * 根据参数编码，更新value
+     * Cập nhật giá trị theo mã hóa tham số
      *
-     * @param paramCode  参数编码
-     * @param paramValue 参数值
+     * @param mã hóa tham số paramCode
+     * @param giá trị tham số paramValue
      */
     int updateValueByCode(String paramCode, String paramValue);
 
     /**
-     * 初始化服务器密钥
+     * Khởi tạo khóa máy chủ
      */
     void initServerSecret();
 
     /**
-     * 获取系统功能菜单配置
+     * Nhận cấu hình menu chức năng hệ thống
      *
-     * @param fromCache 是否从缓存获取
-     * @return 系统功能菜单配置JSON字符串
+     * @param fromCache có lấy được từ bộ đệm không
+     * @return Cấu hình menu chức năng hệ thống Chuỗi JSON
      */
     String getSystemWebMenu(boolean fromCache);
 
     /**
-     * 更新系统功能菜单配置（自动处理功能相关的插件清理）
+     * Cập nhật cấu hình menu chức năng hệ thống (tự động xử lý việc dọn dẹp plug-in liên quan đến chức năng)
      *
-     * @param configJson 新的系统功能菜单配置JSON
+     * @param configJson Cấu hình menu chức năng hệ thống mới JSON
      */
     void updateSystemWebMenu(String configJson);
 }

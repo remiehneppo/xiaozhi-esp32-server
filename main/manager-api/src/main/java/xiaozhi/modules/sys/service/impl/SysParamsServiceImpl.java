@@ -30,7 +30,7 @@ import xiaozhi.modules.sys.redis.SysParamsRedis;
 import xiaozhi.modules.sys.service.SysParamsService;
 
 /**
- * 参数管理
+ * Quản lý thông số
  */
 @AllArgsConstructor
 @Service
@@ -96,7 +96,7 @@ public class SysParamsServiceImpl extends BaseServiceImpl<SysParamsDao, SysParam
     }
 
     /**
-     * 校验参数值类型
+     * Kiểm tra loại giá trị tham số
      */
     private void validateParamValue(SysParamsDTO dto) {
         if (dto == null) {
@@ -133,12 +133,12 @@ public class SysParamsServiceImpl extends BaseServiceImpl<SysParamsDao, SysParam
                 break;
             case "json":
                 try {
-                    // 首先检查是否以 { 开头，以 } 结尾
+                    // Trước tiên hãy kiểm tra xem nó có bắt đầu bằng { và kết thúc bằng } không
                     String trimmedValue = paramValue.trim();
                     if (!trimmedValue.startsWith("{") || !trimmedValue.endsWith("}")) {
                         throw new RenException(ErrorCode.PARAM_JSON_INVALID);
                     }
-                    // 然后尝试解析JSON
+                    // Sau đó thử phân tích JSON
                     JsonUtils.parseObject(paramValue, Object.class);
                 } catch (Exception e) {
                     throw new RenException(ErrorCode.PARAM_JSON_INVALID);
@@ -152,14 +152,14 @@ public class SysParamsServiceImpl extends BaseServiceImpl<SysParamsDao, SysParam
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void delete(String[] ids) {
-        // 删除Redis数据
+        // Xóa dữ liệu Redis
         List<String> paramCodeList = baseDao.getParamCodeList(ids);
         String[] paramCodes = paramCodeList.toArray(new String[paramCodeList.size()]);
         if (paramCodes.length > 0) {
             sysParamsRedis.delete(paramCodes);
         }
 
-        // 删除
+        // Xóa
         deleteBatchIds(Arrays.asList(ids));
     }
 
@@ -203,56 +203,56 @@ public class SysParamsServiceImpl extends BaseServiceImpl<SysParamsDao, SysParam
 
     @Override
     public void initServerSecret() {
-        // 获取服务器密钥
+        // Nhận khóa máy chủ
         String secretParam = getValue(Constant.SERVER_SECRET, false);
         if (StringUtils.isBlank(secretParam) || "null".equals(secretParam)) {
             String newSecret = UUID.randomUUID().toString();
             updateValueByCode(Constant.SERVER_SECRET, newSecret);
         }
 
-        // 初始化SM2密钥对
+        // Khởi tạo cặp khóa SM2
         initSM2KeyPair();
     }
 
     /**
-     * 初始化SM2密钥对
+     * Khởi tạo cặp khóa SM2
      */
     private void initSM2KeyPair() {
-        // 获取SM2公钥
+        // Nhận khóa công khai SM2
         String publicKey = getValue(Constant.SM2_PUBLIC_KEY, false);
-        // 获取SM2私钥
+        // Nhận khóa riêng SM2
         String privateKey = getValue(Constant.SM2_PRIVATE_KEY, false);
 
-        // 如果公钥或私钥为空，则生成新的密钥对
+        // Nếu khóa chung hoặc khóa riêng trống, hãy tạo cặp khóa mới
         if (StringUtils.isBlank(publicKey) || StringUtils.isBlank(privateKey) || 
             "null".equals(publicKey) || "null".equals(privateKey)) {
             Map<String, String> keyPair = SM2Utils.createKey();
             String newPublicKey = keyPair.get(SM2Utils.KEY_PUBLIC_KEY);
             String newPrivateKey = keyPair.get(SM2Utils.KEY_PRIVATE_KEY);
 
-            // 更新数据库中的密钥对
+            // Cập nhật cặp khóa trong cơ sở dữ liệu
             updateValueByCode(Constant.SM2_PUBLIC_KEY, newPublicKey);
             updateValueByCode(Constant.SM2_PRIVATE_KEY, newPrivateKey);
         }
     }
 
     /**
-     * 检测短信参数是否符合要求
-     * 
-     * @param paramCode  参数编码
-     * @param paramValue 参数值
-     * @return 是否通过
+     * Kiểm tra xem các thông số SMS có đáp ứng yêu cầu không
+     *
+     * @param mã hóa tham số paramCode
+     * @param giá trị tham số paramValue
+     * @return xem có vượt qua không
      */
     private boolean detectingSMSParameters(String paramCode, String paramValue) {
-        // 判断是否是开启手机注册的参数编码，如果不是参数编码，着不需要检测其他短信参数，直接返回true
+        // Xác định xem đó có phải là mã hóa tham số để kích hoạt đăng ký điện thoại di động hay không. Nếu đó không phải là mã hóa tham số thì không cần phát hiện các tham số SMS khác và trả về true trực tiếp.
         if (!Constant.SysMSMParam.SERVER_ENABLE_MOBILE_REGISTER.getValue().equals(paramCode)) {
             return true;
         }
-        // 判断是否为关闭，如果是关闭短信注册，着不需要检测其他短信参数，直接返回true
+        // Xác định xem nó có bị đóng hay không. Nếu đăng ký SMS bị đóng, không cần phải phát hiện các tham số SMS khác và trả về true trực tiếp.
         if ("false".equalsIgnoreCase(paramValue)) {
             return true;
         }
-        // 检测短信关联参数是否为空
+        // Kiểm tra xem các tham số liên quan đến SMS có trống không
         ArrayList<String> list = new ArrayList<String>();
         list.add(Constant.SysMSMParam.SERVER_SMS_MAX_SEND_COUNT.getValue());
         list.add(Constant.SysMSMParam.ALIYUN_SMS_ACCESS_KEY_ID.getValue());
@@ -266,7 +266,7 @@ public class SysParamsServiceImpl extends BaseServiceImpl<SysParamsDao, SysParam
             }
         });
         if (!str.isEmpty()) {
-            String promptStr = "%s这些参数不可以为空";
+            String promptStr = "%sCác tham số này không được để trống";
             String substring = str.substring(1, str.length());
             throw new RenException(promptStr.formatted(substring));
         }
@@ -280,7 +280,7 @@ public class SysParamsServiceImpl extends BaseServiceImpl<SysParamsDao, SysParam
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void updateSystemWebMenu(String configJson) {
-        // 获取当前配置
+        // Nhận cấu hình hiện tại
         String currentConfig = getSystemWebMenu(false);
         Map<String, Object> currentMap = null;
         Map<String, Object> newMap = null;
@@ -296,7 +296,7 @@ public class SysParamsServiceImpl extends BaseServiceImpl<SysParamsDao, SysParam
             throw new RenException(ErrorCode.PARAM_JSON_INVALID);
         }
 
-        // 检查addressBook功能是否被关闭
+        // Kiểm tra xem chức năng sổ địa chỉ có bị tắt không
         if (currentMap != null && newMap != null) {
             Map<String, Object> currentFeatures = (Map<String, Object>) currentMap.get("features");
             Map<String, Object> newFeatures = (Map<String, Object>) newMap.get("features");
@@ -320,14 +320,14 @@ public class SysParamsServiceImpl extends BaseServiceImpl<SysParamsDao, SysParam
                         ? (Boolean) newAddressBook.get("enabled") : false;
                 }
 
-                // 如果之前是启用状态，现在被禁用，删除所有call_device插件
+                // Nếu tính năng này đã được bật trước đó và hiện đã bị tắt, hãy xóa tất cả plugin call_device.
                 if (Boolean.TRUE.equals(currentEnabled) && !Boolean.TRUE.equals(newEnabled)) {
                     agentPluginMappingService.deleteByPluginId("SYSTEM_PLUGIN_CALL_DEVICE");
                 }
             }
         }
 
-        // 更新配置
+        // Cập nhật cấu hình
         updateValueByCode(Constant.SYSTEM_WEB_MENU, configJson);
     }
 }

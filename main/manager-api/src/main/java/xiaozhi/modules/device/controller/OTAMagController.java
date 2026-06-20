@@ -50,7 +50,7 @@ import xiaozhi.modules.security.user.SecurityUser;
 import xiaozhi.modules.sys.enums.SuperAdminEnum;
 import xiaozhi.modules.sys.service.SysParamsService;
 
-@Tag(name = "固件升级管理", description = "OTA 相关接口")
+@Tag(name = "Quản lý nâng cấp chương trình cơ sở", description = "OTA Giao diện liên quan")
 @Slf4j
 @RestController
 @RequiredArgsConstructor
@@ -62,10 +62,10 @@ public class OTAMagController {
     private final SysParamsService sysParamsService;
 
     @GetMapping
-    @Operation(summary = "分页查询 OTA 固件信息")
+    @Operation(summary = "Truy vấn trang OTA Thông tin phần mềm")
     @Parameters({
-            @Parameter(name = Constant.PAGE, description = "当前页码，从1开始", required = true),
-            @Parameter(name = Constant.LIMIT, description = "每页显示记录数", required = true)
+            @Parameter(name = Constant.PAGE, description = "Số trang hiện tại，từ1bắt đầu", required = true),
+            @Parameter(name = Constant.LIMIT, description = "Hiển thị số bản ghi trên mỗi trang", required = true)
     })
     @RequiresPermissions("sys:role:superAdmin")
     public Result<PageData<OtaEntity>> page(@Parameter(hidden = true) @RequestParam Map<String, Object> params) {
@@ -75,7 +75,7 @@ public class OTAMagController {
     }
 
     @GetMapping("{id}")
-    @Operation(summary = "信息 OTA 固件信息")
+    @Operation(summary = "thông tin OTA Thông tin phần mềm")
     @RequiresPermissions("sys:role:superAdmin")
     public Result<OtaEntity> get(@PathVariable("id") String id) {
         OtaEntity data = otaService.selectById(id);
@@ -83,20 +83,20 @@ public class OTAMagController {
     }
 
     @PostMapping
-    @Operation(summary = "保存 OTA 固件信息")
+    @Operation(summary = "lưu lại OTA Thông tin phần mềm")
     @RequiresPermissions("sys:role:superAdmin")
     public Result<Void> save(@RequestBody OtaEntity entity) {
         if (entity == null) {
-            return new Result<Void>().error("固件信息不能为空");
+            return new Result<Void>().error("Thông tin phần mềm không được để trống");
         }
         if (StringUtils.isBlank(entity.getFirmwareName())) {
-            return new Result<Void>().error("固件名称不能为空");
+            return new Result<Void>().error("Tên chương trình cơ sở không được để trống");
         }
         if (StringUtils.isBlank(entity.getType())) {
-            return new Result<Void>().error("固件类型不能为空");
+            return new Result<Void>().error("Loại chương trình cơ sở không được để trống");
         }
         if (StringUtils.isBlank(entity.getVersion())) {
-            return new Result<Void>().error("版本号不能为空");
+            return new Result<Void>().error("Số phiên bản không được để trống");
         }
         try {
             otaService.save(entity);
@@ -107,22 +107,22 @@ public class OTAMagController {
     }
 
     @DeleteMapping("/{id}")
-    @Operation(summary = "OTA 删除")
+    @Operation(summary = "OTA Xóa")
     @RequiresPermissions("sys:role:superAdmin")
     public Result<Void> delete(@PathVariable("id") String[] ids) {
         if (ids == null || ids.length == 0) {
-            return new Result<Void>().error("删除的固件ID不能为空");
+            return new Result<Void>().error("Đã xóa chương trình cơ sởIDkhông thể trống");
         }
         otaService.delete(ids);
         return new Result<Void>();
     }
 
     @PutMapping("/{id}")
-    @Operation(summary = "修改 OTA 固件信息")
+    @Operation(summary = "sửa đổi OTA Thông tin phần mềm")
     @RequiresPermissions("sys:role:superAdmin")
     public Result<?> update(@PathVariable("id") String id, @RequestBody OtaEntity entity) {
         if (entity == null) {
-            return new Result<>().error("固件信息不能为空");
+            return new Result<>().error("Thông tin phần mềm không được để trống");
         }
         entity.setId(id);
         try {
@@ -134,7 +134,7 @@ public class OTAMagController {
     }
 
     @GetMapping("/getDownloadUrl/{id}")
-    @Operation(summary = "获取 OTA 固件下载链接")
+    @Operation(summary = "nhận được OTA Liên kết tải xuống chương trình cơ sở")
     @RequiresPermissions("sys:role:superAdmin")
     public Result<String> getDownloadUrl(@PathVariable("id") String id) {
         String uuid = UUID.randomUUID().toString();
@@ -143,18 +143,18 @@ public class OTAMagController {
     }
 
     @GetMapping("/download/{uuid}")
-    @Operation(summary = "下载固件文件")
+    @Operation(summary = "Tải xuống tập tin phần sụn")
     public ResponseEntity<byte[]> downloadFirmware(@PathVariable("uuid") String uuid) {
         String id = (String) redisUtils.get(RedisKeys.getOtaIdKey(uuid));
         if (StringUtils.isBlank(id)) {
             return ResponseEntity.notFound().build();
         }
 
-        // 检查下载次数
+        // Kiểm tra số lượt tải xuống
         String downloadCountKey = RedisKeys.getOtaDownloadCountKey(uuid);
         Integer downloadCount = (Integer) Optional.ofNullable(redisUtils.get(downloadCountKey)).orElse(0);
 
-        // 如果下载次数超过3次，返回404
+        // Nếu số lượt tải vượt quá 3 lần thì trả về 404
         if (downloadCount >= 3) {
             redisUtils.delete(List.of(downloadCountKey, RedisKeys.getOtaIdKey(uuid)));
             logger.warn("Download limit exceeded for UUID: {}", uuid);
@@ -164,7 +164,7 @@ public class OTAMagController {
         redisUtils.set(downloadCountKey, downloadCount + 1);
 
         try {
-            // 获取固件信息
+            // Nhận thông tin phần mềm
             OtaEntity otaEntity = null;
             if (id.indexOf("file:") == 0) {
                 id = id.substring(5);
@@ -181,16 +181,16 @@ public class OTAMagController {
                 return ResponseEntity.notFound().build();
             }
 
-            // 获取文件路径 - 确保路径是绝对路径或正确的相对路径
+            // Nhận đường dẫn tệp - đảm bảo đường dẫn là tuyệt đối hoặc đường dẫn tương đối chính xác
             String firmwarePath = otaEntity.getFirmwarePath();
             String originalFilename = otaEntity.getType() + "_" + otaEntity.getVersion();
             Path path;
 
-            // 检查是否是绝对路径
+            // Kiểm tra xem đó có phải là đường dẫn tuyệt đối không
             if (Paths.get(firmwarePath).isAbsolute()) {
                 path = Paths.get(firmwarePath);
             } else {
-                // 如果是相对路径，则从当前工作目录解析
+                // Nếu đó là đường dẫn tương đối thì nó sẽ được giải quyết từ thư mục làm việc hiện tại.
                 path = Paths.get(System.getProperty("user.dir"), firmwarePath);
             }
 
@@ -198,7 +198,7 @@ public class OTAMagController {
                     id, firmwarePath, path.toAbsolutePath());
 
             if (!Files.exists(path) || !Files.isRegularFile(path)) {
-                // 尝试直接从firmware目录下查找文件名
+                // Cố gắng tìm tên tệp trực tiếp từ thư mục phần sụn
                 String fileName = new File(firmwarePath).getName();
                 Path altPath = Paths.get(System.getProperty("user.dir"), "firmware", fileName);
 
@@ -213,17 +213,17 @@ public class OTAMagController {
                 }
             }
 
-            // 读取文件内容
+            // Đọc nội dung tập tin
             byte[] fileContent = Files.readAllBytes(path);
 
-            // 设置响应头
+            // Đặt tiêu đề phản hồi
 
             if (firmwarePath.contains(".")) {
                 String extension = firmwarePath.substring(firmwarePath.lastIndexOf("."));
                 originalFilename += extension;
             }
 
-            // 清理文件名，移除不安全字符
+            // Làm sạch tên file, loại bỏ các ký tự không an toàn
             String safeFilename = originalFilename.replaceAll("[^a-zA-Z0-9._-]", "_");
 
             logger.info("Providing download for firmware ID: {}, filename: {}, size: {} bytes",
@@ -243,58 +243,58 @@ public class OTAMagController {
     }
 
     @PostMapping("/upload")
-    @Operation(summary = "上传固件文件")
+    @Operation(summary = "Tải lên tập tin chương trình cơ sở")
     @RequiresPermissions("sys:role:superAdmin")
     public Result<String> uploadFirmware(@RequestParam("file") MultipartFile file) {
         if (file.isEmpty()) {
-            return new Result<String>().error("上传文件不能为空");
+            return new Result<String>().error("Tệp tải lên không được để trống");
         }
 
-        // 检查文件扩展名
+        // Kiểm tra phần mở rộng tập tin
         String originalFilename = file.getOriginalFilename();
         if (originalFilename == null) {
-            return new Result<String>().error("文件名不能为空");
+            return new Result<String>().error("Tên tệp không được để trống");
         }
 
         String extension = originalFilename.substring(originalFilename.lastIndexOf(".")).toLowerCase();
         if (!extension.equals(".bin") && !extension.equals(".apk")) {
-            return new Result<String>().error("只允许上传.bin和.apk格式的文件");
+            return new Result<String>().error("Chỉ cho phép tải lên.binvà.apktập tin định dạng");
         }
 
         try {
-            // 计算文件的MD5值
+            // Tính giá trị MD5 của tệp
             String md5 = calculateMD5(file);
 
-            // 设置存储路径
+            // Đặt đường dẫn lưu trữ
             String uploadDir = "uploadfile";
             Path uploadPath = Paths.get(uploadDir);
 
-            // 如果目录不存在，创建目录
+            // Nếu thư mục không tồn tại, hãy tạo thư mục
             if (!Files.exists(uploadPath)) {
                 Files.createDirectories(uploadPath);
             }
 
-            // 使用MD5作为文件名，固定使用.bin扩展名
+            // Sử dụng MD5 làm tên tệp và luôn sử dụng phần mở rộng .bin.
             String uniqueFileName = md5 + extension;
             Path filePath = uploadPath.resolve(uniqueFileName);
 
-            // 检查文件是否已存在
+            // Kiểm tra xem tập tin đã tồn tại chưa
             if (Files.exists(filePath)) {
                 return new Result<String>().ok(filePath.toString());
             }
 
-            // 保存文件
+            // lưu tập tin
             Files.copy(file.getInputStream(), filePath);
 
-            // 返回文件路径
+            // Đường dẫn tập tin trả về
             return new Result<String>().ok(filePath.toString());
         } catch (IOException | NoSuchAlgorithmException e) {
-            return new Result<String>().error("文件上传失败：" + e.getMessage());
+            return new Result<String>().error("Tải tệp lên không thành công：" + e.getMessage());
         }
     }
 
     @PostMapping("/uploadAssetsBin")
-    @Operation(summary = "上传资源固件文件")
+    @Operation(summary = "Tải lên tập tin chương trình cơ sở tài nguyên")
     @RequiresPermissions("sys:role:normal")
     public Result<String> uploadAssetsBin(@RequestParam("file") MultipartFile file) {
         String otaUrl = sysParamsService.getValue(Constant.SERVER_OTA, true);
@@ -302,24 +302,24 @@ public class OTAMagController {
             return new Result<String>().error(ErrorCode.OTA_URL_EMPTY);
         }
         logger.info("username:{},uploadAssetsBin size: {}", SecurityUser.getUser().getUsername(), file.getSize());
-        // 验证文件大小 (资源固件最大20MB)
+        // Xác minh kích thước tệp (phần sụn tài nguyên tối đa 20 MB)
         if (file.getSize() > 20 * 1024 * 1024) {
             return new Result<String>().error(ErrorCode.VOICE_CLONE_AUDIO_TOO_LARGE);
         }
-        // 普通用户只能每天上传50次
+        // Người dùng thông thường chỉ có thể tải lên 50 lần mỗi ngày
         if (SecurityUser.getUser().getSuperAdmin() == SuperAdminEnum.NO.value()) {
             String uploadCountKey = RedisKeys.getOtaUploadCountKey(SecurityUser.getUser().getId());
             Integer uploadCount = (Integer) Optional.ofNullable(redisUtils.get(uploadCountKey)).orElse(0);
             if (uploadCount >= 50) {
                 return new Result<String>().error(ErrorCode.OTA_UPLOAD_COUNT_EXCEED);
             }
-            // 增加上传次数
+            // Tăng số lượng tải lên
             redisUtils.increment(RedisKeys.getOtaUploadCountKey(SecurityUser.getUser().getId()),
                     RedisUtils.DEFAULT_EXPIRE);
         }
         Result<String> result = uploadFirmware(file);
 
-        // 生成资源文件路径
+        // Tạo đường dẫn tệp tài nguyên
         if (StringUtils.isNotBlank(result.getData())) {
             String uuid = UUID.randomUUID().toString();
             redisUtils.set(RedisKeys.getOtaIdKey(uuid), "file:" + result.getData());

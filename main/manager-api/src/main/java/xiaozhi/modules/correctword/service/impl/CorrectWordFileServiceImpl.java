@@ -43,12 +43,12 @@ public class CorrectWordFileServiceImpl extends BaseServiceImpl<CorrectWordFileD
     @Override
     @Transactional(rollbackFor = Exception.class)
     public CorrectWordFileVO createFile(CorrectWordFileCreateDTO dto) {
-        // 校验文件大小不能超过1MB
+        // Kích thước của tệp xác minh không thể vượt quá 1MB
         if (dto.getFileSize() != null && dto.getFileSize() > 1024 * 1024) {
             throw new RenException(ErrorCode.FILE_SIZE_OVER_LIMIT);
         }
 
-        // 校验文件名是否重复
+        // Xác minh xem tên tệp có trùng lặp không
         Long userId = SecurityUser.getUserId();
         LambdaQueryWrapper<CorrectWordFileEntity> nameWrapper = new LambdaQueryWrapper<>();
         nameWrapper.eq(CorrectWordFileEntity::getCreator, userId)
@@ -59,7 +59,7 @@ public class CorrectWordFileServiceImpl extends BaseServiceImpl<CorrectWordFileD
 
         List<CorrectWordItemEntity> items = parseContent(dto.getContent());
 
-        // 保存文件记录
+        // Lưu hồ sơ tập tin
         CorrectWordFileEntity fileEntity = new CorrectWordFileEntity();
         fileEntity.setFileName(dto.getFileName());
         fileEntity.setWordCount(items.size());
@@ -68,7 +68,7 @@ public class CorrectWordFileServiceImpl extends BaseServiceImpl<CorrectWordFileD
         fileEntity.setCreatedAt(new Date());
         correctWordFileDao.insert(fileEntity);
 
-        // 设置fileId并批量保存词条
+        // Đặt fileId và lưu các mục theo lô
         String fileId = fileEntity.getId();
         for (CorrectWordItemEntity item : items) {
             item.setFileId(fileId);
@@ -88,22 +88,22 @@ public class CorrectWordFileServiceImpl extends BaseServiceImpl<CorrectWordFileD
             return;
         }
 
-        // 校验文件名是否重复（排除自身）
+        // Xác minh xem tên tệp có bị trùng lặp hay không (không bao gồm chính nó)
         Long userId = SecurityUser.getUserId();
         LambdaQueryWrapper<CorrectWordFileEntity> nameWrapper = new LambdaQueryWrapper<>();
         nameWrapper.eq(CorrectWordFileEntity::getCreator, userId)
                 .eq(CorrectWordFileEntity::getFileName, dto.getFileName())
                 .ne(CorrectWordFileEntity::getId, fileId);
         if (correctWordFileDao.selectCount(nameWrapper) > 0) {
-            throw new RenException("文件名已存在：" + dto.getFileName());
+            throw new RenException("tên tập tin đã tồn tại：" + dto.getFileName());
         }
 
-        // 先删除旧词条
+        // Xóa các mục cũ trước
         LambdaQueryWrapper<CorrectWordItemEntity> deleteWrapper = new LambdaQueryWrapper<>();
         deleteWrapper.eq(CorrectWordItemEntity::getFileId, fileId);
         correctWordItemDao.delete(deleteWrapper);
 
-        // 解析新词条并批量保存
+        // Phân tích các thuật ngữ mới và lưu chúng theo đợt
         List<CorrectWordItemEntity> items = parseContent(dto.getContent());
         if (!items.isEmpty()) {
             for (CorrectWordItemEntity item : items) {
@@ -112,7 +112,7 @@ public class CorrectWordFileServiceImpl extends BaseServiceImpl<CorrectWordFileD
             correctWordItemDao.batchInsert(items);
         }
 
-        // 更新文件记录
+        // Cập nhật bản ghi tập tin
         fileEntity.setFileName(dto.getFileName());
         fileEntity.setWordCount(items.size());
         fileEntity.setContent(String.join("\n", dto.getContent()));
@@ -155,13 +155,13 @@ public class CorrectWordFileServiceImpl extends BaseServiceImpl<CorrectWordFileD
         if (fileId == null || fileId.trim().isEmpty()) {
             return;
         }
-        // 先删除关联表记录
+        // Xóa các bản ghi bảng liên quan trước tiên
         agentCorrectWordMappingDao.deleteByFileId(fileId);
-        // 删除词条
+        // Xóa mục nhập
         LambdaQueryWrapper<CorrectWordItemEntity> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(CorrectWordItemEntity::getFileId, fileId);
         correctWordItemDao.delete(wrapper);
-        // 删除文件
+        // Xóa tập tin
         correctWordFileDao.deleteById(fileId);
     }
 
@@ -173,7 +173,7 @@ public class CorrectWordFileServiceImpl extends BaseServiceImpl<CorrectWordFileD
 
     @Override
     public List<CorrectWordSimpleVO> getAllItemsByAgentId(String agentId) {
-        // 通过关联表获取文件ID列表
+        // Nhận danh sách ID tệp thông qua bảng liên kết
         List<AgentCorrectWordMappingEntity> mappings = agentCorrectWordMappingDao.selectByAgentId(agentId);
         if (mappings == null || mappings.isEmpty()) {
             return new ArrayList<>();
@@ -182,7 +182,7 @@ public class CorrectWordFileServiceImpl extends BaseServiceImpl<CorrectWordFileD
                 .map(AgentCorrectWordMappingEntity::getFileId)
                 .collect(Collectors.toList());
 
-        // 根据文件ID列表查询词条
+        // Thuật ngữ truy vấn dựa trên danh sách ID tệp
         LambdaQueryWrapper<CorrectWordItemEntity> wrapper = new LambdaQueryWrapper<>();
         wrapper.in(CorrectWordItemEntity::getFileId, fileIds);
         List<CorrectWordItemEntity> entities = correctWordItemDao.selectList(wrapper);
@@ -203,14 +203,14 @@ public class CorrectWordFileServiceImpl extends BaseServiceImpl<CorrectWordFileD
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void saveAgentCorrectWords(String agentId, List<String> fileIds) {
-        // 先删除旧的关联记录
+        // Xóa các bản ghi liên quan cũ trước tiên
         agentCorrectWordMappingDao.deleteByAgentId(agentId);
 
         if (fileIds == null || fileIds.isEmpty()) {
             return;
         }
 
-        // 批量插入新的关联记录
+        // Chèn các bản ghi liên quan mới theo lô
         Long userId = SecurityUser.getUserId();
         Date now = new Date();
         List<AgentCorrectWordMappingEntity> mappings = new ArrayList<>();
@@ -242,7 +242,7 @@ public class CorrectWordFileServiceImpl extends BaseServiceImpl<CorrectWordFileD
     }
 
     /**
-     * 解析替换词内容，每条格式：原词|替换词
+     * Phân tích nội dung từ thay thế, từng định dạng: từ gốc | từ thay thế
      */
     private List<CorrectWordItemEntity> parseContent(List<String> lines) {
         List<CorrectWordItemEntity> items = new ArrayList<>();

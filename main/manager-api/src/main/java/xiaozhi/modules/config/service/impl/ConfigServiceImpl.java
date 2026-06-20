@@ -67,24 +67,24 @@ public class ConfigServiceImpl implements ConfigService {
     @Override
     public Object getConfig(Boolean isCache) {
         if (isCache) {
-            // 先从Redis获取配置
+            // Đầu tiên lấy cấu hình từ Redis
             Object cachedConfig = redisUtils.get(RedisKeys.getServerConfigKey());
             if (cachedConfig != null) {
                 return cachedConfig;
             }
         }
 
-        // 构建配置信息
+        // Xây dựng thông tin cấu hình
         Map<String, Object> result = new HashMap<>();
         buildConfig(result);
 
-        // 查询默认智能体
+        // Truy vấn tác nhân mặc định
         AgentTemplateEntity agent = agentTemplateService.getDefaultTemplate();
         if (agent == null) {
             throw new RenException(ErrorCode.AGENT_TEMPLATE_NOT_FOUND);
         }
 
-        // 构建模块配置
+        // Cấu hình mô-đun xây dựng
         buildModuleConfig(
                 null,
                 null,
@@ -108,7 +108,7 @@ public class ConfigServiceImpl implements ConfigService {
                 result,
                 isCache);
 
-        // 将配置存入Redis
+        // Lưu cấu hình vào Redis
         redisUtils.set(RedisKeys.getServerConfigKey(), result);
 
         return result;
@@ -116,19 +116,19 @@ public class ConfigServiceImpl implements ConfigService {
 
     @Override
     public Map<String, Object> getAgentModels(String macAddress, Map<String, String> selectedModule) {
-        // 检查是否为管理控制台请求
+        // Kiểm tra xem yêu cầu có dành cho bảng điều khiển quản lý không
         String redisKey = RedisKeys.getTmpRegisterMacKey(macAddress);
         Object isAdminRequest = redisUtils.get(redisKey);
 
         if (isAdminRequest != null && "true".equals(isAdminRequest)) {
-            // 管理控制台请求，返回getConfig的结果
-            redisUtils.delete(redisKey); // 使用后清理
+            // Yêu cầu bảng điều khiển quản lý, trả về kết quả của getConfig
+            redisUtils.delete(redisKey); // Dọn dẹp sau khi sử dụng
             return (Map<String, Object>) getConfig(true);
         }
-        // 根据MAC地址查找设备
+        // Tìm thiết bị dựa trên địa chỉ MAC
         DeviceEntity device = deviceService.getDeviceByMacAddress(macAddress);
         if (device == null) {
-            // 如果设备，去redis里看看有没有需要连接的设备
+            // Nếu có thiết bị thì vào redis xem có thiết bị nào cần kết nối không.
             String cachedCode = deviceService.geCodeByDeviceId(macAddress);
             if (StringUtils.isNotBlank(cachedCode)) {
                 throw new RenException(ErrorCode.OTA_DEVICE_NEED_BIND, cachedCode);
@@ -136,12 +136,12 @@ public class ConfigServiceImpl implements ConfigService {
             throw new RenException(ErrorCode.OTA_DEVICE_NOT_FOUND);
         }
 
-        // 获取智能体信息
+        // Nhận thông tin đại lý
         AgentEntity agent = agentService.getAgentById(device.getAgentId());
         if (agent == null) {
             throw new RenException(ErrorCode.AGENT_NOT_FOUND);
         }
-        // 获取音色信息
+        // Nhận thông tin âm sắc
         String voice = null;
         String referenceAudio = null;
         String referenceText = null;
@@ -151,7 +151,7 @@ public class ConfigServiceImpl implements ConfigService {
             voice = timbre.getTtsVoice();
             referenceAudio = timbre.getReferenceAudio();
             referenceText = timbre.getReferenceText();
-            // 优先使用用户选择的语言，如果没有则使用音色支持的第一个语言
+            // Ngôn ngữ được người dùng chọn sẽ được sử dụng đầu tiên, nếu không, ngôn ngữ đầu tiên được âm thanh hỗ trợ sẽ được sử dụng.
             if (StringUtils.isNotBlank(agent.getTtsLanguage())) {
                 language = agent.getTtsLanguage();
             } else if (StringUtils.isNotBlank(timbre.getLanguages())) {
@@ -161,17 +161,17 @@ public class ConfigServiceImpl implements ConfigService {
             VoiceCloneEntity voice_print = cloneVoiceService.selectById(agent.getTtsVoiceId());
             if (voice_print != null) {
                 voice = voice_print.getVoiceId();
-                // 优先使用用户选择的语言，如果没有则使用默认值
-                language = StringUtils.isNotBlank(agent.getTtsLanguage()) ? agent.getTtsLanguage() : "普通话";
+                // Ưu tiên ngôn ngữ do người dùng chọn hoặc sử dụng ngôn ngữ mặc định nếu không có
+                language = StringUtils.isNotBlank(agent.getTtsLanguage()) ? agent.getTtsLanguage() : "tiếng quan thoại";
             }
         }
-        // 构建返回数据
+        // Xây dựng dữ liệu trả về
         Map<String, Object> result = new HashMap<>();
-        // 获取单台设备每天最多输出字数
+        // Nhận số lượng từ đầu ra tối đa của một thiết bị mỗi ngày
         String deviceMaxOutputSize = sysParamsService.getValue("device_max_output_size", true);
         result.put("device_max_output_size", deviceMaxOutputSize);
 
-        // 获取聊天记录配置
+        // Nhận cấu hình bản ghi trò chuyện
         Integer chatHistoryConf = agent.getChatHistoryConf();
         if (agent.getMemModelId() != null && agent.getMemModelId().equals(Constant.MEMORY_NO_MEM)) {
             chatHistoryConf = Constant.ChatHistoryConfEnum.IGNORE.getCode();
@@ -181,7 +181,7 @@ public class ConfigServiceImpl implements ConfigService {
             chatHistoryConf = Constant.ChatHistoryConfEnum.RECORD_TEXT_AUDIO.getCode();
         }
         result.put("chat_history_conf", chatHistoryConf);
-        // 如果客户端已实例化模型，则不返回
+        // Không trả về nếu khách hàng đã khởi tạo mô hình
         String alreadySelectedVadModelId = selectedModule.get("VAD");
         if (alreadySelectedVadModelId != null && alreadySelectedVadModelId.equals(agent.getVadModelId())) {
             agent.setVadModelId(null);
@@ -191,7 +191,7 @@ public class ConfigServiceImpl implements ConfigService {
             agent.setAsrModelId(null);
         }
 
-        // 添加函数调用参数信息
+        // Thêm thông tin tham số lệnh gọi hàm
         if (!Objects.equals(agent.getIntentModelId(), "Intent_nointent")) {
             String agentId = agent.getId();
             List<AgentPluginMapping> pluginMappings = agentPluginMappingService.agentPluginParamsByAgentId(agentId);
@@ -203,24 +203,24 @@ public class ConfigServiceImpl implements ConfigService {
                 result.put("plugins", pluginParams);
             }
         }
-        // 获取mcp接入点地址
+        // Nhận địa chỉ điểm truy cập mcp
         String mcpEndpoint = agentMcpAccessPointService.getAgentMcpAccessAddress(agent.getId());
         if (StringUtils.isNotBlank(mcpEndpoint) && mcpEndpoint.startsWith("ws")) {
             mcpEndpoint = mcpEndpoint.replace("/mcp/", "/call/");
             result.put("mcp_endpoint", mcpEndpoint);
         }
 
-        // 获取上下文源配置
+        // Nhận cấu hình nguồn ngữ cảnh
         AgentContextProviderEntity contextProviderEntity = agentContextProviderService.getByAgentId(agent.getId());
         if (contextProviderEntity != null && contextProviderEntity.getContextProviders() != null
                 && !contextProviderEntity.getContextProviders().isEmpty()) {
             result.put("context_providers", contextProviderEntity.getContextProviders());
         }
 
-        // 获取声纹信息
+        // Nhận thông tin giọng nói
         buildVoiceprintConfig(agent.getId(), result);
 
-        // 构建模块配置
+        // Cấu hình mô-đun xây dựng
         buildModuleConfig(
                 agent.getAgentName(),
                 agent.getSystemPrompt(),
@@ -260,21 +260,21 @@ public class ConfigServiceImpl implements ConfigService {
     }
 
     /**
-     * 构建配置信息
-     * 
-     * @param config 系统参数列表
-     * @return 配置信息
+     * Xây dựng thông tin cấu hình
+     *
+     * Danh sách tham số hệ thống cấu hình @param
+     * @return thông tin cấu hình
      */
     private Object buildConfig(Map<String, Object> config) {
 
-        // 查询所有系统参数
+        // Truy vấn tất cả các tham số hệ thống
         List<SysParamsDTO> paramsList = sysParamsService.list(new HashMap<>());
 
         for (SysParamsDTO param : paramsList) {
             String[] keys = param.getParamCode().split("\\.");
             Map<String, Object> current = config;
 
-            // 遍历除最后一个key之外的所有key
+            // Duyệt tất cả các phím ngoại trừ phím cuối cùng
             for (int i = 0; i < keys.length - 1; i++) {
                 String key = keys[i];
                 if (!current.containsKey(key)) {
@@ -283,16 +283,16 @@ public class ConfigServiceImpl implements ConfigService {
                 current = (Map<String, Object>) current.get(key);
             }
 
-            // 处理最后一个key
+            // Xử lý khóa cuối cùng
             String lastKey = keys[keys.length - 1];
             String value = param.getParamValue();
 
-            // 根据valueType转换值
+            // Chuyển đổi giá trị theo valueType
             switch (param.getValueType().toLowerCase()) {
                 case "number":
                     try {
                         double doubleValue = Double.parseDouble(value);
-                        // 如果数值是整数形式，则转换为Integer
+                        // Nếu giá trị ở dạng số nguyên, hãy chuyển đổi thành Số nguyên
                         if (doubleValue == (int) doubleValue) {
                             current.put(lastKey, (int) doubleValue);
                         } else {
@@ -306,7 +306,7 @@ public class ConfigServiceImpl implements ConfigService {
                     current.put(lastKey, Boolean.parseBoolean(value));
                     break;
                 case "array":
-                    // 将分号分隔的字符串转换为数字数组
+                    // Chuyển đổi chuỗi phân cách bằng dấu chấm phẩy thành mảng số
                     List<String> list = new ArrayList<>();
                     for (String num : value.split(";")) {
                         if (StringUtils.isNotBlank(num)) {
@@ -331,26 +331,26 @@ public class ConfigServiceImpl implements ConfigService {
     }
 
     /**
-     * 构建声纹配置信息
-     * 
-     * @param agentId 智能体ID
-     * @param result  结果Map
+     * Xây dựng thông tin cấu hình voiceprint
+     *
+     * @param ID đại lý ID đại lý
+     * @param kết quả resultMap
      */
     private void buildVoiceprintConfig(String agentId, Map<String, Object> result) {
         try {
-            // 获取声纹接口地址
+            // Lấy địa chỉ giao diện voiceprint
             String voiceprintUrl = sysParamsService.getValue(Constant.SERVER_VOICE_PRINT, true);
             if (StringUtils.isBlank(voiceprintUrl) || "null".equals(voiceprintUrl)) {
                 return;
             }
 
-            // 获取智能体关联的声纹信息（不需要用户权限验证）
+            // Lấy thông tin giọng nói được liên kết với tác nhân (không cần xác minh quyền của người dùng)
             List<AgentVoicePrintVO> voiceprints = getVoiceprintsByAgentId(agentId);
             if (voiceprints == null || voiceprints.isEmpty()) {
                 return;
             }
 
-            // 构建speakers列表
+            // Xây dựng danh sách diễn giả
             List<String> speakers = new ArrayList<>();
             for (AgentVoicePrintVO voiceprint : voiceprints) {
                 String speakerStr = String.format("%s,%s,%s",
@@ -360,19 +360,19 @@ public class ConfigServiceImpl implements ConfigService {
                 speakers.add(speakerStr);
             }
 
-            // 构建声纹配置
+            // Xây dựng cấu hình giọng nói
             Map<String, Object> voiceprintConfig = new HashMap<>();
             voiceprintConfig.put("url", voiceprintUrl);
             voiceprintConfig.put("speakers", speakers);
 
-            // 获取声纹识别相似度阈值，默认0.4
+            // Lấy ngưỡng tương tự nhận dạng giọng nói, mặc định là 0,4
             String thresholdStr = sysParamsService.getValue("server.voiceprint_similarity_threshold", true);
             if (StringUtils.isNotBlank(thresholdStr) && !"null".equals(thresholdStr)) {
                 try {
                     double threshold = Double.parseDouble(thresholdStr);
                     voiceprintConfig.put("similarity_threshold", threshold);
                 } catch (NumberFormatException e) {
-                    // 如果解析失败，使用默认值0.4
+                    // Nếu phân tích cú pháp không thành công, hãy sử dụng giá trị mặc định là 0,4
                     voiceprintConfig.put("similarity_threshold", 0.4);
                 }
             } else {
@@ -381,16 +381,16 @@ public class ConfigServiceImpl implements ConfigService {
 
             result.put("voiceprint", voiceprintConfig);
         } catch (Exception e) {
-            // 声纹配置获取失败时不影响其他功能
-            System.err.println("获取声纹配置失败: " + e.getMessage());
+            // Việc không lấy được cấu hình giọng nói không ảnh hưởng đến các chức năng khác
+            System.err.println("Không lấy được cấu hình giọng nói: " + e.getMessage());
         }
     }
 
     /**
-     * 获取智能体关联的声纹信息
-     * 
-     * @param agentId 智能体ID
-     * @return 声纹信息列表
+     * Lấy thông tin giọng nói liên quan đến đại lý
+     *
+     * @param ID đại lý ID đại lý
+     * @return Danh sách thông tin Voiceprint
      */
     private List<AgentVoicePrintVO> getVoiceprintsByAgentId(String agentId) {
         LambdaQueryWrapper<AgentVoicePrintEntity> queryWrapper = new LambdaQueryWrapper<>();
@@ -401,19 +401,19 @@ public class ConfigServiceImpl implements ConfigService {
     }
 
     /**
-     * 构建模块配置
-     * 
-     * @param prompt         提示词
-     * @param voice          音色
-     * @param referenceAudio 参考音频路径
-     * @param referenceText  参考文本
-     * @param vadModelId     VAD模型ID
-     * @param asrModelId     ASR模型ID
-     * @param llmModelId     LLM模型ID
-     * @param ttsModelId     TTS模型ID
-     * @param memModelId     记忆模型ID
-     * @param intentModelId  意图模型ID
-     * @param result         结果Map
+     * Cấu hình mô-đun xây dựng
+     *
+     * @param từ nhắc nhở
+     * Âm sắc giọng nói @param
+     * @param referenceAudio đường dẫn âm thanh tham chiếu
+     * @param referenceText văn bản tham chiếu
+     * @param vadModelId ID mô hình VAD
+     * @param asrModelId ID mô hình ASR
+     * @param llmModelId ID mô hình LLM
+     * @param ttsModelId ID mô hình TTS
+     * @param memModelId ID mô hình bộ nhớ
+     * @param IntModelId ID mô hình ý định
+     * @param kết quả resultMap
      */
     private void buildModuleConfig(
             String assistantName,
@@ -449,7 +449,7 @@ public class ConfigServiceImpl implements ConfigService {
             if (modelIds[i] == null) {
                 continue;
             }
-            // 关键：第三个参数传false，确保获取原始密钥
+            // Khóa: Truyền sai vào tham số thứ ba để đảm bảo lấy được khóa gốc
             ModelConfigEntity model = modelConfigService.getModelByIdFromCache(modelIds[i]);
             if (model == null) {
                 continue;
@@ -457,7 +457,7 @@ public class ConfigServiceImpl implements ConfigService {
             Map<String, Object> typeConfig = new HashMap<>();
             if (model.getConfigJson() != null) {
                 typeConfig.put(model.getId(), model.getConfigJson());
-                // 如果是TTS类型，添加private_voice属性
+                // Nếu là loại TTS thì thêm thuộc tính Private_voice
                 if ("TTS".equals(modelTypes[i])) {
                     if (voice != null)
                         ((Map<String, Object>) model.getConfigJson()).put("private_voice", voice);
@@ -474,16 +474,16 @@ public class ConfigServiceImpl implements ConfigService {
                     if (ttsPitch != null)
                         ((Map<String, Object>) model.getConfigJson()).put("ttsPitch", ttsPitch);
 
-                    // 火山引擎声音克隆需要替换resource_id
+                    // Bản sao âm thanh động cơ núi lửa cần thay thế Resource_id
                     Map<String, Object> map = (Map<String, Object>) model.getConfigJson();
                     if (Constant.VOICE_CLONE_HUOSHAN_DOUBLE_STREAM.equals(map.get("type"))) {
-                        // 如果voice是”S_”开头的，使用seed-icl-1.0
+                        // Nếu giọng nói bắt đầu bằng "S_", hãy sử dụngseed-icl-1.0
                         if (voice != null && voice.startsWith("S_")) {
                             map.put("resource_id", "seed-icl-1.0");
                         }
                     }
                 }
-                // 如果是Intent类型，且type=intent_llm，则给他添加附加模型
+                // Nếu đó là loại Ý định và loại=intent_llm, hãy thêm mô hình bổ sung vào đó.
                 if ("Intent".equals(modelTypes[i])) {
                     Map<String, Object> map = (Map<String, Object>) model.getConfigJson();
                     if ("intent_llm".equals(map.get("type"))) {
@@ -511,24 +511,24 @@ public class ConfigServiceImpl implements ConfigService {
                         }
                     }
                 }
-                // 如果是LLM类型，且intentLLMModelId不为空，则添加附加模型
+                // Nếu đó là loại LLM và IntentLLMModelId không trống, hãy thêm mô hình bổ sung
                 if ("LLM".equals(modelTypes[i])) {
                     if (StringUtils.isNotBlank(intentLLMModelId)) {
                         if (!typeConfig.containsKey(intentLLMModelId)) {
-                            // 修改这里：添加isMaskSensitive=false参数
+                            // Sửa đổi ở đây: thêm tham số isMaskSensitive=false
                             ModelConfigEntity intentLLM = modelConfigService.getModelByIdFromCache(intentLLMModelId);
                             typeConfig.put(intentLLM.getId(), intentLLM.getConfigJson());
                         }
                     }
                     if (StringUtils.isNotBlank(memLocalShortLLMModelId)) {
                         if (!typeConfig.containsKey(memLocalShortLLMModelId)) {
-                            // 修改这里：添加isMaskSensitive=false参数
+                            // Sửa đổi ở đây: thêm tham số isMaskSensitive=false
                             ModelConfigEntity memLocalShortLLM = modelConfigService
                                     .getModelByIdFromCache(memLocalShortLLMModelId);
                             typeConfig.put(memLocalShortLLM.getId(), memLocalShortLLM.getConfigJson());
                         }
                     }
-                    // LLM也返回所选的SLM，如果同名id则不重复显示
+                    // LLM cũng trả về SLM đã chọn. Nếu ID có cùng tên, nó sẽ không được hiển thị nhiều lần.
                     if (StringUtils.isNotBlank(slmModelId) && !slmModelId.equals(llmModelId)) {
                         if (!typeConfig.containsKey(slmModelId)) {
                             ModelConfigEntity slmModel = modelConfigService.getModelByIdFromCache(slmModelId);
@@ -546,7 +546,7 @@ public class ConfigServiceImpl implements ConfigService {
 
         result.put("selected_module", selectedModule);
         if (StringUtils.isNotBlank(prompt)) {
-            prompt = prompt.replace("{{assistant_name}}", StringUtils.isBlank(assistantName) ? "小智" : assistantName);
+            prompt = prompt.replace("{{assistant_name}}", StringUtils.isBlank(assistantName) ? "Tiểu Chỉ" : assistantName);
         }
         result.put("prompt", prompt);
         result.put("summaryMemory", summaryMemory);

@@ -33,7 +33,7 @@ import xiaozhi.modules.agent.entity.AgentTemplateEntity;
 import xiaozhi.modules.agent.service.AgentTemplateService;
 import xiaozhi.modules.agent.vo.AgentTemplateVO;
 
-@Tag(name = "智能体模板管理")
+@Tag(name = "Quản lý mẫu thực thể thông minh")
 @AllArgsConstructor
 @RestController
 @RequestMapping("/agent/template")
@@ -42,22 +42,22 @@ public class AgentTemplateController {
     private final AgentTemplateService agentTemplateService;
     
     @GetMapping("/page")
-    @Operation(summary = "获取模板分页列表")
+    @Operation(summary = "Lấy danh sách mẫu phân trang")
     @RequiresPermissions("sys:role:superAdmin")
     @Parameters({
-            @Parameter(name = Constant.PAGE, description = "当前页码，从1开始", required = true),
-            @Parameter(name = Constant.LIMIT, description = "每页显示记录数", required = true),
-            @Parameter(name = "agentName", description = "模板名称，模糊查询")
+            @Parameter(name = Constant.PAGE, description = "Trang hiện tại, bắt đầu từ 1", required = true),
+            @Parameter(name = Constant.LIMIT, description = "Số bản ghi hiển thị trên mỗi trang", required = true),
+            @Parameter(name = "agentName", description = "Tên mẫu, truy vấn mờ")
     })
     public Result<PageData<AgentTemplateVO>> getAgentTemplatesPage(
             @Parameter(hidden = true) @RequestParam Map<String, Object> params) {
         
-        // 创建分页对象
+        // Tạo đối tượng phân trang
         int page = Integer.parseInt(params.getOrDefault(Constant.PAGE, "1").toString());
         int limit = Integer.parseInt(params.getOrDefault(Constant.LIMIT, "10").toString());
         Page<AgentTemplateEntity> pageInfo = new Page<>(page, limit);
         
-        // 创建查询条件
+        // Tạo điều kiện truy vấn
         QueryWrapper<AgentTemplateEntity> wrapper = new QueryWrapper<>();
         String agentName = (String) params.get("agentName");
         if (agentName != null && !agentName.isEmpty()) {
@@ -65,94 +65,94 @@ public class AgentTemplateController {
         }
         wrapper.orderByAsc("sort");
         
-        // 执行分页查询
+        // Thực hiện truy vấn phân trang
         IPage<AgentTemplateEntity> pageResult = agentTemplateService.page(pageInfo, wrapper);
         
-        // 使用ConvertUtils转换为VO列表
+        // Sử dụng ConvertUtils để chuyển đổi sang danh sách VO
         List<AgentTemplateVO> voList = ConvertUtils.sourceToTarget(pageResult.getRecords(), AgentTemplateVO.class);
 
-        // 修复：使用构造函数创建PageData对象，而不是无参构造+setter
+        // Sửa lỗi: Sử dụng hàm tạo để tạo đối tượng PageData, thay vì hàm tạo không tham số + setter
         PageData<AgentTemplateVO> pageData = new PageData<>(voList, pageResult.getTotal());
 
         return new Result<PageData<AgentTemplateVO>>().ok(pageData);
     }
     
     @GetMapping("/{id}")
-    @Operation(summary = "获取模板详情")
+    @Operation(summary = "Lấy chi tiết mẫu")
     @RequiresPermissions("sys:role:superAdmin")
     public Result<AgentTemplateVO> getAgentTemplateById(@PathVariable("id") String id) {
         AgentTemplateEntity template = agentTemplateService.getById(id);
         if (template == null) {
-            return ResultUtils.error("模板不存在");
+            return ResultUtils.error("Mẫu không tồn tại");
         }
         
-        // 使用ConvertUtils转换为VO
+        // Sử dụng ConvertUtils để chuyển đổi sang VO
         AgentTemplateVO vo = ConvertUtils.sourceToTarget(template, AgentTemplateVO.class);
         
         return ResultUtils.success(vo);
     }
     
     @PostMapping
-    @Operation(summary = "创建模板")
+    @Operation(summary = "Tạo mẫu")
     @RequiresPermissions("sys:role:superAdmin")
     public Result<AgentTemplateEntity> createAgentTemplate(@Valid @RequestBody AgentTemplateEntity template) {
-        // 设置排序值为下一个可用的序号
+        // Đặt giá trị sắp xếp là số thứ tự khả dụng tiếp theo
         template.setSort(agentTemplateService.getNextAvailableSort());
         
         boolean saved = agentTemplateService.save(template);
         if (saved) {
             return ResultUtils.success(template);
         } else {
-            return ResultUtils.error("创建模板失败");
+            return ResultUtils.error("Tạo mẫuthất bại");
         }
     }
     
     @PutMapping
-    @Operation(summary = "更新模板")
+    @Operation(summary = "Cập nhật mẫu")
     @RequiresPermissions("sys:role:superAdmin")
     public Result<AgentTemplateEntity> updateAgentTemplate(@Valid @RequestBody AgentTemplateEntity template) {
         boolean updated = agentTemplateService.updateById(template);
         if (updated) {
             return ResultUtils.success(template);
         } else {
-            return ResultUtils.error("更新模板失败");
+            return ResultUtils.error("Cập nhật mẫuthất bại");
         }
     }
     
     @DeleteMapping("/{id}")
-    @Operation(summary = "删除模板")
+    @Operation(summary = "Xóa mẫu")
     @RequiresPermissions("sys:role:superAdmin")
     public Result<String> deleteAgentTemplate(@PathVariable("id") String id) {
-        // 先查询要删除的模板信息，获取其排序值
+        // Trước tiên truy vấn thông tin mẫu cần xóa, lấy giá trị sắp xếp của nó
         AgentTemplateEntity template = agentTemplateService.getById(id);
         if (template == null) {
-            return ResultUtils.error("模板不存在");
+            return ResultUtils.error("Mẫu không tồn tại");
         }
         
         Integer deletedSort = template.getSort();
         
-        // 执行删除操作
+        // Thực hiện thao tác xóa
         boolean deleted = agentTemplateService.removeById(id);
         if (deleted) {
-            // 删除成功后，重新排序剩余模板
+            // Sau khi xóa thành công, sắp xếp lại các mẫu còn lại
             agentTemplateService.reorderTemplatesAfterDelete(deletedSort);
-            return ResultUtils.success("删除模板成功");
+            return ResultUtils.success("Xóa mẫusự thành công");
         } else {
-            return ResultUtils.error("删除模板失败");
+            return ResultUtils.error("Xóa mẫuthất bại");
         }
     }
     
     
-    // 添加新的批量删除方法，使用不同的URL
+    // Thêm phương thức xóa hàng loạt mới, sử dụng URL khác nhau
     @PostMapping("/batch-remove")
-    @Operation(summary = "批量删除模板")
+    @Operation(summary = "lôXóa mẫu")
     @RequiresPermissions("sys:role:superAdmin")
     public Result<String> batchRemoveAgentTemplates(@RequestBody List<String> ids) {
         boolean deleted = agentTemplateService.removeByIds(ids);
         if (deleted) {
-            return ResultUtils.success("批量删除成功");
+            return ResultUtils.success("Xóa hàng loạt thành công");
         } else {
-            return ResultUtils.error("批量删除模板失败");
+            return ResultUtils.error("lôXóa mẫuthất bại");
         }
     }
 }

@@ -21,67 +21,67 @@ import xiaozhi.common.validator.group.DefaultGroup;
 import xiaozhi.common.validator.group.UpdateGroup;
 
 /**
- * 用户管理
+ * Quản lý người dùng
  */
 @Data
-@Schema(description = "用户管理")
+@Schema(description = "Quản lý người dùng")
 public class SysUserDTO implements Serializable {
     @Schema(description = "id")
     @Null(message = "{id.null}", groups = AddGroup.class)
     @NotNull(message = "{id.require}", groups = UpdateGroup.class)
     private Long id;
 
-    @Schema(description = "用户名", required = true)
+    @Schema(description = "Tên người dùng", required = true)
     @NotBlank(message = "{sysuser.username.require}", groups = DefaultGroup.class)
     private String username;
 
-    @Schema(description = "密码")
+    @Schema(description = "Mật khẩu")
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @NotBlank(message = "{sysuser.password.require}", groups = AddGroup.class)
     private String password;
 
-    @Schema(description = "姓名", required = true)
+    @Schema(description = "tên", required = true)
     @NotBlank(message = "{sysuser.realname.require}", groups = DefaultGroup.class)
     private String realName;
 
-    @Schema(description = "头像")
+    @Schema(description = "hình đại diện")
     private String headUrl;
 
-    @Schema(description = "性别   0：男   1：女    2：保密", required = true)
+    @Schema(description = "giới tính   0：nam giới   1：nữ    2：bí mật", required = true)
     @Range(min = 0, max = 2, message = "{sysuser.gender.range}", groups = DefaultGroup.class)
     private Integer gender;
 
-    @Schema(description = "邮箱")
+    @Schema(description = "Email")
     @Email(message = "{sysuser.email.error}", groups = DefaultGroup.class)
     private String email;
 
-    @Schema(description = "手机号")
+    @Schema(description = "Số điện thoại di động")
     private String mobile;
 
-    @Schema(description = "部门ID", required = true)
+    @Schema(description = "SởID", required = true)
     @NotNull(message = "{sysuser.deptId.require}", groups = DefaultGroup.class)
     private Long deptId;
 
-    @Schema(description = "状态  0：停用    1：正常", required = true)
+    @Schema(description = "Trạng thái  0：vô hiệu hóa    1：bình thường", required = true)
     @Range(min = 0, max = 1, message = "{sysuser.status.range}", groups = DefaultGroup.class)
     private Integer status;
 
-    @Schema(description = "创建时间")
+    @Schema(description = "thời gian sáng tạo")
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     @JsonFormat(pattern = DateUtils.DATE_TIME_PATTERN)
     private Date createDate;
 
-    @Schema(description = "超级管理员   0：否   1：是")
+    @Schema(description = "siêu quản trị viên   0：Không   1：Có")
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private Integer superAdmin;
 
-    @Schema(description = "角色ID列表")
+    @Schema(description = "vai tròIDdanh sách")
     private List<Long> roleIdList;
 
-    @Schema(description = "岗位ID列表")
+    @Schema(description = "Vị tríIDdanh sách")
     private List<Long> postIdList;
 
-    @Schema(description = "部门名称")
+    @Schema(description = "Tên khoa")
     private String deptName;
 
 }

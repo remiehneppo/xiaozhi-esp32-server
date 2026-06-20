@@ -1,19 +1,19 @@
--- LLM意图识别配置说明
+-- Hướng dẫn cấu hình nhận dạng ý định LLM
 UPDATE `ai_model_config` SET 
 `doc_link` = NULL,
-`remark` = 'LLM意图识别配置说明：
-1. 使用独立的LLM进行意图识别
-2. 默认使用selected_module.LLM的模型
-3. 可以配置使用独立的LLM（如免费的ChatGLMLLM）
-4. 通用性强，但会增加处理时间
-配置说明：
-1. 在llm字段中指定使用的LLM模型
-2. 如果不指定，则使用selected_module.LLM的模型' WHERE `id` = 'Intent_intent_llm';
+`remark` = 'LLMHướng dẫn cấu hình nhận dạng ý định：
+1. Sử dụng độc lậpLLMThực hiện nhận dạng ý định
+2. Được sử dụng theo mặc địnhselected_module.LLMngười mẫu
+3. Có thể cấu hình để sử dụng độc lậpLLM（miễn phíChatGLMLLM）
+4. Tính linh hoạt mạnh mẽ，Nhưng nó sẽ làm tăng thời gian xử lý
+Hướng dẫn cấu hình：
+1. trongllmtrường được chỉ định trongLLMngười mẫu
+2. Nếu không được chỉ định，sau đó sử dụngselected_module.LLMngười mẫu' WHERE `id` = 'Intent_intent_llm';
 
--- 函数调用意图识别配置说明
+-- Hướng dẫn cấu hình nhận dạng mục đích cuộc gọi chức năng
 UPDATE `ai_model_config` SET 
 `doc_link` = NULL,
-`remark` = '函数调用意图识别配置说明：
-1. 使用LLM的function_call功能进行意图识别
-2. 需要所选择的LLM支持function_call
-3. 按需调用工具，处理速度快' WHERE `id` = 'Intent_function_call';
+`remark` = 'Hướng dẫn cấu hình nhận dạng mục đích cuộc gọi chức năng：
+1. sử dụngLLMcủafunction_callchức năng nhận dạng ý định
+2. Cần phải lựa chọnLLMhỗ trợfunction_call
+3. Gọi công cụ theo yêu cầu，Tốc độ xử lý nhanh' WHERE `id` = 'Intent_function_call';

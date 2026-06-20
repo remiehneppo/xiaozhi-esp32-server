@@ -9,31 +9,31 @@ import xiaozhi.common.dao.BaseDao;
 import xiaozhi.modules.sys.entity.SysParamsEntity;
 
 /**
- * 参数管理
+ * Quản lý thông số
  */
 @Mapper
 public interface SysParamsDao extends BaseDao<SysParamsEntity> {
     /**
-     * 根据参数编码，查询value
+     * Giá trị truy vấn dựa trên mã hóa tham số
      *
-     * @param paramCode 参数编码
-     * @return 参数值
+     * @param mã hóa tham số paramCode
+     * @return giá trị tham số
      */
     String getValueByCode(String paramCode);
 
     /**
-     * 获取参数编码列表
+     * Nhận danh sách mã hóa tham số
      *
      * @param ids ids
-     * @return 返回参数编码列表
+     * @return trả về danh sách mã hóa tham số
      */
     List<String> getParamCodeList(String[] ids);
 
     /**
-     * 根据参数编码，更新value
+     * Cập nhật giá trị theo mã hóa tham số
      *
-     * @param paramCode  参数编码
-     * @param paramValue 参数值
+     * @param mã hóa tham số paramCode
+     * @param giá trị tham số paramValue
      */
     int updateValueByCode(@Param("paramCode") String paramCode, @Param("paramValue") String paramValue);
 }

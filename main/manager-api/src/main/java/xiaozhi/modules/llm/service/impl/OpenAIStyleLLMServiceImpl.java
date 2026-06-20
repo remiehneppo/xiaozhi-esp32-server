@@ -24,14 +24,14 @@ import xiaozhi.modules.model.entity.ModelConfigEntity;
 import xiaozhi.modules.model.service.ModelConfigService;
 
 /**
- * OpenAI风格API的LLM服务实现
- * 支持阿里云、DeepSeek、ChatGLM等兼容OpenAI API的模型
+ * Triển khai dịch vụ LLM của API kiểu OpenAI
+ * Hỗ trợ các mô hình tương thích API OpenAI như Alibaba Cloud, DeepSeek, ChatGLM, v.v.
  */
 @Slf4j
 @Service
 public class OpenAIStyleLLMServiceImpl implements LLMService {
 
-    // 需要禁用思考模式的平台域名及其对应参数
+    // Tên miền nền tảng và các tham số tương ứng của nó cần tắt chế độ tư duy
     private static final Map<String, Map<String, Object>> THINKING_DISABLED_DOMAINS = new LinkedHashMap<>();
     static {
         THINKING_DISABLED_DOMAINS.put("aliyuncs.com", Map.of("enable_thinking", false));
@@ -47,21 +47,21 @@ public class OpenAIStyleLLMServiceImpl implements LLMService {
     private final RestTemplate restTemplate = new RestTemplate();
 
     /**
-     * 根据域名自动禁用思考模式
+     * Tự động tắt chế độ suy nghĩ dựa trên tên miền
      */
     private void applyThinkingDisabled(String baseUrl, Map<String, Object> requestBody) {
         for (Map.Entry<String, Map<String, Object>> entry : THINKING_DISABLED_DOMAINS.entrySet()) {
             if (baseUrl.contains(entry.getKey())) {
                 requestBody.putAll(entry.getValue());
-                log.info("为域名 {} 禁用思考模式，参数: {}", baseUrl, entry.getValue());
+                log.info("cho tên miền {} Tắt chế độ suy nghĩ，thông số: {}", baseUrl, entry.getValue());
                 break;
             }
         }
     }
 
-    private static final String DEFAULT_SUMMARY_PROMPT = "你是一个经验丰富的记忆总结者，擅长将对话内容进行总结摘要，遵循以下规则：\n1、总结用户的重要信息，以便在未来的对话中提供更个性化的服务\n2、不要重复总结，不要遗忘之前记忆，除非原来的记忆超过了1800字，否则不要遗忘、不要压缩用户的历史记忆\n3、用户操控的设备音量、播放音乐、天气、退出、不想对话等和用户本身无关的内容，这些信息不需要加入到总结中\n4、聊天内容中的今天的日期时间、今天的天气情况与用户事件无关的数据，这些信息如果当成记忆存储会影响后续对话，这些信息不需要加入到总结中\n5、不要把设备操控的成果结果和失败结果加入到总结中，也不要把用户的一些废话加入到总结中\n6、不要为了总结而总结，如果用户的聊天没有意义，请返回原来的历史记录也是可以的\n7、只需要返回总结摘要，严格控制在1800字内\n8、不要包含代码、xml，不需要解释、注释和说明，保存记忆时仅从对话提取信息，不要混入示例内容\n9、如果提供了历史记忆，请将新对话内容与历史记忆进行智能合并，保留有价值的历史信息，同时添加新的重要信息\n\n历史记忆：\n{history_memory}\n\n新对话内容：\n{conversation}";
+    private static final String DEFAULT_SUMMARY_PROMPT = "Bạn là một người tóm tắt trí nhớ có kinh nghiệm，Giỏi tóm tắt các cuộc trò chuyện，Thực hiện theo các quy tắc này：\n1、Tổng hợp những thông tin quan trọng về người dùng，để cung cấp dịch vụ được cá nhân hóa hơn trong các cuộc trò chuyện trong tương lai.\n2、Đừng lặp lại tóm tắt，Đừng quên những kỷ niệm đã qua，Trừ khi bộ nhớ ban đầu vượt quá1800từ，Còn không thì đừng quên、Không nén bộ nhớ lịch sử của người dùng\n3、Âm lượng thiết bị do người dùng điều khiển、chơi nhạc、thời tiết、Thoát、Không muốn các cuộc trò chuyện và nội dung khác không liên quan gì đến người dùng，Thông tin này không cần phải thêm vào bản tóm tắt\n4、Ngày và giờ hôm nay trong cuộc trò chuyện、Điều kiện thời tiết ngày nay là dữ liệu không liên quan đến sự kiện của người dùng，Nếu thông tin này được lưu dưới dạng bộ nhớ sẽ ảnh hưởng đến các cuộc trò chuyện tiếp theo.，Thông tin này không cần phải thêm vào bản tóm tắt\n5、Không thêm kết quả và kết quả lỗi của điều khiển thiết bị vào phần tóm tắt，Đừng thêm một số điều vô nghĩa của người dùng vào phần tóm tắt\n6、Đừng tóm tắt chỉ để tóm tắt，Nếu cuộc trò chuyện của người dùng không có ý nghĩa，Cũng có thể quay lại lịch sử ban đầu.\n7、Chỉ cần trả lại bản tóm tắt tóm tắt，Được kiểm soát chặt chẽ tại1800trong từ\n8、Không bao gồm mã、xml，Không cần giải thích、Ghi chú và hướng dẫn，Chỉ trích xuất thông tin từ các cuộc hội thoại khi lưu lại kỷ niệm，Không trộn lẫn vào nội dung mẫu\n9、Nếu bộ nhớ lịch sử được cung cấp，Hãy kết hợp nội dung cuộc trò chuyện mới với ký ức lịch sử một cách thông minh，Lưu giữ thông tin lịch sử có giá trị，Đồng thời thêm thông tin quan trọng mới\n\nký ức lịch sử：\n{history_memory}\n\nNội dung hội thoại mới：\n{conversation}";
 
-    private static final String DEFAULT_TITLE_PROMPT = "请根据以下对话内容，生成一个简洁的会话标题（约15字以内），只返回标题，不要包含任何解释或标点符号：\n{conversation}";
+    private static final String DEFAULT_TITLE_PROMPT = "Hãy theo dõi đoạn hội thoại dưới đây，Tạo tiêu đề phiên ngắn gọn（khoảng15Trong lời nói），Chỉ trả lại tiêu đề，Không bao gồm bất kỳ lời giải thích hoặc dấu câu：\n{conversation}";
 
     @Override
     public String generateSummary(String conversation) {
@@ -76,24 +76,24 @@ public class OpenAIStyleLLMServiceImpl implements LLMService {
     @Override
     public String generateSummary(String conversation, String promptTemplate, String modelId) {
         if (!isAvailable()) {
-            log.warn("LLM服务不可用，无法生成总结");
-            return "LLM服务不可用，无法生成总结";
+            log.warn("Dịch vụ LLM không khả dụng, không thể tạo tóm tắt");
+            return "Dịch vụ LLM không khả dụng, không thể tạo tóm tắt";
         }
 
         try {
-            // 从智控台获取LLM模型配置
+            // Lấy cấu hình mô hình LLM từ bảng điều khiển thông minh
             ModelConfigEntity llmConfig;
             if (modelId != null && !modelId.trim().isEmpty()) {
-                // 通过具体模型ID获取配置
+                // Lấy cấu hình qua ID mô hình cụ thể
                 llmConfig = modelConfigService.getModelByIdFromCache(modelId);
             } else {
-                // 保持向后兼容，使用默认配置
+                // Để duy trì khả năng tương thích ngược, hãy sử dụng cấu hình mặc định
                 llmConfig = getDefaultLLMConfig();
             }
 
             if (llmConfig == null || llmConfig.getConfigJson() == null) {
-                log.error("未找到可用的LLM模型配置，modelId: {}", modelId);
-                return "未找到可用的LLM模型配置";
+                log.error("Không tìm thấy cấu hình mô hình LLM khả dụng, modelId: {}", modelId);
+                return "Không tìm thấy cấu hình mô hình LLM khả dụng";
             }
 
             JSONObject configJson = llmConfig.getConfigJson();
@@ -104,15 +104,15 @@ public class OpenAIStyleLLMServiceImpl implements LLMService {
             Integer maxTokens = configJson.getInt("max_tokens");
 
             if (StringUtils.isBlank(baseUrl) || StringUtils.isBlank(apiKey)) {
-                log.error("LLM配置不完整，baseUrl或apiKey为空");
-                return "LLM配置不完整，无法生成总结";
+                log.error("Cấu hình LLM không đầy đủ, baseUrl hoặc apiKey trống");
+                return "Cấu hình LLM không đầy đủ, không thể tạo tóm tắt";
             }
 
-            // 构建提示词
+            // Xây dựng các từ gợi ý
             String prompt = (promptTemplate != null ? promptTemplate : DEFAULT_SUMMARY_PROMPT).replace("{conversation}",
                     conversation);
 
-            // 构建请求体
+            // Xây dựng thân yêu cầu
             Map<String, Object> requestBody = new HashMap<>();
             requestBody.put("model", model != null ? model : "gpt-3.5-turbo");
 
@@ -126,17 +126,17 @@ public class OpenAIStyleLLMServiceImpl implements LLMService {
             requestBody.put("temperature", temperature != null ? temperature : 0.7);
             requestBody.put("max_tokens", maxTokens != null ? maxTokens : 2000);
 
-            // 禁用思考模式
+            // Vô hiệu hóa chế độ suy nghĩ
             applyThinkingDisabled(baseUrl, requestBody);
 
-            // 发送HTTP请求
+            // Gửi yêu cầu HTTP
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);
             headers.set("Authorization", "Bearer " + apiKey);
 
             HttpEntity<Map<String, Object>> entity = new HttpEntity<>(requestBody, headers);
 
-            // 构建完整的API URL
+            // Xây dựng URL API đầy đủ
             String apiUrl = baseUrl;
             if (!apiUrl.endsWith("/chat/completions")) {
                 if (!apiUrl.endsWith("/")) {
@@ -157,13 +157,13 @@ public class OpenAIStyleLLMServiceImpl implements LLMService {
                     return messageObj.getStr("content");
                 }
             } else {
-                log.error("LLM API调用失败，状态码：{}，响应：{}", response.getStatusCode(), response.getBody());
+                log.error("Gọi LLM API thất bại, mã trạng thái: {}, phản hồi: {}", response.getStatusCode(), response.getBody());
             }
         } catch (Exception e) {
-            log.error("调用LLM服务生成总结时发生异常，modelId: {}", modelId, e);
+            log.error("{Xảy ra ngoại lệ khi gọi dịch vụ LLM để tạo tóm tắt, modelId: {}{}", modelId, e);
         }
 
-        return "生成总结失败，请稍后重试";
+        return "Tạo tóm tắt thất bại, vui lòng thử lại sau";
     }
 
     @Override
@@ -175,12 +175,12 @@ public class OpenAIStyleLLMServiceImpl implements LLMService {
     public String generateSummaryWithHistory(String conversation, String historyMemory, String promptTemplate,
             String modelId) {
         if (!isAvailable()) {
-            log.warn("LLM服务不可用，无法生成总结");
-            return "LLM服务不可用，无法生成总结";
+            log.warn("Dịch vụ LLM không khả dụng, không thể tạo tóm tắt");
+            return "Dịch vụ LLM không khả dụng, không thể tạo tóm tắt";
         }
 
         try {
-            // 从智控台获取LLM模型配置
+            // Lấy cấu hình mô hình LLM từ bảng điều khiển thông minh
             ModelConfigEntity llmConfig;
             if (modelId != null && !modelId.trim().isEmpty()) {
                 llmConfig = modelConfigService.getModelByIdFromCache(modelId);
@@ -189,8 +189,8 @@ public class OpenAIStyleLLMServiceImpl implements LLMService {
             }
 
             if (llmConfig == null || llmConfig.getConfigJson() == null) {
-                log.error("未找到可用的LLM模型配置，modelId: {}", modelId);
-                return "未找到可用的LLM模型配置";
+                log.error("Không tìm thấy cấu hình mô hình LLM khả dụng, modelId: {}", modelId);
+                return "Không tìm thấy cấu hình mô hình LLM khả dụng";
             }
 
             JSONObject configJson = llmConfig.getConfigJson();
@@ -199,16 +199,16 @@ public class OpenAIStyleLLMServiceImpl implements LLMService {
             String apiKey = configJson.getStr("api_key");
 
             if (StringUtils.isBlank(baseUrl) || StringUtils.isBlank(apiKey)) {
-                log.error("LLM配置不完整，baseUrl或apiKey为空");
-                return "LLM配置不完整，无法生成总结";
+                log.error("Cấu hình LLM không đầy đủ, baseUrl hoặc apiKey trống");
+                return "Cấu hình LLM không đầy đủ, không thể tạo tóm tắt";
             }
 
-            // 构建提示词，包含历史记忆
+            // Xây dựng từ gợi ý (prompt), bao gồm bộ nhớ lịch sử
             String prompt = (promptTemplate != null ? promptTemplate : DEFAULT_SUMMARY_PROMPT)
-                    .replace("{history_memory}", historyMemory != null ? historyMemory : "无历史记忆")
+                    .replace("{history_memory}", historyMemory != null ? historyMemory : "Không có bộ nhớ lịch sử")
                     .replace("{conversation}", conversation);
 
-            // 构建请求体
+            // Xây dựng thân yêu cầu
             Map<String, Object> requestBody = new HashMap<>();
             requestBody.put("model", model != null ? model : "gpt-3.5-turbo");
 
@@ -222,17 +222,17 @@ public class OpenAIStyleLLMServiceImpl implements LLMService {
             requestBody.put("temperature", 0.2);
             requestBody.put("max_tokens", 2000);
 
-            // 禁用思考模式
+            // Vô hiệu hóa chế độ suy nghĩ
             applyThinkingDisabled(baseUrl, requestBody);
 
-            // 发送HTTP请求
+            // Gửi yêu cầu HTTP
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);
             headers.set("Authorization", "Bearer " + apiKey);
 
             HttpEntity<Map<String, Object>> entity = new HttpEntity<>(requestBody, headers);
 
-            // 构建完整的API URL
+            // Xây dựng URL API đầy đủ
             String apiUrl = baseUrl;
             if (!apiUrl.endsWith("/chat/completions")) {
                 if (!apiUrl.endsWith("/")) {
@@ -253,13 +253,13 @@ public class OpenAIStyleLLMServiceImpl implements LLMService {
                     return messageObj.getStr("content");
                 }
             } else {
-                log.error("LLM API调用失败，状态码：{}，响应：{}", response.getStatusCode(), response.getBody());
+                log.error("Gọi LLM API thất bại, mã trạng thái: {}, phản hồi: {}", response.getStatusCode(), response.getBody());
             }
         } catch (Exception e) {
-            log.error("调用LLM服务生成总结时发生异常，modelId: {}", modelId, e);
+            log.error("{Xảy ra ngoại lệ khi gọi dịch vụ LLM để tạo tóm tắt, modelId: {}{}", modelId, e);
         }
 
-        return "生成总结失败，请稍后重试";
+        return "Tạo tóm tắt thất bại, vui lòng thử lại sau";
     }
 
     @Override
@@ -277,7 +277,7 @@ public class OpenAIStyleLLMServiceImpl implements LLMService {
             return baseUrl != null && !baseUrl.trim().isEmpty() &&
                     apiKey != null && !apiKey.trim().isEmpty();
         } catch (Exception e) {
-            log.error("检查LLM服务可用性时发生异常：", e);
+            log.error("Xảy ra ngoại lệ khi kiểm tra tính khả dụng của dịch vụ LLM:", e);
             return false;
         }
     }
@@ -289,10 +289,10 @@ public class OpenAIStyleLLMServiceImpl implements LLMService {
                 return isAvailable();
             }
 
-            // 通过具体模型ID获取配置
+            // Lấy cấu hình qua ID mô hình cụ thể
             ModelConfigEntity modelConfig = modelConfigService.getModelByIdFromCache(modelId);
             if (modelConfig == null || modelConfig.getConfigJson() == null) {
-                log.warn("未找到指定的LLM模型配置，modelId: {}", modelId);
+                log.warn("Không tìm thấy cấu hình mô hình LLM chỉ định, modelId: {}", modelId);
                 return false;
             }
 
@@ -303,23 +303,23 @@ public class OpenAIStyleLLMServiceImpl implements LLMService {
             return baseUrl != null && !baseUrl.trim().isEmpty() &&
                     apiKey != null && !apiKey.trim().isEmpty();
         } catch (Exception e) {
-            log.error("检查LLM服务可用性时发生异常，modelId: {}", modelId, e);
+            log.error("Xảy ra ngoại lệ khi kiểm tra tính khả dụng của dịch vụ LLM, modelId: {}", modelId, e);
             return false;
         }
     }
 
     /**
-     * 从智控台获取默认的LLM模型配置
+     * Lấy cấu hình mô hình LLM mặc định từ bảng điều khiển thông minh
      */
     private ModelConfigEntity getDefaultLLMConfig() {
         try {
-            // 获取所有启用的LLM模型配置
+            // Lấy tất cả cấu hình mô hình LLM đang bật
             List<ModelConfigEntity> llmConfigs = modelConfigService.getEnabledModelsByType("LLM");
             if (llmConfigs == null || llmConfigs.isEmpty()) {
                 return null;
             }
 
-            // 优先返回默认配置，如果没有默认配置则返回第一个启用的配置
+            // Ưu tiên trả về cấu hình mặc định, nếu không có cấu hình mặc định thì trả về cấu hình đầu tiên đang bật
             for (ModelConfigEntity config : llmConfigs) {
                 if (config.getIsDefault() != null && config.getIsDefault() == 1) {
                     return config;
@@ -328,7 +328,7 @@ public class OpenAIStyleLLMServiceImpl implements LLMService {
 
             return llmConfigs.get(0);
         } catch (Exception e) {
-            log.error("获取LLM模型配置时发生异常：", e);
+            log.error("Xảy ra ngoại lệ khi lấy cấu hình mô hình LLM:", e);
             return null;
         }
     }
@@ -336,7 +336,7 @@ public class OpenAIStyleLLMServiceImpl implements LLMService {
     @Override
     public String generateTitle(String conversation, String modelId) {
         if (!isAvailable()) {
-            log.warn("LLM服务不可用，无法生成标题");
+            log.warn("Dịch vụ LLM không khả dụng, không thể tạo tiêu đề");
             return null;
         }
 
@@ -349,7 +349,7 @@ public class OpenAIStyleLLMServiceImpl implements LLMService {
             }
 
             if (llmConfig == null || llmConfig.getConfigJson() == null) {
-                log.error("未找到可用的LLM模型配置，modelId: {}", modelId);
+                log.error("Không tìm thấy cấu hình mô hình LLM khả dụng, modelId: {}", modelId);
                 return null;
             }
 
@@ -359,7 +359,7 @@ public class OpenAIStyleLLMServiceImpl implements LLMService {
             String apiKey = configJson.getStr("api_key");
 
             if (StringUtils.isBlank(baseUrl) || StringUtils.isBlank(apiKey)) {
-                log.error("LLM配置不完整，baseUrl或apiKey为空");
+                log.error("Cấu hình LLM không đầy đủ, baseUrl hoặc apiKey trống");
                 return null;
             }
 
@@ -378,7 +378,7 @@ public class OpenAIStyleLLMServiceImpl implements LLMService {
             requestBody.put("temperature", 0.3);
             requestBody.put("max_tokens", 50);
 
-            // 禁用思考模式
+            // Vô hiệu hóa chế độ suy nghĩ
             applyThinkingDisabled(baseUrl, requestBody);
 
             HttpHeaders headers = new HttpHeaders();
@@ -414,10 +414,10 @@ public class OpenAIStyleLLMServiceImpl implements LLMService {
                     }
                 }
             } else {
-                log.error("LLM API调用失败，状态码：{}，响应：{}", response.getStatusCode(), response.getBody());
+                log.error("Gọi LLM API thất bại, mã trạng thái: {}, phản hồi: {}", response.getStatusCode(), response.getBody());
             }
         } catch (Exception e) {
-            log.error("调用LLM服务生成标题时发生异常，modelId: {}", modelId, e);
+            log.error("{Xảy ra ngoại lệ khi gọi dịch vụ LLM để tạo tiêu đề, modelId: {}{}", modelId, e);
         }
 
         return null;

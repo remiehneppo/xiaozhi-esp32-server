@@ -6,17 +6,17 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * IP地址
- * Copyright (c) 人人开源 All rights reserved.
+ * địa chỉ IP
+ * Bản quyền (c) Renren Kaiyuan Mọi quyền được bảo lưu.
  * Website: https://www.renren.io
  */
 @Slf4j
 public class IpUtils {
     /**
-     * 获取IP地址
+     * Nhận địa chỉ IP
      * <p>
-     * 使用Nginx等反向代理软件， 则不能通过request.getRemoteAddr()获取IP地址
-     * 如果使用了多级反向代理的话，X-Forwarded-For的值并不止一个，而是一串IP地址，X-Forwarded-For中第一个非unknown的有效IP字符串，则为真实IP地址
+     * Nếu bạn sử dụng phần mềm proxy ngược như Nginx, bạn không thể lấy địa chỉ IP thông qua request.getRemoteAddr()
+     * Nếu proxy ngược nhiều cấp được sử dụng, giá trị của X-Forwarded-For không chỉ là một mà là một chuỗi địa chỉ IP. Chuỗi IP hợp lệ không xác định đầu tiên trong X-Forwarded-For là địa chỉ IP thực.
      */
     public static String getIpAddr(HttpServletRequest request) {
         String unknown = "unknown";

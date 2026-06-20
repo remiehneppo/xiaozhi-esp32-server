@@ -4,12 +4,12 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
 @Data
-@Schema(description = "替换词精简VO（设备端使用）")
+@Schema(description = "Đơn giản hóa từ thay thếVO（Sử dụng bên thiết bị）")
 public class CorrectWordSimpleVO {
 
-    @Schema(description = "原词")
+    @Schema(description = "từ gốc")
     private String sourceWord;
 
-    @Schema(description = "替换词")
+    @Schema(description = "từ thay thế")
     private String targetWord;
 }

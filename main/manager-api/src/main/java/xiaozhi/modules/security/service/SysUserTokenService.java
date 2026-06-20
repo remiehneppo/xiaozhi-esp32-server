@@ -8,30 +8,30 @@ import xiaozhi.modules.sys.dto.PasswordDTO;
 import xiaozhi.modules.sys.dto.SysUserDTO;
 
 /**
- * 用户Token
- * Copyright (c) 人人开源 All rights reserved.
+ * Mã thông báo người dùng
+ * Bản quyền (c) Renren Kaiyuan Mọi quyền được bảo lưu.
  * Website: https://www.renren.io
  */
 public interface SysUserTokenService extends BaseService<SysUserTokenEntity> {
 
     /**
-     * 生成token
+     * Tạo mã thông báo
      *
-     * @param userId 用户ID
+     * @param userId ID người dùng
      */
     Result<TokenDTO> createToken(Long userId);
 
     SysUserDTO getUserByToken(String token);
 
     /**
-     * 退出
+     * Thoát
      *
-     * @param userId 用户ID
+     * @param userId ID người dùng
      */
     void logout(Long userId);
 
     /**
-     * 修改密码
+     * Thay đổi mật khẩu
      *
      * @param userId
      * @param passwordDTO

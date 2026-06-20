@@ -7,25 +7,25 @@ import xiaozhi.common.dao.BaseDao;
 import xiaozhi.modules.knowledge.entity.KnowledgeBaseEntity;
 
 /**
- * 知识库知识库
+ * Cơ sở kiến thứcCơ sở kiến thức
  */
 @Mapper
 public interface KnowledgeBaseDao extends BaseDao<KnowledgeBaseEntity> {
 
     /**
-     * 根据知识库ID删除相关的插件映射记录
-     * 
-     * @param knowledgeBaseId 知识库ID
+     * Xóa các bản ghi ánh xạ plug-in liên quan dựa trên ID cơ sở kiến thức
+     *
+     * @param KnowledgeBaseId ID cơ sở kiến thức
      */
     void deletePluginMappingByKnowledgeBaseId(@Param("knowledgeBaseId") String knowledgeBaseId);
 
     /**
-     * 通用维度原子更新知识库统计信息
-     * 
-     * @param datasetId  数据集ID
-     * @param docDelta   文档数增量
-     * @param chunkDelta 分块数增量
-     * @param tokenDelta Token数增量
+     * Thứ nguyên chung Cập nhật nguyên tử Thống kê cơ sở kiến thức
+     *
+     * @param tập dữ liệuId ID tập dữ liệu
+     * @param docDelta tăng số tài liệu
+     * @param chunkDelta tăng số đoạn
+     * @param tokenDelta Tăng số lượng mã thông báo
      */
     void updateStatsAfterChange(@Param("datasetId") String datasetId,
             @Param("docDelta") Integer docDelta,

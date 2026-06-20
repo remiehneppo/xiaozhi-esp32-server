@@ -6,21 +6,21 @@ import xiaozhi.modules.sys.enums.ServerActionEnum;
 import java.util.Map;
 
 /**
- * 服务端动作DTO
+ * Máy chủ hành động DTO
  */
 @Data
 public class ServerActionPayloadDTO
 {
     /**
-    * 类型（智控台发往服务端的都是server）
+    * Loại (thứ mà bảng điều khiển thông minh gửi đến máy chủ là máy chủ)
     */
     private String type;
     /**
-    * 动作
+    * hành động
     */
     private ServerActionEnum action;
     /**
-    * 内容
+    * nội dung
     */
     private Map<String, Object> content;
 
@@ -31,6 +31,6 @@ public class ServerActionPayloadDTO
         serverActionPayloadDTO.setType("server");
         return serverActionPayloadDTO;
     }
-    // 私有化
+    // Tư nhân hóa
     private ServerActionPayloadDTO() {}
 }

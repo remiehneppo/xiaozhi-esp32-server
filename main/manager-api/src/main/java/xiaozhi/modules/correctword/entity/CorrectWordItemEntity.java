@@ -9,19 +9,19 @@ import lombok.Data;
 
 @Data
 @TableName("ai_agent_correct_word_item")
-@Schema(description = "替换词词条")
+@Schema(description = "Mục nhập từ thay thế")
 public class CorrectWordItemEntity {
 
     @TableId(type = IdType.ASSIGN_UUID)
-    @Schema(description = "词条ID")
+    @Schema(description = "lối vàoID")
     private String id;
 
-    @Schema(description = "所属文件ID")
+    @Schema(description = "Tập tin thuộc vềID")
     private String fileId;
 
-    @Schema(description = "原词")
+    @Schema(description = "từ gốc")
     private String sourceWord;
 
-    @Schema(description = "替换词")
+    @Schema(description = "từ thay thế")
     private String targetWord;
 }

@@ -12,121 +12,121 @@ import xiaozhi.modules.knowledge.dto.document.RetrievalDTO;
 import xiaozhi.modules.knowledge.dto.document.DocumentDTO;
 
 /**
- * 知识库文档服务接口
+ * Giao diện dịch vụ tài liệu cơ sở kiến thức
  */
 public interface KnowledgeFilesService {
 
         /**
-         * 分页查询文档列表
-         * 
-         * @param knowledgeFilesDTO 查询条件
-         * @param page              页码
-         * @param limit             每页数量
-         * @return 分页数据
+         * Truy vấn danh sách tài liệu theo trang
+         *
+         * @param KnowledgeFilesDTO điều kiện truy vấn
+         * @param số trang
+         * Số giới hạn @param trên mỗi trang
+         * @return dữ liệu được phân trang
          */
         PageData<KnowledgeFilesDTO> getPageList(KnowledgeFilesDTO knowledgeFilesDTO, Integer page, Integer limit);
 
         /**
-         * 根据文档ID和知识库ID获取文档详情
-         * 
-         * @param documentId 文档ID
-         * @param datasetId  知识库ID
-         * @return 文档详情 (强类型 InfoVO)
+         * Nhận chi tiết tài liệu dựa trên ID tài liệu và ID cơ sở kiến thức
+         *
+         * @param documentId ID tài liệu
+         * @paramdatadataID cơ sở kiến thức ID
+         * @return chi tiết tài liệu (được gõ mạnh InfoVO)
          */
         DocumentDTO.InfoVO getByDocumentId(String documentId, String datasetId);
 
         /**
-         * 上传文档到知识库
-         * 
-         * @param datasetId    知识库ID
-         * @param file         上传的文件
-         * @param name         文档名称
-         * @param metaFields   元数据字段
-         * @param chunkMethod  分块方法
-         * @param parserConfig 解析器配置
-         * @return 上传的文档信息
+         * Tải tài liệu lên cơ sở tri thức
+         *
+         * @paramdatadataID cơ sở kiến thức ID
+         * @param tập tin đã tải lên tập tin
+         * @param tên tên tài liệu
+         * Các trường siêu dữ liệu @param metaFields
+         * @param chunkMethod Phương thức Chunking
+         * @param ParserConfig Cấu hình trình phân tích cú pháp
+         * @return thông tin tài liệu đã tải lên
          */
         KnowledgeFilesDTO uploadDocument(String datasetId, MultipartFile file, String name,
                         Map<String, Object> metaFields, String chunkMethod,
                         Map<String, Object> parserConfig);
 
         /**
-         * 批量删除文档
-         * 
-         * @param datasetId 知识库ID
-         * @param req       删除请求参数 (含文档ID列表)
+         * Xóa tài liệu theo đợt
+         *
+         * @paramdatadataID cơ sở kiến thức ID
+         * @param req xóa các tham số yêu cầu (bao gồm danh sách ID tài liệu)
          */
         void deleteDocuments(String datasetId, DocumentDTO.BatchIdReq req);
 
         /**
-         * 获取RAG配置信息
-         * 
-         * @param ragModelId RAG模型配置ID
-         * @return RAG配置信息
+         * Nhận thông tin cấu hình RAG
+         *
+         * @param ragModelId ID cấu hình mô hình RAG
+         * @return thông tin cấu hình RAG
          */
         Map<String, Object> getRAGConfig(String ragModelId);
 
         /**
-         * 解析文档（切块）
-         * 
-         * @param datasetId   知识库ID
-         * @param documentIds 文档ID列表
-         * @return 解析结果
+         * Phân tích tài liệu (cắt thành từng đoạn)
+         *
+         * @paramdatadataID cơ sở kiến thức ID
+         * @param documentIds danh sách ID tài liệu
+         * @return kết quả phân tích cú pháp
          */
         boolean parseDocuments(String datasetId, List<String> documentIds);
 
         /**
-         * 列出指定文档的切片
-         * 
-         * @param datasetId  知识库ID
-         * @param documentId 文档ID
-         * @param req        切片列表请求参数
-         * @return 切片列表信息
+         * Liệt kê các lát của tài liệu được chỉ định
+         *
+         * @paramdatadataID cơ sở kiến thức ID
+         * @param documentId ID tài liệu
+         * @param req tham số yêu cầu danh sách lát cắt
+         * @return thông tin danh sách lát
          */
         ChunkDTO.ListVO listChunks(String datasetId, String documentId, ChunkDTO.ListReq req);
 
         /**
-         * 召回测试
-         * 
-         * @param req 检索测试请求参数
-         * @return 召回测试结果
+         * kiểm tra thu hồi
+         *
+         * @param req truy xuất các tham số yêu cầu kiểm tra
+         * @return thu hồi kết quả kiểm tra
          */
         RetrievalDTO.ResultVO retrievalTest(RetrievalDTO.TestReq req);
 
         /**
-         * 保存文档影子记录
+         * Lưu bản ghi bóng tài liệu
          */
         boolean saveDocumentShadow(String datasetId, KnowledgeFilesDTO result, String originalName, String chunkMethod,
                         Map<String, Object> parserConfig);
 
         /**
-         * 批量删除文档影子记录并同步统计数据
-         * 
-         * @param documentIds 文档ID列表
-         * @param datasetId   数据集ID
-         * @param chunkDelta  待扣减的总分块数
-         * @param tokenDelta  待扣减的总Token数
+         * Xóa hàng loạt bản ghi bóng tài liệu và đồng bộ hóa số liệu thống kê
+         *
+         * @param documentIds danh sách ID tài liệu
+         * @param tập dữ liệuId ID tập dữ liệu
+         * @param chunkDelta Tổng số khối được khấu trừ
+         * @param tokenDelta Tổng số token được khấu trừ
          */
         void deleteDocumentShadows(List<String> documentIds, String datasetId, Long chunkDelta, Long tokenDelta);
 
         /**
-         * 根据数据集ID清理所有关联文档 (级联删除专用)
-         * 
-         * @param datasetId 数据集ID
+         * Làm sạch tất cả các tài liệu liên quan dựa trên ID tập dữ liệu (chỉ xóa theo tầng)
+         *
+         * @param tập dữ liệuId ID tập dữ liệu
          */
         void deleteDocumentsByDatasetId(String datasetId);
 
         /**
-         * 同步所有处于 RUNNING 状态的文档 (供定时任务调用)
+         * Đồng bộ hóa tất cả tài liệu ở trạng thái CHẠY (đối với các cuộc gọi tác vụ đã lên lịch)
          */
         void syncRunningDocuments();
 
         /**
-         * 从RAGFlow全量同步文档到本地影子表
-         * 拉取远端所有文档，与本地影子表对比，插入缺失的记录
+         * Đồng bộ hóa tất cả tài liệu từ RAGFlow sang bảng bóng cục bộ
+         * Kéo tất cả tài liệu từ đầu xa, so sánh chúng với bảng bóng cục bộ và chèn các bản ghi bị thiếu
          *
-         * @param datasetId 数据集ID
-         * @return 新同步的文档数量
+         * @param tập dữ liệuId ID tập dữ liệu
+         * @return Số lượng tài liệu mới được đồng bộ
          */
         int syncDocumentsFromRAG(String datasetId);
 }
