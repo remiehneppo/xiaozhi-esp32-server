@@ -1364,6 +1364,9 @@ export default {
   'knowledgeFileUpload.confirmBatchDelete': 'Are you sure you want to delete the selected {count} files?',
   'knowledgeFileUpload.batchDeleteSuccess': 'Successfully deleted {count} files',
   'knowledgeFileUpload.batchDeleteFailed': 'Batch delete failed',
+  'knowledgeFileUpload.batchUploadSuccess': 'Successfully uploaded {count} files',
+  'knowledgeFileUpload.batchUploadFailed': 'Failed to upload {count} files: {files}',
+  'knowledgeFileUpload.batchUploadFailedGeneral': 'Batch upload failed',
   'knowledgeFileUpload.sliceCount': 'Slice Count',
   'knowledgeFileUpload.add': 'Add',
   'knowledgeFileUpload.retrievalTest': 'Retrieval Test',
@@ -1387,6 +1390,8 @@ export default {
   'knowledgeFileUpload.comprehensiveSimilarity': 'Comprehensive Similarity',
   'knowledgeFileUpload.content': 'Content:',
   'knowledgeFileUpload.testQuestionRequired': 'Please enter test question',
+  'knowledgeFileUpload.fileSizeLimit': 'File size cannot exceed 10MB!',
+  'knowledgeFileUpload.selectFiles': 'Please select files to upload',
   'knowledgeBaseDialog.descriptionRequired': 'Please enter knowledge base description',
 
   // Feature Management page text

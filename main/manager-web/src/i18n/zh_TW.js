@@ -1364,6 +1364,9 @@ export default {
   'knowledgeFileUpload.confirmBatchDelete': '確定要刪除選中的{count}個文件嗎？',
   'knowledgeFileUpload.batchDeleteSuccess': '成功刪除{count}個文件',
   'knowledgeFileUpload.batchDeleteFailed': '批量刪除失敗',
+  'knowledgeFileUpload.batchUploadSuccess': '成功上傳 {count} 個文件',
+  'knowledgeFileUpload.batchUploadFailed': '上傳失敗 {count} 個文件: {files}',
+  'knowledgeFileUpload.batchUploadFailedGeneral': '批量上傳失敗',
   'knowledgeFileUpload.sliceCount': '切片數量',
   'knowledgeFileUpload.add': '新增',
   'knowledgeFileUpload.retrievalTest': '召回測試',
@@ -1387,6 +1390,8 @@ export default {
   'knowledgeFileUpload.comprehensiveSimilarity': '綜合相似度',
   'knowledgeFileUpload.content': '內容:',
   'knowledgeFileUpload.testQuestionRequired': '請輸入測試問題',
+  'knowledgeFileUpload.fileSizeLimit': '文件大小不能超過10MB!',
+  'knowledgeFileUpload.selectFiles': '請選擇要上傳的文件',
   'knowledgeBaseDialog.descriptionRequired': '請輸入知识库描述',
 
   // 功能管理頁面文本

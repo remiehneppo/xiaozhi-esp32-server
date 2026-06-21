@@ -243,7 +243,9 @@ export default {
   methods: {
     openPage(url) {
       const lang = this.$i18n ? this.$i18n.locale : 'zh_CN';
-      if (!lang.startsWith('zh')) {
+      if (lang === 'vi') {
+        url = url.replace('.html', '-vi.html');
+      } else if (!lang.startsWith('zh')) {
         url = url.replace('.html', '-en.html');
       }
       window.open(url, '_blank');

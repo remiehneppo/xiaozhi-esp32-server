@@ -604,7 +604,7 @@ export default {
       // 文件上传前的验证
       const isLt10M = file.size / 1024 / 1024 < 10;
       if (!isLt10M) {
-        this.$message.error('文件大小不能超过10MB!');
+        this.$message.error(this.$t('knowledgeFileUpload.fileSizeLimit'));
         return;
       }
 
@@ -619,7 +619,7 @@ export default {
       // 文件上传前的验证
       const isLt10M = file.size / 1024 / 1024 < 10;
       if (!isLt10M) {
-        this.$message.error('文件大小不能超过10MB!');
+        this.$message.error(this.$t('knowledgeFileUpload.fileSizeLimit'));
         return false;
       }
       // 保存文件到uploadForm
@@ -643,7 +643,7 @@ export default {
     // 批量上传提交
     handleBatchUploadSubmit: function () {
       if (this.selectedFilesList.length === 0) {
-        this.$message.error('请选择要上传的文件');
+        this.$message.error(this.$t('knowledgeFileUpload.selectFiles'));
         return;
       }
 
@@ -685,12 +685,12 @@ export default {
           const failedCount = results.filter(r => !r.success).length;
 
           if (successCount > 0) {
-            this.$message.success(`成功上传 ${successCount} 个文件`);
+            this.$message.success(this.$t('knowledgeFileUpload.batchUploadSuccess', { count: successCount }));
           }
 
           if (failedCount > 0) {
             const failedFiles = results.filter(r => !r.success).map(r => r.fileName);
-            this.$message.error(`上传失败 ${failedCount} 个文件: ${failedFiles.join(', ')}`);
+            this.$message.error(this.$t('knowledgeFileUpload.batchUploadFailed', { count: failedCount, files: failedFiles.join(', ') }));
           }
 
           if (successCount > 0) {
@@ -700,7 +700,7 @@ export default {
         })
         .catch(error => {
           this.uploading = false;
-          this.$message.error('批量上传失败');
+          this.$message.error(this.$t('knowledgeFileUpload.batchUploadFailedGeneral'));
           console.error('批量上传失败:', error);
         });
     },

@@ -43,10 +43,29 @@ export const register = () => {
                       box-shadow: 0 2px 12px 0 rgba(0,0,0,.1);
                       z-index: 9999;
                     `;
+                    const savedLang = localStorage.getItem('userLanguage');
+                    let text = '发现新版本，点击刷新应用';
+                    let btnText = '刷新';
+                    if (savedLang === 'en') {
+                      text = 'New version found, click to refresh';
+                      btnText = 'Refresh';
+                    } else if (savedLang === 'vi') {
+                      text = 'Đã có phiên bản mới, click để làm mới';
+                      btnText = 'Làm mới';
+                    } else if (savedLang === 'de') {
+                      text = 'Neue Version gefunden, zum Aktualisieren klicken';
+                      btnText = 'Aktualisieren';
+                    } else if (savedLang === 'pt_BR') {
+                      text = 'Nova versão encontrada, clique para atualizar';
+                      btnText = 'Atualizar';
+                    } else if (savedLang === 'zh_TW') {
+                      text = '發現新版本，點擊刷新應用';
+                      btnText = '刷新';
+                    }
                     updateNotification.innerHTML = `
                       <div style="display: flex; align-items: center;">
-                        <span style="margin-right: 10px;">发现新版本，点击刷新应用</span>
-                        <button style="background: white; color: #409EFF; border: none; padding: 5px 10px; border-radius: 3px; cursor: pointer;">刷新</button>
+                        <span style="margin-right: 10px;">${text}</span>
+                        <button style="background: white; color: #409EFF; border: none; padding: 5px 10px; border-radius: 3px; cursor: pointer;">${btnText}</button>
                       </div>
                     `;
                     document.body.appendChild(updateNotification);

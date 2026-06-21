@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thỏa thuận người dùng - Dịch vụ Backend Xiaozhi</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            line-height: 1.8;
+            color: #333;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px 30px;
+            background: #f9f9fb;
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 24px;
+            margin-bottom: 5px;
+        }
+
+        h2 {
+            font-size: 18px;
+            margin-top: 30px;
+            border-bottom: 1px solid #e0e0e0;
+            padding-bottom: 6px;
+        }
+
+        p {
+            margin: 8px 0;
+            text-indent: 2em;
+        }
+
+        .update-date {
+            text-align: center;
+            color: #888;
+            font-size: 14px;
+            margin-bottom: 30px;
+        }
+
+        .bold {
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1>Thỏa thuận người dùng</h1>
+    <div class="update-date">Ngày cập nhật: 10 tháng 3 năm 2026</div>
+
+    <h2>Điều khoản lưu ý</h2>
+    <p>Chào mừng bạn sử dụng dịch vụ backend Xiaozhi (sau đây gọi tắt là "Dịch vụ"). Dịch vụ này nhằm cung cấp hỗ trợ dịch vụ backend cho thiết bị phần cứng Xiaozhi AI, bao gồm nhưng không giới hạn ở các tính năng như tương tác giọng nói thông minh, hiểu thị giác, nhận dạng ý định, ghi nhớ hội thoại, hỏi đáp kho tri thức, quản lý thiết bị, quản lý Agent, v.v. Đơn vị vận hành Dịch vụ này là người trực tiếp triển khai và quản lý Dịch vụ (sau đây gọi tắt là "Đơn vị vận hành" hoặc "chúng tôi").
+    </p>
+    <p class="bold">Trước khi đăng ký, đăng nhập hoặc sử dụng Dịch vụ, vui lòng đọc kỹ và hiểu rõ các điều khoản của Thỏa thuận này, đặc biệt là các điều khoản được bôi đậm có thể liên quan lớn đến quyền lợi của bạn, bao gồm nhưng không giới hạn ở điều khoản miễn trừ trách nhiệm, giới hạn trách nhiệm, v.v.</p>
+    <p class="bold">Khi bạn hoàn thành việc đăng ký, đăng nhập theo các gợi ý trên trang hoặc sử dụng Dịch vụ này bằng các phương thức khác, điều đó đồng nghĩa với việc bạn đã đọc kỹ, hiểu rõ và chấp nhận toàn bộ nội dung của Thỏa thuận này. Nếu bạn không đồng ý với Thỏa thuận này hoặc bất kỳ điều khoản nào trong đó, vui lòng lập tức ngừng sử dụng Dịch vụ.</p>
+    <p>Thỏa thuận này có thể được cập nhật và sửa đổi tùy theo tình hình thực tế, thỏa thuận sửa đổi sẽ được công bố thông qua các thông báo trên nền tảng. Thỏa thuận sửa đổi có hiệu lực kể từ ngày công bố, việc tiếp tục sử dụng Dịch vụ sau khi thỏa thuận sửa đổi đồng nghĩa với việc bạn chấp nhận thỏa thuận đã được sửa đổi.</p>
+
+    <h2>I. Định nghĩa</h2>
+    <p><span class="bold">Dịch vụ backend Xiaozhi:</span> Chỉ dịch vụ backend Xiaozhi và hệ thống dịch vụ backend được triển khai, bao gồm nhưng không giới hạn ở Bảng điều khiển (Trang quản trị), giao diện API, dịch vụ truyền thông WebSocket, v.v.
+    </p>
+    <p><span class="bold">Bảng điều khiển (Trang quản trị):</span> Chỉ giao diện quản trị Web do Dịch vụ cung cấp, được sử dụng cho quản lý thiết bị, cấu hình Agent, quản lý người dùng, v.v.</p>
+    <p><span class="bold">Người dùng:</span> Chỉ cá nhân, pháp nhân hoặc tổ chức khác sử dụng Dịch vụ thông qua đăng ký hoặc các phương thức khác, sau đây gọi là "bạn".</p>
+    <p><span class="bold">Agent (Thể thông minh):</span> Chỉ vai trò AI được tạo và cấu hình trong Dịch vụ này, tích hợp tập hợp các năng lực như mô hình ngôn ngữ, nhận dạng giọng nói, tổng hợp giọng nói, hiểu thị giác, nhận dạng ý định, ghi nhớ hội thoại, kho tri thức, v.v.</p>
+    <p><span class="bold">Thiết bị:</span> Chỉ các thiết bị phần cứng như ESP32 được kết nối và quản lý thông qua Dịch vụ này.</p>
+
+    <h2>II. Phạm vi thỏa thuận</h2>
+    <p>Thỏa thuận này là thỏa thuận pháp lý giữa bạn và Đơn vị vận hành về việc sử dụng Dịch vụ này. Thỏa thuận này áp dụng cho toàn bộ hành vi sử dụng Dịch vụ của bạn thông qua Bảng điều khiển hoặc các phương thức khác.</p>
+    <p>Mã nguồn của Dịch vụ này tuân theo các giấy phép nguồn mở tương ứng. Thỏa thuận này ràng buộc hành vi sử dụng Dịch vụ của bạn, không ảnh hưởng đến các quyền do giấy phép nguồn mở mang lại cho bạn.</p>
+
+    <h2>III. Đăng ký và sử dụng tài khoản</h2>
+    <p><span class="bold">3.1 Tư cách người dùng:</span> Bạn xác nhận rằng, trước khi sử dụng Dịch vụ này, bạn phải có năng lực hành vi dân sự phù hợp theo quy định của pháp luật. Nếu bạn là người chưa thành niên, bạn nên sử dụng Dịch vụ dưới sự đi kèm và hướng dẫn của người giám hộ hợp pháp.</p>
+    <p><span class="bold">3.2 Đăng ký tài khoản:</span> Bạn có thể đăng ký và đăng nhập Dịch vụ thông qua mã xác thực điện thoại hoặc tên đăng nhập và mật khẩu. Bạn nên cung cấp thông tin đăng ký xác thực, chính xác và đầy đủ, đồng thời cập nhật kịp thời.</p>
+    <p><span class="bold">3.3 An toàn tài khoản:</span> Bạn phải bảo quản tài khoản và mật khẩu của mình cẩn thận. Mọi hậu quả phát sinh do lộ tài khoản hoặc bị người khác mạo dụng vì nguyên nhân từ phía bạn sẽ do bạn tự chịu trách nhiệm. Nếu phát hiện nguy cơ an ninh tài khoản, vui lòng liên hệ Đơn vị vận hành ngay lập tức.</p>
+    <p><span class="bold">3.4 Giới hạn sử dụng tài khoản:</span> Tài khoản của bạn chỉ dành riêng cho bạn sử dụng, nếu không có sự đồng ý của Đơn vị vận hành, không được chuyển nhượng, cho thuê hoặc cho bên thứ ba mượn dưới bất kỳ hình thức nào.</p>
+    <p><span class="bold">3.5 Hủy tài khoản:</span> Nếu cần hủy tài khoản, bạn có thể thực hiện thông qua chức năng cài đặt tài khoản trên Bảng điều khiển hoặc liên hệ Đơn vị vận hành để xử lý. Sau khi hủy tài khoản, dữ liệu liên quan sẽ bị xóa và không thể khôi phục, vui lòng thao tác cẩn trọng.</p>
+
+    <h2>IV. Nội dung dịch vụ</h2>
+    <p><span class="bold">4.1 Khái quát dịch vụ:</span> Dịch vụ này dựa trên công nghệ trí tuệ nhân tạo, gọi mô hình trí tuệ nhân tạo tạo sinh của bên thứ ba qua giao diện API để cung cấp dịch vụ tương tác thông minh cho các thiết bị phần cứng được kết nối, bao gồm nhưng không giới hạn ở Phát hiện hoạt động giọng nói (VAD), Nhận dạng giọng nói (ASR), Hiểu ngữ nghĩa (LLM), Tổng hợp giọng nói (TTS), Hiểu thị giác (VLLM), Nhận dạng ý định (Intent), Ghi nhớ hội thoại (Memory), Kho tri thức (RAG), v.v.
+    </p>
+    <p><span class="bold">4.2 Quản lý Agent:</span> Bạn có thể tạo và cấu hình Agent thông qua Bảng điều khiển, bao gồm thiết lập mẫu vai trò, lựa chọn mô hình ngôn ngữ, cấu hình tham số giọng nói, thiết lập quy tắc nhận dạng ý định, quản lý kho tri thức, bật ghi nhớ hội thoại, cấu hình các tiện ích bổ sung (plugin) cho Agent, v.v. Nội dung thiết lập của Agent không được vi phạm luật pháp và quy định quốc gia.</p>
+    <p><span class="bold">4.3 Quản lý thiết bị:</span> Bạn có thể liên kết và quản lý thiết bị phần cứng của mình thông qua Bảng điều khiển, thực hiện cấu hình thiết bị, cập nhật phần sụn, nâng cấp từ xa OTA, v.v. Bạn phải đảm bảo thiết bị được quản lý thuộc sở hữu hợp pháp của bạn hoặc bạn đã được ủy quyền.</p>
+    <p><span class="bold">4.4 Hiểu thị giác:</span> Dịch vụ hỗ trợ thu thập hình ảnh qua camera thiết bị, gọi mô hình thị giác bên thứ ba để nhận dạng hình ảnh và hiểu ngữ cảnh. Bạn phải bảo đảm hành vi thu thập hình ảnh tuân thủ luật pháp quy định liên quan và không xâm phạm quyền riêng tư của người khác.</p>
+    <p><span class="bold">4.5 Nhận dạng ý định:</span> Dịch vụ có thể hiểu ý định trong lệnh của người dùng thông qua chức năng nhận dạng ý định và kích hoạt các thao tác hoặc dịch vụ tương ứng, ví dụ như điều khiển thiết bị thông minh, truy vấn thông tin, v.v.</p>
+    <p><span class="bold">4.6 Trí nhớ hội thoại:</span> Dịch vụ có thể ghi lại và lưu trữ tóm tắt lịch sử tương tác giữa bạn và Agent để cung cấp trải nghiệm tương tác liền mạch, cá nhân hóa hơn trong các cuộc hội thoại tiếp theo. Bạn có thể quản lý hoặc xóa dữ liệu ghi nhớ trên Bảng điều khiển.</p>
+    <p><span class="bold">4.7 Kho tri thức:</span> Dịch vụ hỗ trợ bạn tải lên tài liệu, văn bản, v.v. để xây dựng kho tri thức, Agent có thể truy xuất nội dung kho tri thức để cung cấp câu trả lời trong cuộc trò chuyện. Bạn phải bảo đảm nội dung kho tri thức tải lên không xâm phạm quyền sở hữu trí tuệ của bên thứ ba và không chứa nội dung vi phạm pháp luật.</p>
+    <p><span class="bold">4.8 Nhận dạng dấu vân giọng nói:</span> Dịch vụ hỗ trợ chức năng nhận dạng giọng nói để xác minh danh tính người nói và cung cấp dịch vụ cá nhân hóa. Dữ liệu giọng nói sẽ được dùng cho mục đích xác minh.</p>
+    <p><span class="bold">4.9 Nhân bản giọng nói:</span> Dịch vụ hỗ trợ tính năng sao chép giọng nói để nhân bản âm sắc tùy chỉnh từ mẫu âm thanh cung cấp. Giọng nói nhân bản chỉ dành riêng cho bạn sử dụng, không được dùng để mạo danh người khác hoặc tham gia các hoạt động vi phạm pháp luật.</p>
+    <p><span class="bold">4.10 Điểm kết nối MCP:</span> Dịch vụ này hỗ trợ giao thức MCP (Model Context Protocol), có thể hoạt động như MCP Server để cung cấp khả năng gọi công cụ cho bên ngoài, hoặc làm MCP Client để gọi dịch vụ MCP bên ngoài, thực hiện tích hợp tiêu chuẩn hóa với hệ thống ngoại vi.</p>
+    <p><span class="bold">4.11 Nguồn cấp ngữ cảnh (Context Provider):</span> Dịch vụ hỗ trợ chức năng Context Provider để lấy thông tin thời gian thực từ nguồn dữ liệu ngoài như thời tiết, tin tức, chứng khoán, v.v., cung cấp nguồn kiến thức phong phú hơn cho Agent.
+    </p>
+    <p><span class="bold">4.12 Giao thức MQTT:</span> Dịch vụ này hỗ trợ giao thức MQTT để truyền thông điệp với các thiết bị IoT. Bạn có thể thực hiện gửi lệnh điều khiển thiết bị, giám sát trạng thái thiết bị thông qua giao thức MQTT.</p>
+    <p><span class="bold">4.13 Thuyết minh dịch vụ:</span> Nội dung cuộc trò chuyện, câu trả lời do mô hình AI bên thứ ba tạo ra mà Dịch vụ này phụ thuộc chỉ mang tính chất tham khảo, không cấu thành bất kỳ ý kiến chuyên môn nào. Bạn không được dùng nội dung đầu ra làm lời khuyên chuyên môn trong các lĩnh vực như y tế, pháp luật, tài chính, v.v. Mọi phán đoán hoặc quyết định do bạn đưa ra dựa trên nội dung đầu ra sẽ do bạn tự chịu trách nhiệm hoàn toàn.
+    </p>
+    <p class="bold">4.14 Chi phí dịch vụ: Dịch vụ này là một dự án nguồn mở miễn phí, không thu bất kỳ chi phí sử dụng nào từ người dùng, chỉ cung cấp năng lượng nền tảng để gọi các dịch vụ bên thứ ba, không liên quan đến bất kỳ tính năng trả phí hay dịch vụ gia tăng giá trị nào.</p>
+    <p>Dịch vụ hỗ trợ nhiều nhà cung cấp dịch vụ AI, mô hình tính phí của các nhà cung cấp khác nhau như sau:</p>
+    <p>（1）<span class="bold">Dịch vụ miễn phí:</span> Một số nhà cung cấp cung cấp hạn ngạch miễn phí hoặc dịch vụ hoàn toàn miễn phí, như Zhipu AI (các mô hình miễn phí như glm-4-flash), Microsoft EdgeTTS tổng hợp giọng nói, v.v.</p>
+    <p>（2）<span class="bold">Dịch vụ tính phí theo lượng sử dụng:</span> Một số nhà cung cấp tính phí theo lưu lượng gọi API, như OpenAI, Alibaba Cloud, Baidu Wenxin, Xunfei, v.v. Bạn cần tự thanh toán chi phí tương ứng cho nhà cung cấp bên thứ ba, các chi phí này không liên quan đến Dịch vụ này.</p>
+    <p>（3）<span class="bold">Phương án triển khai cục bộ (Local deployment):</span> Dịch vụ hỗ trợ các giải pháp AI triển khai hoàn toàn cục bộ như nhận dạng giọng nói FunASR, tổng hợp giọng nói FishSpeech, mô hình ngôn ngữ lớn Ollama chạy cục bộ. Triển khai cục bộ không tốn phí mạng hay phí gọi API, nhưng yêu cầu phần cứng cục bộ có đủ tài nguyên tính toán.
+    </p>
+    <p>Bạn có thể lựa chọn nhà cung cấp dịch vụ phù hợp theo nhu cầu thực tế và ngân sách. Vui lòng tham khảo hướng dẫn chính thức từ các nhà cung cấp để biết chi tiết biểu phí.</p>
+    <p><span class="bold">4.15 Thay đổi dịch vụ:</span> Đơn vị vận hành bảo lưu quyền điều chỉnh, nâng cấp hoặc chấm dứt nội dung dịch vụ tùy theo tình hình thực tế, và sẽ cố gắng thông báo trước trong khả năng có thể.</p>
+
+    <h2>V. Quy chuẩn hành vi người dùng</h2>
+    <p><span class="bold">5.1 Sử dụng hợp pháp:</span> Khi sử dụng Dịch vụ này, bạn phải tuân thủ luật pháp và các quy định pháp lý của Cộng hòa Nhân dân Trung Hoa cùng các điều ước quốc tế liên quan, không được lợi dụng Dịch vụ này để thực hiện bất kỳ hoạt động vi phạm pháp luật nào.</p>
+    <p class="bold">5.2 Các hành vi bị cấm: Bạn cam kết không thực hiện các hành vi sau khi sử dụng Dịch vụ này:</p>
+    <p>（1）Phát tán, truyền tải, lưu trữ nội dung gây nguy hại đến an ninh quốc gia, ổn định xã hội, bao gồm nhưng không giới hạn ở việc lật đổ chính quyền, gây hại đến danh dự và lợi ích quốc gia, kích động thù hằn dân tộc, v.v.</p>
+    <p>（2）Phát tán, truyền tải, lưu trữ nội dung xâm phạm quyền lợi hợp pháp của người khác, bao gồm nhưng không giới hạn ở quyền sở hữu trí tuệ, quyền riêng tư, danh dự, v.v.</p>
+    <p>（3）Phát tán, truyền tải, lưu trữ nội dung dâm ô, đồi trụy, bạo lực, khủng bố hoặc xúi giục phạm tội.</p>
+    <p>（4）Phát tán thông tin sai lệch, tung tin đồn thất thiệt hoặc thực hiện hành vi lừa đảo.</p>
+    <p>（5）Gây cản trở sự vận hành bình thường của Dịch vụ dưới bất kỳ hình thức nào, bao gồm nhưng không giới hạn ở việc tấn công máy chủ, phát tán chương trình độc hại, cố ý tiêu thụ quá mức tài nguyên hệ thống, v.v.</p>
+    <p>（6）Tự ý thực hiện kỹ thuật ngược (reverse engineering), dịch ngược (decompile) hoặc cố gắng lấy mã nguồn hệ thống khi chưa được ủy quyền (điều khoản này không hạn chế việc bạn sử dụng hợp pháp mã nguồn mở dựa trên giấy phép nguồn mở tương ứng).</p>
+    <p>（7）Lợi dụng Dịch vụ để thực hiện các thao tác hàng loạt tự động, cố ý tiêu hao định mức gọi API hoặc các tài nguyên hệ thống khác.</p>
+    <p>（8）Nhập các nội dung vi phạm luật pháp, quy định hoặc thuần phong mỹ tục xã hội vào thiết lập Agent.</p>
+    <p>（9）Lợi dụng Dịch vụ để làm tổn hại hoặc cố ý làm tổn hại người chưa thành niên.</p>
+    <p>（10）Các hành vi khác vi phạm pháp luật, quy định, thỏa thuận trong Thỏa thuận này hoặc có thể gây tổn hại tới quyền lợi hợp pháp của Đơn vị vận hành và bên thứ ba.</p>
+    <p><span class="bold">5.3 Xử lý vi phạm:</span> Nếu bạn vi phạm quy chuẩn hành vi nêu trên, Đơn vị vận hành có quyền áp dụng các biện pháp như cảnh cáo, giới hạn chức năng, tạm dừng dịch vụ, khóa tài khoản tùy theo mức độ nghiêm trọng, và bảo lưu quyền truy cứu trách nhiệm pháp lý.</p>
+
+    <h2>VI. Quyền sở hữu trí tuệ</h2>
+    <p><span class="bold">6.1 Giấy phép nguồn mở:</span> Dịch vụ này là dự án nguồn mở, mã nguồn tuân theo giấy phép nguồn mở tương ứng. Bạn có thể sử dụng mã nguồn liên quan với điều kiện tuân thủ các điều khoản của giấy phép đó.</p>
+    <p><span class="bold">6.2 Quyền sở hữu nội dung dịch vụ:</span> Ngoại trừ mã nguồn mở, bản quyền thiết kế giao diện, biểu tượng, văn bản và các nội dung khác do Đơn vị vận hành độc lập sáng tạo sẽ thuộc quyền sở hữu trí tuệ của Đơn vị vận hành.</p>
+    <p><span class="bold">6.3 Nội dung của người dùng:</span> Quyền sở hữu trí tuệ đối với các nội dung do bạn nhập, tải lên hoặc tạo ra thông qua Dịch vụ sẽ được xác định theo luật pháp quy định liên quan. Bạn cấp cho Đơn vị vận hành quyền lưu trữ và xử lý cần thiết đối với nội dung bạn nhập nhằm mục đích duy trì và cải tiến dịch vụ.</p>
+    <p><span class="bold">6.4 Quyền lợi bên thứ ba:</span> Khi sử dụng Dịch vụ, bạn phải tôn trọng quyền sở hữu trí tuệ và các quyền lợi hợp pháp khác của bên thứ ba. Mọi tranh chấp phát sinh do bạn xâm phạm quyền lợi của bên thứ ba sẽ do bạn tự chịu trách nhiệm hoàn toàn.</p>
+
+    <h2>VII. Bảo vệ quyền riêng tư</h2>
+    <p><span class="bold">7.1 Thu thập thông tin:</span> Để cung cấp Dịch vụ này, Đơn vị vận hành có thể thu thập thông tin đăng ký của bạn (như số điện thoại, tên đăng nhập), thông tin thiết bị, nhật ký sử dụng, v.v. Vui lòng tham khảo "Chính sách bảo mật" để biết quy tắc thu thập và sử dụng thông tin cá nhân cụ thể.</p>
+    <p><span class="bold">7.2 Bảo vệ thông tin:</span> Đơn vị vận hành sẽ áp dụng các biện pháp kỹ thuật và quản lý hợp lý để bảo vệ an toàn thông tin cá nhân của bạn. Tuy nhiên, do tính chất mở của Internet, Đơn vị vận hành không thể đảm bảo an toàn tuyệt đối, vui lòng lưu ý tự bảo vệ các thông tin cá nhân nhạy cảm.</p>
+    <p class="bold">7.3 Cảnh báo an toàn thông tin: Vui lòng không tiết lộ thông tin nhạy cảm như tài khoản tài sản, thẻ ngân hàng, mật khẩu, v.v. cho AI trong quá trình sử dụng Dịch vụ này, mọi tổn thất phát sinh từ việc này sẽ do bạn tự chịu trách nhiệm.</p>
+
+    <h2>VIII. Tuyên bố miễn trừ trách nhiệm</h2>
+    <p class="bold">8.1 Nội dung do AI tạo ra: Dịch vụ này phụ thuộc vào mô hình AI của bên thứ ba để cung cấp khả năng tương tác thông minh, nội dung do AI tạo ra có thể không chính xác, không đầy đủ hoặc không phù hợp. Đơn vị vận hành không cam kết hoặc đảm bảo bất kỳ điều gì về tính chân thực, chính xác và đầy đủ của nội dung do AI tạo ra.</p>
+    <p class="bold">8.2 Gián đoạn dịch vụ: Đơn vị vận hành không chịu trách nhiệm đối với việc gián đoạn hoặc bất thường của dịch vụ do các nguyên nhân sau:</p>
+    <p>（1）Các yếu tố bất khả kháng như thiên tai, dịch bệnh, chiến tranh, v.v.</p>
+    <p>（2）Các sự cố cung cấp điện, sự cố mạng viễn thông và các yếu tố dịch vụ công cộng khác.</p>
+    <p>（3）Sự cố dịch vụ hoặc điều chỉnh chính sách từ nhà cung cấp dịch vụ mô hình AI bên thứ ba.</p>
+    <p>（4）Gián đoạn dịch vụ tạm thời do bảo trì, nâng cấp hệ thống.</p>
+    <p>（5）Sự cố an ninh mạng như tấn công của tin tặc, vi-rút máy tính, v.v.</p>
+    <p>（6）Điều chỉnh dịch vụ do quy định pháp luật hoặc kiểm soát của chính phủ.</p>
+    <p>（7）Các trường hợp khác không do lỗi của Đơn vị vận hành.</p>
+    <p><span class="bold">8.3 Dịch vụ bên thứ ba:</span> Dịch vụ này có thể liên quan đến các dịch vụ do bên thứ ba cung cấp như mô hình ngôn ngữ, nhận dạng giọng nói, tổng hợp giọng nói, mô hình thị giác, nhận dạng ý định, v.v. Bạn phải đồng thời tuân thủ các điều khoản dịch vụ của bên thứ ba khi sử dụng. Đối với các vấn đề phát sinh từ dịch vụ bên thứ ba, vui lòng liên hệ trực tiếp với bên thứ ba đó.</p>
+    <p class="bold">8.4 Tuyên bố nguồn mở: Dịch vụ này là dự án nguồn mở, được cung cấp theo nguyên trạng "as is". Trong phạm vi tối đa được pháp luật cho phép, Đơn vị vận hành không đưa ra bất kỳ bảo đảm rõ ràng hay ngầm định nào về khả năng thương mại, sự phù hợp cho một mục đích cụ thể hoặc tính không xâm phạm của Dịch vụ này.</p>
+    <p class="bold">8.5 Tuyên bố đặc biệt về phần mềm nguồn mở: Dự án này là phần mềm nguồn mở. Dịch vụ này và bất kỳ nhà cung cấp dịch vụ API bên thứ ba nào được kết nối (bao gồm nhưng không giới hạn ở nhận dạng giọng nói, mô hình lớn, tổng hợp giọng nói, v.v.) đều không có mối quan hệ hợp tác thương mại, và không cung cấp bất kỳ hình thức bảo đảm nào cho chất lượng dịch vụ cũng như an toàn tài chính của họ. Phần mềm này không lưu ký bất kỳ khóa tài khoản nào, không tham gia vào luồng tiền và không chịu rủi ro mất mát tiền nạp.
+    </p>
+    <p class="bold">8.6 Cảnh báo an toàn: Các chức năng của dự án này chưa hoàn thiện và chưa qua đánh giá an ninh mạng, vui lòng không sử dụng trong môi trường thực tế (production). Nếu bạn triển khai học tập dự án này trên mạng Internet công cộng, vui lòng thực hiện các biện pháp phòng vệ cần thiết, bao gồm nhưng không giới hạn ở việc đặt mật khẩu mạnh, giới hạn quyền truy cập, kích hoạt truyền tải mã hóa HTTPS, v.v.</p>
+
+    <h2>IX. Bảo vệ người chưa thành niên</h2>
+    <p>9.1 Nếu bạn là người chưa thành niên dưới 18 tuổi, bạn nên sử dụng Dịch vụ dưới sự hướng dẫn và đồng ý của người giám hộ.</p>
+    <p>9.2 Người giám hộ nên tăng cường giám sát người chưa thành niên sử dụng Dịch vụ, hướng dẫn họ sử dụng hợp lý và tránh phụ thuộc quá mức.</p>
+    <p>9.3 Người chưa thành niên nên chú ý bảo vệ thông tin cá nhân khi sử dụng Dịch vụ này, tránh tải lên hoặc tiết lộ thông tin nhạy cảm cá nhân.</p>
+
+    <h2>X. Chấm dứt thỏa thuận</h2>
+    <p><span class="bold">10.1 Người dùng chấm dứt:</span> Bạn có quyền ngừng sử dụng Dịch vụ và hủy tài khoản bất cứ lúc nào.</p>
+    <p><span class="bold">10.2 Đơn vị vận hành chấm dứt:</span> Khi xảy ra các trường hợp sau, Đơn vị vận hành có quyền chấm dứt cung cấp dịch vụ cho bạn:</p>
+    <p>（1）Bạn vi phạm các thỏa thuận trong Thỏa thuận này.</p>
+    <p>（2）Bạn lợi dụng Dịch vụ này để thực hiện các hoạt động vi phạm pháp luật.</p>
+    <p>（3）Theo các yêu cầu của pháp luật, quy định hoặc chính sách.</p>
+    <p>（4）Đơn vị vận hành quyết định ngừng vận hành Dịch vụ này.</p>
+    <p><span class="bold">10.3 Xử lý sau chấm dứt:</span> Sau khi thỏa thuận chấm dứt, Đơn vị vận hành không có nghĩa vụ giữ lại thông tin tài khoản và dữ liệu liên quan của bạn. Đơn vị vận hành vẫn có quyền truy cứu trách nhiệm vi phạm thỏa thuận của bạn phát sinh trong thời gian Thỏa thuận có hiệu lực.</p>
+
+    <h2>XI. Áp dụng luật pháp và giải quyết tranh chấp</h2>
+    <p>11.1 Việc giao kết, hiệu lực, giải thích, sửa đổi, chấm dứt và giải quyết tranh chấp của Thỏa thuận này đều áp dụng pháp luật của Cộng hòa Nhân dân Trung Hoa.</p>
+    <p>11.2 Đối với các tranh chấp phát sinh từ Thỏa thuận này hoặc Dịch vụ, hai bên nên thương lượng giải quyết trên tinh thần hữu nghị. Nếu thương lượng không thành, bất kỳ bên nào cũng có quyền khởi kiện ra tòa án nhân dân có thẩm quyền tại nơi Đơn vị vận hành đặt trụ sở.</p>
+    <p>11.3 Nếu bất kỳ điều khoản nào của Thỏa thuận này bị phán quyết là vô hiệu hoặc không thể thực thi, điều đó sẽ không ảnh hưởng đến hiệu lực của các điều khoản còn lại.</p>
+
+    <h2>XII. Điều khoản khác</h2>
+    <p>12.1 Thỏa thuận này cấu thành toàn bộ thỏa thuận giữa bạn và Đơn vị vận hành về việc sử dụng Dịch vụ này.</p>
+    <p>12.2 Việc Đơn vị vận hành chưa thực hiện hoặc trì hoãn thực hiện bất kỳ quyền hạn nào theo Thỏa thuận này không cấu thành việc từ bỏ quyền hạn đó.</p>
+
+</body>
+
+</html>

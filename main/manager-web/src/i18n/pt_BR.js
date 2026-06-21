@@ -1364,6 +1364,9 @@ export default {
   'knowledgeFileUpload.confirmBatchDelete': 'Tem certeza de que deseja excluir os {count} arquivos selecionados?',
   'knowledgeFileUpload.batchDeleteSuccess': '{count} arquivos excluídos com sucesso',
   'knowledgeFileUpload.batchDeleteFailed': 'Falha na exclusão em lote',
+  'knowledgeFileUpload.batchUploadSuccess': 'Enviado com sucesso {count} arquivos',
+  'knowledgeFileUpload.batchUploadFailed': 'Falha ao enviar {count} arquivos: {files}',
+  'knowledgeFileUpload.batchUploadFailedGeneral': 'Falha no envio em lote',
   'knowledgeFileUpload.sliceCount': 'Quantidade de Fatias',
   'knowledgeFileUpload.add': 'Adicionar',
   'knowledgeFileUpload.retrievalTest': 'Teste de Recuperação',
@@ -1387,6 +1390,8 @@ export default {
   'knowledgeFileUpload.comprehensiveSimilarity': 'Similaridade Geral',
   'knowledgeFileUpload.content': 'Conteúdo:',
   'knowledgeFileUpload.testQuestionRequired': 'Por favor, insira a pergunta de teste',
+  'knowledgeFileUpload.fileSizeLimit': 'O tamanho do arquivo não pode exceder 10MB!',
+  'knowledgeFileUpload.selectFiles': 'Por favor, selecione os arquivos para enviar',
   'knowledgeBaseDialog.descriptionRequired': 'Por favor, insira a descrição da base de conhecimento',
 
   // Página de gerenciamento de funcionalidades

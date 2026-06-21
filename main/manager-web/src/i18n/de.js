@@ -1363,7 +1363,10 @@ export default {
   'knowledgeFileUpload.batchDelete': 'Löschen',
   'knowledgeFileUpload.confirmBatchDelete': 'Sind Sie sicher, dass Sie die ausgewählten {count} Dateien löschen möchten?',
   'knowledgeFileUpload.batchDeleteSuccess': 'Erfolgreich {count} Dateien gelöscht',
-  'knowledgeFileUpload.batchDeleteFailed': 'Massenlöschung fehlgeschlagen',
+  'knowledgeFileUpload.batchDeleteFailed': 'Stapellöschung fehlgeschlagen',
+  'knowledgeFileUpload.batchUploadSuccess': '{count} Dateien erfolgreich hochgeladen',
+  'knowledgeFileUpload.batchUploadFailed': '{count} Dateien konnten nicht hochgeladen werden: {files}',
+  'knowledgeFileUpload.batchUploadFailedGeneral': 'Stapelupload fehlgeschlagen',
   'knowledgeFileUpload.sliceCount': 'Segmentanzahl',
   'knowledgeFileUpload.add': 'Hinzufügen',
   'knowledgeFileUpload.retrievalTest': 'Abruftest',
@@ -1387,6 +1390,8 @@ export default {
   'knowledgeFileUpload.comprehensiveSimilarity': 'Umfassende Ähnlichkeit',
   'knowledgeFileUpload.content': 'Inhalt:',
   'knowledgeFileUpload.testQuestionRequired': 'Bitte Testfrage eingeben',
+  'knowledgeFileUpload.fileSizeLimit': 'Dateigröße darf 10 MB nicht überschreiten!',
+  'knowledgeFileUpload.selectFiles': 'Bitte wählen Sie die hochzuladenden Dateien aus',
   'knowledgeBaseDialog.descriptionRequired': 'Bitte Wissensbasis-Beschreibung eingeben',
 
   // Feature Management page text

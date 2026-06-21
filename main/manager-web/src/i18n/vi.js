@@ -1364,6 +1364,9 @@ export default {
   'knowledgeFileUpload.confirmBatchDelete': 'Bạn có chắc chắn muốn xóa {count} tệp đã chọn?',
   'knowledgeFileUpload.batchDeleteSuccess': 'Đã xóa thành công {count} tệp',
   'knowledgeFileUpload.batchDeleteFailed': 'Xóa hàng loạt thất bại',
+  'knowledgeFileUpload.batchUploadSuccess': 'Tải lên thành công {count} tệp',
+  'knowledgeFileUpload.batchUploadFailed': 'Tải lên thất bại {count} tệp: {files}',
+  'knowledgeFileUpload.batchUploadFailedGeneral': 'Tải lên hàng loạt thất bại',
   'knowledgeFileUpload.sliceCount': 'Số lượng phần',
   'knowledgeFileUpload.add': 'Thêm',
   'knowledgeFileUpload.retrievalTest': 'Kiểm tra truy xuất',
@@ -1387,6 +1390,8 @@ export default {
   'knowledgeFileUpload.comprehensiveSimilarity': 'Độ tương đồng toàn diện',
   'knowledgeFileUpload.content': 'Nội dung:',
   'knowledgeFileUpload.testQuestionRequired': 'Vui lòng nhập câu hỏi kiểm tra',
+  'knowledgeFileUpload.fileSizeLimit': 'Kích thước tệp không thể vượt quá 10MB!',
+  'knowledgeFileUpload.selectFiles': 'Vui lòng chọn tệp cần tải lên',
   'knowledgeBaseDialog.descriptionRequired': 'Vui lòng nhập mô tả kho tri thức',
 
   // Feature Management page text
