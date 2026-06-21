@@ -84,7 +84,7 @@ const routes = [
     },
     meta: {
       requiresAuth: true,
-      title: '参数管理'
+      title: 'Params Management'
     }
   },
   {
@@ -95,7 +95,7 @@ const routes = [
     },
     meta: {
       requiresAuth: true,
-      title: '知识库管理'
+      title: 'Knowledge Base Management'
     }
   },
   {
@@ -106,7 +106,7 @@ const routes = [
     },
     meta: {
       requiresAuth: true,
-      title: '文档上传管理'
+      title: 'Document Upload Management'
     }
   },
 
@@ -118,7 +118,7 @@ const routes = [
     },
     meta: {
       requiresAuth: true,
-      title: '服务端管理'
+      title: 'Server Side Management'
     }
   },
   {
@@ -129,7 +129,7 @@ const routes = [
     },
     meta: {
       requiresAuth: true,
-      title: 'OTA管理'
+      title: 'OTA Management'
     }
   },
   {
@@ -140,7 +140,7 @@ const routes = [
     },
     meta: {
       requiresAuth: true,
-      title: '音色资源开通'
+      title: 'Voice Resource Management'
     }
   },
   {
@@ -151,7 +151,7 @@ const routes = [
     },
     meta: {
       requiresAuth: true,
-      title: '音色克隆管理'
+      title: 'Voice Clone Management'
     }
   },
   {
@@ -193,7 +193,7 @@ const routes = [
     },
     meta: {
       requiresAuth: true,
-      title: '功能配置'
+      title: 'Feature Management'
     }
   },
   // 替换词管理
@@ -205,7 +205,7 @@ const routes = [
     },
     meta: {
       requiresAuth: true,
-      title: '替换词管理'
+      title: 'Replacement Word Management'
     }
   },
   // 通讯录管理页面路由
@@ -217,7 +217,7 @@ const routes = [
     },
     meta: {
       requiresAuth: true,
-      title: '通讯录管理'
+      title: 'Address Book Management'
     }
   },
 ]
@@ -245,6 +245,13 @@ const protectedRoutes = ['home', 'RoleConfig', 'DeviceManagement', 'UserManageme
 
 // 路由守卫
 router.beforeEach((to, from, next) => {
+  // Set dynamic page title
+  if (to.meta && to.meta.title) {
+    document.title = `${to.meta.title} - ${process.env.VUE_APP_TITLE || 'Bảng điều khiển'}`
+  } else {
+    document.title = process.env.VUE_APP_TITLE || 'Bảng điều khiển'
+  }
+
   // 检查是否是需要保护的路由
   if (protectedRoutes.includes(to.name)) {
     // 从localStorage获取token
