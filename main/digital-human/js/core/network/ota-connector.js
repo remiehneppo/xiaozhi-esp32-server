@@ -21,8 +21,11 @@ export async function webSocketConnect(otaUrl, config) {
         return;
     }
 
-    // 使用OTA返回的websocket URL
+    // Sử dụng OTA trả về websocket URL
     let connUrl = new URL(websocket.url);
+    if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+        connUrl.hostname = window.location.hostname;
+    }
 
     // 添加token参数（从OTA响应中获取）
     if (websocket.token) {

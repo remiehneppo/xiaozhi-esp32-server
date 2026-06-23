@@ -135,7 +135,7 @@ class UIController {
                     wsHandler.disconnect();
                     this.updateDialButton(false);
                     if (cameraSwitch) cameraSwitch.classList.remove('active');
-                    this.addChatMessage('Disconnected, see you next time~😊', false);
+                    this.addChatMessage('Đã ngắt kết nối, hẹn gặp lại bạn sau~😊', false);
                 } else {
                     // Check if OTA URL is filled
                     const otaUrlInput = document.getElementById('otaUrl');
@@ -143,7 +143,7 @@ class UIController {
                         // If OTA URL is not filled, show settings modal and switch to device tab
                         this.showModal('settingsModal');
                         this.switchTab('device');
-                        this.addChatMessage('Please fill in OTA server URL', false);
+                        this.addChatMessage('Vui lòng điền địa chỉ máy chủ OTA', false);
                         return;
                     }
 
@@ -178,7 +178,7 @@ class UIController {
                         }
                         cameraContainer.classList.remove('active');
                         cameraBtn.classList.remove('camera-active');
-                        cameraBtn.querySelector('.btn-text').textContent = '摄像头';
+                        cameraBtn.querySelector('.btn-text').textContent = 'Camera';
                         log('摄像头已关闭', 'info');
                     } else {
                         // 打开摄像头
@@ -186,9 +186,9 @@ class UIController {
                             window.startCamera().then(success => {
                                 if (success) {
                                     cameraBtn.classList.add('camera-active');
-                                    cameraBtn.querySelector('.btn-text').textContent = '关闭';
+                                    cameraBtn.querySelector('.btn-text').textContent = 'Tắt';
                                 } else {
-                                    this.addChatMessage('⚠️ 摄像头启动失败，请检查浏览器权限', false);
+                                    this.addChatMessage('⚠️ Không khởi động được camera, vui lòng kiểm tra quyền trình duyệt', false);
                                 }
                             }).catch(error => {
                                 log(`启动摄像头异常: ${error.message}`, 'error');
@@ -216,11 +216,11 @@ class UIController {
                         audioRecorder.stop();
                         // Restore record button to normal state
                         recordBtn.classList.remove('recording');
-                        recordBtn.querySelector('.btn-text').textContent = '录音';
+                        recordBtn.querySelector('.btn-text').textContent = 'Ghi âm';
                     } else {
                         // Update button state to recording
                         recordBtn.classList.add('recording');
-                        recordBtn.querySelector('.btn-text').textContent = '录音中';
+                        recordBtn.querySelector('.btn-text').textContent = 'Đang ghi âm';
 
                         // Start recording, update button state after delay
                         setTimeout(() => {
@@ -330,14 +330,14 @@ class UIController {
         if (dialBtn) {
             if (isConnected) {
                 dialBtn.classList.add('dial-active');
-                dialBtn.querySelector('.btn-text').textContent = '挂断';
+                dialBtn.querySelector('.btn-text').textContent = 'Gác máy';
                 // Update dial button icon to hang up icon
                 dialBtn.querySelector('svg').innerHTML = `
                     <path d="M12,9C10.4,9 9,10.4 9,12C9,13.6 10.4,15 12,15C13.6,15 15,13.6 15,12C15,10.4 13.6,9 12,9M12,17C9.2,17 7,14.8 7,12C7,9.2 9.2,7 12,7C14.8,7 17,9.2 17,12C17,14.8 14.8,17 12,17M12,4.5C7,4.5 2.7,7.6 1,12C2.7,16.4 7,19.5 12,19.5C17,19.5 21.3,16.4 23,12C21.3,7.6 17,4.5 12,4.5Z"/>
                 `;
             } else {
                 dialBtn.classList.remove('dial-active');
-                dialBtn.querySelector('.btn-text').textContent = '拨号';
+                dialBtn.querySelector('.btn-text').textContent = 'Gọi điện';
                 // Restore dial button icon
                 dialBtn.querySelector('svg').innerHTML = `
                     <path d="M6.62,10.79C8.06,13.62 10.38,15.94 13.21,17.38L15.41,15.18C15.69,14.9 16.08,14.82 16.43,14.93C17.55,15.3 18.75,15.5 20,15.5A1,1 0 0,1 21,16.5V20A1,1 0 0,1 20,21A17,17 0 0,1 3,4A1,1 0 0,1 4,3H7.5A1,1 0 0,1 8.5,4C8.5,5.25 8.7,6.45 9.07,7.57C9.18,7.92 9.1,8.31 8.82,8.59L6.62,10.79Z"/>
@@ -352,9 +352,9 @@ class UIController {
                 cameraContainer.classList.remove('active');
             }
             cameraBtn.classList.remove('camera-active');
-            cameraBtn.querySelector('.btn-text').textContent = '摄像头';
+            cameraBtn.querySelector('.btn-text').textContent = 'Camera';
             cameraBtn.disabled = true;
-            cameraBtn.title = '请先连接服务器';
+            cameraBtn.title = 'Vui lòng kết nối máy chủ trước';
             // 关闭摄像头
             if (typeof window.stopCamera === 'function') {
                 window.stopCamera();
@@ -365,10 +365,10 @@ class UIController {
         if (cameraBtn && isConnected) {
             if (window.cameraAvailable) {
                 cameraBtn.disabled = false;
-                cameraBtn.title = '打开/关闭摄像头';
+                cameraBtn.title = 'Bật/Tắt camera';
             } else {
                 cameraBtn.disabled = true;
-                cameraBtn.title = '请先绑定验证码';
+                cameraBtn.title = 'Vui lòng liên kết mã xác thực trước';
             }
         }
 
@@ -377,19 +377,19 @@ class UIController {
             const microphoneAvailable = window.microphoneAvailable !== false;
             if (isConnected && microphoneAvailable) {
                 recordBtn.disabled = false;
-                recordBtn.title = '开始录音';
+                recordBtn.title = 'Bắt đầu ghi âm';
                 // Restore record button to normal state
-                recordBtn.querySelector('.btn-text').textContent = '录音';
+                recordBtn.querySelector('.btn-text').textContent = 'Ghi âm';
                 recordBtn.classList.remove('recording');
             } else {
                 recordBtn.disabled = true;
                 if (!microphoneAvailable) {
-                    recordBtn.title = window.isHttpNonLocalhost ? '当前由于是http访问，无法录音，只能用文字交互' : '麦克风不可用';
+                    recordBtn.title = window.isHttpNonLocalhost ? 'Do truy cập qua HTTP, không thể ghi âm, chỉ có thể tương tác bằng chữ' : 'Micrô không khả dụng';
                 } else {
-                    recordBtn.title = '请先连接服务器';
+                    recordBtn.title = 'Vui lòng kết nối máy chủ trước';
                 }
                 // Restore record button to normal state
-                recordBtn.querySelector('.btn-text').textContent = '录音';
+                recordBtn.querySelector('.btn-text').textContent = 'Ghi âm';
                 recordBtn.classList.remove('recording');
             }
         }
@@ -400,10 +400,10 @@ class UIController {
         const recordBtn = document.getElementById('recordBtn');
         if (recordBtn) {
             if (isRecording) {
-                recordBtn.querySelector('.btn-text').textContent = `录音中`;
+                recordBtn.querySelector('.btn-text').textContent = `Đang ghi âm`;
                 recordBtn.classList.add('recording');
             } else {
-                recordBtn.querySelector('.btn-text').textContent = '录音';
+                recordBtn.querySelector('.btn-text').textContent = 'Ghi âm';
                 recordBtn.classList.remove('recording');
             }
             // Only enable button when microphone is available
@@ -423,15 +423,15 @@ class UIController {
             // Disable record button
             recordBtn.disabled = true;
             // Update button text and title
-            recordBtn.querySelector('.btn-text').textContent = '录音';
-            recordBtn.title = isHttpNonLocalhost ? '当前由于是http访问，无法录音，只能用文字交互' : '麦克风不可用';
+            recordBtn.querySelector('.btn-text').textContent = 'Ghi âm';
+            recordBtn.title = isHttpNonLocalhost ? 'Do truy cập qua HTTP, không thể ghi âm, chỉ có thể tương tác bằng chữ' : 'Micrô không khả dụng';
 
         } else {
             // If connected, enable record button
             const wsHandler = getWebSocketHandler();
             if (wsHandler && wsHandler.isConnected()) {
                 recordBtn.disabled = false;
-                recordBtn.title = '开始录音';
+                recordBtn.title = 'Bắt đầu ghi âm';
             }
         }
     }
@@ -475,17 +475,17 @@ class UIController {
             app.live2dManager.switchModel(selectedModel)
                 .then(success => {
                     if (success) {
-                        this.addChatMessage(`已切换到模型: ${selectedModel}`, false);
+                        this.addChatMessage(`Đã chuyển sang mô hình: ${selectedModel}`, false);
                     } else {
-                        this.addChatMessage('模型切换失败', false);
+                        this.addChatMessage('Chuyển mô hình thất bại', false);
                     }
                 })
                 .catch(error => {
                     console.error('模型切换错误:', error);
-                    this.addChatMessage('模型切换出错', false);
+                    this.addChatMessage('Lỗi khi chuyển mô hình', false);
                 });
         } else {
-            this.addChatMessage('Live2D管理器未初始化', false);
+            this.addChatMessage('Trình quản lý Live2D chưa được khởi tạo', false);
         }
     }
 
@@ -561,14 +561,14 @@ class UIController {
         };
 
         if (payload.enabled && payload.wakeWords.length === 0) {
-            this.addChatMessage('启用唤醒词时，至少需要填写一个唤醒词。', false);
+            this.addChatMessage('Khi bật từ đánh thức, cần điền ít nhất một từ.', false);
             return;
         }
 
         const applyWakewordBtn = document.getElementById('applyWakewordBtn');
         if (applyWakewordBtn) {
             applyWakewordBtn.disabled = true;
-            applyWakewordBtn.textContent = '应用中...';
+            applyWakewordBtn.textContent = 'Đang áp dụng...';
         }
 
         try {
@@ -584,11 +584,11 @@ class UIController {
 
             if (urlChanged) {
                 // 地址变了，先确认
-                const shouldRestart = window.confirm('地址已变更，是否继续？（将断开旧连接并重新连接）');
+                const shouldRestart = window.confirm('Địa chỉ đã thay đổi, tiếp tục chứ? (Sẽ ngắt kết nối cũ và kết nối lại)');
                 if (!shouldRestart) {
                     // 恢复 localStorage 里的旧地址
                     localStorage.setItem('xz_tester_wakewordWsUrl', currentWsUrl);
-                    this.addChatMessage('已取消地址变更。', false);
+                    this.addChatMessage('Đã hủy thay đổi địa chỉ.', false);
                     return;
                 }
 
@@ -614,40 +614,40 @@ class UIController {
                 await requestWakewordBridge('set_wakeword_config', payload);
                 this.applyWakewordConfig(payload);
                 await requestWakewordBridge('restart_wakeword_service');
-                this.addChatMessage('唤醒词配置已保存，唤醒词服务正在重启。', false);
+                this.addChatMessage('Cấu hình từ đánh thức đã lưu, dịch vụ đang khởi động lại.', false);
             } else {
                 // 地址没变：直接在当前连接操作
                 const response = await requestWakewordBridge('set_wakeword_config', payload);
                 this.applyWakewordConfig(response.payload || payload);
 
-                const shouldRestart = window.confirm('唤醒词已保存。是否现在重启唤醒词服务以立即生效？');
+                const shouldRestart = window.confirm('Từ đánh thức đã lưu. Khởi động lại dịch vụ từ đánh thức ngay bây giờ để có hiệu lực chứ?');
                 if (!shouldRestart) {
-                    this.addChatMessage('唤醒词配置已保存，可稍后手动重启服务后生效。', false);
+                    this.addChatMessage('Cấu hình từ đánh thức đã lưu, sẽ có hiệu lực sau khi khởi động lại dịch vụ thủ công.', false);
                     return;
                 }
 
                 await requestWakewordBridge('restart_wakeword_service');
-                this.addChatMessage('唤醒词配置已保存，唤醒词服务正在重启。', false);
+                this.addChatMessage('Cấu hình từ đánh thức đã lưu, dịch vụ đang khởi động lại.', false);
             }
         } catch (error) {
-            this.addChatMessage(`应用唤醒词失败: ${error.message}`, false);
+            this.addChatMessage(`Áp dụng từ đánh thức thất bại: ${error.message}`, false);
         } finally {
             if (applyWakewordBtn) {
                 applyWakewordBtn.disabled = false;
-                applyWakewordBtn.textContent = '应用唤醒词';
+                applyWakewordBtn.textContent = 'Áp dụng từ đánh thức';
             }
         }
     }
 
     // Start AI chat session after connection
     startAIChatSession() {
-        this.addChatMessage('连接成功，开始聊天吧~😊', false);
+        this.addChatMessage('Kết nối thành công, bắt đầu trò chuyện thôi~😊', false);
         // Check microphone availability and show error messages if needed
         if (!window.microphoneAvailable) {
             if (window.isHttpNonLocalhost) {
-                this.addChatMessage('⚠️ 当前由于是http访问，无法录音，只能用文字交互', false);
+                this.addChatMessage('⚠️ Vì truy cập qua HTTP, không thể ghi âm, chỉ có thể tương tác bằng chữ', false);
             } else {
-                this.addChatMessage('⚠️ 麦克风不可用，请检查权限设置，只能用文字交互', false);
+                this.addChatMessage('⚠️ Micrô không khả dụng, vui lòng kiểm tra cài đặt quyền, chỉ có thể tương tác bằng chữ', false);
             }
         }
         // Start recording only if microphone is available
@@ -664,10 +664,10 @@ class UIController {
                     const cameraBtn = document.getElementById('cameraBtn');
                     if (cameraBtn) {
                         cameraBtn.classList.add('camera-active');
-                        cameraBtn.querySelector('.btn-text').textContent = '关闭';
+                        cameraBtn.querySelector('.btn-text').textContent = 'Tắt';
                     }
                 } else {
-                    this.addChatMessage('⚠️ 摄像头启动失败，可能被浏览器拒绝', false);
+                    this.addChatMessage('⚠️ Không khởi động được camera, có thể đã bị trình duyệt từ chối', false);
                 }
             }).catch(error => {
                 log(`启动摄像头异常: ${error.message}`, 'error');
@@ -698,7 +698,7 @@ class UIController {
             console.log('otaUrl element:', otaUrlInput);
 
             if (!otaUrlInput || !otaUrlInput.value) {
-                this.addChatMessage('请输入OTA服务器地址', false);
+                this.addChatMessage('Vui lòng nhập địa chỉ máy chủ OTA', false);
                 return;
             }
 
@@ -709,12 +709,12 @@ class UIController {
             const dialBtn = document.getElementById('dialBtn');
             if (dialBtn) {
                 dialBtn.classList.add('dial-active');
-                dialBtn.querySelector('.btn-text').textContent = '连接中...';
+                dialBtn.querySelector('.btn-text').textContent = 'Đang kết nối...';
                 dialBtn.disabled = true;
             }
 
             // Show connecting message
-            this.addChatMessage('正在连接服务器...', false);
+            this.addChatMessage('Đang kết nối máy chủ...', false);
 
             const chatIpt = document.getElementById('chatIpt');
             if (chatIpt) {
@@ -739,10 +739,10 @@ class UIController {
                 if (recordBtn) {
                     if (isRecording) {
                         recordBtn.classList.add('recording');
-                        recordBtn.querySelector('.btn-text').textContent = '录音中';
+                        recordBtn.querySelector('.btn-text').textContent = 'Đang ghi âm';
                     } else {
                         recordBtn.classList.remove('recording');
-                        recordBtn.querySelector('.btn-text').textContent = '录音';
+                        recordBtn.querySelector('.btn-text').textContent = 'Ghi âm';
                     }
                 }
             };
@@ -757,7 +757,7 @@ class UIController {
                 if (!micAvailable) {
                     const isHttp = window.isHttpNonLocalhost;
                     if (isHttp) {
-                        this.addChatMessage('⚠️ 当前由于是http访问，无法录音，只能用文字交互', false);
+                        this.addChatMessage('⚠️ Vì truy cập qua HTTP, không thể ghi âm, chỉ có thể tương tác bằng chữ', false);
                     }
                     // Update global state
                     window.microphoneAvailable = false;
@@ -769,7 +769,7 @@ class UIController {
                     if (!this.dialBtnDisabled) {
                         dialBtn.disabled = false;
                     }
-                    dialBtn.querySelector('.btn-text').textContent = '挂断';
+                    dialBtn.querySelector('.btn-text').textContent = 'Gác máy';
                     dialBtn.classList.add('dial-active');
                 }
 
@@ -797,7 +797,7 @@ class UIController {
                 if (!this.dialBtnDisabled) {
                     dialBtn.disabled = false;
                 }
-                dialBtn.querySelector('.btn-text').textContent = '拨号';
+                dialBtn.querySelector('.btn-text').textContent = 'Gọi điện';
                 dialBtn.classList.remove('dial-active');
                 console.log('Dial button state restored successfully');
             }
@@ -826,7 +826,7 @@ class UIController {
         }
 
         this.lastWakewordDialTime = now;
-        this.addChatMessage(`检测到唤醒词“${wakeWord}”，准备连接服务器...`, false);
+        this.addChatMessage(`Phát hiện từ đánh thức “${wakeWord}”, chuẩn bị kết nối máy chủ...`, false);
         await this.handleConnect();
         return true;
     }

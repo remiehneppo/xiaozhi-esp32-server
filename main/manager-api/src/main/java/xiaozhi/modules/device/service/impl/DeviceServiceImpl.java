@@ -242,7 +242,7 @@ public class DeviceServiceImpl extends BaseServiceImpl<DeviceDao, DeviceEntity> 
 
         if (StringUtils.isBlank(wsUrl) || wsUrl.equals("null")) {
             log.error("WebSocketĐịa chỉ chưa được cấu hình，Vui lòng đăng nhập vào bảng điều khiển thông minh，Tìm thấy trong quản lý tham số【server.websocket】Cấu hình");
-            wsUrl = "ws://xiaozhi.server.com:8000/xiaozhi/v1/";
+            wsUrl = "ws://127.0.0.1:8010/xiaozhi/v1/";
             websocket.setUrl(wsUrl);
         } else {
             String[] wsUrls = wsUrl.split("\\;");
@@ -251,7 +251,7 @@ public class DeviceServiceImpl extends BaseServiceImpl<DeviceDao, DeviceEntity> 
                 websocket.setUrl(wsUrls[RandomUtil.randomInt(0, wsUrls.length)]);
             } else {
                 log.error("WebSocketĐịa chỉ chưa được cấu hình，Vui lòng đăng nhập vào bảng điều khiển thông minh，Tìm thấy trong quản lý tham số【server.websocket】Cấu hình");
-                websocket.setUrl("ws://xiaozhi.server.com:8000/xiaozhi/v1/");
+                websocket.setUrl("ws://127.0.0.1:8010/xiaozhi/v1/");
             }
         }
 

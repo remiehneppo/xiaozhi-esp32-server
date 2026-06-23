@@ -39,13 +39,13 @@ export class WebSocketHandler {
                 }
             };
 
-            log('发送hello握手消息', 'info');
+            log('Gửi tin nhắn bắt tay hello', 'info');
             this.websocket.send(JSON.stringify(helloMessage));
 
             return new Promise(resolve => {
                 const timeout = setTimeout(() => {
-                    log('等待hello响应超时', 'error');
-                    log('提示: 请尝试点击"测试认证"按钮进行连接排查', 'info');
+                    log('Đợi phản hồi hello hết hạn', 'error');
+                    log('Gợi ý: Hãy thử nhấp vào nút "Kiểm tra xác thực" để khắc phục sự cố kết nối', 'info');
                     resolve(false);
                 }, 5000);
 
@@ -53,7 +53,7 @@ export class WebSocketHandler {
                     try {
                         const response = JSON.parse(event.data);
                         if (response.type === 'hello' && response.session_id) {
-                            log(`服务器握手成功，会话ID: ${response.session_id}`, 'success');
+                            log(`Bắt tay máy chủ thành công, ID phiên: ${response.session_id}`, 'success');
                             clearTimeout(timeout);
                             this.websocket.removeEventListener('message', onMessageHandler);
                             resolve(true);
@@ -66,7 +66,7 @@ export class WebSocketHandler {
                 this.websocket.addEventListener('message', onMessageHandler);
             });
         } catch (error) {
-            log(`发送hello消息错误: ${error.message}`, 'error');
+            log(`Lỗi gửi tin nhắn hello: ${error.message}`, 'error');
             return false;
         }
     }
@@ -79,9 +79,9 @@ export class WebSocketHandler {
             session_id: sessionId,
             type: 'listen',
             state: 'detect',
-            text: '嘿，你好呀'
+            text: 'xin chào'
         }));
-        log('发送listen detect消息，唤醒词: 嘿，你好呀', 'info');
+        log('Gửi tin nhắn listen detect, từ đánh thức: xin chào', 'info');
 
         // listen start：开始监听
         this.websocket.send(JSON.stringify({
@@ -90,7 +90,7 @@ export class WebSocketHandler {
             state: 'start',
             mode: 'auto'
         }));
-        log('发送listen start消息', 'info');
+        log('Gửi tin nhắn listen start', 'info');
     }
 
     // 处理文本消息
@@ -452,7 +452,7 @@ export class WebSocketHandler {
         };
 
         this.websocket.onclose = () => {
-            log('已断开连接', 'info');
+            log('Đã ngắt kết nối', 'info');
 
             if (this.onConnectionStateChange) {
                 this.onConnectionStateChange(false);
@@ -475,7 +475,7 @@ export class WebSocketHandler {
 
         this.websocket.onerror = (error) => {
             log(`WebSocket错误: ${error.message || '未知错误'}`, 'error');
-            uiController.addChatMessage(`⚠️ WebSocket错误: ${error.message || '未知错误'}`, false);
+            uiController.addChatMessage(`⚠️ Lỗi WebSocket: ${error.message || 'Lỗi không xác định'}`, false);
             if (this.onConnectionStateChange) {
                 this.onConnectionStateChange(false);
             }
