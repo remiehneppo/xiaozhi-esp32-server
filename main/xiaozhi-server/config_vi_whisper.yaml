@@ -74,7 +74,7 @@ ASR:
   OpenaiASR:
     type: openai
     api_key: local
-    base_url: http://127.0.0.1:8001/v1/audio/transcriptions
+    base_url: http://127.0.0.1:8005/v1/audio/transcriptions
     model_name: tiny
     output_dir: tmp/
 
