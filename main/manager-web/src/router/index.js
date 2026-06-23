@@ -53,7 +53,7 @@ const routes = [
       return import('../views/retrievePassword.vue')
     }
   },
-  // 设备管理页面路由
+  // Định tuyến trang quản lý thiết bị
   {
     path: '/device-management',
     name: 'DeviceManagement',
@@ -61,7 +61,7 @@ const routes = [
       return import('../views/DeviceManagement.vue')
     }
   },
-  // 添加用户管理路由
+  // Thêm lộ trình quản lý người dùng
   {
     path: '/user-management',
     name: 'UserManagement',
@@ -168,7 +168,7 @@ const routes = [
       return import('../views/ProviderManagement.vue')
     }
   },
-  // 添加默认角色管理路由
+  // Thêm tuyến quản lý vai trò mặc định
   {
     path: '/agent-template-management',
     name: 'AgentTemplateManagement',
@@ -176,7 +176,7 @@ const routes = [
       return import('../views/AgentTemplateManagement.vue')
     }
   },
-  // 添加模板快速配置路由
+  // Thêm mẫu để cấu hình nhanh các tuyến đường
   {
     path: '/template-quick-config',
     name: 'TemplateQuickConfig',
@@ -184,7 +184,7 @@ const routes = [
       return import('../views/TemplateQuickConfig.vue')
     }
   },
-  // 功能配置页面路由
+  // Định tuyến trang cấu hình chức năng
   {
     path: '/feature-management',
     name: 'FeatureManagement',
@@ -196,7 +196,7 @@ const routes = [
       title: 'Feature Management'
     }
   },
-  // 替换词管理
+  // Quản lý từ thay thế
   {
     path: '/replacement-word-management',
     name: 'ReplacementWordManagement',
@@ -208,7 +208,7 @@ const routes = [
       title: 'Replacement Word Management'
     }
   },
-  // 通讯录管理页面路由
+  // Định tuyến trang quản lý sổ địa chỉ
   {
     path: '/address-book-management',
     name: 'AddressBookManagement',
@@ -226,24 +226,24 @@ const router = new VueRouter({
   routes
 })
 
-// 全局处理重复导航，改为刷新页面
+// Thay vào đó hãy xử lý việc điều hướng lặp lại trên toàn cầu và làm mới trang
 const originalPush = VueRouter.prototype.push
 VueRouter.prototype.push = function push(location) {
   return originalPush.call(this, location).catch(err => {
     if (err.name === 'NavigationDuplicated') {
-      // 如果是重复导航，刷新页面
+      // Nếu điều hướng lặp lại, hãy làm mới trang
       window.location.reload()
     } else {
-      // 其他错误正常抛出
+      // Các lỗi khác ném bình thường
       throw err
     }
   })
 }
 
-// 需要登录才能访问的路由
+// Các tuyến yêu cầu đăng nhập để truy cập
 const protectedRoutes = ['home', 'RoleConfig', 'DeviceManagement', 'UserManagement', 'ModelConfig', 'KnowledgeBaseManagement', 'KnowledgeFileUpload', 'AddressBookManagement']
 
-// 路由守卫
+// bảo vệ tuyến đường
 router.beforeEach((to, from, next) => {
   // Set dynamic page title
   if (to.meta && to.meta.title) {
@@ -252,12 +252,12 @@ router.beforeEach((to, from, next) => {
     document.title = process.env.VUE_APP_TITLE || 'Bảng điều khiển'
   }
 
-  // 检查是否是需要保护的路由
+  // Kiểm tra xem đó có phải là tuyến đường cần được bảo vệ không
   if (protectedRoutes.includes(to.name)) {
-    // 从localStorage获取token
+    // Nhận từ localStoragetoken
     const token = localStorage.getItem('token')
     if (!token) {
-      // 未登录，跳转到登录页
+      // Chưa đăng nhập, chuyển đến trang đăng nhập
       next({ name: 'login', query: { redirect: to.fullPath } })
       return
     }

@@ -3,7 +3,7 @@ import RequestService from '../httpRequest'
 
 
 export default {
-    // 登录
+    // Đăng nhập
     login(loginForm, callback, failCallback) {
         RequestService.sendRequest()
             .url(`${getServiceUrl()}/user/login`)
@@ -23,7 +23,7 @@ export default {
                 })
             }).send()
     },
-    // 获取验证码
+    // Nhận mã xác minh
     getCaptcha(uuid, callback) {
         RequestService.sendRequest()
             .url(`${getServiceUrl()}/user/captcha?uuid=${uuid}`)
@@ -38,11 +38,11 @@ export default {
                 RequestService.clearRequestTime();
                 callback(res);
             })
-            .networkFail((err) => {  // 添加错误参数
+            .networkFail((err) => {  // Thêm thông số lỗi
 
             }).send()
     },
-    // 发送短信验证码
+    // Gửi mã xác minh qua SMS
     sendSmsVerification(data, callback, failCallback) {
         RequestService.sendRequest()
             .url(`${getServiceUrl()}/user/smsVerification`)
@@ -62,7 +62,7 @@ export default {
                 })
             }).send()
     },
-    // 注册账号
+    // Đăng ký tài khoản
     register(registerForm, callback, failCallback) {
         RequestService.sendRequest()
             .url(`${getServiceUrl()}/user/register`)
@@ -82,7 +82,7 @@ export default {
                 })
             }).send()
     },
-    // 保存设备配置
+    // Lưu cấu hình thiết bị
     saveDeviceConfig(device_id, configData, callback) {
         RequestService.sendRequest()
             .url(`${getServiceUrl()}/user/configDevice/${device_id}`)
@@ -93,13 +93,13 @@ export default {
                 callback(res);
             })
             .networkFail((err) => {
-                console.error('保存配置失败:', err);
+                console.error('Không lưu được cấu hình:', err);
                 RequestService.reAjaxFun(() => {
                     this.saveDeviceConfig(device_id, configData, callback);
                 });
             }).send();
     },
-    // 用户信息获取
+    // Lấy thông tin người dùng
     getUserInfo(callback) {
         RequestService.sendRequest()
             .url(`${getServiceUrl()}/user/info`)
@@ -109,13 +109,13 @@ export default {
                 callback(res)
             })
             .networkFail((err) => {
-                console.error('接口请求失败:', err)
+                console.error('Yêu cầu giao diện không thành công:', err)
                 RequestService.reAjaxFun(() => {
                     this.getUserInfo(callback)
                 })
             }).send()
     },
-    // 修改用户密码
+    // Thay đổi mật khẩu người dùng
     changePassword(oldPassword, newPassword, successCallback, errorCallback) {
         RequestService.sendRequest()
             .url(`${getServiceUrl()}/user/change-password`)
@@ -135,7 +135,7 @@ export default {
             })
             .send();
     },
-    // 修改用户状态
+    // Sửa đổi trạng thái người dùng
     changeUserStatus(status, userIds, successCallback) {
         console.log(555, userIds)
         RequestService.sendRequest()
@@ -147,13 +147,13 @@ export default {
                 successCallback(res);
             })
             .networkFail((err) => {
-                console.error('修改用户状态失败:', err)
+                console.error('Không thể sửa đổi trạng thái người dùng:', err)
                 RequestService.reAjaxFun(() => {
                     this.changeUserStatus(status, userIds)
                 })
             }).send()
     },
-    // 获取公共配置
+    // Nhận cấu hình công khai
     getPubConfig(callback, failCallback) {
         RequestService.sendRequest()
             .url(`${getServiceUrl()}/user/pub-config`)
@@ -169,13 +169,13 @@ export default {
                 }
             })
             .networkFail((err) => {
-                console.error('获取公共配置失败:', err);
+                console.error('Không lấy được cấu hình công khai:', err);
                 RequestService.reAjaxFun(() => {
                     this.getPubConfig(callback, failCallback);
                 });
             }).send();
     },
-    // 找回用户密码
+    // Lấy lại mật khẩu người dùng
     retrievePassword(passwordData, callback, failCallback) {
         RequestService.sendRequest()
             .url(`${getServiceUrl()}/user/retrieve-password`)

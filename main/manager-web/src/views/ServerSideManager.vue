@@ -139,12 +139,12 @@ export default {
       if (actionItem === undefined || rowItem.address === undefined) {
         return;
       }
-      // 弹开询问框
+      // Hộp yêu cầu bật lên
       this.$confirm(actionItem.message, actionItem.title, {
-        confirmButtonText: actionItem.confirmText, // 确认按钮文本
-        cancelButtonText: this.$t('common.cancel') // 取消按钮文本
+        confirmButtonText: actionItem.confirmText, // Xác nhận văn bản nút
+        cancelButtonText: this.$t('common.cancel') // Văn bản nút hủy
       }).then(() => {
-        // 用户点击了确认按钮
+        // Người dùng nhấn vào nút xác nhận
         Api.admin.sendWsServerAction({
           targetWs: rowItem.address,
           action: actionItem.value
@@ -189,7 +189,7 @@ export default {
 }
 
 .main-wrapper {
-  // 顶部 63px 底部 35px 查询58px
+  // Truy vấn 35px dưới cùng 63px trên cùng58px
   height: calc(100vh - 63px - 35px - 58px);
   margin: 0 22px;
   border-radius: 15px;

@@ -157,7 +157,7 @@ export default {
           mobile: this.searchPhone,
         },
         ({ data }) => {
-          this.loading = false; // 结束加载
+          this.loading = false; // kết thúc tải
           if (data.code === 0) {
             this.userList = data.data.list.map(item => ({
               ...item,
@@ -259,7 +259,7 @@ export default {
       }).then(() => {
         Api.admin.resetUserPassword(row.userid, ({ data }) => {
           if (data.code === 0) {
-            // 显示生成的默认密码
+            // Hiển thị mật khẩu mặc định được tạo
             this.$alert(this.$t('user.resetPasswordSuccess') + '\n\n' + this.$t('user.generatedPassword') + ': ' + data.data, this.$t('common.success'), {
               confirmButtonText: this.$t('common.confirm'),
               dangerouslyUseHTMLString: true
@@ -312,7 +312,7 @@ export default {
       this.fetchUsers();
     },
     handleChangeStatus(row, status) {
-      // 处理单个用户或用户数组
+      // Xử lý một người dùng hoặc một mảng người dùng
       const users = Array.isArray(row) ? row : [row];
       const actionText = status === 0 ? this.$t('user.disable') : this.$t('user.enable');
       const userCount = users.length;
@@ -334,7 +334,7 @@ export default {
               message: this.$t('user.statusChangeSuccess', { action: actionText, count: userCount }),
               showClose: true
             });
-            this.fetchUsers(); // 刷新用户列表
+            this.fetchUsers(); // Làm mới danh sách người dùng
           } else {
             this.$message.error({
               message: this.$t('user.operationFailed'),
@@ -343,10 +343,10 @@ export default {
           }
         });
       }).catch(() => {
-        // 用户取消操作
+        // Người dùng hủy thao tác
       });
     },
-    // 这个方法已被batchDelete替代，保留用于向后兼容
+    // Phương thức này đã được thay thế bằng batchDelete và được dành riêng cho khả năng tương thích ngược
     handleBatchDelete() {
       this.batchDelete();
     },
@@ -381,7 +381,7 @@ export default {
 }
 
 .main-wrapper {
-  // 顶部 63px 底部 35px 查询72px
+  // Truy vấn 35px dưới cùng 63px trên cùng72px
   height: calc(100vh - 63px - 35px - 72px);
   margin: 0 22px;
   border-radius: 15px;

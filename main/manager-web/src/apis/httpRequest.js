@@ -5,11 +5,11 @@ import { goToPage, isNotNull, showDanger, showWarning } from '../utils/index';
 import i18n from '../i18n/index';
 
 const fly = new Fly()
-// 设置超时
+// Đặt thời gian chờ
 fly.config.timeout = 30000
 
 /**
- * Request服务封装
+ * RequestĐóng gói dịch vụ
  */
 export default {
     sendRequest,
@@ -26,13 +26,13 @@ function sendRequest() {
         _data: {},
         _header: { 'content-type': 'application/json; charset=utf-8' },
         _url: '',
-        _responseType: undefined, // 新增响应类型字段
+        _responseType: undefined, // Đã thêm trường loại phản hồi
         'send'() {
-            // 设置语言请求头
+            // Đặt tiêu đề yêu cầu ngôn ngữ
             const currentLang = i18n.locale;
-            // 转换语言代码格式，将zh_CN转换为zh-CN
+            // Chuyển đổi định dạng mã ngôn ngữ, chuyển đổi zh_CN sangzh-CN
             let acceptLanguage = currentLang.replace('_', '-');
-            // 为英语添加默认地区代码
+            // Thêm mã vùng mặc định cho tiếng Anh
             if (acceptLanguage === 'en') {
                 acceptLanguage = 'en-US';
             }
@@ -42,7 +42,7 @@ function sendRequest() {
                 this._header.Authorization = 'Bearer ' + (JSON.parse(store.getters.getToken)).token
             }
 
-            // 打印请求信息
+            // In thông tin yêu cầu
             fly.request(this._url, this._data, {
                 method: this._method,
                 headers: this._header,
@@ -57,7 +57,7 @@ function sendRequest() {
                     this._sucCallback(res)
                 }
             }).catch((res) => {
-                // 打印失败响应
+                // Phản hồi lỗi in
                 console.log('catch', res)
                 httpHandlerError(res, this._failCallback, this._networkFailCallback)
             })
@@ -101,7 +101,7 @@ function sendRequest() {
         'async'(flag) {
             this.async = flag
         },
-        // 新增类型设置方法
+        // Đã thêm phương pháp cài đặt loại
         'type'(responseType) {
             this._responseType = responseType;
             return this;
@@ -110,14 +110,14 @@ function sendRequest() {
 }
 
 /**
- * Info 请求完成后返回信息
- * failCallback 回调函数
- * networkFailCallback 回调函数
+ * Info Trả lại thông tin sau khi yêu cầu hoàn thành
+ * failCallback chức năng gọi lại
+ * networkFailCallback chức năng gọi lại
  */
-// 在错误处理函数中添加日志
+// Thêm chức năng xử lý lỗi đăng nhập
 function httpHandlerError(info, failCallback, networkFailCallback) {
 
-    /** 请求成功，退出该函数 可以根据项目需求来判断是否请求成功。这里判断的是status为200的时候是成功 */
+    /** Nếu yêu cầu thành công, hãy thoát khỏi chức năng này. Bạn có thể xác định xem yêu cầu có thành công hay không dựa trên yêu cầu của dự án. Điều được đánh giá ở đây là khi trạng thái đạt 200 là thành công. */
     let networkError = false
     if (info.status === 200) {
         if (info.data.code === 'success' || info.data.code === 0 || info.data.code === undefined) {
@@ -127,7 +127,7 @@ function httpHandlerError(info, failCallback, networkFailCallback) {
             goToPage(Constant.PAGE.LOGIN, true);
             return true
         } else {
-            // 直接使用后端返回的国际化消息
+            // Sử dụng trực tiếp các tin nhắn được quốc tế hóa do backend trả về
             let errorMessage = info.data.msg;
             
             if (failCallback) {

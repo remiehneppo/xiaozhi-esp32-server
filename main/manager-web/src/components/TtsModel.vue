@@ -84,7 +84,7 @@
         </el-table>
       </div>
 
-      <!-- 自定义滚动条 -->
+      <!-- Thanh cuộn tùy chỉnh -->
       <div class="custom-scrollbar" ref="scrollbar">
         <div class="custom-scrollbar-track" ref="scrollbarTrack" @click="handleTrackClick">
           <div class="custom-scrollbar-thumb" ref="scrollbarThumb" @mousedown="startDrag"></div>
@@ -141,7 +141,7 @@ export default {
       selectAll: false,
       selectedRows: [],
       loading: false,
-      showReferenceColumns: false, // 控制是否显示参考列
+      showReferenceColumns: false, // Kiểm soát xem các cột tham chiếu có được hiển thị hay không
     };
   },
   watch: {
@@ -149,8 +149,8 @@ export default {
       this.localVisible = newVal;
       if (newVal) {
         this.currentPage = 1;
-        this.updateShowReferenceColumns(); // 更新显示状态
-        this.loadData(); // 对话框显示时加载数据
+        this.updateShowReferenceColumns(); // Cập nhật trạng thái hiển thị
+        this.loadData(); // Tải dữ liệu khi hộp thoại được hiển thị
         this.$nextTick(() => {
           this.updateScrollbar();
         });
@@ -187,7 +187,7 @@ export default {
     window.removeEventListener('mousemove', this.handleDrag);
   },
   methods: {
-    // 更新是否显示参考列
+    // Cập nhật có hiển thị cột tham chiếu hay không
     updateShowReferenceColumns() {
       if (this.modelConfig && this.modelConfig.configJson) {
         const providerType = this.modelConfig.configJson.type;
@@ -231,7 +231,7 @@ export default {
         }
         this.loading = false;
       }, (err) => {
-        console.error('加载失败:', err);
+        console.error('Tải không thành công:', err);
         this.$message.error({
           message: this.$t('ttsModel.loadVoiceDataFailed'),
           showClose: true
@@ -241,7 +241,7 @@ export default {
     },
 
     handleClose() {
-      // 重置状态
+      // thiết lập lại trạng thái
       this.ttsModels = [];
       this.currentPage = 1;
       this.total = 0;
@@ -347,7 +347,7 @@ export default {
     },
 
     cancelEdit(row) {
-      // 通过新增创建的数据，取消编辑时，需要从数组中移除
+      // Dữ liệu được tạo bằng cách thêm dữ liệu mới cần phải được xóa khỏi mảng khi hủy chỉnh sửa.
       if (!row.id) {
         this.ttsModels.shift(row);
       } else {
@@ -378,7 +378,7 @@ export default {
           sort: row.sort
         };
 
-        // 只有在显示参考列的情况下才添加参考字段
+        // Chỉ thêm trường tham chiếu nếu cột tham chiếu được hiển thị
         if (this.showReferenceColumns) {
           params.referenceAudio = row.referenceAudio;
           params.referenceText = row.referenceText;
@@ -386,21 +386,21 @@ export default {
 
         let res;
         if (row.id) {
-          // 已有ID，执行更新操作
+          // Đã có ID, thực hiện thao tác cập nhật
           Api.timbre.updateVoice(params, (response) => {
             res = response;
             this.handleResponse(res, row);
           });
         } else {
-          // 没有ID，执行新增操作
+          // Nếu không có ID, hãy thực hiện thao tác mới.
           Api.timbre.saveVoice(params, (response) => {
             res = response;
             this.handleResponse(res, row);
           });
         }
       } catch (error) {
-        console.error('操作失败:', error);
-        // 异常情况下也恢复原始数据
+        console.error('Thao tác không thành công:', error);
+        // Khôi phục dữ liệu gốc ngay cả trong những trường hợp bất thường
         if (row.originalData) {
           Object.assign(row, row.originalData);
           row.editing = false;
@@ -421,9 +421,9 @@ export default {
         });
         row.editing = false;
         delete row.originalData;
-        this.loadData(); // 刷新数据
+        this.loadData(); // Làm mới dữ liệu
       } else {
-        // 保存失败时恢复原始数据
+        // Khôi phục dữ liệu gốc khi lưu không thành công
         if (row.originalData) {
           Object.assign(row, row.originalData);
           row.editing = false;
@@ -464,14 +464,14 @@ export default {
         referenceText: '',
         selected: false,
         editing: true,
-        sort: 0 // 新增数据默认排序在顶部
+        sort: 0 // Dữ liệu mới được sắp xếp ở trên cùng theo mặc định
       };
 
       this.ttsModels.unshift(newRow);
     },
 
     deleteRow(row) {
-      // 处理单个音色或音色数组
+      // Làm việc với một bản vá hoặc một loạt các bản vá
       const voices = Array.isArray(row) ? row : [row];
 
       if (Array.isArray(row) && row.length === 0) {
@@ -499,7 +499,7 @@ export default {
               message: this.$t('ttsModel.deleteVoiceSuccess', {count: voiceCount}),
               showClose: true
             });
-            this.loadData(); // 刷新参数列表
+            this.loadData(); // Làm mới danh sách tham số
           } else {
             this.$message.error({
               message: data.msg || this.$t('ttsModel.deleteFailed'),
@@ -544,7 +544,7 @@ export default {
   margin: 0 !important;
 }
 
-/* 表格样式 */
+/* kiểu bàn */
 ::v-deep .data-table .el-table__header th {
   color: black;
   padding: 6px 0 !important;
@@ -570,7 +570,7 @@ export default {
   border: none !important;
 }
 
-/* 关闭按钮 */
+/* nút đóng */
 .custom-close-btn {
   position: absolute;
   top: 15px;
@@ -597,7 +597,7 @@ export default {
   border-color: #409EFF;
 }
 
-/* 备注文本 */
+/* Ghi chú văn bản */
 ::v-deep .remark-input .el-textarea__inner {
   border-radius: 4px;
   border: 1px solid #e6e6e6;
@@ -619,7 +619,7 @@ export default {
 }
 
 
-/* 滚动容器 */
+/* hộp đựng cuộn */
 .scroll-wrapper {
   display: flex;
   max-height: 55vh;
@@ -638,7 +638,7 @@ export default {
   display: none;
 }
 
-/* 自定义滚动条 */
+/* Thanh cuộn tùy chỉnh */
 .custom-scrollbar {
   width: 8px;
   background: #f1f1f1;
@@ -685,7 +685,7 @@ export default {
   display: none;
 }
 
-/* 音频播放器容器样式 */
+/* Kiểu vùng chứa trình phát âm thanh */
 .custom-audio-container {
   width: 90%;
   margin: 0 auto;
@@ -715,7 +715,7 @@ export default {
   color: #5cca8e !important;
 }
 
-/* 表格单元格自适应 */
+/* Ô bảng thích ứng */
 ::v-deep .el-table__body-wrapper {
   overflow-x: hidden !important;
 }
@@ -725,26 +725,26 @@ export default {
   word-break: break-all !important;
 }
 
-/* 按钮组定位调整 */
+/* Điều chỉnh vị trí nhóm nút */
 .action-buttons {
   position: static;
   padding: 15px 0;
   background: white;
 }
 
-/* 输入框自适应 */
+/* Hộp đầu vào thích ứng */
 ::v-deep .el-input__inner,
 ::v-deep .el-textarea__inner {
   width: 100% !important;
   min-width: 120px;
 }
 
-/* 音频输入框特殊处理 */
+/* Xử lý đặc biệt hộp đầu vào âm thanh */
 .audio-input ::v-deep .el-input__inner {
   min-width: 200px;
 }
 
-/* 操作按钮弹性布局 */
+/* Bố trí linh hoạt các nút hành động */
 ::v-deep .el-table__row .el-button {
   flex-shrink: 0;
   margin: 2px !important;

@@ -1,10 +1,10 @@
 /**
- * 缓存查看工具 - 用于检查CDN资源是否已被Service Worker缓存
+ * Công cụ xem bộ đệm - Được sử dụng để kiểm tra xem tài nguyên CDN đã được Service Worker lưu vào bộ đệm hay chưa
  */
 
 /**
- * 获取所有Service Worker缓存的名称
- * @returns {Promise<string[]>} 缓存名称列表
+ * Lấy tên của tất cả các bộ đệm của Service Worker
+ * @returns {Promise<string[]>} Danh sách tên bộ đệm
  */
 export const getCacheNames = async () => {
   if (!('caches' in window)) {
@@ -14,15 +14,15 @@ export const getCacheNames = async () => {
   try {
     return await caches.keys();
   } catch (error) {
-    console.error('获取缓存名称失败:', error);
+    console.error('Không lấy được tên bộ nhớ đệm:', error);
     return [];
   }
 };
 
 /**
- * 获取指定缓存中的所有URL
- * @param {string} cacheName 缓存名称
- * @returns {Promise<string[]>} 缓存的URL列表
+ * Nhận tất cả các mục trong bộ đệm được chỉ địnhURL
+ * @param {string} cacheName tên bộ đệm
+ * @returns {Promise<string[]>} danh sách URL được lưu trong bộ nhớ cache
  */
 export const getCacheUrls = async (cacheName) => {
   if (!('caches' in window)) {
@@ -34,15 +34,15 @@ export const getCacheUrls = async (cacheName) => {
     const requests = await cache.keys();
     return requests.map(request => request.url);
   } catch (error) {
-    console.error(`获取缓存 ${cacheName} 的URL失败:`, error);
+    console.error(`Nhận bộ đệm ${cacheName} URL không thành công:`, error);
     return [];
   }
 };
 
 /**
- * 检查特定URL是否已被缓存
- * @param {string} url 要检查的URL
- * @returns {Promise<boolean>} 是否已缓存
+ * Kiểm tra xem một URL cụ thể đã được lưu vào bộ nhớ đệm chưa
+ * @param {string} url Để được kiểm traURL
+ * @returns {Promise<boolean>} Nó có được lưu vào bộ nhớ đệm không?
  */
 export const isUrlCached = async (url) => {
   if (!('caches' in window)) {
@@ -60,17 +60,17 @@ export const isUrlCached = async (url) => {
     }
     return false;
   } catch (error) {
-    console.error(`检查URL ${url} 是否缓存失败:`, error);
+    console.error(`nghiên cứuURL ${url} Bộ nhớ đệm có bị lỗi hay không:`, error);
     return false;
   }
 };
 
 /**
- * 获取当前页面所有CDN资源的缓存状态
- * @returns {Promise<Object>} 缓存状态对象
+ * Nhận trạng thái bộ đệm của tất cả tài nguyên CDN trên trang hiện tại
+ * @returns {Promise<Object>} đối tượng trạng thái bộ đệm
  */
 export const checkCdnCacheStatus = async () => {
-  // 从CDN缓存中查找资源
+  // Tìm tài nguyên từ bộ đệm CDN
   const cdnCaches = ['cdn-stylesheets', 'cdn-scripts'];
   const results = {
     css: [],
@@ -83,7 +83,7 @@ export const checkCdnCacheStatus = async () => {
     try {
       const urls = await getCacheUrls(cacheName);
       
-      // 区分CSS和JS资源
+      // Phân biệt tài nguyên CSS và JS
       for (const url of urls) {
         if (url.endsWith('.css')) {
           results.css.push({ url, cached: true });
@@ -93,7 +93,7 @@ export const checkCdnCacheStatus = async () => {
         results.totalCached++;
       }
     } catch (error) {
-      console.error(`获取 ${cacheName} 缓存信息失败:`, error);
+      console.error(`lấy ${cacheName} Thông tin bộ nhớ đệm không thành công:`, error);
     }
   }
   
@@ -101,8 +101,8 @@ export const checkCdnCacheStatus = async () => {
 };
 
 /**
- * 清除所有Service Worker缓存
- * @returns {Promise<boolean>} 是否成功清除
+ * Xóa tất cả bộ nhớ đệm của service worker
+ * @returns {Promise<boolean>} Xóa có thành công không?
  */
 export const clearAllCaches = async () => {
   if (!('caches' in window)) {
@@ -116,23 +116,23 @@ export const clearAllCaches = async () => {
     }
     return true;
   } catch (error) {
-    console.error('清除所有缓存失败:', error);
+    console.error('Xóa tất cả bộ nhớ đệm không thành công:', error);
     return false;
   }
 };
 
 /**
- * 将缓存状态输出到控制台
+ * Xuất trạng thái bộ đệm ra bàn điều khiển
  */
 export const logCacheStatus = async () => {
-  console.group('Service Worker 缓存状态');
+  console.group('Service Worker trạng thái bộ đệm');
   
   const cacheNames = await getCacheNames();
-  console.log('已发现的缓存:', cacheNames);
+  console.log('Đã phát hiện bộ đệm:', cacheNames);
   
   for (const cacheName of cacheNames) {
     const urls = await getCacheUrls(cacheName);
-    console.group(`缓存: ${cacheName} (${urls.length} 项)`);
+    console.group(`bộ nhớ đệm: ${cacheName} (${urls.length} mục)`);
     urls.forEach(url => console.log(url));
     console.groupEnd();
   }

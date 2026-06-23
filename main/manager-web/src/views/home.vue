@@ -1,10 +1,10 @@
 <template>
   <div class="welcome">
-    <!-- 公共头部 -->
+    <!-- tiêu đề công khai -->
     <HeaderBar :devices="devices" @search="handleSearch" @search-reset="handleSearchReset" />
     <el-main style="padding: 20px;display: flex;flex-direction: column;">
       <div>
-        <!-- 首页内容 -->
+        <!-- Nội dung trang chủ -->
         <div class="add-device">
           <div class="add-device-bg">
             <div class="hellow-text" style="margin-top: 30px;">
@@ -79,7 +79,7 @@ export default {
       showChatHistory: false,
       currentAgentId: '',
       currentAgentName: '',
-      // 功能状态
+      // tình trạng chức năng
       featureStatus: {
         voiceprintRecognition: false,
         voiceClone: false,
@@ -94,7 +94,7 @@ export default {
   },
 
   methods: {
-    // 加载功能状态
+    // Tải trạng thái chức năng
     async loadFeatureStatus() {
       await featureManager.waitForInitialization();
       const config = featureManager.getConfig();
@@ -109,7 +109,7 @@ export default {
       this.addDeviceDialogVisible = true
     },
     goToRoleConfig() {
-      // 点击配置角色后跳转到角色配置页
+      // Nhấp vào Cấu hình vai trò để chuyển đến trang cấu hình vai trò.
       this.$router.push('/role-config')
     },
     handleWisdomBodyAdded(res) {
@@ -122,7 +122,7 @@ export default {
     handleSearch(keyword) {
       this.isSearching = true;
       this.isLoading = true;
-      // 检测MAC地址格式：包含4个冒号
+      // Phát hiện định dạng địa chỉ MAC: chứa 4 dấu hai chấm
       const isMac = /^([0-9A-Fa-f]{2}:){5}[0-9A-Fa-f]{2}$/.test(keyword)
       const searchType = isMac ? 'mac' : 'name';
       Api.agent.searchAgent(keyword, searchType, ({ data }) => {
@@ -134,22 +134,22 @@ export default {
         }
         this.isLoading = false;
       }, (error) => {
-        console.error('搜索智能体失败:', error);
+        console.error('Tác nhân tìm kiếm không thành công:', error);
         this.isLoading = false;
         this.$message.error(this.$t('message.searchFailed'));
       });
     },
     handleSearchReset() {
       this.isSearching = false;
-      // 直接将原始设备列表赋值给显示设备列表，避免重新加载数据
+      // Gán trực tiếp danh sách thiết bị gốc vào danh sách thiết bị hiển thị để tránh tải lại dữ liệu
       this.devices = [...this.originalDevices];
     },
 
-    // 搜索更新智能体列表
+    // Tìm kiếm cập nhật danh sách đại lý
     handleSearchResult(filteredList) {
-      this.devices = filteredList; // 更新设备列表
+      this.devices = filteredList; // Cập nhật danh sách thiết bị
     },
-    // 获取智能体列表
+    // Lấy danh sách đại lý
     fetchAgentList() {
       this.isLoading = true;
       Api.agent.getAgentList(({ data }) => {
@@ -159,10 +159,10 @@ export default {
             agentId: item.id
           }));
 
-          // 动态设置骨架屏数量（可选）
+          // Tự động đặt số lượng màn hình khung xương (tùy chọn)）
           this.skeletonCount = Math.min(
-            Math.max(this.originalDevices.length, 3), // 最少3个
-            10 // 最多10个
+            Math.max(this.originalDevices.length, 3), // Tối thiểu 3
+10 // Tối đa 10
           );
 
           this.handleSearchReset();
@@ -173,7 +173,7 @@ export default {
         this.isLoading = false;
       });
     },
-    // 删除智能体
+    // Xóa đại lý
     handleDeleteAgent(agentId) {
       this.$confirm(this.$t('home.confirmDeleteAgent'), this.$t('common.warning'), {
         confirmButtonText: this.$t('button.ok'),
@@ -186,7 +186,7 @@ export default {
               message: this.$t('home.deleteSuccess'),
               showClose: true
             });
-            this.fetchAgentList(); // 刷新列表
+            this.fetchAgentList(); // Làm mới danh sách
           } else {
             this.$message.error({
               message: res.data.msg || this.$t('home.deleteFailed'),
@@ -214,13 +214,13 @@ export default {
   flex-direction: column;
   background: linear-gradient(145deg, #e6eeff, #eff0ff);
   background-size: cover;
-  /* 确保背景图像覆盖整个元素 */
+  /* Đảm bảo hình nền bao phủ toàn bộ phần tử */
   background-position: center;
-  /* 从顶部中心对齐 */
+  /* Căn chỉnh từ trên cùng ở giữa */
   -webkit-background-size: cover;
-  /* 兼容老版本WebKit浏览器 */
+  /* Tương thích với các phiên bản cũ hơn của trình duyệt WebKit */
   -o-background-size: cover;
-  /* 兼容老版本Opera浏览器 */
+  /* Tương thích với các phiên bản cũ hơn của trình duyệt Opera */
 }
 
 .add-device {
@@ -241,15 +241,15 @@ export default {
   background-image: url("@/assets/home/main-top-bg.png");
   overflow: hidden;
   background-size: cover;
-  /* 确保背景图像覆盖整个元素 */
+  /* Đảm bảo hình nền bao phủ toàn bộ phần tử */
   background-position: center;
-  /* 从顶部中心对齐 */
+  /* Căn chỉnh từ trên cùng ở giữa */
   -webkit-background-size: cover;
-  /* 兼容老版本WebKit浏览器 */
+  /* Tương thích với các phiên bản cũ hơn của trình duyệt WebKit */
   -o-background-size: cover;
   box-sizing: border-box;
 
-  /* 兼容老版本Opera浏览器 */
+  /* Tương thích với các phiên bản cũ hơn của trình duyệt Opera */
   .hellow-text {
     margin-left: 75px;
     color: #3d4566;
@@ -306,10 +306,10 @@ export default {
   padding: 30px 0;
 }
 
-/* 在 DeviceItem.vue 的样式中 */
+/* Theo phong cách của DeviceItem.vue */
 .device-item {
   margin: 0 !important;
-  /* 避免冲突 */
+  /* tránh xung đột */
   width: auto !important;
 }
 
@@ -320,10 +320,10 @@ export default {
   padding-top: 30px;
   color: #979db1;
   text-align: center;
-  /* 居中显示 */
+  /* Màn hình trung tâm */
 }
 
-/* 骨架屏动画 */
+/* Hoạt hình màn hình bộ xương */
 @keyframes shimmer {
   100% {
     transform: translateX(100%);

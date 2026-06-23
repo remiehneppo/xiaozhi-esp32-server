@@ -141,7 +141,7 @@ export default {
     return {
       saving: false,
       isAllFieldsSelected: false,
-      tableKey: 0 // 用于强制表格重新渲染
+      tableKey: 0 // Được sử dụng để buộc bảng hiển thị lại
     };
   },
   computed: {
@@ -288,7 +288,7 @@ export default {
     },
 
     forceTableRerender() {
-      this.tableKey += 1; // 改变key值强制表格重新渲染
+      this.tableKey += 1; // Thay đổi giá trị khóa buộc bảng phải hiển thị lại
     },
 
     submit() {

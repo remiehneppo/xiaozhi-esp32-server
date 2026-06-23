@@ -10,7 +10,7 @@
         ×
       </button>
 
-      <!-- 模型信息部分 -->
+      <!-- Phần thông tin mẫu -->
       <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
         <div style="font-size: 20px; font-weight: bold; color: #3d4566;">{{ $t('modelConfigDialog.modelInfo') }}</div>
         <div style="display: flex; align-items: center; gap: 20px;">
@@ -200,7 +200,7 @@ export default {
     confirm() {
       this.saving = true;
 
-      // 校验模型ID不能为纯文字或空格
+      // ID mô hình xác minh không được là văn bản thuần túy hoặc dấu cách.
       if (this.formData.id && !this.validateModelId(this.formData.id)) {
         this.$message.error(this.$t('modelConfigDialog.invalidModelId'));
         this.saving = false;
@@ -254,39 +254,39 @@ export default {
         isDefault: true,
         configJson: {}
       };
-      // 重置加载状态
+      // Đặt lại trạng thái tải
       this.providers = [];
       this.providersLoaded = false;
-      // 重置字段配置
+      // Đặt lại cấu hình trường
       this.providerFields = [];
       this.currentProvider = null;
     },
     
-    // 校验模型ID：不能为纯文字或空格
+    // ID mô hình xác minh: không được là văn bản thuần túy hoặc dấu cách
     validateModelId(modelId) {
       if (!modelId || typeof modelId !== 'string') {
         return false;
       }
       
-      // 去除首尾空格
+      // Xóa khoảng trắng ở đầu và cuối
       const trimmedId = modelId.trim();
       
-      // 检查是否为空或纯空格
+      // Kiểm tra xem nó trống hay khoảng trắng thuần túy
       if (trimmedId === '') {
         return false;
       }
       
-      // 检查是否只包含字母（纯文字）
+      // Kiểm tra xem nó có chỉ chứa các chữ cái không (văn bản thuần túy）
       if (/^[a-zA-Z]+$/.test(trimmedId)) {
         return false;
       }
       
-      // 检查是否包含空格
+      // Kiểm tra xem nó có chứa khoảng trắng không
       if (/\s/.test(trimmedId)) {
         return false;
       }
       
-      // 允许字母、数字、下划线、连字符
+      // Cho phép chữ cái, số, dấu gạch dưới, dấu gạch nối
       if (!/^[a-zA-Z0-9_-]+$/.test(trimmedId)) {
         return false;
       }

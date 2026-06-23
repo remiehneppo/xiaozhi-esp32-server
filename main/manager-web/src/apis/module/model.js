@@ -2,7 +2,7 @@ import { getServiceUrl } from '../api';
 import RequestService from '../httpRequest';
 
 export default {
-  // 获取模型配置列表
+  // Nhận danh sách cấu hình mô hình
   getModelList(params, callback) {
     const queryParams = new URLSearchParams({
       modelType: params.modelType,
@@ -19,13 +19,13 @@ export default {
         callback(res)
       })
       .networkFail((err) => {
-        console.error('获取模型列表失败:', err)
+        console.error('Không lấy được danh sách mẫu:', err)
         RequestService.reAjaxFun(() => {
           this.getModelList(params, callback)
         })
       }).send()
   },
-  // 获取模型供应器列表
+  // Nhận danh sách các nhà cung cấp mô hình
   getModelProviders(modelType, callback) {
     RequestService.sendRequest()
       .url(`${getServiceUrl()}/models/${modelType}/provideTypes`)
@@ -35,15 +35,15 @@ export default {
         callback(res.data?.data || [])
       })
       .networkFail((err) => {
-        console.error('获取供应器列表失败:', err)
-        this.$message.error('获取供应器列表失败')
+        console.error('Không lấy được danh sách nhà cung cấp:', err)
+        this.$message.error('Không lấy được danh sách nhà cung cấp')
         RequestService.reAjaxFun(() => {
           this.getModelProviders(modelType, callback)
         })
       }).send()
   },
 
-  // 新增模型配置
+  // Thêm cấu hình mô hình mới
   addModel(params, callback) {
     const { modelType, provideCode, formData } = params;
     const postData = {
@@ -67,14 +67,14 @@ export default {
         callback(res)
       })
       .networkFail((err) => {
-        console.error('新增模型失败:', err)
-        this.$message.error(err.msg || '新增模型失败')
+        console.error('Không thể thêm mô hình:', err)
+        this.$message.error(err.msg || 'Không thể thêm mô hình')
         RequestService.reAjaxFun(() => {
           this.addModel(params, callback)
         })
       }).send()
   },
-  // 删除模型配置
+  // Xóa cấu hình mô hình
   deleteModel(id, callback) {
     RequestService.sendRequest()
       .url(`${getServiceUrl()}/models/${id}`)
@@ -84,14 +84,14 @@ export default {
         callback(res)
       })
       .networkFail((err) => {
-        console.error('删除模型失败:', err)
-        this.$message.error(err.msg || '删除模型失败')
+        console.error('Không xóa được mô hình:', err)
+        this.$message.error(err.msg || 'Không xóa được mô hình')
         RequestService.reAjaxFun(() => {
           this.deleteModel(id, callback)
         })
       }).send()
   },
-  // 获取模型名称列表
+  // Lấy danh sách tên model
   getModelNames(modelType, modelName, callback) {
     RequestService.sendRequest()
       .url(`${getServiceUrl()}/models/names`)
@@ -107,7 +107,7 @@ export default {
         });
       }).send();
   },
-  // 获取LLM模型名称列表
+  // Nhận danh sách tên mô hình LLM
   getLlmModelCodeList(modelName, callback) {
     RequestService.sendRequest()
       .url(`${getServiceUrl()}/models/llm/names`)
@@ -123,7 +123,7 @@ export default {
         });
       }).send();
   },
-  // 获取模型音色列表
+  // Nhận danh sách giai điệu mô hình
   getModelVoices(modelId, voiceName, callback) {
     const queryParams = new URLSearchParams({
       voiceName: voiceName || ''
@@ -141,7 +141,7 @@ export default {
         });
       }).send();
   },
-  // 获取单个模型配置
+  // Nhận một cấu hình mô hình duy nhất
   getModelConfig(id, callback) {
     RequestService.sendRequest()
       .url(`${getServiceUrl()}/models/${id}`)
@@ -151,14 +151,14 @@ export default {
         callback(res)
       })
       .networkFail((err) => {
-        console.error('获取模型配置失败:', err)
-        this.$message.error(err.msg || '获取模型配置失败')
+        console.error('Không lấy được cấu hình mô hình:', err)
+        this.$message.error(err.msg || 'Không lấy được cấu hình mô hình')
         RequestService.reAjaxFun(() => {
           this.getModelConfig(id, callback)
         })
       }).send()
   },
-  // 启用/禁用模型状态
+  // Bật/tắt trạng thái mô hình
   updateModelStatus(id, status, callback) {
     RequestService.sendRequest()
       .url(`${getServiceUrl()}/models/enable/${id}/${status}`)
@@ -168,14 +168,14 @@ export default {
         callback(res)
       })
       .networkFail((err) => {
-        console.error('更新模型状态失败:', err)
-        this.$message.error(err.msg || '更新模型状态失败')
+        console.error('Không thể cập nhật trạng thái mô hình:', err)
+        this.$message.error(err.msg || 'Không thể cập nhật trạng thái mô hình')
         RequestService.reAjaxFun(() => {
           this.updateModelStatus(id, status, callback)
         })
       }).send()
   },
-  // 更新模型配置
+  // Cập nhật cấu hình mô hình
   updateModel(params, callback) {
     const { modelType, provideCode, id, formData } = params;
     const payload = {
@@ -191,14 +191,14 @@ export default {
         callback(res);
       })
       .networkFail((err) => {
-        console.error('更新模型失败:', err);
-        this.$message.error(err.msg || '更新模型失败');
+        console.error('Cập nhật mô hình không thành công:', err);
+        this.$message.error(err.msg || 'Cập nhật mô hình không thành công');
         RequestService.reAjaxFun(() => {
           this.updateModel(params, callback);
         });
       }).send();
   },
-  // 设置默认模型
+  // Đặt mô hình mặc định
   setDefaultModel(id, callback) {
     RequestService.sendRequest()
       .url(`${getServiceUrl()}/models/default/${id}`)
@@ -208,8 +208,8 @@ export default {
         callback(res)
       })
       .networkFail((err) => {
-        console.error('设置默认模型失败:', err)
-        this.$message.error(err.msg || '设置默认模型失败')
+        console.error('Đặt mô hình mặc định không thành công:', err)
+        this.$message.error(err.msg || 'Đặt mô hình mặc định không thành công')
         RequestService.reAjaxFun(() => {
           this.setDefaultModel(id, callback)
         })
@@ -217,12 +217,12 @@ export default {
   },
 
   /**
-   * 获取模型配置列表（支持查询参数）
-   * @param {Object} params - 查询参数对象，例如 { name: 'test', modelType: 1 }
-   * @param {Function} callback - 回调函数
+   * Nhận danh sách cấu hình mô hình (hỗ trợ các tham số truy vấn）
+   * @param {Object} params - Đối tượng tham số truy vấn, ví dụ: { name: 'test', modelType: 1 }
+   * @param {Function} callback - chức năng gọi lại
    */
   getModelProvidersPage(params, callback) {
-    // 构建查询参数
+    // Xây dựng tham số truy vấn
     const queryParams = new URLSearchParams();
     if (params.name) queryParams.append('name', params.name);
     if (params.modelType !== undefined) queryParams.append('modelType', params.modelType);
@@ -237,7 +237,7 @@ export default {
         callback(res);
       })
       .networkFail((err) => {
-        this.$message.error(err.msg || '获取供应器列表失败');
+        this.$message.error(err.msg || 'Không lấy được danh sách nhà cung cấp');
         RequestService.reAjaxFun(() => {
           this.getModelProviders(params, callback);
         });
@@ -245,9 +245,9 @@ export default {
   },
 
   /**
-   * 新增模型供应器配置
-   * @param {Object} params - 请求参数对象，例如 { modelType: '1', providerCode: '1', name: '1', fields: '1', sort: 1 }
-   * @param {Function} callback - 成功回调函数
+   * Đã thêm cấu hình nhà cung cấp mô hình
+   * @param {Object} params - Đối tượng tham số yêu cầu, ví dụ { modelType: '1', providerCode: '1', name: '1', fields: '1', sort: 1 }
+   * @param {Function} callback - chức năng gọi lại thành công
    */
   addModelProvider(params, callback) {
     const postData = {
@@ -267,8 +267,8 @@ export default {
         callback(res);
       })
       .networkFail((err) => {
-        console.error('新增模型供应器失败:', err)
-        this.$message.error(err.msg || '新增模型供应器失败')
+        console.error('Không thêm được nhà cung cấp mô hình:', err)
+        this.$message.error(err.msg || 'Không thêm được nhà cung cấp mô hình')
         RequestService.reAjaxFun(() => {
           this.addModelProvider(params, callback);
         });
@@ -276,9 +276,9 @@ export default {
   },
 
   /**
-   * 更新模型供应器配置
-   * @param {Object} params - 请求参数对象，例如 { id: '111', modelType: '1', providerCode: '1', name: '1', fields: '1', sort: 1 }
-   * @param {Function} callback - 成功回调函数
+   * Cập nhật cấu hình nhà cung cấp mô hình
+   * @param {Object} params - Đối tượng tham số yêu cầu, ví dụ { id: '111', modelType: '1', providerCode: '1', name: '1', fields: '1', sort: 1 }
+   * @param {Function} callback - chức năng gọi lại thành công
    */
   updateModelProvider(params, callback) {
     const putData = {
@@ -299,13 +299,13 @@ export default {
         callback(res);
       })
       .networkFail((err) => {
-        this.$message.error(err.msg || '更新模型供应器失败')
+        this.$message.error(err.msg || 'Không thể cập nhật nhà cung cấp mô hình')
         RequestService.reAjaxFun(() => {
           this.updateModelProvider(params, callback);
         });
       }).send();
   },
-  // 删除
+  // xóa bỏ
   deleteModelProviderByIds(ids, callback) {
     RequestService.sendRequest()
       .url(`${getServiceUrl()}/models/provider/delete`)
@@ -316,13 +316,13 @@ export default {
         callback(res);
       })
       .networkFail((err) => {
-        this.$message.error(err.msg || '删除模型供应器失败')
+        this.$message.error(err.msg || 'Không thể xóa nhà cung cấp mô hình')
         RequestService.reAjaxFun(() => {
           this.deleteModelProviderByIds(ids, callback)
         })
       }).send()
   },
-  // 获取插件列表
+  // Nhận danh sách plugin
   getPluginFunctionList(params, callback) {
     RequestService.sendRequest()
       .url(`${getServiceUrl()}/models/provider/plugin/names`)
@@ -332,14 +332,14 @@ export default {
         callback(res)
       })
       .networkFail((err) => {
-        this.$message.error(err.msg || '获取插件列表失败')
+        this.$message.error(err.msg || 'Không lấy được danh sách plugin')
         RequestService.reAjaxFun(() => {
           this.getPluginFunctionList(params, callback)
         })
       }).send()
   },
 
-  // 获取RAG模型列表
+  // Nhận danh sách mô hình RAG
   getRAGModels(callback) {
     RequestService.sendRequest()
       .url(`${getServiceUrl()}/datasets/rag-models`)
@@ -349,8 +349,8 @@ export default {
         callback(res)
       })
       .networkFail((err) => {
-        console.error('获取RAG模型列表失败:', err)
-        this.$message.error(err.msg || '获取RAG模型列表失败')
+        console.error('Không lấy được danh sách model RAG:', err)
+        this.$message.error(err.msg || 'Không lấy được danh sách model RAG')
         RequestService.reAjaxFun(() => {
           this.getRAGModels(callback)
         })

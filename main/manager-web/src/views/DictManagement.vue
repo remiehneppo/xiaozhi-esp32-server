@@ -15,10 +15,10 @@
             </div>
         </div>
 
-        <!-- 主体内容 -->
+        <!-- Nội dung chính -->
         <div class="main-wrapper">
             <div class="content-panel">
-                <!-- 左侧字典类型列表 -->
+                <!-- Danh sách các loại từ điển ở bên trái -->
                 <div class="dict-type-panel">
                     <div class="dict-type-header">
                         <el-button type="success" size="mini" @click="showAddDictTypeDialog">{{ $t('dictManagement.addDictType') }}</el-button>
@@ -42,7 +42,7 @@
                     </el-table>
                 </div>
 
-                <!-- 右侧字典数据列表 -->
+                <!-- Danh sách dữ liệu từ điển bên phải -->
                 <div class="content-area">
                     <el-card class="dict-data-card" shadow="never">
                         <el-table ref="dictDataTable" :data="dictDataList" style="width: 100%"
@@ -111,11 +111,11 @@
             </div>
         </div>
 
-        <!-- 使用字典类型编辑弹框组件 -->
+        <!-- Sử dụng loại từ điển để chỉnh sửa thành phần bật lên -->
         <DictTypeDialog :visible.sync="dictTypeDialogVisible" :title="dictTypeDialogTitle" :dictTypeData="dictTypeForm"
             @save="saveDictType" />
 
-        <!-- 使用字典数据编辑弹框组件 -->
+        <!-- Sử dụng dữ liệu từ điển để chỉnh sửa các thành phần bật lên -->
         <DictDataDialog :visible.sync="dictDataDialogVisible" :title="dictDataDialogTitle" :dictData="dictDataForm"
             :dictTypeId="selectedDictType?.id" @save="saveDictData" />
         <el-footer style="flex-shrink:unset;">
@@ -140,11 +140,11 @@ export default {
     },
     data() {
         return {
-            // 字典类型相关
+            // Loại từ điển liên quan
             dictTypeList: [],
             dictTypeLoading: false,
             selectedDictType: null,
-            selectedDictTypes: [],  // 恢复多选数组
+            selectedDictTypes: [],  // Khôi phục mảng nhiều lựa chọn
             dictTypeDialogTitle: this.$t('dictTypeDialog.addDictType'),
             dictTypeForm: {
                 id: null,
@@ -152,7 +152,7 @@ export default {
                 dictType: ''
             },
 
-            // 字典数据相关
+            // Dữ liệu từ điển liên quan
             dictDataList: [],
             dictDataLoading: false,
             isAllDictDataSelected: false,
@@ -166,7 +166,7 @@ export default {
                 sort: 0
             },
             search: '',
-            // 添加分页相关数据
+            // Thêm dữ liệu liên quan đến phân trang
             pageSizeOptions: [10, 20, 50, 100],
             currentPage: 1,
             pageSize: 10,
@@ -177,7 +177,7 @@ export default {
         this.loadDictTypeList()
     },
     methods: {
-        // 字典类型相关方法
+        // Các phương pháp liên quan đến loại từ điển
         loadDictTypeList() {
             this.dictTypeLoading = true
             dictApi.getDictTypeList({
@@ -254,7 +254,7 @@ export default {
             })
         },
 
-        // 字典数据相关方法
+        // Các phương pháp liên quan đến dữ liệu từ điển
         loadDictDataList(dictTypeId) {
             if (!dictTypeId) return
             this.dictDataLoading = true
@@ -356,14 +356,14 @@ export default {
             this.currentPage = 1
             this.loadDictDataList(this.selectedDictType.id)
         },
-        // 添加分页相关方法
+        // Thêm các phương thức liên quan đến phân trang
         handlePageSizeChange(val) {
             this.pageSize = val;
             this.currentPage = 1;
             this.loadDictDataList(this.selectedDictType?.id);
         },
         
-        // 更新选择列表头翻译文本
+        // Cập nhật văn bản dịch tiêu đề danh sách lựa chọn
         updateSelectionHeaderText() {
             const thElement = document.querySelector(`.el-table__header th:nth-child(1) .cell`);
             if (thElement) {
@@ -390,16 +390,16 @@ export default {
             this.currentPage = page;
             this.loadDictDataList(this.selectedDictType?.id);
         },
-        // 表头单元格样式类名，用于选择列
+        // Tên lớp kiểu ô tiêu đề, được sử dụng để chọn cột
         headerCellClassName({ columnIndex }) {
             if (columnIndex === 0) {
                 return 'custom-selection-header';
             }
             return '';
         },
-        // 单元格样式类名，用于设置选择列表头的翻译文本
+        // Tên lớp kiểu ô, được sử dụng để đặt văn bản đã dịch của tiêu đề danh sách lựa chọn
         selectionCellClassName({ row, column, rowIndex, columnIndex }) {
-            // 只对表头行设置data-content
+            // Chỉ đặt cho các hàng tiêu đềdata-content
             if (rowIndex === undefined) {
                 setTimeout(() => {
                     this.updateSelectionHeaderText();
@@ -410,14 +410,14 @@ export default {
     },
     
     mounted() {
-        // 在组件挂载后确保表头翻译文本正确显示
+        // Đảm bảo rằng văn bản dịch tiêu đề được hiển thị chính xác sau khi thành phần được gắn kết.
         setTimeout(() => {
             this.updateSelectionHeaderText();
         }, 100);
     },
     
     updated() {
-        // 在组件更新后重新设置表头翻译文本
+        // Đặt lại văn bản dịch tiêu đề sau khi cập nhật thành phần
         this.updateSelectionHeaderText();
     },
     
@@ -460,7 +460,7 @@ export default {
 }
 
 .main-wrapper {
-    // 顶部 63px 底部 35px 查询72px
+    // Truy vấn 35px dưới cùng 63px trên cùng72px
     height: calc(100vh - 63px - 35px - 72px);
     margin: 0 22px;
     border-radius: 15px;

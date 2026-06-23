@@ -1,0 +1,16 @@
+*** Begin Patch
+*** Update File: main/manager-api/src/main/resources/logback-spring.xml
+@@ -4,10 +4,10 @@
+ <configuration>
+-    <!-- 启用JansiConsoleAppender以确保控制台输出有颜色 -->
++    <!-- Kích hoạt JansiConsoleAppender để đảm bảo đầu ra console có màu -->
+     <conversionRule conversionWord="clr" converterClass="org.springframework.boot.logging.logback.ColorConverter" />
+     
+-    <!-- 确保日志目录存在 -->
++    <!-- Đảm bảo thư mục nhật ký tồn tại -->
+     <timestamp key="bySecond" datePattern="yyyyMMdd'T'HHmmss"/>
+     
+-    <!-- 定义日志文件存储位置 -->
++    <!-- Định nghĩa vị trí lưu trữ tệp nhật ký -->
+     <property name="LOG_HOME" value="./logs" />
+*** End Patch

@@ -40,8 +40,8 @@ class ManageApiClient:
         if not cls.config.get("url") or not cls.config.get("secret"):
             raise Exception("manager-apiurlhoặcsecretcấu hìnhlỗi")
 
-        if "" in cls.config.get("secret"):
-            raise Exception("cấu hìnhmanager-apisecret")
+        if "thay_bang" in cls.config.get("secret") or "your_secret" in cls.config.get("secret"):
+            raise Exception("Vui lòng cấu hình manager-api secret thực tế trong file .config.yaml")
 
         cls._secret = cls.config.get("secret")
         cls.max_retries = cls.config.get("max_retries", 6)  # thử lạilần

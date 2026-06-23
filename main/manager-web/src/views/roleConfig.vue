@@ -349,7 +349,7 @@
                       </div>
                     </el-form-item>
                     <div class="model-row">
-                      <!-- 语言筛选器 -->
+                      <!-- Bộ lọc ngôn ngữ -->
                       <el-form-item class="model-item language-select-item">
                         <template #label>
                           <el-tooltip :content="$t('roleConfig.tooltip.language')" placement="top" effect="light" popper-class="custom-tooltip">
@@ -373,7 +373,7 @@
                         </div>
                       </el-form-item>
 
-                      <!-- 音色选择器 -->
+                      <!-- bộ chọn âm -->
                       <el-form-item class="model-item">
                         <template #label>
                           <el-tooltip :content="$t('roleConfig.tooltip.voiceType')" placement="top" effect="light" popper-class="custom-tooltip">
@@ -527,7 +527,7 @@ export default {
       templates: [],
       loadingTemplate: false,
       voiceOptions: [],
-      voiceDetails: {}, // 保存完整的音色信息
+      voiceDetails: {}, // Lưu thông tin âm sắc đầy đủ
       showFunctionDialog: false,
       currentFunctions: [],
       currentContextProviders: [],
@@ -537,13 +537,13 @@ export default {
       isPaused: false,
       currentAudio: null,
       currentPlayingVoiceId: null,
-      // 语言筛选相关状态
-      languageOptions: [], // 语言选项列表
-      selectedLanguage: '', // 当前选中的语言
-      // 功能状态
+      // Trạng thái liên quan đến bộ lọc ngôn ngữ
+      languageOptions: [], // Danh sách tùy chọn ngôn ngữ
+      selectedLanguage: '', // Ngôn ngữ hiện được chọn
+// Trạng thái chức năng
       featureStatus: {
-        vad: false, // 语言检测活动功能状态
-        asr: false, // 语音识别功能状态
+        vad: false, // Trạng thái tính năng hoạt động phát hiện ngôn ngữ
+        asr: false, // Trạng thái chức năng nhận dạng giọng nói
       },
       dynamicTags: [],
       inputVisible: false,
@@ -559,7 +559,7 @@ export default {
       try {
         await this.handleSaveAgentTags(this.$route.query.agentId);
       } catch (error) {
-        console.error('保存标签失败:', error);
+        console.error('Không lưu được nhãn:', error);
         return;
       }
 
@@ -592,7 +592,7 @@ export default {
         correctWordFileIds: this.checkedReplacementWordIds,
       };
 
-      // 只在用户设置了TTS参数时才传递（不为null/undefined）
+      // Chỉ được thông qua nếu người dùng đã đặt tham số TTS (không dành chonull/undefined）
       if (this.form.ttsVolume !== null && this.form.ttsVolume !== undefined) {
         configData.ttsVolume = this.form.ttsVolume;
       }
@@ -677,7 +677,7 @@ export default {
           message: i18n.t("roleConfig.applyTemplateFailed"),
           showClose: true,
         });
-        console.error("应用模板失败:", error);
+        console.error("Áp dụng mẫu không thành công:", error);
       } finally {
         this.loadingTemplate = false;
       }
@@ -722,46 +722,46 @@ export default {
             },
           };
 
-          // 同步TTS设置到ttsSettings
+          // Đồng bộ hóa cài đặt TTS vớittsSettings
           this.ttsSettings = {
             volume: this.form.ttsVolume || 0,
             speed: this.form.ttsRate || 0,
             pitch: this.form.ttsPitch || 0
           };
-          // 同步替换词到checkedReplacementWordIds
+          // Đồng bộ hóa các từ thay thế thànhcheckedReplacementWordIds
           this.checkedReplacementWordIds = data.data.correctWordFileIds || [];
 
-          // 后端只给了最小映射：[{ id, agentId, pluginId }, ...]
+          // backend chỉ cung cấp ánh xạ tối thiểu：[{ id, agentId, pluginId }, ...]
           const savedMappings = data.data.functions || [];
           
-          // 加载上下文配置
+          // Tải cấu hình ngữ cảnh
           this.currentContextProviders = data.data.contextProviders || [];
 
-          // 先保证 allFunctions 已经加载（如果没有，则先 fetchAllFunctions）
+          // Trước tiên hãy đảm bảo rằng tất cả các chức năng đã được tải (nếu không, trước tiên hãy đảm bảo rằng fetchAllFunctions）
           const ensureFuncs = this.allFunctions.length
             ? Promise.resolve()
             : this.fetchAllFunctions();
 
           ensureFuncs.then(() => {
-            // 合并：按照 pluginId（id 字段）把全量元数据信息补齐
+            // Hợp nhất: Hoàn thành tất cả thông tin siêu dữ liệu theo pluginId (trường id)
             this.currentFunctions = savedMappings.map((mapping) => {
               const meta = this.allFunctions.find((f) => f.id === mapping.pluginId);
               if (!meta) {
-                // 插件定义没找到，退化处理
+                // Không tìm thấy định nghĩa trình cắm, đang xử lý xuống cấp
                 return { id: mapping.pluginId, name: mapping.pluginId, params: {} };
               }
               return {
                 id: mapping.pluginId,
                 name: meta.name,
-                // 后端如果还有 paramInfo 字段就用 mapping.paramInfo，否则用 meta.params 默认值
+                // Nếu có trường paramInfo trong backend, hãy sử dụng maps.paramInfo, nếu không hãy sử dụng giá trị mặc định của meta.params.
                 params: mapping.paramInfo || { ...meta.params },
-                fieldsMeta: meta.fieldsMeta, // 保留以便对话框渲染 tooltip
+                fieldsMeta: meta.fieldsMeta, // Dành riêng cho kết xuất hộp thoại tooltip
               };
             });
-            // 备份原始，以备取消时恢复
+            // Sao lưu bản gốc để khôi phục trong trường hợp hủy
             this.originalFunctions = JSON.parse(JSON.stringify(this.currentFunctions));
 
-            // 确保意图识别选项的可见性正确
+            // Đảm bảo khả năng hiển thị chính xác của các tùy chọn nhận dạng ý định
             this.updateIntentOptionsVisibility();
           });
         } else {
@@ -784,7 +784,7 @@ export default {
                 }))
               );
 
-              // 如果是意图识别选项，需要根据当前LLM类型更新可见性
+              // Nếu đó là tùy chọn nhận dạng ý định thì khả năng hiển thị cần được cập nhật dựa trên loại LLM hiện tại.
               if (model.type === "Intent") {
                 this.updateIntentOptionsVisibility();
               }
@@ -806,7 +806,7 @@ export default {
               });
               this.$set(this.modelOptions, model.type, LLMdata);
             } else {
-              this.$message.error(data.msg || "获取LLM模型列表失败");
+              this.$message.error(data.msg || "Không lấy được danh sách mô hình LLM");
             }
           });
         }
@@ -822,13 +822,13 @@ export default {
       }
       Api.model.getModelVoices(modelId, "", ({ data }) => {
         if (data.code === 0 && data.data) {
-          // 保存完整的音色信息
+          // Lưu thông tin âm sắc đầy đủ
           this.voiceDetails = data.data.reduce((acc, voice) => {
             acc[voice.id] = voice;
             return acc;
           }, {});
           
-          // 提取所有语言选项并去重
+          // Trích xuất tất cả các tùy chọn ngôn ngữ và loại bỏ các bản sao
           const allLanguages = new Set();
           data.data.forEach(voice => {
             if (voice.languages) {
@@ -842,14 +842,14 @@ export default {
             label: lang
           }));
 
-          // 使用后端返回的用户选择的语言，如果没有则使用第一个语言选项
+          // Sử dụng ngôn ngữ do người dùng chọn do backend trả về hoặc tùy chọn ngôn ngữ đầu tiên nếu không có sẵn
           if (this.form.ttsLanguage && this.languageOptions.some(option => option.value === this.form.ttsLanguage)) {
             this.selectedLanguage = this.form.ttsLanguage;
           } else if (this.languageOptions.length > 0) {
             this.selectedLanguage = this.languageOptions[0].value;
           }
 
-          // 根据选中的语言筛选音色
+          // Lọc âm thanh dựa trên ngôn ngữ đã chọn
           this.filterVoicesByLanguage();
         } else {
           this.voiceOptions = [];
@@ -860,7 +860,7 @@ export default {
       });
     },
     
-    // 根据语言筛选音色
+    // Lọc âm thanh theo ngôn ngữ
     filterVoicesByLanguage() {
       if (!this.voiceDetails || Object.keys(this.voiceDetails).length === 0) {
         this.voiceOptions = [];
@@ -869,10 +869,10 @@ export default {
 
       const allVoices = Object.values(this.voiceDetails);
 
-      // 根据选中的语言筛选音色
+      // Lọc âm thanh dựa trên ngôn ngữ đã chọn
       const filteredVoices = allVoices.filter(voice => {
         if (!voice.languages) {
-          // 对于没有语言信息的克隆音色，始终显示
+          // Đối với các bản sao không có thông tin ngôn ngữ, luôn hiển thị
           return Boolean(voice.isClone);
         }
         const languagesArray = voice.languages.split(/[、；;,，]/).map(lang => lang.trim()).filter(lang => lang);
@@ -888,7 +888,7 @@ export default {
         train_status: voice.trainStatus,
       }));
 
-      // 检查当前选中的音色是否支持当前语言，如果不支持则选择第一个
+      // Kiểm tra xem âm thanh đang chọn có hỗ trợ ngôn ngữ hiện tại không, nếu không thì chọn âm thanh đầu tiên
       const currentVoiceSupportsLanguage = this.form.ttsVoiceId &&
         filteredVoices.some(voice => voice.id === this.form.ttsVoiceId);
 
@@ -896,7 +896,7 @@ export default {
         this.form.ttsVoiceId = filteredVoices.length > 0 ? filteredVoices[0].id : '';
       }
 
-      // 同步到ttsSettings（如果值为null，使用0作为显示默认值，但不修改form中的值）
+      // Đồng bộ hóa với ttsSettings (nếu giá trị là null, sử dụng 0 làm giá trị mặc định hiển thị nhưng không sửa đổi giá trị trong biểu mẫu）
       this.ttsSettings = {
         volume: this.form.ttsVolume !== null && this.form.ttsVolume !== undefined ? this.form.ttsVolume : 0,
         speed: this.form.ttsRate !== null && this.form.ttsRate !== undefined ? this.form.ttsRate : 0,
@@ -914,7 +914,7 @@ export default {
         }
       }
 
-      // 如果没有找到有效字符，返回第一个字符
+      // Nếu không tìm thấy ký tự hợp lệ, trả về ký tự đầu tiên
       return name.charAt(0);
     },
     showFunctionIcons(type) {
@@ -926,10 +926,10 @@ export default {
       }
       if (type === "Memory") {
         if (value === "Memory_nomem") {
-          // 无记忆功能的模型，默认不记录聊天记录
+          // Model không có chức năng bộ nhớ, lịch sử trò chuyện không được ghi lại theo mặc định
           this.form.chatHistoryConf = 0;
         } else {
-          // 有记忆功能的模型，默认记录文本和语音
+          // Model có chức năng bộ nhớ mặc định ghi lại văn bản và giọng nói
           this.form.chatHistoryConf = 2;
         }
         if (value === "Memory_nomem" || value === "Memory_mem_report_only") {
@@ -941,7 +941,7 @@ export default {
         }
       }
       if (type === "LLM") {
-        // 当LLM类型改变时，更新意图识别选项的可见性
+        // Cập nhật khả năng hiển thị của các tùy chọn nhận dạng ý định khi loại LLM thay đổi
         this.updateIntentOptionsVisibility();
       }
     },
@@ -966,7 +966,7 @@ export default {
       });
     },
     openFunctionDialog() {
-      // 显示编辑对话框时，确保 allFunctions 已经加载
+      // Khi hiển thị hộp thoại chỉnh sửa, hãy đảm bảo tải tất cả các chức năng
       if (this.allFunctions.length === 0) {
         this.fetchAllFunctions().then(() => (this.showFunctionDialog = true));
       } else {
@@ -982,7 +982,7 @@ export default {
     handleTtsSettingsSave(settings) {
       const { replacementWordIds, ...ttsSettings } = settings;
       this.checkedReplacementWordIds = replacementWordIds;
-      // 保存TTS设置
+      // Lưu cài đặt TTS
       this.ttsSettings = ttsSettings;
       this.form.ttsVolume = ttsSettings.volume;
       this.form.ttsRate = ttsSettings.speed;
@@ -1003,7 +1003,7 @@ export default {
       this.showFunctionDialog = false;
     },
     updateIntentOptionsVisibility() {
-      // 根据当前选择的LLM类型更新意图识别选项的可见性
+      // Cập nhật khả năng hiển thị của các tùy chọn nhận dạng ý định dựa trên loại LLM hiện được chọn
       const currentLlmId = this.form.model.llmModelId;
       if (!currentLlmId || !this.modelOptions["Intent"]) return;
 
@@ -1012,76 +1012,76 @@ export default {
 
       this.modelOptions["Intent"].forEach((item) => {
         if (item.value === "Intent_function_call") {
-          // 如果llmType是openai或ollama，允许选择function_call
-          // 否则隐藏function_call选项
+          // Nếu llmType là openai hoặc ollama, cho phép chọn function_call
+// Ngược lại, ẩn tùy chọn function_call
           if (llmType === "openai" || llmType === "ollama") {
             item.isHidden = false;
           } else {
             item.isHidden = true;
           }
         } else {
-          // 其他意图识别选项始终可见
+          // Các tùy chọn nhận dạng ý định bổ sung luôn hiển thị
           item.isHidden = false;
         }
       });
 
-      // 如果当前选择的意图识别是function_call，但LLM类型不支持，则设置为可选的第一项
+      // Nếu nhận dạng ý định hiện được chọn là function_call nhưng loại LLM không hỗ trợ tính năng này thì nó sẽ được đặt thành mục đầu tiên tùy chọn
       if (
         this.form.model.intentModelId === "Intent_function_call" &&
         llmType !== "openai" &&
         llmType !== "ollama"
       ) {
-        // 找到第一个可见的选项
+        // Tìm tùy chọn hiển thị đầu tiên
         const firstVisibleOption = this.modelOptions["Intent"].find(
           (item) => !item.isHidden
         );
         if (firstVisibleOption) {
           this.form.model.intentModelId = firstVisibleOption.value;
         } else {
-          // 如果没有可见选项，设置为Intent_nointent
+          // Nếu không có tùy chọn nào hiển thị, hãy đặt thànhIntent_nointent
           this.form.model.intentModelId = "Intent_nointent";
         }
       }
     },
-    // 检查是否有音频预览
+    // Kiểm tra xem có bản xem trước âm thanh không
     hasAudioPreview(item) {
-      // 检查是否为克隆音频
-      // 使用后端实际返回的 isClone 字段
+      // Kiểm tra xem âm thanh có phải là bản sao không
+// Sử dụng trường isClone thực sự được backend trả về
       const isCloneAudio = Boolean(item.isClone);
       
-      // 检查是否有有效的音频URL，只使用后端实际返回的字段
+      // Kiểm tra xem có URL âm thanh hợp lệ hay không, chỉ sử dụng các trường thực sự được backend trả về
       const hasValidAudioUrl = !!((item.voice_demo || item.voiceDemo)?.trim());
       
-      // 克隆音频始终显示播放按钮，普通音频需要有有效URL才显示
+      // Âm thanh sao chép luôn hiển thị nút phát, trong khi âm thanh thông thường yêu cầu hiển thị URL hợp lệ.
       return isCloneAudio || hasValidAudioUrl;
     },
 
-    // 播放/暂停音频切换
+    // Chuyển đổi phát/tạm dừng âm thanh
     toggleAudioPlayback(voiceId) {
-      // 如果点击的是当前正在播放的音频，则切换暂停/播放状态
+      // Nếu bạn nhấp vào âm thanh đang phát, hãy chuyển trạng thái tạm dừng/phát
       if (this.playingVoice && this.currentPlayingVoiceId === voiceId) {
         if (this.isPaused) {
-          // 从暂停状态恢复播放
+          // Tiếp tục phát lại từ trạng thái tạm dừng
           this.currentAudio.play().catch((error) => {
-            console.error("恢复播放失败:", error);
+            console.error("Không thể tiếp tục phát lại:", error);
             this.$message.warning(this.$t('roleConfig.cannotResumeAudio'));
           });
           this.isPaused = false;
         } else {
-          // 暂停播放
+          // Tạm dừng phát lại
           this.currentAudio.pause();
           this.isPaused = true;
         }
         return;
       }
 
-      // 否则开始播放新的音频
+      // Nếu không hãy bắt đầu phát âm thanh mới
       this.playVoicePreview(voiceId);
     },
 
-    // 播放音色预览
+    // Phát bản xem trước âm thanh
     playVoicePreview(voiceId = null) {
-      // 如果传入了voiceId，则使用传入的，否则使用当前选中的
+      // Nếu voiceId được truyền vào, hãy sử dụng cái được truyền vào một, nếu không thì hãy sử dụng cái hiện được chọn.
       const targetVoiceId = voiceId || this.form.ttsVoiceId;
 
       if (!targetVoiceId) {
@@ -1089,117 +1089,117 @@ export default {
         return;
       }
 
-      // 停止当前正在播放的音频
+      // Dừng phát âm thanh hiện tại
       if (this.currentAudio) {
         this.currentAudio.pause();
         this.currentAudio = null;
       }
 
-      // 重置播放状态
+      // Đặt lại trạng thái phát lại
       this.isPaused = false;
       this.currentPlayingVoiceId = targetVoiceId;
 
       try {
-        // 从保存的音色详情中获取音频URL
+        // Nhận âm thanh từ chi tiết bản vá đã lưuURL
         const voiceDetail = this.voiceDetails[targetVoiceId];
 
-        // 添加调试信息
-        console.log("当前选择的音色ID:", targetVoiceId);
-        console.log("音色详情:", voiceDetail);
+        // Thêm thông tin gỡ lỗi
+        console.log("Âm hiện được chọnID:", targetVoiceId);
+        console.log("Chi tiết giai điệu:", voiceDetail);
 
-        // 尝试多种可能的音频属性名
+        // Hãy thử nhiều tên thuộc tính âm thanh có thể
         let audioUrl = null;
         let isCloneAudio = false;
 
         if (voiceDetail) {
-          // 使用后端实际返回的 isClone 字段判断是否为克隆音频
+          // Sử dụng trường isClone thực sự được backend trả về để xác định xem đó có phải là âm thanh nhân bản hay không
           isCloneAudio = Boolean(voiceDetail.isClone);
           console.log(
-            "克隆音频判断结果:",
+            "Sao chép kết quả phán đoán âm thanh:",
             isCloneAudio,
-            "训练状态:",
+            "tình trạng đào tạo:",
             voiceDetail.train_status
           );
 
-          // 获取音频URL
+          // Nhận âm thanhURL
           if (isCloneAudio && voiceDetail.id) {
-            // 对于克隆音频，使用后端提供的正确接口
-            // 注意：这里需要通过两步获取音频URL
-            // 1. 首先获取音频下载ID
-            // 2. 然后使用这个ID构建播放URL
-            // 由于异步操作，我们需要先请求getAudioId
-            console.log("检测到克隆音频，准备获取音频URL:", voiceDetail.id);
+            // Để nhân bản giọng nói, hãy sử dụng giao diện chính xác được cung cấp bởi backend
+// Lưu ý: Tại đây bạn cần lấy URL âm thanh theo hai bước
+// 1. Trước tiên, hãy lấy ID tải xuống âm thanh
+// 2. Sau đó, sử dụng ID này để xây dựng URL phát lại
+// Do hoạt động không đồng bộ nên trước tiên chúng ta cần yêu cầugetAudioId
+            console.log("Đã phát hiện bản sao âm thanh, sẵn sàng nhận âm thanhURL:", voiceDetail.id);
 
-            // 创建一个Promise来处理异步获取音频URL的操作
+            // Tạo một Promise để xử lý việc lấy URL âm thanh một cách không đồng bộ
             const getCloneAudioUrl = () => {
               return new Promise((resolve) => {
-                // 首先调用getAudioId接口获取临时UUID
+                // Trước tiên hãy gọi giao diện getAudioId để nhận thông tin tạm thờiUUID
                 RequestService.sendRequest()
                   .url(`${getServiceUrl()}/voiceClone/audio/${voiceDetail.id}`)
                   .method("POST")
                   .success((res) => {
                     if (res.data.code === 0 && res.data.data) {
-                      // 处理返回的数据格式，在res.data基础上再套一层.data
+                      // Xử lý định dạng dữ liệu được trả về và thêm một lớp khác dựa trên res.data.data
                       const audioId = res.data.data;
-                      console.log("获取到的音频ID:", audioId);
-                      // 使用返回的UUID构建播放URL
+                      console.log("Âm thanh thu đượcID:", audioId);
+                      // Xây dựng phát lại bằng UUID được trả vềURL
                       const playUrl = `${getServiceUrl()}/voiceClone/play/${audioId}`;
-                      console.log("构建克隆音频播放URL:", playUrl);
+                      console.log("Xây dựng phát lại âm thanh nhân bảnURL:", playUrl);
                       resolve(playUrl);
                     } else {
-                      console.error("获取音频ID失败:", res.msg);
+                      console.error("Không lấy được ID âm thanh:", res.msg);
                       resolve(null);
                     }
                   })
                   .networkFail((err) => {
-                    console.error("请求音频ID接口失败:", err);
+                    console.error("Yêu cầu giao diện ID âm thanh không thành công:", err);
                     resolve(null);
                   })
                   .send();
               });
             };
 
-            // 设置播放状态
+            // Đặt trạng thái phát
             this.playingVoice = true;
-            // 创建Audio实例
+            // Tạo phiên bản âm thanh
             this.currentAudio = new Audio();
-            // 设置音量
+            // Đặt âm lượng
             this.currentAudio.volume = 1.0;
 
-            // 设置超时，防止加载过长时间
+            // Đặt thời gian chờ để tránh tải quá lâu
             const timeoutId = setTimeout(() => {
               if (this.currentAudio && this.playingVoice) {
                 this.$message.warning(this.$t('roleConfig.audioLoadTimeout'));
                 this.playingVoice = false;
               }
-            }, 10000); // 10秒超时
+            }, 10000); // 10Hết thời gian chờ thứ hai
 
-            // 监听播放错误
+// Theo dõi lỗi phát lại
             this.currentAudio.onerror = () => {
               clearTimeout(timeoutId);
-              console.error("克隆音频播放错误");
+              console.error("Sao chép lỗi phát lại âm thanh");
               this.$message.warning(this.$t('roleConfig.cloneAudioPlayFailed'));
               this.playingVoice = false;
             };
 
-            // 监听播放开始，清除超时
+            // Theo dõi thời điểm bắt đầu phát lại và xóa thời gian chờ
             this.currentAudio.onplay = () => {
               clearTimeout(timeoutId);
             };
 
-            // 监听播放结束
+            // Màn hình phát lại kết thúc
             this.currentAudio.onended = () => {
               this.playingVoice = false;
             };
 
-            // 处理异步获取URL并播放
+            // Xử lý không đồng bộ việc nhận URL và phát nó
             getCloneAudioUrl().then((url) => {
               if (url) {
-                // 设置音频URL并播放
+                // Đặt URL âm thanh và phát
                 this.currentAudio.src = url;
                 this.currentAudio.play().catch((error) => {
                   clearTimeout(timeoutId);
-                  console.error("播放克隆音频失败:", error);
+                  console.error("Không thể phát âm thanh nhân bản:", error);
                   this.$message.warning(this.$t('roleConfig.cannotPlayCloneAudio'));
                   this.playingVoice = false;
                 });
@@ -1210,16 +1210,16 @@ export default {
               }
             });
 
-            // 返回，避免继续执行下面的普通音频播放逻辑
+            // Quay lại để tránh tiếp tục thực hiện logic phát lại âm thanh bình thường bên dưới
             return;
           } else {
-            // 对于普通音频，只使用后端实际返回的字段
+            // Đối với âm thanh bình thường, chỉ sử dụng các trường thực sự được backend trả về
             audioUrl =
               voiceDetail.voiceDemo ||
               voiceDetail.voice_demo;
           }
 
-          // 如果没有找到，尝试检查是否有URL格式的字段
+          // Nếu không tìm thấy, hãy thử kiểm tra xem có trường nào ở định dạng URL không
           if (!audioUrl) {
             for (const key in voiceDetail) {
               const value = voiceDetail[key];
@@ -1232,7 +1232,7 @@ export default {
                   value.endsWith(".ogg"))
               ) {
                 audioUrl = value;
-                console.log(`发现可能的音频URL在字段 '${key}':`, audioUrl);
+                console.log(`Tìm các URL âm thanh có thể có trong các trường '${key}':`, audioUrl);
                 break;
               }
             }
@@ -1240,59 +1240,59 @@ export default {
         }
 
         if (!audioUrl) {
-          // 如果没有音频URL，显示友好的提示
+          // Nếu không có URL âm thanh, hãy hiển thị lời nhắc thân thiện
           this.$message.warning(this.$t('roleConfig.noPreviewAudio'));
           return;
         }
 
-        // 非克隆音频的处理逻辑
+        // Xử lý logic cho âm thanh không nhân bản
         if (!isCloneAudio) {
-          // 设置播放状态
+          // Đặt trạng thái phát
           this.playingVoice = true;
 
-          // 创建并播放音频
+          // Tạo và phát âm thanh
           this.currentAudio = new Audio();
           this.currentAudio.src = audioUrl;
 
-          // 设置音量
+          // Đặt âm lượng
           this.currentAudio.volume = 1.0;
 
-          // 设置超时，防止加载过长时间
+          // Đặt thời gian chờ để tránh tải quá lâu
           const timeoutId = setTimeout(() => {
             if (this.currentAudio && this.playingVoice) {
               this.$message.warning(this.$t('roleConfig.audioLoadTimeout'));
               this.playingVoice = false;
             }
-          }, 10000); // 10秒超时
+          }, 10000); // 10Hết thời gian chờ thứ hai
 
-          // 监听播放错误
+// Theo dõi lỗi phát lại
           this.currentAudio.onerror = () => {
             clearTimeout(timeoutId);
-            console.error("音频播放错误");
+            console.error("Lỗi phát lại âm thanh");
             this.$message.warning(this.$t('roleConfig.audioPlayFailed'));
             this.playingVoice = false;
           };
 
-          // 监听播放开始，清除超时
+          // Theo dõi thời điểm bắt đầu phát lại và xóa thời gian chờ
           this.currentAudio.onplay = () => {
             clearTimeout(timeoutId);
           };
 
-          // 监听播放结束
+          // Màn hình phát lại kết thúc
           this.currentAudio.onended = () => {
             this.playingVoice = false;
           };
 
-          // 开始播放音频
+          // Bắt đầu phát âm thanh
           this.currentAudio.play().catch((error) => {
             clearTimeout(timeoutId);
-            console.error("播放失败:", error);
+            console.error("Chơi không thành công:", error);
             this.$message.warning(this.$t('roleConfig.cannotPlayAudio'));
             this.playingVoice = false;
           });
         }
       } catch (error) {
-        console.error("播放音频过程出错:", error);
+        console.error("Đã xảy ra lỗi khi phát âm thanh:", error);
         this.$message.error(this.$t('roleConfig.audioPlayError'));
         this.playingVoice = false;
       }
@@ -1302,17 +1302,17 @@ export default {
         this.form.chatHistoryConf = 0;
       }
     },
-    // 加载功能状态
+    // Tải trạng thái chức năng
     async loadFeatureStatus() {
       try {
-        // 确保featureManager已初始化完成
+        // Đảm bảo tính năng quản lý đã được khởi tạo
         await featureManager.waitForInitialization();
         const config = featureManager.getConfig();
         this.featureStatus.voiceprintRecognition = config.voiceprintRecognition || false;
         this.featureStatus.vad = config.vad || false;
         this.featureStatus.asr = config.asr || false;
       } catch (error) {
-        console.error("加载功能状态失败:", error);
+        console.error("Trạng thái chức năng tải không thành công:", error);
       }
     },
     handleClose(id) {
@@ -1385,7 +1385,7 @@ export default {
     }
     this.fetchModelOptions();
     this.fetchTemplates();
-    // 加载功能状态，确保featureManager已初始化
+    // Tải trạng thái tính năng, đảm bảo tính năng quản lý được khởi tạo
     await this.loadFeatureStatus();
   },
 };

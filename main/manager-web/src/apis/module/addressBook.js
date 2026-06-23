@@ -3,7 +3,7 @@ import RequestService from '../httpRequest';
 
 export default {
   /**
-   * 获取设备通讯录列表
+   * Lấy danh sách sổ địa chỉ thiết bị
    */
   getAddressBookList(macAddress, callback) {
     RequestService.sendRequest()
@@ -21,7 +21,7 @@ export default {
   },
 
   /**
-   * 更新设备通讯录别名
+   * Cập nhật bí danh sổ địa chỉ thiết bị
    */
   updateAlias(data, callback) {
     RequestService.sendRequest()
@@ -40,7 +40,7 @@ export default {
   },
 
   /**
-   * 更新设备通讯录权限
+   * Cập nhật quyền sổ địa chỉ thiết bị
    */
   updatePermission(data, callback) {
     RequestService.sendRequest()

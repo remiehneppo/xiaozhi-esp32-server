@@ -1,3 +1,4 @@
+<template>
   <el-dialog :title="title || $t('paramManagement.addParam')" :visible.sync="visible" width="520px" class="param-dialog-wrapper" :append-to-body="true"
     :close-on-click-modal="false" :key="dialogKey" custom-class="custom-param-dialog" :show-close="false">
     <div class="dialog-container">

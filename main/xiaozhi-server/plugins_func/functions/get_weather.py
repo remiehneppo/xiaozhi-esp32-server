@@ -16,20 +16,20 @@ GET_WEATHER_FUNCTION_DESC = {
     "function": {
         "name": "get_weather",
         "description": (
-            "Lấy thời tiết một địa điểm, user cần cung cấp vị trí, ví dụ user nói thời tiết Hàng Châu, param là: Hàng Châu."
-            "Nếu user nói tỉnh, mặc định dùng thành phố tỉnh lỵ. Nếu user nói không phải tỉnh hay thành phố mà là địa danh, mặc định dùng thành phố tỉnh lỵ của tỉnh đó."
-            "Quan trọng: Thời tiết 7 ngày tới của địa phương đã được cung cấp trong context, khi user không chỉ định thành phố khác thì tuyệt đối không gọi tool này."
+            "Lấy thời tiết cho một địa điểm cụ thể. Người dùng nên cung cấp vị trí, ví dụ: thời tiết Hà Nội, thời tiết Đà Nẵng, thời tiết TP.HCM. "
+            "Nếu người dùng chỉ nói tên tỉnh hoặc địa danh chưa rõ, hãy truyền đúng cụm địa điểm họ nói. "
+            "Quan trọng: thời tiết 7 ngày tới tại địa phương đã có trong context; nếu người dùng không chỉ định thành phố khác thì không gọi tool này."
         ),
         "parameters": {
             "type": "object",
             "properties": {
                 "location": {
                     "type": "string",
-                    "description": "Tên địa điểm, ví dụ Hàng Châu. Param tùy chọn, nếu không cung cấp thì không truyền",
+                    "description": "Tên địa điểm, ví dụ Hà Nội hoặc Thành phố Hồ Chí Minh. Nếu không có địa điểm thì không truyền.",
                 },
                 "lang": {
                     "type": "string",
-                    "description": "Ngôn ngữ code user sử dụng trả về, ví dụ zh_CN/zh_HK/en_US/ja_JP v.v., mặc định zh_CN",
+                    "description": "Mã ngôn ngữ trả về, ví dụ vi_VN hoặc en_US. Mặc định vi_VN.",
                 },
             },
             "required": ["lang"],
@@ -116,7 +116,7 @@ def fetch_city_info(location, api_key, api_host):
     response = requests.get(url, headers=HEADERS).json()
     if response.get("error") is not None:
         logger.bind(tag=TAG).error(
-            f"lấythất bại，do：{response.get('error', {}).get('detail')}"
+            f"Lấy thông tin thành phố thất bại: {response.get('error', {}).get('detail')}"
         )
         return None
     return response.get("location", [])[0] if response.get("location") else None
@@ -159,7 +159,7 @@ def parse_weather_info(soup):
 
 
 @register_function("get_weather", GET_WEATHER_FUNCTION_DESC, ToolType.SYSTEM_CTL)
-def get_weather(conn: "ConnectionHandler", location: str = None, lang: str = "zh_CN"):
+def get_weather(conn: "ConnectionHandler", location: str = None, lang: str = "vi_VN"):
     from core.utils.cache.manager import cache_manager, CacheType
 
     weather_config = conn.config.get("plugins", {}).get("get_weather", {})
@@ -177,7 +177,7 @@ def get_weather(conn: "ConnectionHandler", location: str = None, lang: str = "zh
             if cached_ip_info:
                 location = cached_ip_info.get("city")
             else:
-                # Cache miss, gọi APIlấy
+                # Cache miss, gọi API lấy vị trí theo IP.
                 ip_info = get_ip_info(client_ip, logger)
                 if ip_info:
                     cache_manager.set(CacheType.IP_INFO, client_ip, ip_info)
@@ -186,43 +186,42 @@ def get_weather(conn: "ConnectionHandler", location: str = None, lang: str = "zh
             if not location:
                 location = default_location
         else:
-            # IP，làm chosử dụngmặc địnhvị trí
+            # Không có IP thì dùng vị trí mặc định.
             location = default_location
-    # cố gắngtừbộ nhớ đệmlấyhoàn chỉnhbáo cáo
+    # Cố gắng lấy báo cáo hoàn chỉnh từ cache.
     weather_cache_key = f"full_weather_{location}_{lang}"
     cached_weather_report = cache_manager.get(CacheType.WEATHER, weather_cache_key)
     if cached_weather_report:
         return ActionResponse(Action.REQLLM, cached_weather_report, None)
 
-    # bộ nhớ đệmtrong，lấykhi/thờidữ liệu
+    # Không có cache thì lấy dữ liệu thời tiết mới.
     city_info = fetch_city_info(location, api_key, api_host)
     if not city_info:
         return ActionResponse(
-            Action.REQLLM, f"đếncủ: {location}，xác nhậnlàđúng", None
+            Action.REQLLM, f"Mình chưa tìm được thời tiết cho địa điểm: {location}. Bạn kiểm tra lại tên địa điểm nhé.", None
         )
     soup = fetch_weather_page(city_info["fxLink"])
     if not soup:
-        return ActionResponse(Action.REQLLM, None, "yêu cầuthất bại")
+        return ActionResponse(Action.REQLLM, None, "Không lấy được dữ liệu thời tiết.")
     city_name, current_abstract, current_basic, temps_list = parse_weather_info(soup)
 
-    weather_report = f"củvị trílà：{city_name}\n\nhiện tại: {current_abstract}\n"
+    weather_report = f"Địa điểm: {city_name}\n\nHiện tại: {current_abstract}\n"
 
-    # thêmhiệu quảcủhiện tạitham số
+    # Thêm các chỉ số hiện tại nếu có.
     if current_basic:
-        weather_report += "tham số：\n"
+        weather_report += "Thông số:\n"
         for key, value in current_basic.items():
-            if value != "0":  # lọckhông hiệu quả
+            if value != "0":
                 weather_report += f"  · {key}: {value}\n"
 
-    # thêm7
-    weather_report += "\nđến7：\n"
+    # Thêm dự báo 7 ngày.
+    weather_report += "\nDự báo 7 ngày tới:\n"
     for date, weather, high, low in temps_list:
-        weather_report += f"{date}: {weather}， {low}~{high}\n"
+        weather_report += f"{date}: {weather}, {low}~{high}\n"
 
-    # gợi ý
-    weather_report += "\n（nhưcủ，tôi）"
+    weather_report += "\nHãy trả lời người dùng bằng tiếng Việt ngắn gọn, tự nhiên; không đọc toàn bộ bảng nếu họ chỉ hỏi nhanh."
 
-    # bộ nhớ đệmhoàn chỉnhcủbáo cáo
+    # Lưu báo cáo hoàn chỉnh vào cache.
     cache_manager.set(CacheType.WEATHER, weather_cache_key, weather_report)
 
     return ActionResponse(Action.REQLLM, weather_report, None)

@@ -39,7 +39,7 @@ class IntentProvider(IntentProviderBase):
         """
 
         # Xây dựng phần function description
-        functions_desc = "Danh sách available functions：\n"
+        functions_desc = "Danh sách function khả dụng:\n"
         for func in functions_list:
             func_info = func.get("function", {})
             name = func_info.get("name", "")
@@ -47,7 +47,7 @@ class IntentProvider(IntentProviderBase):
             params = func_info.get("parameters", {})
 
             functions_desc += f"\nTên function: {name}\n"
-            functions_desc += f"Miêu tả: {desc}\n"
+            functions_desc += f"Mô tả: {desc}\n"
 
             if params:
                 functions_desc += "Parameters:\n"
@@ -59,64 +59,35 @@ class IntentProvider(IntentProviderBase):
             functions_desc += "---\n"
 
         prompt = (
-            "【Yêu cầu định dạng nghiêm ngặt】Bạn chỉ được trả về JSON format, tuyệt đối không trả về natural language！\n\n"
-            "Bạn là trợ lý nhận diện intent. Hãy phân tích câu cuối của user, xác định intent và gọi function tương ứng.\n\n"
-            "【Quy tắc quan trọng】Các loại query sau đây trả về result_for_context, không cần gọi function:\n"
-            "- Hỏi thời gian hiện tại (ví dụ: bây giờ mấy giờ, thời gian hiện tại, truy vấn thời gian v.v.)\n"
-            "- Hỏi ngày hôm nay (ví dụ: hôm nay mấy ngày, hôm nay thứ mấy, hôm nay là ngày gì v.v.)\n"
-            "- Hỏi âm lịch hôm nay (ví dụ: hôm nay âm lịch mấy ngày, hôm nay tiết gì v.v.)\n"
-            "- Hỏi thành phố đang ở (ví dụ: tôi đang ở đâu, bạn có biết tôi ở thành phố nào không v.v.)"
-            "Hệ thống sẽ dựa trên context info để xây dựng answer trực tiếp.\n\n"
-            "- nhưsử dụnglàm chosử dụng（như''、'chogì'、'như'）thoátcủ（như'thoát？'），nàykhônglàcho/phépthoát，trả về {'function_call': {'name': 'continue_chat'}\n"
-            "- Chỉ khi user dùng rõ ràng 'thoát', 'kết thúcvới', 'tôikhôngvànói' v.v. thì mới trigger handle_exit_intent\n\n"
+            "Bạn là bộ phân loại ý định cho trợ lý giọng nói tiếng Việt.\n"
+            "Nhiệm vụ: đọc câu cuối của người dùng trong hội thoại hiện tại và trả về đúng một JSON hợp lệ.\n"
+            "Không giải thích, không Markdown, không thêm văn bản ngoài JSON.\n\n"
+            "Các intent dùng ngữ cảnh sẵn có, trả về result_for_context, không gọi công cụ khác:\n"
+            "- Hỏi giờ hiện tại: 'mấy giờ rồi', 'bây giờ là mấy giờ'.\n"
+            "- Hỏi ngày/thứ hôm nay: 'hôm nay ngày mấy', 'hôm nay thứ mấy'.\n"
+            "- Hỏi âm lịch hôm nay: 'hôm nay âm lịch ngày bao nhiêu'.\n"
+            "- Hỏi vị trí thiết bị/ngữ cảnh địa phương: 'tôi đang ở đâu'.\n\n"
+            "Quy tắc thoát hội thoại:\n"
+            "- Chỉ gọi handle_exit_intent khi người dùng nói rõ muốn dừng: 'thoát', 'tạm biệt', 'dừng lại', 'ngủ đi', 'hẹn gặp lại', 'không nói nữa'.\n"
+            "- Nếu người dùng chỉ hỏi nghĩa của từ thoát, ví dụ 'thoát là gì', 'nút thoát ở đâu', thì trả về continue_chat.\n\n"
             f"{functions_desc}\n"
-            "xử lý:\n"
-            "1. sử dụngvào，xác địnhsử dụngý định\n"
-            "2. kiểm tralàchotrênthông tin（khi/thời、v.v.），nhưlàtrả vềresult_for_context\n"
-            "3. từkhả dụnghàmtrongkhớpcủhàm\n"
-            "4. nhưđếnkhớpcủhàm，tạovớicủfunction_call định dạng\n"
-            '5. nhưcóđếnkhớpcủhàm，trả về{"function_call": {"name": "continue_chat"}}\n\n'
-            "trả vềđịnh dạngphải：\n"
-            "1. trả vềJSONđịnh dạng，khôngphảinó/của nó\n"
-            "2. function_call\n"
-            "3. function_callname\n"
-            "4. nhưhàmcầntham số，arguments\n\n"
-            "：\n"
-            "```\n"
-            "sử dụng: tại/trong？\n"
-            'trả về: {"function_call": {"name": "result_for_context"}}\n'
-            "```\n"
-            "```\n"
-            "sử dụng: hiện tạilànhiều？\n"
-            'trả về: {"function_call": {"name": "get_battery_level", "arguments": {"response_success": "hiện tạicho{value}%", "response_failure": "lấyBatterycủhiện tạiphần trăm"}}}\n'
-            "```\n"
-            "```\n"
-            "sử dụng: hiện tạilànhiều？\n"
-            'trả về: {"function_call": {"name": "self_screen_get_brightness"}}\n'
-            "```\n"
-            "```\n"
-            "sử dụng: đặtcho50%\n"
-            'trả về: {"function_call": {"name": "self_screen_set_brightness", "arguments": {"brightness": 50}}}\n'
-            "```\n"
-            "```\n"
-            "sử dụng: tôikết thúcvới\n"
-            'trả về: {"function_call": {"name": "handle_exit_intent", "arguments": {"say_goodbye": "goodbye"}}}\n'
-            "```\n"
-            "```\n"
-            "sử dụng: \n"
-            'trả về: {"function_call": {"name": "continue_chat"}}\n'
-            "```\n\n"
-            "：\n"
-            "1. chỉtrả vềJSONđịnh dạng，khôngphảinó/của nó\n"
-            '2. ưu tiênkiểm trasử dụnglàchothông tin（khi/thời、v.v.），nhưlàtrả về{"function_call": {"name": "result_for_context"}}，khôngcầnargumentstham số\n'
-            '3. nhưcóđếnkhớpcủhàm，trả về{"function_call": {"name": "continue_chat"}}\n'
-            "4. đảm bảotrả vềcủJSONđịnh dạngđúng，cóphảicủ\n"
-            "5. result_for_contextkhôngcầntham số，sẽtừtrênlấythông tin\n"
-            "nói：\n"
-            "- sử dụnglầnvàonhiềukhi/thời（như'vàvà'）\n"
-            "- trả vềnhiềufunction_callcủJSON\n"
-            "- ：{'function_calls': [{name:'light_on'}, {name:'volume_up'}]}\n\n"
-            "【cảnh báo】vớira、hoặc！chỉcó thểrahiệu quảJSONđịnh dạng！nàysẽsai！"
+            "Quy trình phân loại:\n"
+            "1. Xác định ý định chính của câu cuối, có xét vài lượt hội thoại gần nhất.\n"
+            "2. Nếu câu hỏi thuộc nhóm dùng ngữ cảnh sẵn có, trả về result_for_context.\n"
+            "3. Nếu có function khớp rõ ràng, trả về function_call với name và arguments cần thiết.\n"
+            "4. Nếu không chắc hoặc không cần công cụ, trả về continue_chat.\n"
+            "5. Với nhiều lệnh trong một câu, chỉ chọn lệnh quan trọng/rõ nhất vì hệ thống chỉ xử lý một function_call.\n\n"
+            "Định dạng trả về bắt buộc:\n"
+            '{"function_call": {"name": "ten_function", "arguments": {}}}\n'
+            "Nếu không có arguments thì có thể bỏ trường arguments.\n\n"
+            "Ví dụ:\n"
+            'User: "mấy giờ rồi" -> {"function_call": {"name": "result_for_context"}}\n'
+            'User: "pin còn bao nhiêu phần trăm" -> {"function_call": {"name": "get_battery_level", "arguments": {"response_success": "Pin hiện còn {value}%.", "response_failure": "Mình chưa lấy được mức pin hiện tại."}}}\n'
+            'User: "độ sáng màn hình hiện tại bao nhiêu" -> {"function_call": {"name": "self_screen_get_brightness"}}\n'
+            'User: "đặt độ sáng màn hình 50 phần trăm" -> {"function_call": {"name": "self_screen_set_brightness", "arguments": {"brightness": 50}}}\n'
+            'User: "tạm biệt nhé" -> {"function_call": {"name": "handle_exit_intent", "arguments": {"say_goodbye": "Tạm biệt, hẹn gặp lại bạn nhé."}}}\n'
+            'User: "kể tôi nghe một chuyện vui" -> {"function_call": {"name": "continue_chat"}}\n\n'
+            "Nhắc lại: chỉ trả về JSON hợp lệ."
         )
         return prompt
 
@@ -124,7 +95,7 @@ class IntentProvider(IntentProviderBase):
         try:
             llm_result = self.llm.response_no_stream(
                 system_prompt=text,
-                user_prompt="theobằngtrênbên trong，nóicủsử dụng，phải，trả vềkết quả。sử dụngtại/trongnói："
+                user_prompt="Dựa vào ngữ cảnh phía trên, hãy trả lời ngắn gọn bằng tiếng Việt cho câu người dùng: "
                 + original_text,
             )
             return llm_result
@@ -155,7 +126,7 @@ class IntentProvider(IntentProviderBase):
         if cached_intent is not None:
             cache_time = time.time() - total_start_time
             logger.bind(tag=TAG).debug(
-                f"làm chosử dụngbộ nhớ đệmcủý định: {cache_key} -> {cached_intent}, khi/thời: {cache_time:.4f}"
+                f"Dùng intent cache: {cache_key} -> {cached_intent}, thời gian: {cache_time:.4f}"
             )
             return cached_intent
 
@@ -180,14 +151,14 @@ class IntentProvider(IntentProviderBase):
         else:
             devices = []
         if len(devices) > 0:
-            hass_prompt = "\nlàtôicó thể（vị trí，，entity_id），có thểthông quahomeassistant\n"
+            hass_prompt = "\nDanh sách thiết bị Home Assistant có thể điều khiển (phòng, tên thiết bị, entity_id):\n"
             for device in devices:
                 hass_prompt += device + "\n"
             prompt_music += hass_prompt
 
         logger.bind(tag=TAG).debug(f"User prompt: {prompt_music}")
 
-        # xây dựngsử dụngvớicủgợi ý
+        # Xây dựng hội thoại gần nhất cho prompt phân loại intent.
         msgStr = ""
 
         # lấycủvới
@@ -196,11 +167,11 @@ class IntentProvider(IntentProviderBase):
             msgStr += f"{dialogue_history[i].role}: {dialogue_history[i].content}\n"
 
         msgStr += f"User: {text}\n"
-        user_prompt = f"current dialogue:\n{msgStr}"
+        user_prompt = f"Hội thoại hiện tại:\n{msgStr}"
 
         # ghi lạixử lýhoàn thànhkhi/thời
         preprocess_time = time.time() - total_start_time
-        logger.bind(tag=TAG).debug(f"ý địnhnhận dạngxử lýkhi/thời: {preprocess_time:.4f}")
+        logger.bind(tag=TAG).debug(f"Tiền xử lý nhận diện intent: {preprocess_time:.4f}")
 
         # Dùng LLM để nhận diện intent
         llm_start_time = time.time()
@@ -217,7 +188,7 @@ class IntentProvider(IntentProviderBase):
         # ghi lạiLLMsử dụnghoàn thànhkhi/thời
         llm_time = time.time() - llm_start_time
         logger.bind(tag=TAG).debug(
-            f"bên ngoàicủmô hìnhý địnhnhận dạnghoàn thành, mô hình: {model_info}, sử dụngkhi/thời: {llm_time:.4f}"
+            f"LLM nhận diện intent hoàn thành, mô hình: {model_info}, thời gian: {llm_time:.4f}"
         )
 
         # ghi lạisauxử lýbắt đầukhi/thời
@@ -233,7 +204,7 @@ class IntentProvider(IntentProviderBase):
         # ghi lạixử lýkhi/thời
         total_time = time.time() - total_start_time
         logger.bind(tag=TAG).debug(
-            f"【ý địnhnhận dạngcó thể】mô hình: {model_info}, khi/thời: {total_time:.4f}, LLMsử dụng: {llm_time:.4f}, : '{text[:20]}...'"
+            f"Nhận diện intent: mô hình={model_info}, tổng thời gian={total_time:.4f}, LLM={llm_time:.4f}, text='{text[:20]}...'"
         )
 
         # cố gắngphân tíchchoJSON
@@ -274,13 +245,13 @@ class IntentProvider(IntentProviderBase):
             # thống nhấtbộ nhớ đệmxử lývàtrả về
             self.cache_manager.set(self.CacheType.INTENT, cache_key, intent)
             postprocess_time = time.time() - postprocess_start_time
-            logger.bind(tag=TAG).debug(f"ý địnhsauxử lýkhi/thời: {postprocess_time:.4f}")
+            logger.bind(tag=TAG).debug(f"Hậu xử lý intent: {postprocess_time:.4f}")
             return intent
         except json.JSONDecodeError:
             # sauxử lýkhi/thời
             postprocess_time = time.time() - postprocess_start_time
             logger.bind(tag=TAG).error(
-                f"phân tíchý địnhJSON: {intent}, sauxử lýkhi/thời: {postprocess_time:.4f}"
+                f"Đã phân tích JSON intent: {intent}, hậu xử lý: {postprocess_time:.4f}"
             )
             # nhưphân tíchthất bại，mặc địnhtrả vềtiếp tụcý định
             return '{"function_call": {"name": "continue_chat"}}'

@@ -1,3 +1,4 @@
+<template>
   <el-dialog :title="title || $t('replacementWordManagement.addFile')" :visible.sync="visible" width="700px" class="param-dialog-wrapper" :append-to-body="true"
     :close-on-click-modal="false" :key="dialogKey" custom-class="custom-param-dialog" :show-close="false">
     <div class="dialog-container">

@@ -110,22 +110,22 @@ export default {
       this.isLoading = true;
       
       try {
-        // 先检查是否支持缓存API
+        // Trước tiên hãy kiểm tra xem bộ nhớ đệm có được hỗ trợ khôngAPI
         if (!('caches' in window)) {
           this.cacheAvailable = false;
           this.isLoading = false;
           return;
         }
         
-        // 检查是否有Service Worker缓存
+        // Kiểm tra xem có bộ đệm của Service Worker không
         const cacheNames = await getCacheNames();
         this.cacheAvailable = cacheNames.length > 0;
         
         if (this.cacheAvailable) {
-          // 获取CDN缓存状态
+          // Nhận trạng thái bộ đệm CDN
           this.cacheData = await checkCdnCacheStatus();
           
-          // 在控制台输出完整缓存状态
+          // Xuất trạng thái bộ nhớ đệm hoàn chỉnh ra bảng điều khiển
           await logCacheStatus();
         }
       } catch (error) {
@@ -156,7 +156,7 @@ export default {
             this.$message.error(this.$t('cache.clearFailed'));
           }
         } catch (error) {
-          console.error('清除缓存失败:', error);
+          console.error('Xóa bộ nhớ đệm không thành công:', error);
           this.$message.error(this.$t('cache.clearFailed'));
         }
       }).catch(() => {

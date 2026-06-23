@@ -112,18 +112,18 @@ export default {
     },
 
     handleOpen() {
-      // 对话框打开时加载平台列表
+      // Tải danh sách nền tảng khi hộp thoại mở ra
       this.fetchPlatformList();
-      // 重置音色ID列表
+      // Đặt lại danh sách ID bản vá
       this.voiceIdList = [];
     },
 
     handlePlatformChange(modelId) {
-      // 清空音色ID选择
+      // Xóa lựa chọn ID âm thanh
       this.form.voiceIds = [];
     },
 
-    // 获取TTS平台列表
+    // Nhận danh sách nền tảng TTS
     fetchPlatformList() {
       Api.voiceResource.getTtsPlatformList((res) => {
         if (res.data.code === 0) {
@@ -132,7 +132,7 @@ export default {
       });
     },
 
-    // 远程搜索用户
+    // Tìm kiếm người dùng từ xa
     remoteSearchUser(query) {
       if (query !== '') {
         this.userLoading = true;

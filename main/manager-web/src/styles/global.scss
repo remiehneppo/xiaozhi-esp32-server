@@ -1,4 +1,4 @@
-// 覆盖 autofill 样式
+// Ghi đè kiểu tự động điền
 input:-webkit-autofill,
 input:-webkit-autofill:hover,
 input:-webkit-autofill:focus,
@@ -14,7 +14,7 @@ select:-webkit-autofill:focus {
 }
 
 .el-footer {
-  height: 35px !important; /* 使用 !important 确保覆盖默认样式 */
+  height: 35px !important; /* Sử dụng !important để đảm bảo kiểu mặc định bị ghi đè */
 }
 
 .el-icon-video-play, .el-icon-video-pause { 

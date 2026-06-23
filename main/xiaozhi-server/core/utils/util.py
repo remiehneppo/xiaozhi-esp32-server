@@ -598,12 +598,15 @@ def validate_mcp_endpoint(mcp_endpoint: str) -> bool:
     return True
 
 def get_system_error_response(config: dict) -> str:
-    """lấysaikhi/thờicủ
+    """Lấy câu phản hồi khi hệ thống gặp lỗi.
 
     Args:
         config: cấu hình
 
     Returns:
-        str: saikhi/thờicủ
+        str: câu phản hồi lỗi
     """
-    return config.get("system_error_response", "，tại/trongcó，tôinhữngsau。")
+    return config.get(
+        "system_error_response",
+        "Mình đang gặp chút trục trặc, bạn thử lại sau một lát nhé.",
+    )

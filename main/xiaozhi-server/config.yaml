@@ -25,8 +25,8 @@ server:
   # Vì vậy nếu bạn dùng docker triển khai thì đặt vision_explain thành địa chỉ mạng nội bộ
   # Nếu bạn dùng triển khai thì đặt vision_explain thành địa chỉ
   vision_explain: http://ip_hoac_ten_mien_cua_ban:cong/mcp/vision/explain
-  # Độ lệch múi giờ thông tin trả về OTA
-  timezone_offset: +8
+  # Độ lệch múi giờ thông tin trả về OTA. Việt Nam dùng UTC+7.
+  timezone_offset: +7
   # Cấu hình xác thực
   auth:
     # Có bật xác thực không
@@ -99,23 +99,18 @@ xiaozhi:
 # kiểm tracấu hình
 module_test:
   test_sentences:
-    - "，"
-    - "What's the weather like today?"
-    - "100tính toánáp dụng"
+    - "Xin chào, bạn nghe rõ không?"
+    - "Hôm nay thời tiết thế nào?"
+    - "Một trăm nghìn cộng hai trăm năm mươi nghìn bằng bao nhiêu?"
 
 # ，dùng chonhận dạngnội dung
 wakeup_words:
-  - "Xin chào Tiểu Trí"
-  - "Này, xin chào bạn"
-  - "Xin chào Tiểu Chí"
-  - "Tiểu Ái bạn học"
-  - "Xin chào Tiểu Kim"
-  - "Xin chào Tiểu Tân"
-  - "Tiểu Mỹ bạn học"
-  - "Tiểu Long Tiểu Long"
-  - "Miêu Miêu bạn học"
-  - "Tiểu Tân Tiểu Tân"
-  - "Tiểu Băng Tiểu Băng"
+  - "Xin chào"
+  - "Chào bạn"
+  - "Trợ lý ơi"
+  - "Tiểu Trí ơi"
+  - "Này bạn"
+  - "Hello"
 # MCPđịa chỉ，địa chỉđịnh dạng：ws://mcpip:cổng/mcp/?token=token
 #  https://github.com/xinnan-tech/xiaozhi-esp32-server/blob/main/docs/mcp-endpoint-integration.md
 mcp_endpoint:  websocketđịa chỉ
@@ -139,8 +134,7 @@ plugins:
     api_host: "mj7p3y7naa.re.qweatherapi.com"
     api_key: "a861d0d5e7bf4ee1a83d9a9e4f96d4da"
     default_location: ""
-  # lấycấu hình，tương ứngurl，mặc định、、
-  #  https://www.chinanews.com.cn/rss/
+  # Cấu hình nguồn tin tức RSS. Nên đổi sang nguồn phù hợp với người dùng Việt Nam khi triển khai.
   get_news_from_chinanews:
     default_rss_url: "https://www.chinanews.com.cn/rss/society.xml"
     society_rss_url: "https://www.chinanews.com.cn/rss/society.xml"
@@ -195,9 +189,9 @@ voiceprint:
   url: 
   # cấu hình：speaker_id,,
   speakers:
-    - "test1,Trương Tam,Trương Tam là lập trình viên"
-    - "test2,Lý Tứ,Lý Tứ là quản lý sản phẩm"
-    - "test3,Vương Ngũ,Vương Ngũ là nhà thiết kế"
+    - "test1,Anh Nam,Anh Nam là lập trình viên"
+    - "test2,Chị Linh,Chị Linh là quản lý sản phẩm"
+    - "test3,Bạn Minh,Bạn Minh là nhà thiết kế"
   # nhận dạng，0.0-1.0，mặc định0.4
   # ，nhận dạngcó thể
   similarity_threshold: 0.4
@@ -206,32 +200,25 @@ voiceprint:
 # ################################mô hìnhcấu hình######################################
 
 prompt: |
-  /，00。，""，""""，。
-  []
-  - ，
-  - 
-  - （）
-  []
-  ：
-  -  → +"！"
-  -  → ""
-  -  → ，
-  ：
-  - ，
-  - hội thoại
+  Bạn là trợ lý giọng nói tiếng Việt cho người dùng ở Việt Nam, tên là {{assistant_name}}.
+  Hãy trả lời ngắn gọn, tự nhiên, lịch sự và thân thiện như đang trò chuyện trực tiếp.
+  Mặc định dùng ngữ cảnh Việt Nam: múi giờ UTC+7, tiền Việt Nam đồng, địa danh và thói quen giao tiếp của người Việt.
+  Nếu người dùng không nói rõ địa điểm, hãy mặc định là Việt Nam; nếu cần dữ liệu mới như tin tức, giá cả, quy định hoặc thời tiết nơi khác, hãy dùng công cụ phù hợp nếu có.
+  Khi đọc ngày giờ, số điện thoại, địa chỉ, đơn vị đo và tiền tệ, hãy diễn đạt theo cách người Việt thường nói.
+  Không dùng tiếng Trung. Chỉ dùng tiếng Anh khi người dùng yêu cầu hoặc thuật ngữ đó phổ biến hơn bằng tiếng Anh.
 
 # mặc địnhtệp
 prompt_template: agent-base-prompt.txt
 
 # lỗi
-system_error_response: "，，。"
+system_error_response: "Mình đang gặp chút trục trặc, bạn thử lại sau một lát nhé."
 
 # kết thúcprompt
 end_prompt:
   enable: true # cókết thúc
   # kết thúc
   prompt: |
-    ""，、kết thúchội thoại！
+    Hãy kết thúc cuộc trò chuyện bằng một câu tiếng Việt ngắn gọn, thân thiện và tự nhiên.
 
 # xử lý(The module selected for specific processing)
 selected_module:

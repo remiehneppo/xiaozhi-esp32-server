@@ -15,7 +15,7 @@
 
     <div class="drawer-content">
       <el-form label-position="top">
-        <!-- 音量 -->
+        <!-- âm lượng -->
         <el-form-item :label="$t('roleConfig.ttsVolume')">
           <div class="slider-container">
             <el-slider
@@ -30,7 +30,7 @@
           </div>
         </el-form-item>
 
-        <!-- 语速 -->
+        <!-- tốc độ nói -->
         <el-form-item :label="$t('roleConfig.ttsRate')">
           <div class="slider-container">
             <el-slider
@@ -45,7 +45,7 @@
           </div>
         </el-form-item>
 
-        <!-- 音调 -->
+        <!-- giai điệu -->
         <el-form-item :label="$t('roleConfig.ttsPitch')">
           <div class="slider-container">
             <el-slider
@@ -61,7 +61,7 @@
         </el-form-item>
 
       </el-form>
-      <!-- 关联替换词 -->
+      <!-- từ thay thế liên quan -->
       <div>
         <h4 class="replacement-label">
           {{ $t('roleConfig.replacementWordLabel') }}
@@ -139,7 +139,7 @@ export default {
   watch: {
     visible(newVal) {
       if (newVal) {
-        // 当抽屉打开时，复制当前设置到本地
+        // Khi ngăn được mở, hãy sao chép cài đặt hiện tại vào thư mục cục bộ
         this.localSettings = { ...this.settings };
         this.replacementWordIds = [...this.checkedReplacementWordIds];
         this.fetchReplacementWordList();
@@ -151,11 +151,11 @@ export default {
       this.$emit('update:visible', false);
     },
     handleCancel() {
-      // 取消时不保存，直接关闭
+      // Không lưu khi hủy, đóng trực tiếp
       this.handleClose();
     },
     handleSave() {
-      // 保存设置并关闭
+      // Lưu cài đặt và đóng
       this.$emit('save', { ...this.localSettings, replacementWordIds: this.replacementWordIds });
       this.handleClose();
     },

@@ -3,7 +3,7 @@ import RequestService from '../httpRequest';
 
 
 export default {
-    // 获取替换词文件列表
+    // Lấy danh sách file word thay thế
     getFileList(params, callback) {
         const queryParams = new URLSearchParams({
             page: params.page,
@@ -18,14 +18,14 @@ export default {
                 callback(res)
             })
             .networkFail((err) => {
-                console.error('获取替换词文件列表失败:', err)
+                console.error('Không lấy được danh sách file word thay thế:', err)
                 RequestService.reAjaxFun(() => {
                     this.getFileList(params, callback)
                 })
             }).send()
     },
 
-    // 获取所有替换词文件（不分页）
+    // Nhận tất cả các tệp từ thay thế (không phân trang）
     selectAll(callback) {
         RequestService.sendRequest()
             .url(`${getServiceUrl()}/correct-word/file/select`)
@@ -35,14 +35,14 @@ export default {
                 callback(res)
             })
             .networkFail((err) => {
-                console.error('获取所有替换词文件失败:', err)
+                console.error('Không thể tải tất cả các tệp từ thay thế:', err)
                 RequestService.reAjaxFun(() => {
                     this.selectAll(callback)
                 })
             }).send()
     },
 
-    // 下载替换词文件
+    // Tải file word thay thế
     downloadFile(id, callback) {
         RequestService.sendRequest()
             .url(`${getServiceUrl()}/correct-word/file/download/${id}`)
@@ -57,7 +57,7 @@ export default {
             }).send()
     },
 
-    // 新增替换词文件
+    // Thêm file word thay thế
     addFile(data, callback) {
         RequestService.sendRequest()
             .url(`${getServiceUrl()}/correct-word/file`)
@@ -73,7 +73,7 @@ export default {
             }).send()
     },
 
-    // 更新替换词文件
+    // Cập nhật file word thay thế
     updateFile(data, callback) {
         RequestService.sendRequest()
             .url(`${getServiceUrl()}/correct-word/file/${data.id}`)
@@ -92,7 +92,7 @@ export default {
             }).send()
     },
 
-    // 删除替换词文件
+    // Xóa file word thay thế
     deleteFile(id, callback) {
         RequestService.sendRequest()
             .url(`${getServiceUrl()}/correct-word/file/${id}`)
@@ -102,14 +102,14 @@ export default {
                 callback(res)
             })
             .networkFail((err) => {
-                console.error('删除替换词文件失败:', err)
+                console.error('Không xóa được file word thay thế:', err)
                 RequestService.reAjaxFun(() => {
                     this.deleteFile(id, callback)
                 })
             }).send()
     },
 
-    // 批量删除替换词文件
+    // Xóa hàng loạt file word thay thế
     batchDeleteFile(ids, callback) {
         RequestService.sendRequest()
             .url(`${getServiceUrl()}/correct-word/file/batch-delete`)
@@ -120,7 +120,7 @@ export default {
                 callback(res)
             })
             .networkFail((err) => {
-                console.error('批量删除替换词文件失败:', err)
+                console.error('Xóa hàng loạt tệp từ thay thế không thành công:', err)
                 RequestService.reAjaxFun(() => {
                     this.batchDeleteFile(ids, callback)
                 })

@@ -110,7 +110,7 @@
       </div>
     </div>
 
-    <!-- 上传文档对话框 -->
+    <!-- Hộp thoại tải tài liệu lên -->
     <el-dialog :title="$t('knowledgeFileUpload.uploadDocument')" :visible.sync="uploadDialogVisible" width="800px">
       <el-upload class="document-uploader" drag :action="uploadUrl" :auto-upload="false" :on-change="handleFileChange"
         :multiple="true" :show-file-list="false" accept=".doc,.docx,.pdf,.txt,.md,.mdx,.csv,.xls,.xlsx,.ppt,.pptx">
@@ -119,7 +119,7 @@
         <div class="el-upload__tip">{{ $t('knowledgeFileUpload.uploadTip') }}</div>
       </el-upload>
 
-      <!-- 已选择文件列表 -->
+      <!-- Danh sách tập tin đã chọn -->
       <div class="selected-files-section" v-if="selectedFilesList.length > 0">
         <h4>{{ $t('knowledgeFileUpload.selectedFiles') }} ({{ selectedFilesList.length }})</h4>
         <div class="selected-files-list">
@@ -146,13 +146,13 @@
       </div>
     </el-dialog>
 
-    <!-- 切片管理弹窗 -->
+    <!-- Cửa sổ bật lên quản lý phân đoạn/chunk -->
     <el-dialog :title="`${$t('knowledgeFileUpload.viewSlices')} - ${currentDocumentName}`"
       :visible.sync="sliceDialogVisible" width="1200px" class="slice-dialog">
       <div class="slice-management">
-        <!-- 切片列表 -->
+        <!-- danh sách lát -->
         <div class="slice-list-section">
-          <!-- 切片内容卡片式布局 -->
+          <!-- Bố cục thẻ nội dung được cắt lát -->
           <div v-loading="sliceLoading" class="slice-content-container">
             <div v-if="sliceList.length > 0" class="slice-cards-container">
               <div v-for="(slice, index) in sliceList" :key="index" class="slice-card">
@@ -170,10 +170,10 @@
             </div>
           </div>
 
-          <!-- 切片分页 -->
+          <!-- Phân trang lát -->
           <div class="slice-pagination" style="margin-top: 20px; text-align: right;">
             <div class="custom-pagination">
-              <!-- 条/页选择器 -->
+              <!-- Bộ chọn bài viết/trang -->
               <el-select v-model="slicePageSize" @change="handleSliceSizeChange" class="page-size-select"
                 :popper-append-to-body="false">
                 <el-option v-for="item in pageSizeOptions" :key="item"
@@ -181,28 +181,28 @@
                 </el-option>
               </el-select>
 
-              <!-- 首页按钮 -->
+              <!-- Nút trang chủ -->
               <button class="pagination-btn" :disabled="sliceCurrentPage === 1" @click="goToSliceFirstPage">
                 {{ $t('knowledgeFileUpload.firstPage') }}
               </button>
 
-              <!-- 上一页按钮 -->
+              <!-- Nút trang trước -->
               <button class="pagination-btn" :disabled="sliceCurrentPage === 1" @click="goToSlicePrevPage">
                 {{ $t('knowledgeFileUpload.prevPage') }}
               </button>
 
-              <!-- 页码按钮 -->
+              <!-- Nút đánh số trang -->
               <button v-for="page in sliceVisiblePages" :key="page" class="pagination-btn"
                 :class="{ active: page === sliceCurrentPage }" @click="goToSlicePage(page)">
                 {{ page }}
               </button>
 
-              <!-- 下一页按钮 -->
+              <!-- nút trang tiếp theo -->
               <button class="pagination-btn" :disabled="sliceCurrentPage === slicePageCount" @click="goToSliceNextPage">
                 {{ $t('knowledgeFileUpload.nextPage') }}
               </button>
 
-              <!-- 总记录数 -->
+              <!-- Tổng số hồ sơ -->
               <span class="total-text">{{ $t('knowledgeFileUpload.totalRecords', { total: sliceTotal }) }}</span>
             </div>
           </div>
@@ -210,7 +210,7 @@
       </div>
     </el-dialog>
 
-    <!-- 召回测试弹窗 -->
+    <!-- Gọi lại cửa sổ bật lên kiểm tra -->
     <el-dialog :title="$t('knowledgeFileUpload.retrievalTest')" :visible.sync="retrievalTestDialogVisible"
       width="1200px" class="retrieval-test-dialog">
       <div class="retrieval-test-form">
@@ -288,9 +288,9 @@ export default {
       },
       uploadUrl: '',
       isAllSelected: false,
-      selectedFilesList: [], // 批量上传选择的文件列表
+      selectedFilesList: [], // Tải lên hàng loạt danh sách tệp đã chọn
 
-      // 切片管理相关数据
+// Dữ liệu liên quan đến quản lý phân đoạn/chunk
       sliceDialogVisible: false,
       currentDocumentId: '',
       currentDocumentName: '',
@@ -300,7 +300,7 @@ export default {
       slicePageSize: 10,
       sliceTotal: 0,
 
-      // 召回测试相关数据
+      // Nhớ lại dữ liệu liên quan đến kiểm tra
       retrievalTestDialogVisible: false,
       retrievalTestForm: {
         question: ''
@@ -308,10 +308,10 @@ export default {
       retrievalTestResult: null,
       retrievalTestLoading: false,
       
-      // 状态轮询相关数据
+      // Dữ liệu liên quan đến bỏ phiếu trạng thái
       statusPollingTimer: null,
-      statusPollingInterval: 5000, // 5秒轮询一次
-      maxStatusPollingTime: 300000, // 最大轮询时间5分钟
+      statusPollingInterval: 5000, // 5Thăm dò ý kiến ​​một lần mỗi giây
+      maxStatusPollingTime: 300000, // Thời gian bỏ phiếu tối đa 5 phút
       statusPollingStartTime: null
     };
   },
@@ -344,11 +344,11 @@ export default {
       }
       return pages;
     },
-    // 切片分页页数计算
+    // Tính toán trang phân trang phân đoạn/chunk
     slicePageCount() {
       return Math.ceil(this.sliceTotal / this.slicePageSize);
     },
-    // 切片分页可见页码计算（最多显示3个页码）
+    // Tính toán số trang hiển thị cho phân trang lát (hiển thị tối đa 3 số trang)）
     sliceVisiblePages() {
       const pages = [];
       const maxVisible = 3;
@@ -389,10 +389,10 @@ export default {
             this.fileList = data.data.list;
             this.total = data.data.total;
 
-            // 为每个文档获取切片数量
+            // Lấy số lát cho mỗi tài liệu
             await this.fetchSliceCountsForDocuments();
             
-            // 自动为处理中的文档启动状态检测
+            // Tự động bắt đầu phát hiện trạng thái cho các tài liệu đang được xử lý
             this.startStatusPolling();
           } else {
             this.$message.error(data?.msg || this.$t('knowledgeFileUpload.getListFailed'));
@@ -404,62 +404,62 @@ export default {
           this.loading = false;
           console.log('Error callback received:', err);
           if (err && err.data) {
-            console.log('后端返回错误消息:', err.data.msg || err.msg);
+            console.log('Phần cuối trả về thông báo lỗi:', err.data.msg || err.msg);
             this.$message.error(err.data.msg || err.msg || this.$t('knowledgeFileUpload.getListFailed'));
           } else {
             this.$message.error(this.$t('knowledgeFileUpload.getListFailed'));
           }
-          console.error('获取文档列表失败:', err);
+          console.error('Không thể lấy danh sách tài liệu:', err);
           this.fileList = [];
           this.total = 0;
         }
       );
     },
     
-    // 启动文档状态轮询
+    // Bắt đầu thăm dò trạng thái tài liệu
     startStatusPolling: function () {
-      // 检查是否已经有轮询在进行
+      // Kiểm tra xem đã có cuộc bỏ phiếu nào đang diễn ra chưa
       if (this.statusPollingTimer) {
-        console.log('状态轮询已在运行');
+        console.log('Bỏ phiếu trạng thái đã chạy');
         return;
       }
       
-      // 检查是否有处理中的文档
+      // Kiểm tra xem có tài liệu nào đang được xử lý không
       const hasProcessingDocuments = this.fileList.some(document => 
         document.parseStatusCode === 1
       );
       
       if (!hasProcessingDocuments) {
-        console.log('没有处理中的文档，不启动状态轮询');
+        console.log('Không có tài liệu nào đang được xử lý, việc bỏ phiếu trạng thái chưa được bắt đầu.');
         return;
       }
       
-      console.log('启动文档状态轮询');
+      console.log('Bắt đầu thăm dò trạng thái tài liệu');
       this.statusPollingStartTime = Date.now();
       
-      // 立即执行一次状态检查
+      // Thực hiện kiểm tra trạng thái ngay lập tức
       this.pollDocumentStatus();
       
-      // 开始轮询
+      // Bắt đầu bỏ phiếu
       this.statusPollingTimer = setInterval(() => {
         this.pollDocumentStatus();
       }, this.statusPollingInterval);
     },
     
-    // 停止文档状态轮询
+    // Dừng kiểm tra trạng thái tài liệu
     stopStatusPolling: function () {
       if (this.statusPollingTimer) {
         clearInterval(this.statusPollingTimer);
         this.statusPollingTimer = null;
-        console.log('停止文档状态轮询');
+        console.log('Dừng kiểm tra trạng thái tài liệu');
       }
     },
     
-    // 轮询文档状态
+    // Trạng thái tài liệu bỏ phiếu
     pollDocumentStatus: async function () {
-      // 检查是否超过最大轮询时间
+      // Kiểm tra xem thời gian bỏ phiếu tối đa có bị vượt quá không
       if (Date.now() - this.statusPollingStartTime > this.maxStatusPollingTime) {
-        console.log('达到最大轮询时间，停止状态轮询');
+        console.log('Đã đạt đến thời gian bỏ phiếu tối đa, việc bỏ phiếu trạng thái đã dừng');
         this.stopStatusPolling();
         return;
       }
@@ -481,37 +481,37 @@ export default {
         if (response && response.code === 0) {
           const updatedFileList = response.data.list;
           
-          // 更新文档状态
+          // Cập nhật trạng thái tài liệu
           this.updateDocumentStatuses(updatedFileList);
           
-          // 检查是否还有处理中的文档
+          // Kiểm tra xem vẫn còn tài liệu đang được xử lý
           const hasProcessingDocuments = updatedFileList.some(document => 
             document.parseStatusCode === 1
           );
           
           if (!hasProcessingDocuments) {
-            console.log('所有文档处理完成，停止状态轮询');
+            console.log('Tất cả tài liệu được xử lý và việc bỏ phiếu trạng thái bị dừng.');
             this.stopStatusPolling();
           }
         }
       } catch (error) {
-        console.warn('轮询文档状态失败:', error);
+        console.warn('Trạng thái tài liệu bỏ phiếu không thành công:', error);
       }
     },
     
-    // 更新文档状态
+    // Cập nhật trạng thái tài liệu
     updateDocumentStatuses: function (updatedFileList) {
       let hasChanges = false;
       
       updatedFileList.forEach(updatedDoc => {
         const existingDoc = this.fileList.find(doc => doc.id === updatedDoc.id);
         if (existingDoc && existingDoc.parseStatusCode !== updatedDoc.parseStatusCode) {
-          // 状态发生变化，更新文档
+          // Thay đổi trạng thái, cập nhật tài liệu
           Object.assign(existingDoc, updatedDoc);
           hasChanges = true;
-          console.log(`文档 ${existingDoc.name} 状态已更新: ${existingDoc.parseStatusCode} -> ${updatedDoc.parseStatusCode}`);
+          console.log(`tài liệu ${existingDoc.name} Đã cập nhật trạng thái: ${existingDoc.parseStatusCode} -> ${updatedDoc.parseStatusCode}`);
           
-          // 如果状态变为完成，启动切片数量检测
+          // Nếu trạng thái thay đổi thành Hoàn thành, hãy bắt đầu phát hiện số lát
           if (updatedDoc.parseStatusCode === 3) {
             this.fetchSliceCountForSingleDocument(updatedDoc.id);
           }
@@ -523,59 +523,59 @@ export default {
       }
     },
 
-    // 为文档列表中的每个文档获取切片数量
+    // Lấy số lát cho mỗi tài liệu trong danh sách tài liệu
     fetchSliceCountsForDocuments: async function () {
       if (!this.fileList || this.fileList.length === 0) {
         return;
       }
 
-      // 为每个文档获取切片数量
+      // Lấy số lát cho mỗi tài liệu
       for (const document of this.fileList) {
         this.fetchSliceCountForSingleDocument(document.id);
       }
     },
 
-    // 获取单个文档的切片数量
+    // Lấy số lát cho một tài liệu
     fetchSliceCountForSingleDocument: function (documentId) {
       const document = this.fileList.find(doc => doc.id === documentId);
       if (!document) {
-        console.warn('未找到文档:', documentId);
+        console.warn('Không tìm thấy tài liệu:', documentId);
         return;
       }
 
       const params = {
         page: 1,
-        page_size: 1  // 只需要获取总数，所以每页1条记录即可
+        page_size: 1  // Chỉ cần lấy tổng số thôi, mỗi trang 1 record là đủ
       };
 
       KnowledgeBaseAPI.listChunks(this.datasetId, documentId, params,
         ({ data }) => {
           if (data && data.code === 0) {
             const sliceCount = data.data.total || 0;
-            // 更新文档的切片数量
+            // Cập nhật số lát trong tài liệu
             this.$set(document, 'sliceCount', sliceCount);
-            // 强制更新视图
+            // Buộc cập nhật chế độ xem
             this.$forceUpdate();
-            console.log(`文档 ${document.name} 切片数量已更新为:`, sliceCount);
+            console.log(`tài liệu ${document.name} Số lượng lát đã được cập nhật thành:`, sliceCount);
           } else {
-            console.warn(`获取文档 ${document.name} 切片数量失败:`, data?.msg);
+            console.warn(`Nhận tài liệu ${document.name} Số lát không thành công:`, data?.msg);
           }
         },
         (err) => {
-          console.warn(`获取文档 ${document.name} 切片数量失败:`, err);
+          console.warn(`Nhận tài liệu ${document.name} Số lát không thành công:`, err);
         }
       );
     },
 
-    // 智能检测切片生成状态并自动刷新
+    // Phát hiện thông minh trạng thái tạo phân đoạn/chunk và tự động làm mới
     smartRefreshSliceCount: function (documentId) {
       const document = this.fileList.find(doc => doc.id === documentId);
       if (!document) {
-        console.warn('未找到文档:', documentId);
+        console.warn('Không tìm thấy tài liệu:', documentId);
         return;
       }
 
-      // 延迟2秒后获取切片数量，给后端更多处理时间
+      // Nhận số lượng lát sau độ trễ 2 giây, giúp backend có nhiều thời gian xử lý hơn
       setTimeout(() => {
         this.fetchSliceCountForSingleDocument(documentId);
       }, 2000);
@@ -595,20 +595,20 @@ export default {
         name: '',
         file: null
       };
-      this.selectedFilesList = []; // 清空已选择文件列表
+      this.selectedFilesList = []; // Xóa danh sách tập tin đã chọn
       this.uploadDialogVisible = true;
     },
     handleFileChange: function (file, fileList) {
       if (!file || !file.raw) return;
 
-      // 文件上传前的验证
+      // Xác minh trước khi tải lên tập tin
       const isLt10M = file.size / 1024 / 1024 < 10;
       if (!isLt10M) {
         this.$message.error(this.$t('knowledgeFileUpload.fileSizeLimit'));
         return;
       }
 
-      // 添加到已选择文件列表
+      // Thêm vào danh sách tập tin đã chọn
       this.selectedFilesList.push({
         name: file.name,
         size: file.size,
@@ -616,22 +616,22 @@ export default {
       });
     },
     beforeUpload: function (file) {
-      // 文件上传前的验证
+      // Xác minh trước khi tải lên tập tin
       const isLt10M = file.size / 1024 / 1024 < 10;
       if (!isLt10M) {
         this.$message.error(this.$t('knowledgeFileUpload.fileSizeLimit'));
         return false;
       }
-      // 保存文件到uploadForm
+      // Lưu tập tin vàouploadForm
       this.uploadForm.file = file;
-      return false; // 阻止自动上传，使用自定义上传逻辑
+      return false; // Ngăn tải lên tự động, sử dụng logic tải lên tùy chỉnh
     },
-    // 移除已选择的文件
+    // Xóa các tập tin đã chọn
     removeSelectedFile: function (index) {
       this.selectedFilesList.splice(index, 1);
     },
 
-    // 格式化文件大小
+    // Định dạng kích thước tập tin
     formatFileSize: function (bytes) {
       if (bytes === 0) return '0 B';
       const k = 1024;
@@ -640,7 +640,7 @@ export default {
       return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
     },
 
-    // 批量上传提交
+    // Gửi tải lên hàng loạt
     handleBatchUploadSubmit: function () {
       if (this.selectedFilesList.length === 0) {
         this.$message.error(this.$t('knowledgeFileUpload.selectFiles'));
@@ -649,7 +649,7 @@ export default {
 
       this.uploading = true;
 
-      // 创建上传任务数组
+      // Tạo một mảng nhiệm vụ tải lên
       const uploadPromises = this.selectedFilesList.map(file => {
         return new Promise((resolve, reject) => {
           const formData = new FormData();
@@ -664,19 +664,19 @@ export default {
               }
             },
             (err) => {
-              // 错误回调处理后端返回的错误信息
+              // Lệnh gọi lại lỗi xử lý thông tin lỗi được trả về bởi backend
               if (err && err.data) {
                 reject({ success: false, fileName: file.name, error: err.data.msg || err.msg || this.$t('knowledgeFileUpload.uploadFailed') });
               } else {
                 reject({ success: false, fileName: file.name, error: this.$t('knowledgeFileUpload.uploadFailed') });
               }
-              console.error('上传文档失败:', err);
+              console.error('Không thể tải tài liệu lên:', err);
             }
           );
         });
       });
 
-      // 执行所有上传任务
+      // Thực hiện tất cả các tác vụ tải lên
       Promise.all(uploadPromises.map(p => p.catch(e => e)))
         .then(results => {
           this.uploading = false;
@@ -701,11 +701,11 @@ export default {
         .catch(error => {
           this.uploading = false;
           this.$message.error(this.$t('knowledgeFileUpload.batchUploadFailedGeneral'));
-          console.error('批量上传失败:', error);
+          console.error('Tải lên hàng loạt không thành công:', error);
         });
     },
 
-    // 单文件上传（保留原有功能）
+    // Tải lên một tập tin (giữ lại chức năng ban đầu)）
     handleUploadSubmit: function () {
       if (!this.uploadForm.file) {
         this.$message.error(this.$t('knowledgeFileUpload.fileRequired'));
@@ -730,13 +730,13 @@ export default {
         },
         (err) => {
           this.uploading = false;
-          // 错误回调处理后端返回的错误信息
+          // Lệnh gọi lại lỗi xử lý thông tin lỗi được trả về bởi backend
           if (err && err.data) {
             this.$message.error(err.data.msg || err.msg || this.$t('knowledgeFileUpload.uploadFailed'));
           } else {
             this.$message.error(this.$t('knowledgeFileUpload.uploadFailed'));
           }
-          console.error('上传文档失败:', err);
+          console.error('Không thể tải tài liệu lên:', err);
         }
       );
     },
@@ -749,32 +749,32 @@ export default {
         KnowledgeBaseAPI.parseDocument(this.datasetId, row.id,
           ({ data }) => {
             if (data && data.code === 0) {
-              this.$message.success('请求已提交，解析中');
+              this.$message.success('Yêu cầu đã được gửi và đang được phân tích (parse)');
               
-              // 立即更新文档状态为处理中
+              // Cập nhật ngay trạng thái tài liệu vào Đang xử lý
               const document = this.fileList.find(doc => doc.id === row.id);
               if (document) {
-                document.parseStatusCode = 1; // 处理中状态
+                document.parseStatusCode = 1; // Trạng thái xử lý
                 this.$forceUpdate();
               }
               
-              // 启动状态轮询
+              // Bắt đầu bỏ phiếu trạng thái
               this.startStatusPolling();
               
-              // 使用智能检测自动刷新切片数量
+              // Sử dụng tính năng phát hiện thông minh để tự động làm mới số lát
               this.smartRefreshSliceCount(row.id);
             } else {
               this.$message.error(data?.msg || this.$t('knowledgeFileUpload.parseFailed'));
             }
           },
           (err) => {
-            // 错误回调处理后端返回的错误信息
+            // Lệnh gọi lại lỗi xử lý thông tin lỗi được trả về bởi backend
             if (err && err.data) {
               this.$message.error(err.data.msg || err.msg || this.$t('knowledgeFileUpload.parseFailed'));
             } else {
               this.$message.error(this.$t('knowledgeFileUpload.parseFailed'));
             }
-            console.error('解析文档失败:', err);
+            console.error('Không thể phân tích tài liệu:', err);
           }
         );
       }).catch(() => {
@@ -782,7 +782,7 @@ export default {
       });
     },
     handleViewSlices: function (row) {
-      // 查看切片
+      // Xem phân đoạn/chunk
       this.currentDocumentId = row.id;
       this.currentDocumentName = row.name;
       this.sliceDialogVisible = true;
@@ -806,13 +806,13 @@ export default {
             }
           },
           (err) => {
-            // 错误回调处理后端返回的错误信息
+            // Lệnh gọi lại lỗi xử lý thông tin lỗi được trả về bởi backend
             if (err && err.data) {
               this.$message.error(err.data.msg || err.msg || this.$t('knowledgeFileUpload.deleteFailed'));
             } else {
               this.$message.error(this.$t('knowledgeFileUpload.deleteFailed'));
             }
-            console.error('删除文档失败:', err);
+            console.error('Không thể xóa tài liệu:', err);
           }
         );
       }).catch(() => {
@@ -856,13 +856,13 @@ export default {
                 }
               },
               (err) => {
-                // 错误回调处理后端返回的错误信息
+                // Lệnh gọi lại lỗi xử lý thông tin lỗi được trả về bởi backend
                 if (err && err.data) {
                   reject(err.data.msg || err.msg || this.$t('knowledgeFileUpload.deleteFailed'));
                 } else {
                   reject(this.$t('knowledgeFileUpload.deleteFailed'));
                 }
-                console.error('删除文档失败:', err);
+                console.error('Không thể xóa tài liệu:', err);
               }
             );
           });
@@ -884,17 +884,17 @@ export default {
     getParseStatusType: function (parseStatusCode) {
       switch (parseStatusCode) {
         case 0:
-          return 'info'; // 灰色 - 未开始
+          return 'info'; // Màu xám - chưa bắt đầu
         case 1:
-          return 'primary'; // 蓝色 - 处理中
+          return 'primary'; // Màu xanh - Đang xử lý
         case 2:
-          return 'warning'; // 黄色 - 已取消
+          return 'warning'; // Màu vàng - Đã hủy
         case 3:
-          return 'success'; // 绿色 - 完成
+          return 'success'; // Xanh - Hoàn thành
         case 4:
-          return 'danger'; // 红色 - 失败
+          return 'danger'; // Màu đỏ - thất bại
         default:
-          return 'info'; // 默认灰色
+          return 'info'; // Màu xám mặc định
       }
     },
     getParseStatusText: function (parseStatusCode) {
@@ -943,7 +943,7 @@ export default {
       return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')} ${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}`;
     },
 
-    // 切片管理相关方法
+    // Các phương pháp liên quan đến quản lý phân đoạn/chunk
     fetchSlices: function () {
       this.sliceLoading = true;
 
@@ -960,23 +960,23 @@ export default {
         ({ data }) => {
           this.sliceLoading = false;
           if (data && data.code === 0) {
-            // 解析切片列表数据
+            // Phân tích dữ liệu danh sách lát
             this.parseSliceData(data.data);
           } else {
-            this.$message.error(data?.msg || '获取切片列表失败');
+            this.$message.error(data?.msg || 'Không thể lấy danh sách lát');
             this.sliceList = [];
             this.sliceTotal = 0;
           }
         },
         (err) => {
           this.sliceLoading = false;
-          // 错误回调处理后端返回的错误信息
+          // Lệnh gọi lại lỗi xử lý thông tin lỗi được trả về bởi backend
           if (err && err.data) {
-            this.$message.error(err.data.msg || err.msg || '获取切片列表失败');
+            this.$message.error(err.data.msg || err.msg || 'Không thể lấy danh sách lát');
           } else {
-            this.$message.error('获取切片列表失败');
+            this.$message.error('Không thể lấy danh sách lát');
           }
-          console.error('获取切片列表失败:', err);
+          console.error('Không thể lấy danh sách lát:', err);
           this.sliceList = [];
           this.sliceTotal = 0;
         }
@@ -986,11 +986,11 @@ export default {
     parseSliceData: function (data) {
       try {
         if (data && data.list) {
-          // 后端已经解析过的格式
+          // Định dạng đã được phân tích (parse) bởi backend
           this.sliceList = data.list;
           this.sliceTotal = data.total || data.list.length;
         } else if (data && data.chunks && Array.isArray(data.chunks)) {
-          // RAGFlow API原始格式
+          // RAGFlow APIđịnh dạng gốc
           this.sliceList = data.chunks;
           this.sliceTotal = data.total || data.chunks.length;
         } else if (data && Array.isArray(data)) {
@@ -1001,12 +1001,12 @@ export default {
           this.sliceTotal = 0;
         }
 
-        console.log('解析后的切片数据:', {
+        console.log('Dữ liệu lát được phân tích (parse):', {
           list: this.sliceList,
           total: this.sliceTotal
         });
       } catch (error) {
-        console.error('解析切片数据失败:', error);
+        console.error('Không thể phân tích (parse) dữ liệu lát:', error);
         this.sliceList = [];
         this.sliceTotal = 0;
       }
@@ -1023,7 +1023,7 @@ export default {
       this.fetchSlices();
     },
 
-    // 跳转到切片管理第一页
+    // Chuyển tới trang đầu tiên của quản lý phân đoạn/chunk
     goToSliceFirstPage: function () {
       if (this.sliceCurrentPage !== 1) {
         this.sliceCurrentPage = 1;
@@ -1031,7 +1031,7 @@ export default {
       }
     },
 
-    // 切片管理上一页
+    // Quản lý phân đoạn/chunk trang trước
     goToSlicePrevPage: function () {
       if (this.sliceCurrentPage > 1) {
         this.sliceCurrentPage--;
@@ -1039,7 +1039,7 @@ export default {
       }
     },
 
-    // 切片管理跳转到指定页
+    // Quản lý lát chuyển đến trang được chỉ định
     goToSlicePage: function (page) {
       if (page !== this.sliceCurrentPage) {
         this.sliceCurrentPage = page;
@@ -1047,7 +1047,7 @@ export default {
       }
     },
 
-    // 切片管理下一页
+    // Quản lý lát trang tiếp theo
     goToSliceNextPage: function () {
       if (this.sliceCurrentPage < this.slicePageCount) {
         this.sliceCurrentPage++;
@@ -1055,9 +1055,9 @@ export default {
       }
     },
 
-    // 召回测试相关方法
+    // Nhớ lại các phương pháp liên quan đến thử nghiệm
     showRetrievalTestDialog: function () {
-      // 初始化召回测试表单
+      // Khởi tạo biểu mẫu kiểm tra truy xuất (recall)
       this.retrievalTestForm = {
         question: ''
       };
@@ -1074,31 +1074,31 @@ export default {
       this.retrievalTestLoading = true;
       this.retrievalTestResult = null;
 
-      // 准备请求数据
+      // Chuẩn bị dữ liệu yêu cầu
       const requestData = {
         question: this.retrievalTestForm.question.trim()
       };
 
-      // 调用召回测试API
+      // kiểm tra truy xuất (recall) cuộc gọiAPI
       KnowledgeBaseAPI.retrievalTest(this.datasetId, requestData,
         ({ data }) => {
           this.retrievalTestLoading = false;
           if (data && data.code === 0) {
             this.retrievalTestResult = data.data || data;
-            this.$message.success('召回测试完成');
+            this.$message.success('kiểm tra truy xuất (recall) đã hoàn thành');
           } else {
-            this.$message.error(data?.msg || '召回测试失败');
+            this.$message.error(data?.msg || 'kiểm tra truy xuất (recall) không thành công');
           }
         },
         (err) => {
           this.retrievalTestLoading = false;
-          // 错误回调处理后端返回的错误信息
+          // Lệnh gọi lại lỗi xử lý thông tin lỗi được trả về bởi backend
           if (err && err.data) {
-            this.$message.error(err.data.msg || err.msg || '召回测试失败');
+            this.$message.error(err.data.msg || err.msg || 'kiểm tra truy xuất (recall) không thành công');
           } else {
-            this.$message.error('召回测试失败');
+            this.$message.error('kiểm tra truy xuất (recall) không thành công');
           }
-          console.error('召回测试失败:', err);
+          console.error('kiểm tra truy xuất (recall) không thành công:', err);
         }
       );
     },
@@ -1127,7 +1127,7 @@ export default {
 }
 
 .main-wrapper {
-  // 顶部 63px 底部 35px 查询58px
+  // Truy vấn 35px dưới cùng 63px trên cùng58px
   height: calc(100vh - 63px - 35px - 58px);
   margin: 0 22px;
   border-radius: 15px;
@@ -1469,7 +1469,7 @@ export default {
   min-height: 300px;
 }
 
-/* 拖拽上传区域样式 */
+/* Kéo và thả kiểu khu vực tải lên */
 .document-uploader {
   :deep(.el-upload-dragger) {
     width: 600px;
@@ -1508,7 +1508,7 @@ export default {
   }
 }
 
-/* 召回测试弹窗样式 */
+/* Nhớ lại kiểu cửa sổ bật lên kiểm tra */
 .retrieval-test-dialog {
   ::v-deep .el-dialog__wrapper {
     display: block !important;
@@ -1580,7 +1580,7 @@ export default {
   max-height: 100%;
   padding: 16px;
 
-  /* 滚动条样式 */
+  /* Kiểu thanh cuộn */
   &::-webkit-scrollbar {
     width: 6px;
     height: 6px;
@@ -1660,7 +1660,7 @@ export default {
     max-height: 120px;
     overflow-y: auto;
 
-    /* 内容滚动条样式 */
+    /* Kiểu thanh cuộn nội dung */
     &::-webkit-scrollbar {
       width: 4px;
     }
@@ -1684,7 +1684,7 @@ export default {
   }
 }
 
-/* 已选择文件列表样式 */
+/* Đã chọn kiểu danh sách tệp */
 .selected-files-section {
   margin-top: 20px;
   border: 1px solid #e4e7ed;
@@ -1758,7 +1758,7 @@ export default {
   }
 }
 
-/* 上传对话框容器样式 */
+/* Tải lên kiểu vùng chứa hộp thoại */
 :deep(.el-dialog) {
   border-radius: 16px !important;
   overflow: hidden;
@@ -1779,13 +1779,13 @@ export default {
   overflow-y: auto;
 }
 
-/* 切片管理弹窗固定容器大小 */
+/* Cửa sổ bật lên quản lý lát với kích thước vùng chứa cố định */
 .slice-dialog {
   ::v-deep .el-dialog__wrapper {
     display: block !important;
   }
 
-  /* 切片管理弹窗滚动条样式 */
+  /* Kiểu thanh cuộn cửa sổ bật lên quản lý phân đoạn/chunk */
   ::v-deep .el-dialog::-webkit-scrollbar {
     width: 8px;
     height: 8px;
@@ -1839,7 +1839,7 @@ export default {
     overflow: hidden;
   }
 
-  /* 切片内容容器样式 */
+  /* Cắt kiểu vùng chứa nội dung */
   .slice-content-container {
     flex: 1;
     height: 100%;
@@ -1854,7 +1854,7 @@ export default {
     max-height: 100%;
     padding: 16px;
 
-    /* 滚动条样式 */
+    /* Kiểu thanh cuộn */
     &::-webkit-scrollbar {
       width: 6px;
       height: 6px;
@@ -1911,7 +1911,7 @@ export default {
       min-height: 120px;
       overflow-y: auto;
 
-      /* 内容滚动条样式 */
+      /* Kiểu thanh cuộn nội dung */
       &::-webkit-scrollbar {
         width: 4px;
       }
@@ -1938,12 +1938,12 @@ export default {
         white-space: pre-wrap;
         font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
 
-        /* 确保文本正常显示，包括空格和换行 */
+        /* Đảm bảo văn bản hiển thị chính xác, bao gồm cả dấu cách và ngắt dòng */
         white-space: pre-wrap;
         word-break: break-word;
         overflow-wrap: break-word;
 
-        /* 段落样式 */
+        /* kiểu đoạn văn */
         p {
           margin: 0 0 12px 0;
           line-height: 1.6;
@@ -1953,7 +1953,7 @@ export default {
           }
         }
 
-        /* 列表样式 */
+        /* phong cách danh sách */
         ul,
         ol {
           margin: 8px 0;
@@ -1965,7 +1965,7 @@ export default {
           }
         }
 
-        /* 标题样式 */
+        /* Kiểu tiêu đề */
         h1,
         h2,
         h3,
@@ -1995,14 +1995,14 @@ export default {
           font-size: 14px;
         }
 
-        /* 强调文本 */
+        /* nhấn mạnh văn bản */
         strong,
         b {
           font-weight: 600;
           color: #1a1a1a;
         }
 
-        /* 代码样式 */
+        /* phong cách mã */
         code {
           background-color: #f5f5f5;
           padding: 2px 4px;
@@ -2011,7 +2011,7 @@ export default {
           font-size: 13px;
         }
 
-        /* 引用样式 */
+        /* Kiểu tham khảo */
         blockquote {
           margin: 12px 0;
           padding: 8px 12px;

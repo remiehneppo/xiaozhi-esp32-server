@@ -15,44 +15,44 @@ logger = setup_logging()
 
 CHANNEL_MAP = {
     "V2EX": "v2ex-share",
-    "": "zhihu",
-    "": "weibo",
-    "": "zaobao",
-    "": "coolapk",
+    "Zhihu": "zhihu",
+    "Weibo": "weibo",
+    "Zaobao": "zaobao",
+    "Coolapk": "coolapk",
     "MKTNews": "mktnews-flash",
-    "": "wallstreetcn-quick",
+    "WallstreetCN": "wallstreetcn-quick",
     "36": "36kr-quick",
-    "": "douyin",
-    "": "hupu",
-    "": "tieba",
-    "": "toutiao",
+    "Douyin": "douyin",
+    "Hupu": "hupu",
+    "Tieba": "tieba",
+    "Toutiao": "toutiao",
     "IT": "ithome",
-    "": "thepaper",
-    "": "sputniknewscn",
-    "tin nhắn": "cankaoxiaoxi",
-    "": "pcbeta-windows11",
-    "": "cls-depth",
-    "": "xueqiu-hotstock",
-    "": "gelonghui",
-    "": "fastbull-express",
+    "The Paper": "thepaper",
+    "Sputnik CN": "sputniknewscn",
+    "Tin tham khảo": "cankaoxiaoxi",
+    "Windows 11": "pcbeta-windows11",
+    "CLS": "cls-depth",
+    "Xueqiu": "xueqiu-hotstock",
+    "Gelonghui": "gelonghui",
+    "FastBull": "fastbull-express",
     "Solidot": "solidot",
     "Hacker News": "hackernews",
     "Product Hunt": "producthunt",
     "Github": "github-trending-today",
-    "": "bilibili-hot-search",
-    "": "kuaishou",
-    "": "kaopu",
-    "dữ liệu": "jin10",
-    "": "baidu",
-    "": "nowcoder",
-    "": "sspai",
-    "": "juejin",
-    "": "ifeng",
-    "": "chongbuluo-latest",
+    "Bilibili": "bilibili-hot-search",
+    "Kuaishou": "kuaishou",
+    "Kaopu": "kaopu",
+    "Jin10": "jin10",
+    "Baidu": "baidu",
+    "Nowcoder": "nowcoder",
+    "SSPai": "sspai",
+    "Juejin": "juejin",
+    "Ifeng": "ifeng",
+    "Chongbuluo": "chongbuluo-latest",
 }
 
-# mặc địnhđến，cấu hìnhtrongcóchỉ địnhkhi/thờilàm chosử dụng
-DEFAULT_NEWS_SOURCES = ";;"
+# Nguồn mặc định; có thể ghi đè bằng cấu hình plugins.get_news_from_newsnow.news_sources.
+DEFAULT_NEWS_SOURCES = "Hacker News;Product Hunt;Github;IT"
 
 def _get_newsnow_config(conn):
     # từkết nốicấu hìnhlấy
@@ -65,18 +65,18 @@ def _get_newsnow_config(conn):
     return ""
 
 def get_news_sources_from_config(conn):
-    """từcấu hìnhtronglấyký tự"""
+    """Lấy danh sách nguồn tin từ cấu hình."""
     try:
         result = _get_newsnow_config(conn)
         if result:
-            logger.bind(tag=TAG).debug(f"làm chosử dụngcấu hìnhcủ: {result}")
+            logger.bind(tag=TAG).debug(f"Dùng nguồn tin từ cấu hình: {result}")
             return result
 
-        logger.bind(tag=TAG).debug("đếncấu hình，làm chosử dụngmặc địnhcấu hình")
+        logger.bind(tag=TAG).debug("Không có cấu hình nguồn tin, dùng mặc định")
         return DEFAULT_NEWS_SOURCES
 
     except Exception as e:
-        logger.bind(tag=TAG).error(f"lấycấu hìnhthất bại: {e}，làm chosử dụngmặc địnhcấu hình")
+        logger.bind(tag=TAG).error(f"Lấy cấu hình nguồn tin thất bại: {e}, dùng mặc định")
         return DEFAULT_NEWS_SOURCES
 
 
@@ -87,21 +87,21 @@ GET_NEWS_FROM_NEWSNOW_FUNCTION_DESC = {
     "type": "function",
     "function": {
         "name": "get_news_from_newsnow",
-        "description": "sử dụngphảihoặckhi/thờisử dụng（như'đến''cógì'）。",
+        "description": "Lấy một tin mới từ NewsNow theo nguồn cấu hình sẵn. Dùng khi người dùng hỏi tin mới, xu hướng công nghệ, tin GitHub hoặc nguồn cụ thể.",
         "parameters": {
             "type": "object",
             "properties": {
                 "source": {
                     "type": "string",
-                    "description": f"củtrong，như{example_sources_str}v.v.。tùy chọntham số，nhưkhônglàm chosử dụngmặc định",
+                    "description": f"Tên nguồn tin, ví dụ {example_sources_str}. Nếu không truyền thì dùng nguồn mặc định.",
                 },
                 "detail": {
                     "type": "boolean",
-                    "description": "làlấybên trong，mặc địnhchofalse。nhưchotrue，lấytrêncủbên trong",
+                    "description": "Có lấy nội dung chi tiết của tin vừa đọc không. Mặc định false.",
                 },
                 "lang": {
                     "type": "string",
-                    "description": "Ngôn ngữ code user sử dụng trả về, ví dụ zh_CN/zh_HK/en_US/ja_JP v.v., mặc định zh_CN",
+                    "description": "Mã ngôn ngữ trả lời, ví dụ vi_VN hoặc en_US. Mặc định vi_VN.",
                 },
             },
             "required": ["lang"],
@@ -111,7 +111,7 @@ GET_NEWS_FROM_NEWSNOW_FUNCTION_DESC = {
 
 
 def fetch_news_from_api(conn: "ConnectionHandler", source="thepaper"):
-    """từAPIlấy"""
+    """Lấy tin từ NewsNow API."""
     try:
         api_url = f"https://newsnow.busiyi.world/api/s?id={source}"
 
@@ -128,16 +128,16 @@ def fetch_news_from_api(conn: "ConnectionHandler", source="thepaper"):
         if "items" in data:
             return data["items"]
         else:
-            logger.bind(tag=TAG).error(f"lấyAPIphản hồiđịnh dạngsai: {data}")
+            logger.bind(tag=TAG).error(f"Phản hồi API tin tức sai định dạng: {data}")
             return []
 
     except Exception as e:
-        logger.bind(tag=TAG).error(f"lấyAPIthất bại: {e}")
+        logger.bind(tag=TAG).error(f"Lấy API tin tức thất bại: {e}")
         return []
 
 
 def fetch_news_detail(url):
-    """lấybên trongvàlàm chosử dụngMarkItDowndọn dẹpHTML"""
+    """Lấy nội dung chi tiết và dùng MarkItDown để dọn HTML."""
     try:
         headers = {"User-Agent": "Mozilla/5.0"}
         response = requests.get(url, headers=headers, timeout=10)
@@ -152,13 +152,13 @@ def fetch_news_detail(url):
 
         # nhưdọn dẹpsaucủbên trongcho，trả vềgợi ýthông tin
         if not clean_text or len(clean_text.strip()) == 0:
-            logger.bind(tag=TAG).warning(f"dọn dẹpsaucủbên trongcho: {url}")
-            return "phân tíchbên trong，có thểlàhoặcbên trong。"
+            logger.bind(tag=TAG).warning(f"Nội dung sau khi dọn rỗng: {url}")
+            return "Không phân tích được nội dung chi tiết."
 
         return clean_text
     except Exception as e:
-        logger.bind(tag=TAG).error(f"lấythất bại: {e}")
-        return "lấybên trong"
+        logger.bind(tag=TAG).error(f"Lấy nội dung tin thất bại: {e}")
+        return "không lấy được nội dung"
 
 
 @register_function(
@@ -170,9 +170,9 @@ def get_news_from_newsnow(
     conn: "ConnectionHandler",
     source: str = "",
     detail: bool = False,
-    lang: str = "zh_CN",
+    lang: str = "vi_VN",
 ):
-    """lấyvàtiến hành，hoặclấytrêncủbên trong"""
+    """Lấy tin NewsNow hoặc nội dung chi tiết của tin vừa chọn."""
     try:
         # lấyhiện tạicấu hìnhcủ
         news_sources = get_news_sources_from_config(conn)
@@ -187,18 +187,18 @@ def get_news_from_newsnow(
             ):
                 return ActionResponse(
                     Action.REQLLM,
-                    "，cóđếncủ，lấy。",
+                    "Chưa có tin nào trước đó để lấy nội dung chi tiết.",
                     None,
                 )
 
             url = conn.last_newsnow_link.get("url")
-            title = conn.last_newsnow_link.get("title", "không xác định")
+            title = conn.last_newsnow_link.get("title", "không rõ tiêu đề")
             source_id = conn.last_newsnow_link.get("source_id", "thepaper")
-            source_name = CHANNEL_MAP.get(source_id, "không xác địnhđến")
+            source_name = CHANNEL_MAP.get(source_id, "không rõ nguồn")
 
             if not url or url == "#":
                 return ActionResponse(
-                    Action.REQLLM, "，cókhả dụngcủlấybên trong。", None
+                    Action.REQLLM, "Tin trước đó không có liên kết chi tiết khả dụng.", None
                 )
 
             logger.bind(tag=TAG).debug(
@@ -208,21 +208,20 @@ def get_news_from_newsnow(
             # lấy
             detail_content = fetch_news_detail(url)
 
-            if not detail_content or detail_content == "lấybên trong":
+            if not detail_content or detail_content == "không lấy được nội dung":
                 return ActionResponse(
                     Action.REQLLM,
-                    f"，lấy《{title}》củbên trong，có thểlàđãhoặc。",
+                    f"Mình chưa lấy được nội dung chi tiết của tin \"{title}\".",
                     None,
                 )
 
             # xây dựngbáo cáo
             detail_report = (
-                f"theodữ liệu，sử dụng{lang}sử dụngcủyêu cầu：\n\n"
-                f": {title}\n"
+                f"Hãy dùng ngôn ngữ {lang} để tóm tắt tin sau cho người dùng Việt Nam:\n\n"
+                f"Tiêu đề: {title}\n"
                 # f"đến: {source_name}\n"
-                f"bên trong: {detail_content}\n\n"
-                f"(vớitrênbên trongtiến hành，thông tin，bằng、củphương thứchướngsử dụng，"
-                f"khôngphảivà/cũngnàylà，thìlàtại/trongmộthoàn chỉnhcủ)"
+                f"Nội dung: {detail_content}\n\n"
+                "Trả lời ngắn gọn, nêu ý chính và tránh khẳng định vượt quá nội dung nguồn."
             )
 
             return ActionResponse(Action.REQLLM, detail_report, None)
@@ -231,21 +230,21 @@ def get_news_from_newsnow(
         # sẽtrongchuyển đổichoID
         english_source_id = None
 
-        # kiểm travàocủtronglàtại/trongcấu hìnhcủtrong
+        # Kiểm tra nguồn người dùng yêu cầu có nằm trong cấu hình không.
         news_sources_list = [
             name.strip() for name in news_sources.split(";") if name.strip()
         ]
         if source in news_sources_list:
-            # nhưvàocủtrongtại/trongcấu hìnhcủtrong，tại/trong CHANNEL_MAP trongvớicủID
+            # Nếu nguồn nằm trong cấu hình thì ánh xạ sang ID NewsNow.
             english_source_id = CHANNEL_MAP.get(source)
 
-        # nhưkhôngđếnvớicủID，làm chosử dụngmặc định
+        # Nếu không khớp nguồn, dùng mặc định.
         if not english_source_id:
-            logger.bind(tag=TAG).warning(f"không hiệu quảcủ: {source}，làm chosử dụngmặc định")
+            logger.bind(tag=TAG).warning(f"Nguồn tin không hợp lệ: {source}, dùng mặc định")
             english_source_id = "thepaper"
             source = ""
 
-        logger.bind(tag=TAG).info(f"lấy: ={source}({english_source_id})")
+        logger.bind(tag=TAG).info(f"Lấy tin: source={source}({english_source_id})")
 
         # lấy
         news_items = fetch_news_from_api(conn, english_source_id)
@@ -253,7 +252,7 @@ def get_news_from_newsnow(
         if not news_items:
             return ActionResponse(
                 Action.REQLLM,
-                f"，có thểtừ{source}lấyđếnthông tin，sauhoặcthửnó/của nó。",
+                f"Mình chưa lấy được tin từ nguồn {source or english_source_id}, bạn thử lại sau hoặc chọn nguồn khác nhé.",
                 None,
             )
 
@@ -265,23 +264,22 @@ def get_news_from_newsnow(
             conn.last_newsnow_link = {}
         conn.last_newsnow_link = {
             "url": selected_news.get("url", "#"),
-            "title": selected_news.get("title", "không xác định"),
+            "title": selected_news.get("title", "không rõ tiêu đề"),
             "source_id": english_source_id,
         }
 
         # xây dựngbáo cáo
         news_report = (
-            f"theodữ liệu，sử dụng{lang}sử dụngcủyêu cầu：\n\n"
-            f": {selected_news['title']}\n"
+            f"Hãy dùng ngôn ngữ {lang} để đọc tin này cho người dùng Việt Nam:\n\n"
+            f"Tiêu đề: {selected_news['title']}\n"
             # f"đến: {source}\n"
-            f"(bằng、củphương thứchướngsử dụngnày，"
-            f"gợi ýsử dụngcó thểphảilấybên trong，nàykhi/thờisẽlấycủbên trong。)"
+            "Trả lời ngắn gọn. Nếu người dùng muốn biết thêm, họ có thể hỏi chi tiết tin này."
         )
 
         return ActionResponse(Action.REQLLM, news_report, None)
 
     except Exception as e:
-        logger.bind(tag=TAG).error(f"lấyra: {e}")
+        logger.bind(tag=TAG).error(f"Lấy tin NewsNow lỗi: {e}")
         return ActionResponse(
-            Action.REQLLM, "，lấykhi/thờisai，sau。", None
+            Action.REQLLM, "Mình gặp lỗi khi lấy tin tức, bạn thử lại sau nhé.", None
         )

@@ -3,7 +3,7 @@ import RequestService from '../httpRequest';
 
 
 export default {
-    // 用户列表
+    // Danh sách người dùng
     getUserList(params, callback) {
         const queryParams = new URLSearchParams({
             page: params.page,
@@ -19,13 +19,13 @@ export default {
                 callback(res)
             })
             .networkFail((err) => {
-                console.error('请求失败:', err)
+                console.error('Yêu cầu không thành công:', err)
                 RequestService.reAjaxFun(() => {
                     this.getUserList(callback)
                 })
             }).send()
     },
-    // 删除用户
+    // Xóa người dùng
     deleteUser(id, callback) {
         RequestService.sendRequest()
             .url(`${getServiceUrl()}/admin/users/${id}`)
@@ -35,13 +35,13 @@ export default {
                 callback(res)
             })
             .networkFail((err) => {
-                console.error('删除失败:', err)
+                console.error('Xóa không thành công:', err)
                 RequestService.reAjaxFun(() => {
                     this.deleteUser(id, callback)
                 })
             }).send()
     },
-    // 重置用户密码
+    // Đặt lại mật khẩu người dùng
     resetUserPassword(id, callback) {
         RequestService.sendRequest()
             .url(`${getServiceUrl()}/admin/users/${id}`)
@@ -51,13 +51,13 @@ export default {
                 callback(res)
             })
             .networkFail((err) => {
-                console.error('重置密码失败:', err)
+                console.error('Đặt lại mật khẩu không thành công:', err)
                 RequestService.reAjaxFun(() => {
                     this.resetUserPassword(id, callback)
                 })
             }).send()
     },
-    // 获取参数列表
+    // Lấy danh sách tham số
     getParamsList(params, callback) {
         const queryParams = new URLSearchParams({
             page: params.page,
@@ -73,13 +73,13 @@ export default {
                 callback(res)
             })
             .networkFail((err) => {
-                console.error('获取参数列表失败:', err)
+                console.error('Không lấy được danh sách tham số:', err)
                 RequestService.reAjaxFun(() => {
                     this.getParamsList(params, callback)
                 })
             }).send()
     },
-    // 保存
+    // cứu
     addParam(data, callback) {
         RequestService.sendRequest()
             .url(`${getServiceUrl()}/admin/params`)
@@ -90,13 +90,13 @@ export default {
                 callback(res)
             })
             .networkFail((err) => {
-                console.error('添加参数失败:', err)
+                console.error('Không thể thêm tham số:', err)
                 RequestService.reAjaxFun(() => {
                     this.addParam(data, callback)
                 })
             }).send()
     },
-    // 修改
+    // Ôn lại
     updateParam(data, callback, failCallback) {
         RequestService.sendRequest()
             .url(`${getServiceUrl()}/admin/params`)
@@ -111,13 +111,13 @@ export default {
                 failCallback(err)
             })
             .networkFail((err) => {
-                console.error('更新参数失败:', err)
+                console.error('Không cập nhật được thông số:', err)
                 RequestService.reAjaxFun(() => {
                     this.updateParam(data, callback)
                 })
             }).send()
     },
-    // 删除
+    // xóa bỏ
     deleteParam(ids, callback) {
         RequestService.sendRequest()
             .url(`${getServiceUrl()}/admin/params/delete`)
@@ -128,13 +128,13 @@ export default {
                 callback(res);
             })
             .networkFail((err) => {
-                console.error('删除参数失败:', err)
+                console.error('Không thể xóa tham số:', err)
                 RequestService.reAjaxFun(() => {
                     this.deleteParam(ids, callback)
                 })
             }).send()
     },
-    // 获取ws服务端列表
+    // Nhận danh sách máy chủ ws
     getWsServerList(params, callback) {
         RequestService.sendRequest()
             .url(`${getServiceUrl()}/admin/server/server-list`)
@@ -144,13 +144,13 @@ export default {
                 callback(res)
             })
             .networkFail((err) => {
-                console.error('获取ws服务端列表失败:', err)
+                console.error('Không lấy được danh sách máy chủ ws:', err)
                 RequestService.reAjaxFun(() => {
                     this.getWsServerList(params, callback)
                 })
             }).send();
     },
-    // 发送ws服务器动作指令
+    // Gửi lệnh hành động của máy chủ ws
     sendWsServerAction(data, callback) {
         RequestService.sendRequest()
             .url(`${getServiceUrl()}/admin/server/emit-action`)

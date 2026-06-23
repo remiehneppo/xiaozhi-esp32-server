@@ -19,7 +19,7 @@
       </div>
     </div>
 
-    <!-- 主体内容 -->
+    <!-- Nội dung chính -->
     <div class="main-wrapper">
       <div class="content-panel">
         <div class="content-area">
@@ -36,8 +36,8 @@
               :header-cell-style="{ padding: '10px 20px' }"
               :cell-style="{ padding: '10px 20px' }"
             >
-              <!-- 移除@row-click="handleRowClick" -->
-              <!-- 自定义选择列，实现表头是"选择"文字，数据行是小方框 -->
+              <!-- Di dời@row-click="handleRowClick" -->
+              <!-- Tùy chỉnh cột lựa chọn và nhận ra tiêu đề là"chọn"Văn bản, dòng dữ liệu là những ô nhỏ -->
               <el-table-column
                 :label="$t('agentTemplateManagement.select')"
                 align="center"
@@ -51,7 +51,7 @@
                   ></el-checkbox>
                 </template>
               </el-table-column>
-              <!-- 模板名称 -->
+              <!-- Tên mẫu -->
               <el-table-column
                 :label="$t('agentTemplateManagement.templateName')"
                 prop="agentName"
@@ -62,7 +62,7 @@
                   <span>{{ scope.row.agentName }}</span>
                 </template>
               </el-table-column>
-              <!-- 修改为序号列，并移动到此处 -->
+              <!-- Sửa đổi thành cột số sê-ri và di chuyển vào đây -->
               <el-table-column
                 :label="$t('agentTemplateManagement.serialNumber')"
                 min-width="120"
@@ -72,7 +72,7 @@
                   <span>{{ (currentPage - 1) * pageSize + scope.$index + 1 }}</span>
                 </template>
               </el-table-column>
-              <!-- 操作列 -->
+              <!-- Cột thao tác -->
               <el-table-column
                 :label="$t('agentTemplateManagement.action')"
                 min-width="250"
@@ -91,7 +91,7 @@
               </el-table-column>
             </el-table>
 
-            <!-- 表格底部操作栏 -->
+            <!-- Thanh tác vụ ở cuối bảng -->
             <div class="table_bottom">
               <div class="ctrl_btn">
                 <el-button
@@ -119,7 +119,7 @@
                 </el-button>
               </div>
 
-              <!-- 分页 -->
+              <!-- Phân trang -->
               <div class="custom-pagination">
                 <el-pagination
                   v-model:current-page="currentPage"
@@ -156,14 +156,14 @@ export default {
 
   data() {
     return {
-      // 模板相关
+      // Mẫu liên quan
       templateList: [],
       templateLoading: false,
       selectedTemplates: [],
-      isAllSelected: false, // 添加全选状态
+      isAllSelected: false, // Thêm trạng thái chọn tất cả
 
       search: "",
-      // 分页相关数据
+      // Dữ liệu liên quan đến phân trang
       pageSizeOptions: [10, 20, 50, 100],
       currentPage: 1,
       pageSize: 10,
@@ -173,7 +173,7 @@ export default {
   created() {
     this.loadTemplateList();
   },
-  // 在computed部分添加hasSelected属性
+  // Thêm thuộc tính hasSelected vào phần tính toán
   computed: {
     pageCount() {
       return Math.ceil(this.total / this.pageSize);
@@ -186,8 +186,8 @@ export default {
     },
   },
   methods: {
-    // 加载模板列表
-    // 改进loadTemplateList方法的错误处理逻辑
+    // Tải danh sách mẫu
+// Cải thiện logic xử lý lỗi của phương thức LoadTemplateList
     loadTemplateList() {
       this.templateLoading = true;
       const params = {
@@ -202,11 +202,11 @@ export default {
         agentApi.getAgentTemplatesPage(
           params,
           (res) => {
-            // 更健壮的响应处理逻辑
+            // Logic xử lý phản hồi mạnh mẽ hơn
             if (res && typeof res === "object") {
               if (res.data && res.data.code === 0) {
                 const responseData = res.data.data || {};
-                // 为每个模板添加selected属性
+                // Thêm thuộc tính đã chọn vào mỗi mẫu
                 this.templateList = Array.isArray(responseData.list)
                   ? responseData.list.map((item) => ({ ...item, selected: false }))
                   : [];
@@ -243,7 +243,7 @@ export default {
       }
     },
 
-    // 搜索模板
+    // Tìm kiếm mẫu
     handleSearch() {
       if (this.search) {
         const searchValue = this.search.toLowerCase();
@@ -257,25 +257,25 @@ export default {
       }
     },
 
-    // 修改showAddTemplateDialog方法，使其跳转到与编辑页面相同的页面
-    // 显示新增模板弹窗
+    // Sửa đổi phương thức showAddTemplateDialog để chuyển đến cùng trang với trang chỉnh sửa
+// Hiển thị cửa sổ bật lên mẫu mới
     showAddTemplateDialog() {
-      // 跳转到模板快速配置页面，不传递templateId参数表示新增
+      // Chuyển đến trang cấu hình nhanh mẫu, không chuyển tham số templateId để biểu thị phần bổ sung mới
       this.$router.push({
         path: "/template-quick-config",
       });
     },
 
-    // 编辑模板
+    // Chỉnh sửa mẫu
     editTemplate(row) {
-      // 跳转到模板快速配置页面，并传递模板ID参数
+      // Chuyển đến trang cấu hình nhanh mẫu và chuyển tham số ID mẫu
       this.$router.push({
         path: "/template-quick-config",
         query: { templateId: row.id },
       });
     },
 
-    // 删除模板
+    // Xóa mẫu
     deleteTemplate(row) {
       this.$confirm(
         this.$t("agentTemplateManagement.confirmSingleDelete"),
@@ -289,7 +289,7 @@ export default {
         .then(() => {
           agentApi.deleteAgentTemplate(row.id, (res) => {
             if (res && typeof res === "object") {
-              // 检查res.data是否存在且包含code=0
+              // Kiểm tra xem res.data có tồn tại và chứacode=0
               if (res.data && res.data.code === 0) {
                 this.$message.success(this.$t("agentTemplateManagement.deleteSuccess"));
                 this.loadTemplateList();
@@ -308,7 +308,7 @@ export default {
         });
     },
 
-    // 批量删除模板
+    // Xóa mẫu theo đợt
     batchDeleteTemplate() {
       if (this.selectedTemplates.length === 0) {
         this.$message.warning(this.$t("agentTemplateManagement.selectTemplate"));
@@ -327,7 +327,7 @@ export default {
         }
       )
         .then(() => {
-          // 确保参数格式正确 - 将id数组作为请求体
+          // Đảm bảo các tham số có định dạng chính xác - sử dụng mảng id làm nội dung yêu cầu
           const ids = this.selectedTemplates.map((template) => template.id);
 
           agentApi.batchDeleteAgentTemplate(ids, (res) => {
@@ -336,9 +336,9 @@ export default {
                 this.$message.success(
                   this.$t("agentTemplateManagement.batchDeleteSuccess")
                 );
-                // 重新加载模板列表
+                // Tải lại danh sách mẫu
                 this.loadTemplateList();
-                // 清空选中状态
+                // Xóa lựa chọn
                 this.selectedTemplates = [];
                 this.isAllSelected = false;
               } else {
@@ -356,7 +356,7 @@ export default {
         });
     },
 
-    // 完善分页相关方法
+    // Cải thiện các phương pháp liên quan đến phân trang
     handlePageChange(page) {
       this.currentPage = page;
       this.loadTemplateList();
@@ -416,21 +416,21 @@ export default {
       return pages;
     },
 
-    // 修改handleSelectAll方法
+    // Sửa đổi phương thức handSelectAll
     handleSelectAll() {
       this.isAllSelected = !this.isAllSelected;
       this.templateList.forEach((row) => {
         row.selected = this.isAllSelected;
       });
-      // 更新选中的模板列表
+      // Cập nhật danh sách mẫu đã chọn
       this.selectedTemplates = this.isAllSelected ? [...this.templateList] : [];
     },
 
-    // 处理行选择变化
+    // Xử lý các thay đổi lựa chọn hàng
     handleRowSelectionChange(row) {
-      // 查找选中的模板
+      // Tìm mẫu đã chọn
       this.selectedTemplates = this.templateList.filter((template) => template.selected);
-      // 更新全选状态
+      // Cập nhật trạng thái đã chọn
       this.isAllSelected =
         this.templateList.length > 0 &&
         this.selectedTemplates.length === this.templateList.length;
@@ -440,7 +440,7 @@ export default {
 </script>
 
 <style scoped lang="scss">
-/* 基础背景和布局设置 */
+/* Cài đặt nền và bố cục cơ bản */
 .welcome {
   min-height: 100vh;
   display: flex;
@@ -452,7 +452,7 @@ export default {
   width: 100%;
 }
 
-/* 操作栏样式 */
+/* Phong cách thanh hành động */
 .operation-bar {
   display: flex;
   justify-content: space-between;
@@ -481,9 +481,9 @@ export default {
   color: white;
 }
 
-/* 主容器样式 */
+/* Kiểu thùng chứa chính */
 .main-wrapper {
-  // 顶部 63px 底部 35px 查询72px
+  // Truy vấn 35px dưới cùng 63px trên cùng72px
   height: calc(100vh - 63px - 35px - 72px);
   margin: 0 22px;
   border-radius: 15px;
@@ -514,7 +514,7 @@ export default {
   position: relative;
 }
 
-/* 模板卡片样式 */
+/* Phong cách thẻ mẫu */
 .template-card {
   border: none;
   box-shadow: none;
@@ -532,7 +532,7 @@ export default {
   }
 }
 
-/* 表格样式 - 优化整合版 */
+/* Kiểu bảng - phiên bản tích hợp tối ưu */
 .transparent-table {
   width: 100%;
   flex: 1;
@@ -546,7 +546,7 @@ export default {
   --table-max-height: calc(100vh - 42vh);
   max-height: var(--table-max-height);
 
-  /* 表格头部样式 */
+  /* Kiểu tiêu đề bảng */
   .el-table__header th {
     padding: 8px 0 !important;
     height: 40px !important;
@@ -557,7 +557,7 @@ export default {
     font-weight: 600;
   }
 
-  /* 表格主体样式 */
+  /* Kiểu dáng thân bàn */
   .el-table__body {
     .el-table__row td {
       padding: 12px 0 !important;
@@ -568,7 +568,7 @@ export default {
     }
   }
 
-  /* 表格按钮样式 */
+  /* Kiểu nút bảng */
   .el-button--text {
     color: #7079aa;
   }
@@ -577,7 +577,7 @@ export default {
     color: #5a64b5;
   }
 
-  /* 单元格文本样式 */
+  /* Kiểu văn bản ô */
   .cell {
     white-space: nowrap;
     overflow: hidden;
@@ -585,7 +585,7 @@ export default {
   }
 }
 
-/* 表格底部操作栏 */
+/* Thanh tác vụ ở cuối bảng */
 .table_bottom {
   display: flex;
   justify-content: space-between !important;
@@ -596,7 +596,7 @@ export default {
   box-sizing: border-box !important;
 }
 
-/* 控制按钮样式 */
+/* Kiểu nút điều khiển */
 .ctrl_btn {
   display: flex;
   gap: 8px;

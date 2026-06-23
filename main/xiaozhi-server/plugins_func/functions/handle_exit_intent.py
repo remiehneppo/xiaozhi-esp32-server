@@ -12,13 +12,13 @@ handle_exit_intent_function_desc = {
     "type": "function",
     "function": {
         "name": "handle_exit_intent",
-        "description": "sử dụngkết thúchội thoạihoặccầnthoátthờisử dụng",
+        "description": "Gọi khi người dùng nói rõ muốn kết thúc hội thoại, tạm biệt, dừng lại hoặc cho thiết bị nghỉ.",
         "parameters": {
             "type": "object",
             "properties": {
                 "say_goodbye": {
                     "type": "string",
-                    "description": "vàsử dụngkết thúchội thoại",
+                    "description": "Câu tạm biệt ngắn gọn, thân thiện để đọc cho người dùng trước khi kết thúc hội thoại.",
                 }
             },
             "required": ["say_goodbye"],
@@ -31,10 +31,10 @@ handle_exit_intent_function_desc = {
     "handle_exit_intent", handle_exit_intent_function_desc, ToolType.SYSTEM_CTL
 )
 def handle_exit_intent(conn: "ConnectionHandler", say_goodbye: str | None = None):
-    # xử lýthoátý định
+    # Xử lý ý định thoát hội thoại.
     try:
         if say_goodbye is None:
-            say_goodbye = "，！"
+            say_goodbye = "Tạm biệt, hẹn gặp lại bạn nhé."
         if not conn.close_after_chat:
             conn.close_after_chat = True
         logger.bind(tag=TAG).info(f"Ý định thoát đã được xử lý:{say_goodbye}")
@@ -42,7 +42,7 @@ def handle_exit_intent(conn: "ConnectionHandler", say_goodbye: str | None = None
             action=Action.RESPONSE, result="Ý định thoát đã được xử lý", response=say_goodbye
         )
     except Exception as e:
-        logger.bind(tag=TAG).error(f"xử lýthoátý địnhlỗi: {e}")
+        logger.bind(tag=TAG).error(f"Xử lý ý định thoát lỗi: {e}")
         return ActionResponse(
-            action=Action.NONE, result="thoátý địnhxử lý thất bại", response=""
+            action=Action.NONE, result="Xử lý ý định thoát thất bại", response=""
         )

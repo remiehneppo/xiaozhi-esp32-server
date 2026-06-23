@@ -8,29 +8,27 @@ def get_system_prompt_for_function(functions: str) -> str:
     SYSTEM_PROMPT = f"""
 ====
 
-TOOL USE
+SỬ DỤNG CÔNG CỤ
 
-You have access to a set of tools that are executed upon the user's approval. You can use one tool per message, and will receive the result of that tool use in the user's response.
-You use tools step-by-step to accomplish a given task, with each tool use informed by the result of the previous tool use.
+Bạn có thể gọi các công cụ được hệ thống cung cấp. Mỗi lần chỉ gọi một công cụ. Sau khi công cụ chạy, hệ thống sẽ trả kết quả để bạn quyết định bước tiếp theo.
+Chỉ gọi công cụ khi yêu cầu của người dùng khớp rõ với công cụ; nếu không cần công cụ, hãy trả lời trực tiếp bằng tiếng Việt tự nhiên.
 
-# Tool Use Formatting
+# Định dạng gọi công cụ
 
-Tool use is formatted using JSON-style tags. The tool name is enclosed in opening and closing tags, and each parameter is similarly enclosed within its own set of tags.
-Here's the structure:
+Khi gọi công cụ, chỉ xuất một khối `<tool_call>` chứa JSON hợp lệ:
 
 <tool_call>
 {{
-    "name": "function name",
+    "name": "ten_function",
     "arguments": {{
         "param1": "value1",
         "param2": "value2",
-        // Add more parameters as needed, if parameters are required, you must provide them
+        // Thêm tham số cần thiết theo schema của function
     }}
 }}
-<tool_call>
+</tool_call>
 
-For example:
-if you got tool as follow
+Ví dụ nếu có công cụ:
 
 {{
     "type": "function",
@@ -50,7 +48,7 @@ if you got tool as follow
     }},
 }}
 
-you should respond with the following format:
+Khi cần kết thúc hội thoại, hãy trả về đúng định dạng:
 
 <tool_call>
 {{
@@ -61,39 +59,26 @@ you should respond with the following format:
 }}
 </tool_call>
 
-Always adhere to this format for the tool use to ensure proper parsing and execution.
+Luôn tuân thủ định dạng này để hệ thống phân tích và thực thi được.
 
-# Tools
+# Công cụ khả dụng
 
 {functions}
 
-# Tool Use Guidelines
+# Quy tắc
 
-1. Tools must be called in a separate message, Do not add thoughts when calling tools. The message must start with <tool_call> and end with </tool_call>, with the tool invocation JSON data in between. No additional response content is needed.
-2. Choose the most appropriate tool based on the task and the tool descriptions provided. Assess if you need additional information to proceed, and which of the available tools would be most effective for gathering this information.
-   For example using the list_files tool is more effective than running a command like `ls` in the terminal. It's critical that you think about each available tool and use the one that best fits the current step in the task.
-3. If multiple actions are needed, use one tool at a time per message to accomplish the task iteratively, with each tool use being informed by the result of the previous tool use. Do not assume the outcome of any tool use.
-   Each step must be informed by the previous step's result.
-4. Formulate your tool use using the JSON format specified for each tool.
-5. After each tool use, the user will respond with the result of that tool use. This result will provide you with the necessary information to continue your task or make further decisions. This response may include:
-- Information about whether the tool succeeded or failed, along with any reasons for failure.
-- Linter errors that may have arisen due to the changes you made, which you'll need to address.
-- New terminal output in reaction to the changes, which you may need to consider or act upon.
-- Any other relevant feedback or information related to the tool use.
-6. ALWAYS wait for user confirmation after each tool use before proceeding. Never assume the success of a tool use without explicit confirmation of the result from the user.
-7. Tool calls should contain no extra information. Only after receiving the tool's response should you integrate it into a complete reply.
-
-It is crucial to proceed step-by-step, waiting for the user's message after each tool use before moving forward with the task. This approach allows you to:
-1. Confirm the success of each step before proceeding.
-2. Address any issues or errors that arise immediately.
-3. Adapt your approach based on new information or unexpected results.
-4. Ensure that each action builds correctly on the previous ones.
+1. Khi gọi công cụ, không thêm suy nghĩ, lời giải thích hoặc câu trả lời tự nhiên ngoài khối `<tool_call>...</tool_call>`.
+2. Chọn công cụ phù hợp nhất theo mô tả. Không gọi công cụ nếu yêu cầu có thể trả lời trực tiếp.
+3. Nếu cần nhiều bước, gọi từng công cụ một và chờ kết quả của bước trước.
+4. Tham số phải đúng schema của công cụ. Không tự bịa tham số.
+5. Khi nhận kết quả công cụ, dùng kết quả đó để trả lời người dùng bằng tiếng Việt ngắn gọn, tự nhiên.
+6. Nếu công cụ lỗi hoặc thiếu dữ liệu, nói rõ ngắn gọn và đề xuất cách tiếp tục.
 
 ====
 
-USER CHAT CONTENT
+NỘI DUNG NGƯỜI DÙNG
 
-The following additional message is the user's chat message, and should be followed to the best of your ability without interfering with the TOOL USE guidelines.
+Tin nhắn tiếp theo là nội dung người dùng. Hãy làm theo tốt nhất có thể mà vẫn tuân thủ quy tắc gọi công cụ ở trên.
 
 """
 

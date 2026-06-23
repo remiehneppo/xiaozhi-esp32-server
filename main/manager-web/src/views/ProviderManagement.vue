@@ -116,7 +116,7 @@
       </div>
     </div>
 
-    <!-- 新增/编辑供应器对话框 -->
+    <!-- Hộp thoại Nhà cung cấp Mới/Chỉnh sửa -->
     <provider-dialog :title="dialogTitle" :visible.sync="dialogVisible" :form="providerForm" :model-types="modelTypes"
       @submit="handleSubmit" @cancel="dialogVisible = false" />
 
@@ -215,7 +215,7 @@ export default {
 
       // list.sort((a, b) => a.sort - b.sort);
 
-      // // 分页处理
+      // // Phân trang
       // const start = (this.currentPage - 1) * this.pageSize;
       // return list.slice(start, start + this.pageSize);
     }
@@ -288,11 +288,11 @@ export default {
     handleSubmit({ form, done }) {
       this.loading = true;
       if (form.id) {
-        // 编辑
+        // biên tập
         Api.model.updateModelProvider(form, ({ data }) => {
 
           if (data.code === 0) {
-            this.fetchProviders(); // 刷新表格
+            this.fetchProviders(); // Làm mới bảng
             this.$message.success({
             message: this.$t('common.updateSuccess'),
             showClose: true
@@ -300,10 +300,10 @@ export default {
           }
         });
       } else {
-        // 新增
+        // Mới
         Api.model.addModelProvider(form, ({ data }) => {
           if (data.code === 0) {
-            this.fetchProviders(); // 刷新表格
+            this.fetchProviders(); // Làm mới bảng
             this.$message.success({
             message: this.$t('common.addSuccess'),
             showClose: true
@@ -341,7 +341,7 @@ export default {
           if (data.code === 0) {
 
             this.isAllSelected = false;
-            this.fetchProviders(); // 刷新表格
+            this.fetchProviders(); // Làm mới bảng
 
             this.$message.success({
               message: this.$t('common.deleteSuccess'),
@@ -400,7 +400,7 @@ export default {
       return "custom-selection-cell";
     },
     updateSelectionHeaderText() {
-      // 确保表格已渲染
+      // Đảm bảo bảng được hiển thị
       this.$nextTick(() => {
         if (this.$refs.providersTable && this.$refs.providersTable.$el) {
           const headerCheckbox = this.$refs.providersTable.$el.querySelector('.custom-selection-header .el-checkbox .el-checkbox__label');
@@ -460,7 +460,7 @@ export default {
 }
 
 .main-wrapper {
-  // 顶部 63px 底部 35px 查询72px
+  // Truy vấn 35px dưới cùng 63px trên cùng72px
   height: calc(100vh - 63px - 35px - 72px);
   margin: 0 22px;
   border-radius: 15px;
@@ -902,7 +902,7 @@ export default {
   color: #409EFF;
 }
 
-/* 确保选择列标题样式正确 */
+/* Đảm bảo tiêu đề cột đã chọn được tạo kiểu chính xác */
 .custom-selection-header {
   position: relative;
 }

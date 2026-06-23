@@ -5,21 +5,21 @@ export const register = () => {
     window.addEventListener('load', () => {
       const swUrl = `${process.env.BASE_URL}service-worker.js`;
       
-      console.info(`[小智服务] 正在尝试注册Service Worker，URL: ${swUrl}`);
+      console.info(`[Dịch vụ Xiaozhi] Đang cố gắng đăng kýService Worker，URL: ${swUrl}`);
       
-      // 先检查Service Worker是否已注册
+      // Trước tiên hãy kiểm tra xem Service Worker đã được đăng ký chưa
       navigator.serviceWorker.getRegistrations().then(registrations => {
         if (registrations.length > 0) {
-          console.info('[小智服务] 发现已有Service Worker注册，正在检查更新');
+          console.info('[Dịch vụ Xiaozhi] Người ta thấy rằng Service Worker đã được đăng ký và đang kiểm tra các bản cập nhật.');
         }
         
-        // 继续注册Service Worker
+        // Tiếp tục đăng kýService Worker
         navigator.serviceWorker
           .register(swUrl)
           .then(registration => {
-            console.info('[小智服务] Service Worker注册成功');
+            console.info('[Dịch vụ Xiaozhi] Service WorkerĐăng ký thành công');
             
-            // 更新处理
+            // Xử lý cập nhật
             registration.onupdatefound = () => {
               const installingWorker = registration.installing;
               if (installingWorker == null) {
@@ -28,9 +28,9 @@ export const register = () => {
               installingWorker.onstatechange = () => {
                 if (installingWorker.state === 'installed') {
                   if (navigator.serviceWorker.controller) {
-                    // 内容已缓存更新，通知用户刷新
-                    console.log('[小智服务] 新内容可用，请刷新页面');
-                    // 可以在这里展示更新提示
+                    // Nội dung đã được lưu trữ và cập nhật. Thông báo cho người dùng để làm mới.
+                    console.log('[Dịch vụ Xiaozhi] Có nội dung mới, vui lòng làm mới trang');
+                    // Mẹo cập nhật có thể được hiển thị ở đây
                     const updateNotification = document.createElement('div');
                     updateNotification.style.cssText = `
                       position: fixed;
@@ -44,8 +44,8 @@ export const register = () => {
                       z-index: 9999;
                     `;
                     const savedLang = localStorage.getItem('userLanguage');
-                    let text = '发现新版本，点击刷新应用';
-                    let btnText = '刷新';
+                    let text = 'Đã tìm thấy phiên bản mới, nhấp để làm mới ứng dụng';
+                    let btnText = 'làm cho khỏe lại';
                     if (savedLang === 'en') {
                       text = 'New version found, click to refresh';
                       btnText = 'Refresh';
@@ -59,8 +59,8 @@ export const register = () => {
                       text = 'Nova versão encontrada, clique para atualizar';
                       btnText = 'Atualizar';
                     } else if (savedLang === 'zh_TW') {
-                      text = '發現新版本，點擊刷新應用';
-                      btnText = '刷新';
+                      text = 'Đã tìm thấy phiên bản mới, nhấp để làm mới ứng dụng';
+                      btnText = 'làm cho khỏe lại';
                     }
                     updateNotification.innerHTML = `
                       <div style="display: flex; align-items: center;">
@@ -73,12 +73,12 @@ export const register = () => {
                       window.location.reload();
                     });
                   } else {
-                    // 一切正常，Service Worker已成功安装
-                    console.log('[小智服务] 内容已缓存供离线使用');
+                    // Mọi thứ đều hoạt động tốt và Service Worker đã được cài đặt thành công
+                    console.log('[Dịch vụ Xiaozhi] Nội dung được lưu vào bộ nhớ đệm để sử dụng ngoại tuyến');
                     
-                    // 可以在这里初始化缓存
+                    // Bạn có thể khởi tạo bộ đệm ở đây
                     setTimeout(() => {
-                      // 预热CDN缓存
+                      // Khởi động bộ đệm CDN
                       const cdnUrls = [
                         'https://unpkg.com/element-ui@2.15.14/lib/theme-chalk/index.css',
                         'https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css',
@@ -90,10 +90,10 @@ export const register = () => {
                         'https://unpkg.com/opus-decoder@0.7.7/dist/opus-decoder.min.js'
                       ];
                       
-                      // 预热缓存
+                      // Bộ đệm ấm
                       cdnUrls.forEach(url => {
                         fetch(url, { mode: 'no-cors' }).catch(err => {
-                          console.log(`预热缓存 ${url} 失败`, err);
+                          console.log(`Bộ đệm ấm ${url} thất bại`, err);
                         });
                       });
                     }, 2000);
@@ -103,13 +103,13 @@ export const register = () => {
             };
           })
           .catch(error => {
-            console.error('Service Worker 注册失败:', error);
+            console.error('Service Worker Đăng ký không thành công:', error);
             
             if (error.name === 'TypeError' && error.message.includes('Failed to register a ServiceWorker')) {
-              console.warn('[小智服务] 注册Service Worker时出现网络错误，CDN资源可能无法缓存');
+              console.warn('[Dịch vụ Xiaozhi] Đã xảy ra lỗi mạng khi đăng ký Service Worker và tài nguyên CDN có thể không được lưu vào bộ đệm.');
               if (process.env.NODE_ENV === 'production') {
                 console.info(
-                  '可能原因：1. 服务器未配置正确的MIME类型 2. 服务器SSL证书问题 3. 服务器未返回service-worker.js文件'
+                  'Các lý do có thể: 1. Máy chủ không được định cấu hình đúng loại MIME 2. Sự cố chứng chỉ SSL máy chủ 3. Máy chủ không trả về tệp service-worker.js'
                 );
               }
             }

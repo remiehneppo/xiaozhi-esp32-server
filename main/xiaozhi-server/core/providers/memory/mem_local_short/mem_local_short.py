@@ -10,69 +10,42 @@ from core.utils.util import check_model_key
 
 
 short_term_memory_prompt = """
-# khi/thờiký ức
+Bạn là bộ phận tóm tắt ký ức ngắn hạn cho trợ lý giọng nói tiếng Việt.
+Nhiệm vụ của bạn là trích xuất thông tin bền vững, hữu ích cho các cuộc trò chuyện sau này với người dùng tại Việt Nam.
 
-## làm cho
-xây dựngcủký ức，tại/trongcóbên tronggiữ lạithông tincủkhi/thời，có thểthông tin
-theovớighi lại，usercủquan trọngthông tin，bằngtại/trongđếncủvớitronghơncủdịch vụ
+Chỉ lưu những thông tin có giá trị lâu dài, ví dụ:
+- Tên, cách xưng hô, người thân, thú cưng, nghề nghiệp, sở thích, thói quen.
+- Địa điểm thường dùng, nhà/công ty/trường học nếu người dùng tự nói ra.
+- Thiết bị nhà thông minh, phòng, nhạc hoặc dịch vụ người dùng hay dùng.
+- Yêu cầu cá nhân hóa rõ ràng như thích nói ngắn, thích giọng miền Nam, không thích hỏi lại nhiều.
 
-## ký ức
-### 1. ký ức（lầncập nhật）
-|        |                   |  |
-|------------|---------------------------|--------|
-| khi/thời     | thông tin（theovớilần） | 40%    |
-|    | 💖/và/cũnglần     | 35%    |
-|    | vớinó/của nóthông tincủkết nối      | 25%    |
+Không lưu:
+- Câu chào hỏi, câu tạm biệt, lỗi ASR, câu nói vô nghĩa.
+- Kết quả thời tiết, thời gian hiện tại, tin tức trong ngày, giá cả nhất thời.
+- Lệnh điều khiển thiết bị một lần, kết quả gọi công cụ, lỗi hệ thống.
+- Thông tin nhạy cảm nếu không cần thiết cho cá nhân hóa.
 
-### 2. cập nhật
-**hơnxử lý：**
-ban đầuký ức："sử dụng": [""], "sử dụng": ""
-：đến「tôiX」「tôiY」v.v.khi/thời
-：
-1. sẽcũvào"sử dụng"
-2. ghi lạikhi/thời："2024-02-15 14:32:sử dụng"
-3. tại/trongký ức：「từđếncủ」
+Quy tắc cập nhật:
+1. Kết hợp ký ức cũ với nội dung hội thoại mới, giữ thông tin còn đúng và hữu ích.
+2. Nếu thông tin mới mâu thuẫn với ký ức cũ, ưu tiên thông tin mới hơn và ghi chú thời điểm cập nhật.
+3. Viết ngắn gọn bằng tiếng Việt tự nhiên, không suy diễn quá mức.
+4. Tổng dung lượng nên dưới 1800 từ.
 
-### 3. 
-- **thông tinnén**：sử dụng
-  - ✅"[//🐱]"
-  - ❌"，"
-- ****：≥900khi/thời
-  1. xóa<60và3và/cũngcủthông tin
-  2. và（giữ lạikhi/thờicủ）
-
-## ký ức
-rađịnh dạngchophân tíchcủjsonký tự，khôngcần、vànói，lưuký ứckhi/thờichỉtừvớithông tin，khôngphảivàobên trong
-```json
+Chỉ trả về JSON hợp lệ, không Markdown, không giải thích thêm. Dùng cấu trúc:
 {
-  "khi/thời": {
-    "": {
-      "sử dụng": "",
-      "": [] 
-    },
-    "ký ức": [
-      {
-        "": "vào",
-        "khi/thời": "2024-03-20",
-        "": 0.9,
-        "": [""],
-        "": 30 
-      }
-    ]
+  "profile": {
+    "name": "",
+    "preferred_address": "",
+    "language": "Tiếng Việt",
+    "location_context": "",
+    "preferences": []
   },
-  "": {
-    "": {"": 12},
-    "": [""]
-  },
-  "phản hồi": {
-    "": ["xử lýcủnhiệm vụ"], 
-    "tại/trong": ["củ"]
-  },
-  "": [
-    "củ，củ，usercủ"
-  ]
+  "relationships": [],
+  "devices": [],
+  "stable_facts": [],
+  "interaction_preferences": [],
+  "last_updated": "YYYY-MM-DD HH:MM:SS"
 }
-```
 """
 
 
@@ -166,12 +139,12 @@ class MemoryProvider(MemoryProviderBase):
             elif msg.role == "assistant":
                 msgStr += f"Assistant: {content}\n"
         if self.short_memory and len(self.short_memory) > 0:
-            msgStr += "ký ức：\n"
+            msgStr += "Ký ức hiện có:\n"
             msgStr += self.short_memory
 
-        # hiện tạikhi/thời
+        # Thời gian hiện tại
         time_str = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
-        msgStr += f"hiện tạikhi/thời：{time_str}"
+        msgStr += f"Thời gian hiện tại: {time_str}"
 
         if self.save_to_file:
             try:

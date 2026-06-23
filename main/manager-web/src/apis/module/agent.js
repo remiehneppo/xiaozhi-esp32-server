@@ -3,7 +3,7 @@ import RequestService from '../httpRequest';
 
 
 export default {
-    // 获取智能体列表
+    // Lấy danh sách đại lý
     getAgentList(callback) {
         RequestService.sendRequest()
             .url(`${getServiceUrl()}/agent/list`)
@@ -18,7 +18,7 @@ export default {
                 });
             }).send();
     },
-    // 添加智能体
+    // Thêm đại lý
     addAgent(agentName, callback) {
         RequestService.sendRequest()
             .url(`${getServiceUrl()}/agent`)
@@ -34,7 +34,7 @@ export default {
                 });
             }).send();
     },
-    // 删除智能体
+    // Xóa đại lý
     deleteAgent(agentId, callback) {
         RequestService.sendRequest()
             .url(`${getServiceUrl()}/agent/${agentId}`)
@@ -49,7 +49,7 @@ export default {
                 });
             }).send();
     },
-    // 获取智能体配置
+    // Nhận cấu hình đại lý
     getDeviceConfig(agentId, callback) {
         RequestService.sendRequest()
             .url(`${getServiceUrl()}/agent/${agentId}`)
@@ -59,13 +59,13 @@ export default {
                 callback(res);
             })
             .networkFail((err) => {
-                console.error('获取配置失败:', err);
+                console.error('Không lấy được cấu hình:', err);
                 RequestService.reAjaxFun(() => {
                     this.getDeviceConfig(agentId, callback);
                 });
             }).send();
     },
-    // 配置智能体
+    // Cấu hình đại lý
     updateAgentConfig(agentId, configData, callback) {
         RequestService.sendRequest()
             .url(`${getServiceUrl()}/agent/${agentId}`)
@@ -81,8 +81,8 @@ export default {
                 });
             }).send();
     },
-    // 新增方法：获取智能体模板
-    getAgentTemplate(callback) {  // 移除templateName参数
+    // Phương pháp mới: Lấy mẫu đại lý
+    getAgentTemplate(callback) {  // Xóa tham số templateName
         RequestService.sendRequest()
             .url(`${getServiceUrl()}/agent/template`)
             .method('GET')
@@ -91,14 +91,14 @@ export default {
                 callback(res);
             })
             .networkFail((err) => {
-                console.error('获取模板失败:', err);
+                console.error('Không lấy được mẫu:', err);
                 RequestService.reAjaxFun(() => {
                     this.getAgentTemplate(callback);
                 });
             }).send();
     },
 
-    // 新增：获取智能体模板分页列表
+    // Mới: Nhận danh sách mẫu đại lý được phân trang
     getAgentTemplatesPage(params, callback) {
         RequestService.sendRequest()
             .url(`${getServiceUrl()}/agent/template/page`)
@@ -109,13 +109,13 @@ export default {
                 callback(res);
             })
             .networkFail((err) => {
-                console.error('获取模板分页列表失败:', err);
+                console.error('Không thể lấy được danh sách phân trang mẫu:', err);
                 RequestService.reAjaxFun(() => {
                     this.getAgentTemplatesPage(params, callback);
                 });
             }).send();
     },
-    // 获取智能体会话列表
+    // Lấy danh sách phiên đại lý
     getAgentSessions(agentId, params, callback) {
         RequestService.sendRequest()
             .url(`${getServiceUrl()}/agent/${agentId}/sessions`)
@@ -131,7 +131,7 @@ export default {
                 });
             }).send();
     },
-    // 获取智能体聊天记录
+    // Nhận lịch sử trò chuyện của đại lý
     getAgentChatHistory(agentId, sessionId, callback) {
         RequestService.sendRequest()
             .url(`${getServiceUrl()}/agent/${agentId}/chat-history/${sessionId}`)
@@ -146,7 +146,7 @@ export default {
                 });
             }).send();
     },
-    // 获取音频下载ID
+    // Tải xuống âm thanhID
     getAudioId(audioId, callback) {
         RequestService.sendRequest()
             .url(`${getServiceUrl()}/agent/audio/${audioId}`)
@@ -161,7 +161,7 @@ export default {
                 });
             }).send();
     },
-    // 获取智能体的MCP接入点地址
+    // Lấy địa chỉ điểm truy cập MCP của đại lý
     getAgentMcpAccessAddress(agentId, callback) {
         RequestService.sendRequest()
             .url(`${getServiceUrl()}/agent/mcp/address/${agentId}`)
@@ -179,7 +179,7 @@ export default {
                 });
             }).send();
     },
-    // 获取智能体的MCP工具列表
+    // Lấy danh sách công cụ MCP cho đại lý
     getAgentMcpToolsList(agentId, callback) {
         RequestService.sendRequest()
             .url(`${getServiceUrl()}/agent/mcp/tools/${agentId}`)
@@ -194,7 +194,7 @@ export default {
                 });
             }).send();
     },
-    // 添加智能体的声纹
+    // Thêm giọng nói của đại lý
     addAgentVoicePrint(voicePrintData, callback) {
         RequestService.sendRequest()
             .url(`${getServiceUrl()}/agent/voice-print`)
@@ -210,7 +210,7 @@ export default {
                 });
             }).send();
     },
-    // 获取指定智能体声纹列表
+    // Lấy danh sách giọng nói của đại lý được chỉ định
     getAgentVoicePrintList(id, callback) {
         RequestService.sendRequest()
             .url(`${getServiceUrl()}/agent/voice-print/list/${id}`)
@@ -225,7 +225,7 @@ export default {
                 });
             }).send();
     },
-    // 删除智能体声纹
+    // Xóa giọng nói của đại lý
     deleteAgentVoicePrint(id, callback) {
         RequestService.sendRequest()
             .url(`${getServiceUrl()}/agent/voice-print/${id}`)
@@ -240,7 +240,7 @@ export default {
                 });
             }).send();
     },
-    // 更新智能体声纹
+    // Cập nhật giọng nói của nhân viên
     updateAgentVoicePrint(voicePrintData, callback) {
         RequestService.sendRequest()
             .url(`${getServiceUrl()}/agent/voice-print`)
@@ -256,7 +256,7 @@ export default {
                 });
             }).send();
     },
-    // 获取指定智能体用户类型聊天记录
+    // Nhận lịch sử trò chuyện của loại người dùng đại lý được chỉ định
     getRecentlyFiftyByAgentId(id, callback) {
         RequestService.sendRequest()
             .url(`${getServiceUrl()}/agent/${id}/chat-history/user`)
@@ -271,7 +271,7 @@ export default {
                 });
             }).send();
     },
-    // 获取指定智能体用户类型聊天记录
+    // Nhận lịch sử trò chuyện của loại người dùng đại lý được chỉ định
     getContentByAudioId(id, callback) {
         RequestService.sendRequest()
             .url(`${getServiceUrl()}/agent/${id}/chat-history/audio`)
@@ -286,8 +286,8 @@ export default {
                 });
             }).send();
     },
-    // 在文件末尾（在最后一个方法后，大括号前）添加以下方法：
-    // 新增智能体模板
+    // Thêm phương thức sau vào cuối tệp (sau phương thức cuối cùng và trước dấu ngoặc nhọn):
+// Thêm mẫu tác nhân mới
     addAgentTemplate(templateData, callback) {
         RequestService.sendRequest()
             .url(`${getServiceUrl()}/agent/template`)
@@ -304,7 +304,7 @@ export default {
             }).send();
     },
 
-    // 更新智能体模板
+    // Cập nhật mẫu đại lý
     updateAgentTemplate(templateData, callback) {
         RequestService.sendRequest()
             .url(`${getServiceUrl()}/agent/template`)
@@ -321,7 +321,7 @@ export default {
             }).send();
     },
 
-    // 删除智能体模板
+    // Xóa mẫu đại lý
     deleteAgentTemplate(id, callback) {
         RequestService.sendRequest()
             .url(`${getServiceUrl()}/agent/template/${id}`)
@@ -337,12 +337,12 @@ export default {
             }).send();
     },
 
-    // 批量删除智能体模板
+    // Xóa mẫu đại lý theo đợt
     batchDeleteAgentTemplate(ids, callback) {
         RequestService.sendRequest()
-            .url(`${getServiceUrl()}/agent/template/batch-remove`) // 修改为新的URL
+            .url(`${getServiceUrl()}/agent/template/batch-remove`) // Sửa sang mớiURL
             .method('POST')
-            .data(Array.isArray(ids) ? ids : [ids]) // 确保是数组格式
+            .data(Array.isArray(ids) ? ids : [ids]) // Đảm bảo nó ở định dạng mảng
             .success((res) => {
                 RequestService.clearRequestTime();
                 callback(res);
@@ -353,7 +353,7 @@ export default {
                 });
             }).send();
     },
-    // 在getAgentTemplate方法后添加获取单个模板的方法
+    // Thêm một phương thức để lấy một mẫu sau phương thức getAgentTemplate
     getAgentTemplateById(templateId, callback) {
         RequestService.sendRequest()
             .url(`${getServiceUrl()}/agent/template/${templateId}`)
@@ -363,14 +363,14 @@ export default {
                 callback(res);
             })
             .networkFail((err) => {
-                console.error('获取单个模板失败:', err);
+                console.error('Không thể lấy được một mẫu:', err);
                 RequestService.reAjaxFun(() => {
                     this.getAgentTemplateById(templateId, callback);
                 });
             }).send();
     },
 
-    // 获取聊天记录下载链接UUID
+    // Nhận liên kết tải xuống lịch sử trò chuyệnUUID
     getDownloadUrl(agentId, sessionId, callback) {
         RequestService.sendRequest()
             .url(`${getServiceUrl()}/agent/chat-history/getDownloadUrl/${agentId}/${sessionId}`)
@@ -386,7 +386,7 @@ export default {
             }).send();
     },
     
-    // 搜索智能体
+    // Đại lý tìm kiếm
     searchAgent(keyword, searchType, callback) {
         RequestService.sendRequest()
             .url(`${getServiceUrl()}/agent/list?keyword=${encodeURIComponent(keyword)}&searchType=${searchType}`)
@@ -401,7 +401,7 @@ export default {
                 });
             }).send();
     },
-    // 获取智能体标签
+    // Nhận thẻ đại lý
     getAgentTags(agentId, callback) {
         RequestService.sendRequest()
             .url(`${getServiceUrl()}/agent/${agentId}/tags`)
@@ -416,7 +416,7 @@ export default {
                 });
             }).send();
     },
-    // 保存智能体标签
+    // Lưu nhãn đại lý
     saveAgentTags(agentId, tags, callback) {
         RequestService.sendRequest()
             .url(`${getServiceUrl()}/agent/${agentId}/tags`)

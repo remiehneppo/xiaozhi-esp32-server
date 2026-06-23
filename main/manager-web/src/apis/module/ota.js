@@ -2,7 +2,7 @@ import { getServiceUrl } from '../api';
 import RequestService from '../httpRequest';
 
 export default {
-    // 分页查询OTA固件信息
+    // Truy vấn thông tin firmware OTA theo trang
     getOtaList(params, callback) {
         RequestService.sendRequest()
             .url(`${getServiceUrl()}/otaMag`)
@@ -13,13 +13,13 @@ export default {
                 callback(res);
             })
             .networkFail((err) => {
-                console.error('获取OTA固件列表失败:', err);
+                console.error('Không lấy được danh sách chương trình cơ sở OTA:', err);
                 RequestService.reAjaxFun(() => {
                     this.getOtaList(params, callback);
                 });
             }).send();
     },
-    // 获取单个OTA固件信息
+    // Nhận thông tin chương trình cơ sở OTA duy nhất
     getOtaInfo(id, callback) {
         RequestService.sendRequest()
             .url(`${getServiceUrl()}/otaMag/${id}`)
@@ -29,13 +29,13 @@ export default {
                 callback(res);
             })
             .networkFail((err) => {
-                console.error('获取OTA固件信息失败:', err);
+                console.error('Không thể lấy được thông tin chương trình cơ sở OTA:', err);
                 RequestService.reAjaxFun(() => {
                     this.getOtaInfo(id, callback);
                 });
             }).send();
     },
-    // 保存OTA固件信息
+    // Lưu thông tin firmware OTA
     saveOta(entity, callback) {
         RequestService.sendRequest()
             .url(`${getServiceUrl()}/otaMag`)
@@ -46,13 +46,13 @@ export default {
                 callback(res);
             })
             .networkFail((err) => {
-                console.error('保存OTA固件信息失败:', err);
+                console.error('Không lưu được thông tin firmware OTA:', err);
                 RequestService.reAjaxFun(() => {
                     this.saveOta(entity, callback);
                 });
             }).send();
     },
-    // 更新OTA固件信息
+    // Cập nhật thông tin firmware OTA
     updateOta(id, entity, callback) {
         RequestService.sendRequest()
             .url(`${getServiceUrl()}/otaMag/${id}`)
@@ -63,13 +63,13 @@ export default {
                 callback(res);
             })
             .networkFail((err) => {
-                console.error('更新OTA固件信息失败:', err);
+                console.error('Không cập nhật được thông tin firmware OTA:', err);
                 RequestService.reAjaxFun(() => {
                     this.updateOta(id, entity, callback);
                 });
             }).send();
     },
-    // 删除OTA固件
+    // Xóa phần mềm OTA
     deleteOta(id, callback) {
         RequestService.sendRequest()
             .url(`${getServiceUrl()}/otaMag/${id}`)
@@ -79,13 +79,13 @@ export default {
                 callback(res);
             })
             .networkFail((err) => {
-                console.error('删除OTA固件失败:', err);
+                console.error('Không xóa được firmware OTA:', err);
                 RequestService.reAjaxFun(() => {
                     this.deleteOta(id, callback);
                 });
             }).send();
     },
-    // 上传固件文件
+    // Tải lên tập tin chương trình cơ sở
     uploadFirmware(file, callback) {
         const formData = new FormData();
         formData.append('file', file);
@@ -98,13 +98,13 @@ export default {
                 callback(res);
             })
             .networkFail((err) => {
-                console.error('上传固件文件失败:', err);
+                console.error('Không thể tải lên tập tin chương trình cơ sở:', err);
                 RequestService.reAjaxFun(() => {
                     this.uploadFirmware(file, callback);
                 });
             }).send();
     },
-    // 获取固件下载链接
+    // Nhận liên kết tải xuống chương trình cơ sở
     getDownloadUrl(id, callback) {
         RequestService.sendRequest()
             .url(`${getServiceUrl()}/otaMag/getDownloadUrl/${id}`)
@@ -114,7 +114,7 @@ export default {
                 callback(res);
             })
             .networkFail((err) => {
-                console.error('获取下载链接失败:', err);
+                console.error('Không lấy được link tải:', err);
                 RequestService.reAjaxFun(() => {
                     this.getDownloadUrl(id, callback);
                 });

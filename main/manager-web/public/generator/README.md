@@ -8,17 +8,17 @@ Thư mục này chứa các tệp tĩnh được đóng gói từ dự án [xiao
 
 ```
 generator/
-├── assets/              # 构建生成的资源文件
+├── assets/              # Xây dựng các tệp tài nguyên được tạo
 │   ├── ft_render-ByO_jG18.js
 │   ├── index-CYcyz9xb.js
 │   └── index-NXxBVrod.css
-├── static/              # 静态资源目录
-│   ├── charsets/        # 字符集文件
+├── static/              # Thư mục tài nguyên tĩnh
+│   ├── charsets/        # tập tin bộ ký tự
 │   │   ├── deepseek.txt
 │   │   ├── gb2312.txt
 │   │   ├── latin1.txt
 │   │   └── qwen18409.txt
-│   ├── fonts/           # 字体资源
+│   ├── fonts/           # Tài nguyên font chữ
 │   │   ├── font_noto_qwen_14_1.bin
 │   │   ├── font_noto_qwen_16_4.bin
 │   │   ├── font_noto_qwen_20_4.bin
@@ -29,18 +29,18 @@ generator/
 │   │   ├── font_puhui_deepseek_30_4.bin
 │   │   ├── noto_qwen.ttf
 │   │   └── puhui_deepseek.ttf
-│   ├── multinet_model/  # 自定义唤醒词模型
+│   ├── multinet_model/  # Mô hình từ kích hoạt (wake word) tùy chỉnh
 │   │   ├── fst/
 │   │   ├── mn6_cn/
 │   │   ├── mn6_en/
 │   │   ├── mn7_cn/
 │   │   └── mn7_en/
-│   ├── twemoji32/       # 32x32 表情图片
-│   ├── twemoji64/       # 64x64 表情图片
-│   ├── wakenet_model/   # 预设唤醒词模型
-│   └── README.md        # 静态资源说明
-├── index.html           # 主页面
-└── README.md            # 项目说明文档
+│   ├── twemoji32/       # 32x32 Hình ảnh biểu hiện
+│   ├── twemoji64/       # 64x64 Hình ảnh biểu hiện
+│   ├── wakenet_model/   # Mô hình từ kích hoạt (wake word) mặc định
+│   └── README.md        # Mô tả tài nguyên tĩnh
+├── index.html           # Trang chính
+└── README.md            # Tài liệu mô tả dự án
 ```
 
 ##Chức năng chính

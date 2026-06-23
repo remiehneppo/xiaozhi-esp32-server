@@ -160,7 +160,7 @@ export default {
       loading: false,
       userApi: null,
       firmwareTypes: [],
-      mqttServiceAvailable: false, // MQTT服务是否可用
+      mqttServiceAvailable: false, // MQTTDịch vụ có sẵn không?
     };
   },
   computed: {
@@ -181,7 +181,7 @@ export default {
     pageCount() {
       return Math.ceil(this.filteredDeviceList.length / this.pageSize);
     },
-    // 计算当前页是否全选
+    // Tính toán xem trang hiện tại có được chọn hay không
     isCurrentPageAllSelected() {
       return this.paginatedDeviceList.length > 0 &&
         this.paginatedDeviceList.every(device => device.selected);
@@ -313,14 +313,14 @@ export default {
         row._submitting = false;
       });
     },
-    // 备注输入框：失焦时提交
+    // Ô nhập ghi chú: Gửi khi mất nét
     onRemarkBlur(row) {
       row.isEdit = false;
       setTimeout(() => {
         this.submitRemark(row);
-      }, 100); // 延迟 100ms，避开 enter+blur 同时触发的窗口
+      }, 100); // Trì hoãn 100ms, tránh enter+blur Windows được kích hoạt đồng thời
     },
-    // 备注输入框：按回车时提交
+    // Ô nhập ghi chú: Gửi khi nhấn Enter
     onRemarkEnter(row) {
       row.isEdit = false;
       this.submitRemark(row);
@@ -389,7 +389,7 @@ export default {
               otaSwitch: device.autoUpdate === 1,
               rawBindTime: new Date(device.createDate).getTime(),
               selected: false,
-              // 初始设置为离线状态
+              // Cài đặt ban đầu đang ngoại tuyến
               deviceStatus: 'offline'
             };
           })
@@ -397,7 +397,7 @@ export default {
           this.activeSearchKeyword = "";
           this.searchKeyword = "";
 
-          // 获取设备列表后，立即获取设备状态
+          // Sau khi nhận được danh sách thiết bị, nhận ngay trạng thái thiết bị
           this.fetchDeviceStatus(agentId);
         } else {
           this.$message.error(data.msg || this.$t('device.getListFailed'));
@@ -405,47 +405,47 @@ export default {
       });
     },
 
-    // 获取设备状态
+    // Nhận trạng thái thiết bị
     fetchDeviceStatus(agentId) {
-      // 开启表格等待状态，处理动态加载表头导致鼠标所在行的hover事件无法移除的问题
+      // Bật trạng thái chờ của bảng để giải quyết vấn đề tải động các tiêu đề bảng ngăn chặn sự kiện di chuột của hàng nơi đặt chuột bị xóa.
       this.loading = true;
       Api.device.getDeviceStatus(agentId, ({ data }) => {
         this.loading = false;
         if (data.code === 0) {
           try {
-            // 解析后端返回的设备状态JSON
+            // Phân tích trạng thái thiết bị được backend trả vềJSON
             const statusData = JSON.parse(data.data);
 
-            // 直接使用解析后的数据作为设备状态映射（不需要devices字段包装）
+            // Sử dụng trực tiếp dữ liệu được phân tích (parse) làm ánh xạ trạng thái thiết bị (không yêu cầu gói trường thiết bị)）
             if (statusData && typeof statusData === 'object') {
-              // 成功获取到设备状态
+              // Đã lấy được trạng thái thiết bị thành công
               this.mqttServiceAvailable = true;
-              // 更新设备状态
+              // Cập nhật trạng thái thiết bị
               this.updateDeviceStatusFromResponse(statusData);
             } else {
-              // 数据格式不正确，MQTT服务不可用
+              // Định dạng dữ liệu không chính xác và dịch vụ MQTT không khả dụng
               this.mqttServiceAvailable = false;
             }
           } catch (error) {
-            // JSON解析失败，MQTT服务不可用
+            // JSONphân tích (parse) không thành công, dịch vụ MQTT không khả dụng
             this.mqttServiceAvailable = false;
           }
         } else {
-          // 接口调用失败，MQTT服务不可用
+          // Cuộc gọi giao diện không thành công và dịch vụ MQTT không khả dụng.
           this.mqttServiceAvailable = false;
         }
       });
     },
 
-    // 根据API响应更新设备状态
+    // Cập nhật trạng thái thiết bị dựa trên phản hồi API
     updateDeviceStatusFromResponse(deviceStatusMap) {
       this.deviceList.forEach(device => {
-        // 构建设备的MQTT客户端ID
+        // Xây dựng ứng dụng khách MQTT cho thiết bị của bạnID
         const macAddress = device.macAddress ? device.macAddress.replace(/:/g, '_') : 'unknown';
         const groupId = device.model ? device.model.replace(/:/g, '_') : 'GID_default';
         const mqttClientId = `${groupId}@@@${macAddress}@@@${macAddress}`;
 
-        // 从状态映射中获取设备状态
+        // Nhận trạng thái thiết bị từ bản đồ trạng thái
         if (deviceStatusMap[mqttClientId]) {
           const statusInfo = deviceStatusMap[mqttClientId];
 
@@ -462,7 +462,7 @@ export default {
 
           device.deviceStatus = isOnline ? 'online' : 'offline';
         } else {
-          // 如果没有找到对应的状态信息，默认为离线
+          // Nếu không tìm thấy thông tin trạng thái tương ứng thì mặc định là ngoại tuyến.
           device.deviceStatus = 'offline';
         }
       });
@@ -492,7 +492,7 @@ export default {
         this.$message.error(msg || this.$t('message.error'))
       })
     },
-    // 判断是否可以生成表情、主题、字体bin文件
+    // Xác định xem có thể tạo biểu tượng cảm xúc, chủ đề và tệp thùng font chữ hay không
     isGenerate(row) {
       const version = row.firmwareVersion.replace(/\./g, '');
       return Number(version) >= 200;
@@ -503,7 +503,7 @@ export default {
       if (isNaN(ts)) return '-';
       const date = new Date(ts);
       if (isNaN(date.getTime())) return '-';
-      return date.toLocaleString();  // 自动适配本地时区
+      return date.toLocaleString();  // Tự động thích ứng với múi giờ địa phương
     },
   }
 };

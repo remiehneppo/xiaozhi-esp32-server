@@ -3,7 +3,7 @@ import router from '../router'
 import Constant from '../utils/constant'
 
 /**
- * 判断用户是否登录
+ * Xác định xem người dùng đã đăng nhập hay chưa
  */
 export function checkUserLogin(fn) {
     let token = localStorage.getItem(Constant.STORAGE_KEY.TOKEN)
@@ -18,7 +18,7 @@ export function checkUserLogin(fn) {
 }
 
 /**
- * 判断是否为空
+ * Xác định xem nó có trống không
  * @param data
  * @returns {boolean}
  */
@@ -36,7 +36,7 @@ export function isNull(data) {
 }
 
 /**
- * 判断不为空
+ * Bản án không trống rỗng
  * @param data
  * @returns {boolean}
  */
@@ -45,7 +45,7 @@ export function isNotNull(data) {
 }
 
 /**
- * 显示顶部红色通知
+ * Hiển thị thông báo màu đỏ hàng đầu
  * @param msg
  */
 export function showDanger(msg) {
@@ -60,7 +60,7 @@ export function showDanger(msg) {
 }
 
 /**
- * 显示顶部橙色通知
+ * Hiển thị thông báo màu cam hàng đầu
  * @param msg
  */
 export function showWarning(msg) {
@@ -77,7 +77,7 @@ export function showWarning(msg) {
 
 
 /**
- * 显示顶部绿色通知
+ * Hiển thị thông báo màu xanh lá cây hàng đầu
  * @param msg
  */
 export function showSuccess(msg) {
@@ -91,7 +91,7 @@ export function showSuccess(msg) {
 
 
 /**
- * 页面跳转
+ * Nhảy trang
  * @param path
  * @param isRepalce
  */
@@ -104,7 +104,7 @@ export function goToPage(path, isRepalce) {
 }
 
 /**
- * 获取当前vue页面名称
+ * Lấy tên trang vue hiện tại
  * @param path
  * @param isRepalce
  */
@@ -117,7 +117,7 @@ export function getCurrentPage() {
 }
 
 /**
- * 生成从[min,max]的随机数
+ * được tạo ra từ[min,max]số ngẫu nhiên
  * @param min
  * @param max
  * @returns {number}
@@ -128,7 +128,7 @@ export function randomNum(min, max) {
 
 
 /**
- * 获取uuid
+ * lấyuuid
  */
 export function getUUID() {
     return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
@@ -138,131 +138,131 @@ export function getUUID() {
 
 
 /**
- * 验证手机号格式
- * @param {string} mobile 手机号
- * @param {string} areaCode 区号
+ * Xác minh định dạng số điện thoại di động
+ * @param {string} mobile Số điện thoại
+ * @param {string} areaCode mã vùng
  * @returns {boolean}
  */
 export function validateMobile(mobile, areaCode) {
-    // 移除所有非数字字符
+    // Xóa tất cả các ký tự không phải số
     const cleanMobile = mobile.replace(/\D/g, '');
 
-    // 根据不同区号使用不同的验证规则
+    // Sử dụng các quy tắc xác thực khác nhau dựa trên các mã vùng khác nhau
     switch (areaCode) {
-        case '+86': // 中国大陆
+        case '+86': // Trung Quốc đại lục
             return /^1[3-9]\d{9}$/.test(cleanMobile);
-        case '+852': // 中国香港
+        case '+852': // Hồng Kông, Trung Quốc
             return /^[569]\d{7}$/.test(cleanMobile);
-        case '+853': // 中国澳门
+        case '+853': // Ma Cao, Trung Quốc
             return /^6\d{7}$/.test(cleanMobile);
-        case '+886': // 中国台湾
+        case '+886': // Đài Loan, Trung Quốc
             return /^9\d{8}$/.test(cleanMobile);
-        case '+1': // 美国/加拿大
+        case '+1': // Hoa Kỳ/Canada
             return /^[2-9]\d{9}$/.test(cleanMobile);
-        case '+44': // 英国
+        case '+44': // Vương quốc Anh
             return /^7[1-9]\d{8}$/.test(cleanMobile);
-        case '+81': // 日本
+        case '+81': // Nhật Bản
             return /^[7890]\d{8}$/.test(cleanMobile);
-        case '+82': // 韩国
+        case '+82': // Hàn Quốc
             return /^1[0-9]\d{7}$/.test(cleanMobile);
-        case '+65': // 新加坡
+        case '+65': // Singapore
             return /^[89]\d{7}$/.test(cleanMobile);
-        case '+61': // 澳大利亚
+        case '+61': // Úc
             return /^[4578]\d{8}$/.test(cleanMobile);
-        case '+49': // 德国
+        case '+49': // nước Đức
             return /^1[5-7]\d{8}$/.test(cleanMobile);
-        case '+33': // 法国
+        case '+33': // Pháp
             return /^[67]\d{8}$/.test(cleanMobile);
-        case '+39': // 意大利
+        case '+39': // Ý
             return /^3[0-9]\d{8}$/.test(cleanMobile);
-        case '+34': // 西班牙
+        case '+34': // Tây ban nha
             return /^[6-9]\d{8}$/.test(cleanMobile);
-        case '+55': // 巴西
+        case '+55': // Brazil
             return /^[1-9]\d{10}$/.test(cleanMobile);
-        case '+91': // 印度
+        case '+91': // Ấn Độ
             return /^[6-9]\d{9}$/.test(cleanMobile);
-        case '+971': // 阿联酋
+        case '+971': // Các tiểu vương quốc Ả Rập thống nhất
             return /^[5]\d{8}$/.test(cleanMobile);
-        case '+966': // 沙特阿拉伯
+        case '+966': // Ả Rập Saudi
             return /^[5]\d{8}$/.test(cleanMobile);
-        case '+880': // 孟加拉国
+        case '+880': // Bangladesh
             return /^1[3-9]\d{8}$/.test(cleanMobile);
-        case '+234': // 尼日利亚
+        case '+234': // Nigeria
             return /^[789]\d{9}$/.test(cleanMobile);
-        case '+254': // 肯尼亚
+        case '+254': // Kenya
             return /^[17]\d{8}$/.test(cleanMobile);
-        case '+255': // 坦桑尼亚
+        case '+255': // Tanzania
             return /^[67]\d{8}$/.test(cleanMobile);
-        case '+7': // 哈萨克斯坦
+        case '+7': // Kazakhstan
             return /^[67]\d{9}$/.test(cleanMobile);
         default:
-            // 其他国际号码：至少5位，最多15位
+            // Các số quốc tế khác: tối thiểu 5 chữ số, tối đa 15 chữ số
             return /^\d{5,15}$/.test(cleanMobile);
     }
 }
 
 
 /**
- * 生成SM2密钥对（十六进制格式）
- * @returns {Object} 包含公钥和私钥的对象
+ * Tạo cặp khóa SM2 (định dạng hex）
+ * @returns {Object} Đối tượng chứa khóa chung và khóa riêng
  */
 export function generateSm2KeyPairHex() {
-    // 使用sm-crypto库生成SM2密钥对
+    // Tạo cặp khóa SM2 bằng thư viện sm-crypto
     const sm2 = require('sm-crypto').sm2;
     const keypair = sm2.generateKeyPairHex();
     
     return {
         publicKey: keypair.publicKey,
         privateKey: keypair.privateKey,
-        clientPublicKey: keypair.publicKey, // 客户端公钥
-        clientPrivateKey: keypair.privateKey // 客户端私钥
+        clientPublicKey: keypair.publicKey, // Khóa công khai của máy khách
+clientPrivateKey: keypair.privateKey // Khóa riêng của máy khách
     };
 }
 
 /**
- * SM2公钥加密
- * @param {string} publicKey 公钥（十六进制格式）
- * @param {string} plainText 明文
- * @returns {string} 加密后的密文（十六进制格式）
+ * SM2mã hóa khóa công khai
+ * @param {string} publicKey Khóa công khai (định dạng hex）
+ * @param {string} plainText văn bản thuần túy
+ * @returns {string} Bản mã được mã hóa (định dạng thập lục phân）
  */
 export function sm2Encrypt(publicKey, plainText) {
     if (!publicKey) {
-        throw new Error('公钥不能为null或undefined');
+        throw new Error('Khóa công khai không thể rỗng hoặcundefined');
     }
     
     if (!plainText) {
-        throw new Error('明文不能为空');
+        throw new Error('Văn bản thuần túy không thể để trống');
     }
     
     const sm2 = require('sm-crypto').sm2;
-    // SM2加密，添加04前缀表示未压缩公钥
+    // SM2Mã hóa, thêm tiền tố 04 để biểu thị khóa chung không nén
     const encrypted = sm2.doEncrypt(plainText, publicKey, 1);
-    // 转换为十六进制格式（与后端保持一致，添加04前缀）
+    // Chuyển đổi sang định dạng thập lục phân (phù hợp với backend, thêm tiền tố 04）
     const result = "04" + encrypted;
     
     return result;
 }
 
 /**
- * SM2私钥解密
- * @param {string} privateKey 私钥（十六进制格式）
- * @param {string} cipherText 密文（十六进制格式）
- * @returns {string} 解密后的明文
+ * SM2Giải mã khóa riêng
+ * @param {string} privateKey Khóa riêng (định dạng hex）
+ * @param {string} cipherText Bản mã (dạng hex）
+ * @returns {string} Bản rõ được giải mã
  */
 export function sm2Decrypt(privateKey, cipherText) {
     const sm2 = require('sm-crypto').sm2;
-    // 移除04前缀（与后端保持一致）
+    // Xóa tiền tố 04 (phù hợp với backend）
     const dataWithoutPrefix = cipherText.startsWith("04") ? cipherText.substring(2) : cipherText;
-    // SM2解密
+    // SM2Giải mã
     return sm2.doDecrypt(dataWithoutPrefix, privateKey, 1);
 }
 
 /**
- * 防抖函数
- * @param {Function} fn 要防抖的函数
- * @param {number} delay 延迟时间（毫秒），默认500ms
- * @param {boolean} immediate 是否立即执行，默认false
- * @returns {Function} 防抖处理后的函数
+ * Chức năng chống rung
+ * @param {Function} fn Chức năng chống rung
+ * @param {number} delay Thời gian trễ (mili giây), mặc định500ms
+ * @param {boolean} immediate Có thực hiện ngay lập tức hay không, mặc địnhfalse
+ * @returns {Function} Chức năng sau khi xử lý chống rung
  */
 export function debounce(fn, delay = 500, immediate = false) {
     let timer = null;

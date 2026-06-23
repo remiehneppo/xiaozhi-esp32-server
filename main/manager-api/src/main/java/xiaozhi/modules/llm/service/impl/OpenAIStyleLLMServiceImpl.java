@@ -59,9 +59,19 @@ public class OpenAIStyleLLMServiceImpl implements LLMService {
         }
     }
 
-    private static final String DEFAULT_SUMMARY_PROMPT = "Bạn là một người tóm tắt trí nhớ có kinh nghiệm，Giỏi tóm tắt các cuộc trò chuyện，Thực hiện theo các quy tắc này：\n1、Tổng hợp những thông tin quan trọng về người dùng，để cung cấp dịch vụ được cá nhân hóa hơn trong các cuộc trò chuyện trong tương lai.\n2、Đừng lặp lại tóm tắt，Đừng quên những kỷ niệm đã qua，Trừ khi bộ nhớ ban đầu vượt quá1800từ，Còn không thì đừng quên、Không nén bộ nhớ lịch sử của người dùng\n3、Âm lượng thiết bị do người dùng điều khiển、chơi nhạc、thời tiết、Thoát、Không muốn các cuộc trò chuyện và nội dung khác không liên quan gì đến người dùng，Thông tin này không cần phải thêm vào bản tóm tắt\n4、Ngày và giờ hôm nay trong cuộc trò chuyện、Điều kiện thời tiết ngày nay là dữ liệu không liên quan đến sự kiện của người dùng，Nếu thông tin này được lưu dưới dạng bộ nhớ sẽ ảnh hưởng đến các cuộc trò chuyện tiếp theo.，Thông tin này không cần phải thêm vào bản tóm tắt\n5、Không thêm kết quả và kết quả lỗi của điều khiển thiết bị vào phần tóm tắt，Đừng thêm một số điều vô nghĩa của người dùng vào phần tóm tắt\n6、Đừng tóm tắt chỉ để tóm tắt，Nếu cuộc trò chuyện của người dùng không có ý nghĩa，Cũng có thể quay lại lịch sử ban đầu.\n7、Chỉ cần trả lại bản tóm tắt tóm tắt，Được kiểm soát chặt chẽ tại1800trong từ\n8、Không bao gồm mã、xml，Không cần giải thích、Ghi chú và hướng dẫn，Chỉ trích xuất thông tin từ các cuộc hội thoại khi lưu lại kỷ niệm，Không trộn lẫn vào nội dung mẫu\n9、Nếu bộ nhớ lịch sử được cung cấp，Hãy kết hợp nội dung cuộc trò chuyện mới với ký ức lịch sử một cách thông minh，Lưu giữ thông tin lịch sử có giá trị，Đồng thời thêm thông tin quan trọng mới\n\nký ức lịch sử：\n{history_memory}\n\nNội dung hội thoại mới：\n{conversation}";
+    private static final String DEFAULT_SUMMARY_PROMPT = "Bạn là bộ phận tóm tắt ký ức cho trợ lý giọng nói tiếng Việt.\n"
+            + "Nhiệm vụ: trích xuất thông tin bền vững và hữu ích về người dùng để cá nhân hóa các cuộc trò chuyện sau này.\n"
+            + "Quy tắc:\n"
+            + "1. Chỉ lưu thông tin có giá trị lâu dài như tên, cách xưng hô, nghề nghiệp, sở thích, người thân, địa điểm thường dùng, thiết bị nhà thông minh và sở thích giao tiếp.\n"
+            + "2. Không lưu câu chào hỏi, câu tạm biệt, lệnh điều khiển thiết bị một lần, kết quả thời tiết/tin tức nhất thời, lỗi hệ thống hoặc nội dung vô nghĩa.\n"
+            + "3. Không lặp lại ký ức cũ. Nếu có ký ức lịch sử, hãy hợp nhất với thông tin mới, giữ thông tin còn đúng và cập nhật thông tin mâu thuẫn bằng dữ liệu mới hơn.\n"
+            + "4. Không thêm mã, XML, Markdown, lời giải thích hoặc ghi chú ngoài bản tóm tắt.\n"
+            + "5. Viết bằng tiếng Việt tự nhiên, ngắn gọn, tối đa khoảng 1800 từ.\n"
+            + "6. Nếu cuộc trò chuyện mới không có thông tin đáng lưu, hãy trả lại ký ức lịch sử hiện có; nếu không có ký ức lịch sử thì trả chuỗi rỗng.\n\n"
+            + "Ký ức lịch sử:\n{history_memory}\n\n"
+            + "Nội dung hội thoại mới:\n{conversation}";
 
-    private static final String DEFAULT_TITLE_PROMPT = "Hãy theo dõi đoạn hội thoại dưới đây，Tạo tiêu đề phiên ngắn gọn（khoảng15Trong lời nói），Chỉ trả lại tiêu đề，Không bao gồm bất kỳ lời giải thích hoặc dấu câu：\n{conversation}";
+    private static final String DEFAULT_TITLE_PROMPT = "Đọc đoạn hội thoại dưới đây và tạo một tiêu đề phiên thật ngắn bằng tiếng Việt, tối đa khoảng 15 từ. Chỉ trả về tiêu đề, không giải thích, không thêm dấu câu ở cuối:\n{conversation}";
 
     @Override
     public String generateSummary(String conversation) {

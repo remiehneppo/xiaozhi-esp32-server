@@ -1,7 +1,7 @@
 <template>
   <div class="welcome" @keyup.enter="register">
     <el-container style="height: 100%;">
-      <!-- 保持相同的头部 -->
+      <!-- giữ nguyên cái đầu -->
       <el-header>
         <div style="display: flex;align-items: center;margin-top: 15px;margin-left: 10px;gap: 10px;">
           <img loading="lazy" alt="" src="@/assets/xiaozhi-logo.png" style="width: 45px;height: 45px;" />
@@ -13,7 +13,7 @@
       </div>
       <el-main style="position: relative;">
         <div class="login-box">
-          <!-- 修改标题部分 -->
+          <!-- Sửa phần tiêu đề -->
           <div style="display: flex;align-items: center;gap: 20px;margin-bottom: 39px;padding: 0 30px;">
             <img loading="lazy" alt="" src="@/assets/login/hi.png" style="width: 34px;height: 34px;" />
             <div class="login-text">{{ $t('register.title') }}</div>
@@ -24,13 +24,13 @@
 
           <div style="padding: 0 30px;">
             <form @submit.prevent="register">
-              <!-- 用户名/手机号输入框 -->
+              <!-- Hộp nhập tên người dùng/số điện thoại di động -->
               <div class="input-box" v-if="!enableMobileRegister">
                 <img loading="lazy" alt="" class="input-icon" src="@/assets/login/username.png" />
                 <el-input v-model="form.username" :placeholder="$t('register.usernamePlaceholder')" />
               </div>
 
-              <!-- 手机号注册部分 -->
+              <!-- Phần đăng ký số điện thoại di động -->
               <template v-if="enableMobileRegister">
                 <div class="input-box">
                   <div style="display: flex; align-items: center; width: 100%;">
@@ -52,7 +52,7 @@
                     style="width: 150px; height: 40px; cursor: pointer;" @click="fetchCaptcha" />
                 </div>
 
-                <!-- 手机验证码 -->
+                <!-- Mã xác minh điện thoại di động -->
 
                 <div style="display: flex; align-items: center; margin-top: 20px; width: 100%; gap: 10px;">
                   <div class="input-box" style="width: calc(100% - 130px); margin-top: 0;">
@@ -69,21 +69,21 @@
                 </div>
               </template>
 
-              <!-- 密码输入框 -->
+              <!-- Hộp nhập mật khẩu -->
               <div class="input-box">
                 <img loading="lazy" alt="" class="input-icon" src="@/assets/login/password.png" />
                 <el-input v-model="form.password" :placeholder="$t('register.passwordPlaceholder')" type="password"
                   show-password />
               </div>
 
-              <!-- 新增确认密码 -->
+              <!-- Thêm mật khẩu xác nhận -->
               <div class="input-box">
                 <img loading="lazy" alt="" class="input-icon" src="@/assets/login/password.png" />
                 <el-input v-model="form.confirmPassword" :placeholder="$t('register.confirmPasswordPlaceholder')"
                   type="password" show-password />
               </div>
 
-              <!-- 验证码部分保持相同 -->
+              <!-- Phần captcha vẫn giữ nguyên -->
               <div v-if="!enableMobileRegister"
                 style="display: flex; align-items: center; margin-top: 20px; width: 100%; gap: 10px;">
                 <div class="input-box" style="width: calc(100% - 130px); margin-top: 0;">
@@ -94,17 +94,17 @@
                   style="width: 150px; height: 40px; cursor: pointer;" @click="fetchCaptcha" />
               </div>
 
-              <!-- 修改底部链接 -->
+              <!-- Sửa đổi liên kết dưới cùng -->
               <div style="font-weight: 400;font-size: 14px;text-align: left;color: #5778ff;margin-top: 20px;">
                 <div style="cursor: pointer;" @click="goToLogin">{{ $t('register.goToLogin') }}</div>
               </div>
             </form>
           </div>
 
-          <!-- 修改按钮文本 -->
+          <!-- Sửa đổi văn bản nút -->
           <div class="login-btn" @click="register">{{ $t('register.registerButton') }}</div>
 
-          <!-- 保持相同的协议声明 -->
+          <!-- Giữ nguyên tuyên bố giao thức -->
           <div style="font-size: 14px;color: #979db1;">
             {{ $t('register.agreeTo') }}
             <div style="display: inline-block;color: #5778FF;cursor: pointer;" @click="openPage('/user-agreement.html')">{{ $t('register.userAgreement') }}</div>
@@ -114,7 +114,7 @@
         </div>
       </el-main>
 
-      <!-- 保持相同的页脚 -->
+      <!-- giữ nguyên chân trang -->
       <el-footer>
         <version-footer />
       </el-footer>
@@ -129,7 +129,7 @@ import { getUUID, goToPage, showDanger, showSuccess, sm2Encrypt, validateMobile 
 import { mapState } from 'vuex';
 import i18n from '@/i18n';
 
-// 导入语言切换功能
+// Chức năng chuyển đổi ngôn ngữ nhập khẩu
 
 export default {
   name: 'register',
@@ -143,11 +143,11 @@ export default {
       mobileAreaList: state => state.pubConfig.mobileAreaList,
       sm2PublicKey: state => state.pubConfig.sm2PublicKey,
     }),
-    // 获取当前语言
+    // Nhận ngôn ngữ hiện tại
     currentLanguage() {
       return i18n.locale || "zh_CN";
     },
-    // 根据当前语言获取对应的xiaozhi-ai图标
+    // Nhận biểu tượng xiaozhi-ai tương ứng theo ngôn ngữ hiện tại
     xiaozhiAiIcon() {
       const currentLang = this.currentLanguage;
       switch (currentLang) {
@@ -207,7 +207,7 @@ export default {
       }
       window.open(url, '_blank');
     },
-    // 复用验证码获取方法
+    // Cách lấy mã xác minh tái sử dụng
     fetchCaptcha() {
       this.form.captchaId = getUUID();
       Api.user.getCaptcha(this.form.captchaId, (res) => {
@@ -222,7 +222,7 @@ export default {
       });
     },
 
-    // 封装输入验证逻辑
+    // Đóng gói logic xác thực đầu vào
     validateInput(input, message) {
       if (!input.trim()) {
         showDanger(message);
@@ -231,26 +231,26 @@ export default {
       return true;
     },
 
-    // 发送手机验证码
+    // Gửi mã xác minh điện thoại di động
     sendMobileCaptcha() {
       if (!validateMobile(this.form.mobile, this.form.areaCode)) {
         showDanger(this.$t('register.inputCorrectMobile'));
         return;
       }
 
-      // 验证图形验证码
+      // Xác minh mã xác minh đồ họa
       if (!this.validateInput(this.form.captcha, this.$t('register.inputCaptcha'))) {
         this.fetchCaptcha();
         return;
       }
 
-      // 清除可能存在的旧定时器
+      // Xóa bộ tính giờ cũ có thể tồn tại
       if (this.timer) {
         clearInterval(this.timer);
         this.timer = null;
       }
 
-      // 开始倒计时
+      // Bắt đầu đếm ngược
       this.countdown = 60;
       this.timer = setInterval(() => {
         if (this.countdown > 0) {
@@ -261,7 +261,7 @@ export default {
         }
       }, 1000);
 
-      // 调用发送验证码接口
+      // Gọi giao diện gửi mã xác minh
       Api.user.sendSmsVerification({
         phone: this.form.areaCode + this.form.mobile,
         captcha: this.form.captcha,
@@ -275,10 +275,10 @@ export default {
       });
     },
 
-    // 注册逻辑
+    // Logic đăng ký
     async register() {
       if (this.enableMobileRegister) {
-        // 手机号注册验证
+        // Xác minh đăng ký số điện thoại di động
         if (!validateMobile(this.form.mobile, this.form.areaCode)) {
           showDanger(this.$t('register.inputCorrectMobile'));
           return;
@@ -288,13 +288,13 @@ export default {
           return;
         }
       } else {
-        // 用户名注册验证
+        // Xác minh đăng ký tên người dùng
         if (!this.validateInput(this.form.username, this.$t('register.requiredUsername'))) {
           return;
         }
       }
 
-      // 验证密码
+      // Xác minh mật khẩu
       if (!this.validateInput(this.form.password, this.$t('register.requiredPassword'))) {
         return;
       }
@@ -302,14 +302,14 @@ export default {
         showDanger(this.$t('register.passwordsNotMatch'))
         return
       }
-      // 验证验证码
+      // Xác minh mã xác minh
       if (!this.validateInput(this.form.captcha, this.$t('register.requiredCaptcha'))) {
         return;
       }
-      // 加密
+      // mã hóa
       let encryptedPassword;
       try {
-        // 拼接验证码和密码
+        // Nối mã xác minh và mật khẩu
         const captchaAndPassword = this.form.captcha + this.form.password;
         encryptedPassword = sm2Encrypt(this.sm2PublicKey, captchaAndPassword);
       } catch (error) {
@@ -325,7 +325,7 @@ export default {
         plainUsername = this.form.username;
       }
 
-      // 准备注册数据
+      // Chuẩn bị dữ liệu đăng ký
       const registerData = {
         username: plainUsername,
         password: encryptedPassword,
@@ -338,7 +338,7 @@ export default {
         goToPage('/login')
       }, (err) => {
         showDanger(err.data.msg || this.$t('register.registerFailed'))
-        if (err.data != null && err.data.msg != null && err.data.msg.indexOf('图形验证码') > -1) {
+        if (err.data != null && err.data.msg != null && err.data.msg.indexOf('Mã xác minh đồ họa') > -1) {
           this.fetchCaptcha()
         }
       })

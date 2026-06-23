@@ -108,7 +108,7 @@
       </div>
     </div>
 
-    <!-- 新增/编辑知识库对话框 -->
+    <!-- Hộp thoại Cơ sở Kiến thức Mới/Chỉnh sửa -->
     <knowledge-base-dialog ref="knowledgeBaseDialog" :title="dialogTitle" :visible.sync="dialogVisible" :form="knowledgeBaseForm"
       @submit="handleSubmit" @cancel="dialogVisible = false" />
 
@@ -187,15 +187,15 @@ export default {
         },
         (res) => {
           this.loading = false;
-          console.log('getKnowledgeBaseList response:', res); // 添加调试日志
-          
-          // 修复：从 res.data 获取分页数据，而不是 res.data.data
-          // 因为 knowledgeBase.js 直接传递了整个响应对象
+          console.log('getKnowledgeBaseList response:', res); // Thêm nhật ký gỡ lỗi
+
+// Khắc phục: Nhận dữ liệu được phân trang từ res.data thay vì res.data.data
+// Vì KnowledgeBase.js truyền trực tiếp toàn bộ đối tượng phản hồi
           if (res.data && res.data.code === 0) {
             const pageData = res.data.data || {};
             this.knowledgeBaseList = pageData.list || [];
             this.total = pageData.total || 0;
-            console.log('Updated knowledgeBaseList:', this.knowledgeBaseList); // 添加调试日志
+            console.log('Updated knowledgeBaseList:', this.knowledgeBaseList); // Thêm nhật ký gỡ lỗi
           } else {
             this.$message.error({
               message: res.data?.msg || this.$t('knowledgeBaseManagement.getKnowledgeBaseListFailed'),
@@ -218,11 +218,11 @@ export default {
     },
     toggleSelectAll: function() {
       if (this.isAllSelected) {
-        // 取消全选
+        // Bỏ chọn tất cả
         this.$refs.paramsTable.clearSelection();
         this.isAllSelected = false;
       } else {
-        // 全选
+        // Chọn tất cả
         this.knowledgeBaseList.forEach(row => {
           this.$refs.paramsTable.toggleRowSelection(row, true);
         });
@@ -249,7 +249,7 @@ export default {
       console.log('dialogVisible set to:', this.dialogVisible);
     },
     showViewDialog: function(row) {
-      // 跳转到上传文件页面，传递知识库ID和名称
+      // Chuyển đến trang tệp tải lên và chuyển ID và tên cơ sở kiến ​​thức
       this.$router.push({
         path: '/knowledge-file-upload',
         query: {
@@ -285,16 +285,16 @@ export default {
           }
         }, (err) => {
           console.log('Error callback received:', err);
-          // 错误回调处理后端返回的错误信息
+          // Lệnh gọi lại lỗi xử lý thông tin lỗi được trả về bởi backend
           if (err && err.data) {
-            console.log('后端返回错误消息:', err.data.msg || err.msg);
+            console.log('Phần cuối trả về thông báo lỗi:', err.data.msg || err.msg);
             this.$message.error(err.data.msg || err.msg || this.$t('knowledgeBaseManagement.updateFailed'));
           } else {
             this.$message.error(this.$t('knowledgeBaseManagement.updateFailed'));
           }
         });
       } else {
-        // 新增 - 只传递必要的字段，不传递id
+        // Mới - chỉ vượt qua các trường cần thiết, không có gìid
         const createData = {
           name: form.name,
           description: form.description,
@@ -313,9 +313,9 @@ export default {
           }
         }, (err) => {
           console.log('Error callback received:', err);
-          // 错误回调处理后端返回的错误信息
+          // Lệnh gọi lại lỗi xử lý thông tin lỗi được trả về bởi backend
           if (err && err.data) {
-            console.log('后端返回错误消息:', err.data.msg || err.msg);
+            console.log('Phần cuối trả về thông báo lỗi:', err.data.msg || err.msg);
             this.$message.error(err.data.msg || err.msg || this.$t('knowledgeBaseManagement.addFailed'));
           } else {
             this.$message.error(this.$t('knowledgeBaseManagement.addFailed'));
@@ -347,9 +347,9 @@ export default {
           }
         }, (err) => {
           console.log('Error callback received:', err);
-          // 错误回调处理后端返回的错误信息
+          // Lệnh gọi lại lỗi xử lý thông tin lỗi được trả về bởi backend
           if (err && err.data) {
-            console.log('后端返回错误消息:', err.data.msg || err.msg);
+            console.log('Phần cuối trả về thông báo lỗi:', err.data.msg || err.msg);
             this.$message.error(err.data.msg || err.msg || this.$t('knowledgeBaseManagement.deleteFailed'));
           } else {
             this.$message.error(this.$t('knowledgeBaseManagement.deleteFailed'));
@@ -381,9 +381,9 @@ export default {
           }
         }, (err) => {
           console.log('Error callback received:', err);
-          // 错误回调处理后端返回的错误信息
+          // Lệnh gọi lại lỗi xử lý thông tin lỗi được trả về bởi backend
           if (err && err.data) {
-            console.log('后端返回错误消息:', err.data.msg || err.msg);
+            console.log('Phần cuối trả về thông báo lỗi:', err.data.msg || err.msg);
             this.$message.error(err.data.msg || err.msg || this.$t('knowledgeBaseManagement.deleteFailed'));
           } else {
             this.$message.error(this.$t('knowledgeBaseManagement.deleteFailed'));
@@ -398,27 +398,27 @@ export default {
       });
     },
     handleStatusChange: function(row) {
-      // 只传递需要更新的字段，确保包含id字段
+      // Chỉ chuyển các trường cần cập nhật, đảm bảo bao gồm trường id
       const updateForm = {
-        id: row.id, // 添加id字段，后端需要此字段来定位记录
+        id: row.id, // Thêm trường id, được yêu cầu bởi backend để xác định vị trí các bản ghi
         datasetId: row.datasetId,
         name: row.name,
         description: row.description,
         status: row.status
       };
-      console.log('Updating knowledge base status:', updateForm); // 添加调试日志
+      console.log('Updating knowledge base status:', updateForm); // Thêm nhật ký gỡ lỗi
       Api.knowledgeBase.updateKnowledgeBase(row.datasetId, updateForm, (res) => {
-        console.log('Status update response:', res); // 添加调试日志
+        console.log('Status update response:', res); // Thêm nhật ký gỡ lỗi
         if (res.data && res.data.code !== 0) {
-          // 恢复原来的状态
+          // khôi phục lại trạng thái ban đầu
           this.fetchKnowledgeBaseList();
           this.$message.error(res.data?.msg || this.$t('knowledgeBaseManagement.updateFailed'));
         } else {
-          // 更新成功，显示成功消息
+          // Cập nhật thành công, hiển thị thông báo thành công
           this.$message.success(this.$t('knowledgeBaseManagement.updateSuccess'));
         }
       }, () => {
-        // 恢复原来的状态
+        // khôi phục lại trạng thái ban đầu
         this.fetchKnowledgeBaseList();
         this.$message.error(this.$t('knowledgeBaseManagement.updateFailed'));
       });
@@ -472,7 +472,7 @@ export default {
 }
 
 .main-wrapper {
-    // 顶部 63px 底部 35px 查询72px
+    // Truy vấn 35px dưới cùng 63px trên cùng72px
     height: calc(100vh - 63px - 35px - 72px);
     margin: 0 22px;
     border-radius: 15px;

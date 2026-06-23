@@ -487,8 +487,7 @@ class LLMPerformanceTester:
                 print(f"Thêm task kiểm tra LLM: {llm_name}")
                 all_tasks.append(self._test_llm(llm_name, config))
 
-        print(f"
-Tìm thấy {len(all_tasks)} module LLM khả dụng")
+        print(f"\nTìm thấy {len(all_tasks)} module LLM khả dụng")
         print("\nbắt đầuvàkiểm tracó...\n")
 
         # Thực hiện đồng bộ tất cả task kiểm tra, nhưng đặt thời gian chờ độc lập cho mỗi task

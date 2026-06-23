@@ -64,8 +64,8 @@ services:
     restart: always
     networks:
       - default
-    expose:
-      - 3306
+    ports:
+      - "3306:3306"
     volumes:
       - ./mysql/data:/var/lib/mysql
     environment:
@@ -77,8 +77,8 @@ services:
   # Redis Cache
   xiaozhi-esp32-server-redis:
     image: redis:8-alpine
-    expose:
-      - 6379
+    ports:
+      - "6379:6379"
     container_name: xiaozhi-esp32-server-redis
     restart: always
     healthcheck:
@@ -125,7 +125,7 @@ services:
     container_name: whisper-asr-server
     restart: unless-stopped
     ports:
-      - "8001:8001"
+      - "8009:8001"
     environment:
       - WHISPER_MODEL=quocphu/PhoWhisper-ct2-FasterWhisper/PhoWhisper-small-ct2-fasterWhisper
       - WHISPER_DEVICE=cpu         # Ép buộc sử dụng CPU

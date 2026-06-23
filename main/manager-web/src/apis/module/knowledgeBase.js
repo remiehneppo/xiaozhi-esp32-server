@@ -2,23 +2,23 @@ import { getServiceUrl } from '../api';
 import RequestService from '../httpRequest';
 
 /**
- * 获取认证token
+ * Được chứng nhậntoken
  */
 function getAuthToken() {
   return localStorage.getItem('token') || '';
 }
 
 /**
- * 通用API请求包装器
- * @param {Object} config - 请求配置
- * @param {string} config.url - 请求URL
- * @param {string} config.method - 请求方法
- * @param {Object} [config.data] - 请求数据
- * @param {Object} [config.headers] - 额外请求头
- * @param {Function} config.callback - 成功回调
- * @param {Function} [config.errorCallback] - 错误回调
- * @param {string} [config.errorMessage] - 错误消息
- * @param {Function} [config.retryFunction] - 重试函数
+ * Trình bao bọc yêu cầu API chung
+ * @param {Object} config - Yêu cầu cấu hình
+ * @param {string} config.url - hỏiURL
+ * @param {string} config.method - Phương thức yêu cầu
+ * @param {Object} [config.data] - Yêu cầu dữ liệu
+ * @param {Object} [config.headers] - Tiêu đề yêu cầu bổ sung
+ * @param {Function} config.callback - gọi lại thành công
+ * @param {Function} [config.errorCallback] - gọi lại lỗi
+ * @param {string} [config.errorMessage] - thông báo lỗi
+ * @param {Function} [config.retryFunction] - thử lại chức năng
  */
 function makeApiRequest(config) {
   const token = getAuthToken();
@@ -42,7 +42,7 @@ function makeApiRequest(config) {
       callback(res);
     })
     .fail((err) => {
-      console.error(errorMessage || '操作失败', err);
+      console.error(errorMessage || 'Thao tác không thành công', err);
       if (errorCallback) {
         errorCallback(err);
       }
@@ -57,14 +57,14 @@ function makeApiRequest(config) {
 }
 
 /**
- * 知识库管理相关API
+ * Quản lý cơ sở tri thức liên quanAPI
  */
 export default {
   /**
-   * 获取知识库列表
-   * @param {Object} params - 查询参数
-   * @param {Function} callback - 回调函数
-   * @param {Function} errorCallback - 错误回调
+   * Lấy danh sách cơ sở kiến ​​thức
+   * @param {Object} params - tham số truy vấn
+   * @param {Function} callback - chức năng gọi lại
+   * @param {Function} errorCallback - gọi lại lỗi
    */
   getKnowledgeBaseList(params, callback, errorCallback) {
     const queryParams = new URLSearchParams({
@@ -78,16 +78,16 @@ export default {
       method: 'GET',
       callback: callback,
       errorCallback: errorCallback,
-      errorMessage: '获取知识库列表失败',
+      errorMessage: 'Không thể lấy được danh sách cơ sở kiến ​​thức',
       retryFunction: () => this.getKnowledgeBaseList(params, callback, errorCallback)
     });
   },
 
   /**
-   * 创建知识库
-   * @param {Object} data - 知识库数据
-   * @param {Function} callback - 回调函数
-   * @param {Function} errorCallback - 错误回调
+   * Tạo nền tảng kiến ​​thức
+   * @param {Object} data - dữ liệu cơ sở tri thức
+   * @param {Function} callback - chức năng gọi lại
+   * @param {Function} errorCallback - gọi lại lỗi
    */
   createKnowledgeBase(data, callback, errorCallback) {
     console.log('createKnowledgeBase called with data:', data);
@@ -103,7 +103,7 @@ export default {
         callback(res);
       },
       errorCallback: (err) => {
-        console.error('创建知识库失败:', err);
+        console.error('Không thể tạo cơ sở kiến ​​thức:', err);
         if (err.response) {
           console.error('Error response data:', err.response.data);
           console.error('Error response status:', err.response.status);
@@ -112,17 +112,17 @@ export default {
           errorCallback(err);
         }
       },
-      errorMessage: '创建知识库失败',
+      errorMessage: 'Không thể tạo cơ sở kiến ​​thức',
       retryFunction: () => this.createKnowledgeBase(data, callback, errorCallback)
     });
   },
 
   /**
-   * 更新知识库
-   * @param {string} datasetId - 知识库ID
-   * @param {Object} data - 更新数据
-   * @param {Function} callback - 回调函数
-   * @param {Function} errorCallback - 错误回调
+   * Cập nhật cơ sở kiến ​​thức
+   * @param {string} datasetId - cơ sở tri thứcID
+   * @param {Object} data - Cập nhật dữ liệu
+   * @param {Function} callback - chức năng gọi lại
+   * @param {Function} errorCallback - gọi lại lỗi
    */
   updateKnowledgeBase(datasetId, data, callback, errorCallback) {
     console.log('updateKnowledgeBase called with datasetId:', datasetId, 'data:', data);
@@ -135,16 +135,16 @@ export default {
       headers: { 'Content-Type': 'application/json' },
       callback: callback,
       errorCallback: errorCallback,
-      errorMessage: '更新知识库失败',
+      errorMessage: 'Không thể cập nhật cơ sở kiến ​​thức',
       retryFunction: () => this.updateKnowledgeBase(datasetId, data, callback, errorCallback)
     });
   },
 
   /**
-   * 删除单个知识库
-   * @param {string} datasetId - 知识库ID
-   * @param {Function} callback - 回调函数
-   * @param {Function} errorCallback - 错误回调
+   * Xóa một cơ sở kiến ​​thức duy nhất
+   * @param {string} datasetId - cơ sở tri thứcID
+   * @param {Function} callback - chức năng gọi lại
+   * @param {Function} errorCallback - gọi lại lỗi
    */
   deleteKnowledgeBase(datasetId, callback, errorCallback) {
     console.log('deleteKnowledgeBase called with datasetId:', datasetId);
@@ -155,19 +155,19 @@ export default {
       method: 'DELETE',
       callback: callback,
       errorCallback: errorCallback,
-      errorMessage: '删除知识库失败',
+      errorMessage: 'Không thể xóa cơ sở kiến ​​thức',
       retryFunction: () => this.deleteKnowledgeBase(datasetId, callback, errorCallback)
     });
   },
 
   /**
-   * 批量删除知识库
-   * @param {string|Array} ids - 知识库ID字符串或数组
-   * @param {Function} callback - 回调函数
-   * @param {Function} errorCallback - 错误回调
+   * Xóa cơ sở kiến ​​thức theo đợt
+   * @param {string|Array} ids - Chuỗi hoặc mảng ID cơ sở kiến ​​thức
+   * @param {Function} callback - chức năng gọi lại
+   * @param {Function} errorCallback - gọi lại lỗi
    */
   deleteKnowledgeBases(ids, callback, errorCallback) {
-    // 确保ids是正确格式的字符串
+    // Đảm bảo id là chuỗi được định dạng chính xác
     const idsStr = Array.isArray(ids) ? ids.join(',') : ids;
 
     makeApiRequest({
@@ -175,17 +175,17 @@ export default {
       method: 'DELETE',
       callback: callback,
       errorCallback: errorCallback,
-      errorMessage: '批量删除知识库失败',
+      errorMessage: 'Xóa hàng loạt cơ sở kiến ​​thức không thành công',
       retryFunction: () => this.deleteKnowledgeBases(ids, callback, errorCallback)
     });
   },
 
   /**
-   * 获取文档列表
-   * @param {string} datasetId - 知识库ID
-   * @param {Object} params - 查询参数
-   * @param {Function} callback - 回调函数
-   * @param {Function} errorCallback - 错误回调
+   * Nhận danh sách tài liệu
+   * @param {string} datasetId - cơ sở tri thứcID
+   * @param {Object} params - tham số truy vấn
+   * @param {Function} callback - chức năng gọi lại
+   * @param {Function} errorCallback - gọi lại lỗi
    */
   getDocumentList(datasetId, params, callback, errorCallback) {
     const queryParams = new URLSearchParams({
@@ -199,17 +199,17 @@ export default {
       method: 'GET',
       callback: callback,
       errorCallback: errorCallback,
-      errorMessage: '获取文档列表失败',
+      errorMessage: 'Không thể lấy danh sách tài liệu',
       retryFunction: () => this.getDocumentList(datasetId, params, callback, errorCallback)
     });
   },
 
   /**
-   * 上传文档
-   * @param {string} datasetId - 知识库ID
-   * @param {Object} formData - 表单数据
-   * @param {Function} callback - 回调函数
-   * @param {Function} errorCallback - 错误回调
+   * Tải tài liệu lên
+   * @param {string} datasetId - cơ sở tri thứcID
+   * @param {Object} formData - dữ liệu biểu mẫu
+   * @param {Function} callback - chức năng gọi lại
+   * @param {Function} errorCallback - gọi lại lỗi
    */
   uploadDocument(datasetId, formData, callback, errorCallback) {
     makeApiRequest({
@@ -219,17 +219,17 @@ export default {
       headers: { 'Content-Type': 'multipart/form-data' },
       callback: callback,
       errorCallback: errorCallback,
-      errorMessage: '上传文档失败',
+      errorMessage: 'Không thể tải tài liệu lên',
       retryFunction: () => this.uploadDocument(datasetId, formData, callback, errorCallback)
     });
   },
 
   /**
-   * 解析文档
-   * @param {string} datasetId - 知识库ID
-   * @param {string} documentId - 文档ID
-   * @param {Function} callback - 回调函数
-   * @param {Function} errorCallback - 错误回调
+   * Phân tích tài liệu
+   * @param {string} datasetId - cơ sở tri thứcID
+   * @param {string} documentId - tài liệuID
+   * @param {Function} callback - chức năng gọi lại
+   * @param {Function} errorCallback - gọi lại lỗi
    */
   parseDocument(datasetId, documentId, callback, errorCallback) {
     const requestBody = {
@@ -243,17 +243,17 @@ export default {
       headers: { 'Content-Type': 'application/json' },
       callback: callback,
       errorCallback: errorCallback,
-      errorMessage: '解析文档失败',
+      errorMessage: 'Không thể phân tích tài liệu',
       retryFunction: () => this.parseDocument(datasetId, documentId, callback, errorCallback)
     });
   },
 
   /**
-   * 删除文档
-   * @param {string} datasetId - 知识库ID
-   * @param {string} documentId - 文档ID
-   * @param {Function} callback - 回调函数
-   * @param {Function} errorCallback - 错误回调
+   * Xóa tài liệu
+   * @param {string} datasetId - cơ sở tri thứcID
+   * @param {string} documentId - tài liệuID
+   * @param {Function} callback - chức năng gọi lại
+   * @param {Function} errorCallback - gọi lại lỗi
    */
   deleteDocument(datasetId, documentId, callback, errorCallback) {
     makeApiRequest({
@@ -261,18 +261,18 @@ export default {
       method: 'DELETE',
       callback: callback,
       errorCallback: errorCallback,
-      errorMessage: '删除文档失败',
+      errorMessage: 'Không thể xóa tài liệu',
       retryFunction: () => this.deleteDocument(datasetId, documentId, callback, errorCallback)
     });
   },
 
   /**
-   * 获取文档切片列表
-   * @param {string} datasetId - 知识库ID
-   * @param {string} documentId - 文档ID
-   * @param {Object} params - 查询参数
-   * @param {Function} callback - 回调函数
-   * @param {Function} errorCallback - 错误回调
+   * Nhận danh sách các lát tài liệu
+   * @param {string} datasetId - cơ sở tri thứcID
+   * @param {string} documentId - tài liệuID
+   * @param {Object} params - tham số truy vấn
+   * @param {Function} callback - chức năng gọi lại
+   * @param {Function} errorCallback - gọi lại lỗi
    */
   listChunks(datasetId, documentId, params, callback, errorCallback) {
     let queryParams = new URLSearchParams({
@@ -280,7 +280,7 @@ export default {
       page_size: params.page_size || 10
     }).toString();
 
-    // 添加关键词搜索参数
+    // Thêm thông số tìm kiếm từ khóa
     if (params.keywords) {
       queryParams += `&keywords=${encodeURIComponent(params.keywords)}`;
     }
@@ -290,17 +290,17 @@ export default {
       method: 'GET',
       callback: callback,
       errorCallback: errorCallback,
-      errorMessage: '获取切片列表失败',
+      errorMessage: 'Không thể lấy danh sách lát',
       retryFunction: () => this.listChunks(datasetId, documentId, params, callback, errorCallback)
     });
   },
 
   /**
-   * 召回测试
-   * @param {string} datasetId - 知识库ID
-   * @param {Object} data - 召回测试参数
-   * @param {Function} callback - 回调函数
-   * @param {Function} errorCallback - 错误回调
+   * kiểm tra truy xuất (recall)
+   * @param {string} datasetId - cơ sở tri thứcID
+   * @param {Object} data - Nhớ lại các thông số kiểm tra
+   * @param {Function} callback - chức năng gọi lại
+   * @param {Function} errorCallback - gọi lại lỗi
    */
   retrievalTest(datasetId, data, callback, errorCallback) {
     makeApiRequest({
@@ -310,7 +310,7 @@ export default {
       headers: { 'Content-Type': 'application/json' },
       callback: callback,
       errorCallback: errorCallback,
-      errorMessage: '召回测试失败',
+      errorMessage: 'kiểm tra truy xuất (recall) không thành công',
       retryFunction: () => this.retrievalTest(datasetId, data, callback, errorCallback)
     });
   }

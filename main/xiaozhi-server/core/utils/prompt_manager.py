@@ -13,16 +13,6 @@ from jinja2 import Template
 
 TAG = __name__
 
-WEEKDAY_MAP = {
-    "Monday": "",
-    "Tuesday": "",
-    "Wednesday": "",
-    "Thursday": "",
-    "Friday": "",
-    "Saturday": "",
-    "Sunday": "",
-}
-
 EMOJI_List = [
     "😶",
     "🙂",
@@ -151,7 +141,7 @@ class PromptManager:
             from core.utils.util import get_ip_info
 
             ip_info = get_ip_info(client_ip, self.logger)
-            city = ip_info.get("city", "không xác địnhvị trí")
+            city = ip_info.get("city", "không rõ vị trí")
             location = f"{city}"
 
             # Lưu vào cache
@@ -159,7 +149,7 @@ class PromptManager:
             return location
         except Exception as e:
             self.logger.bind(tag=TAG).error(f"lấyvị tríthông tinthất bại: {e}")
-            return "không xác địnhvị trí"
+            return "không rõ vị trí"
 
     def _get_weather_info(self, conn: "ConnectionHandler", location: str) -> str:
         """lấythông tin"""
@@ -174,16 +164,16 @@ class PromptManager:
             from plugins_func.register import ActionResponse
 
             # sử dụngget_weatherhàm
-            result = get_weather(conn, location=location, lang="zh_CN")
+            result = get_weather(conn, location=location, lang="vi_VN")
             if isinstance(result, ActionResponse):
                 weather_report = result.result
                 self.cache_manager.set(self.CacheType.WEATHER, location, weather_report)
                 return weather_report
-            return "thông tinlấythất bại"
+            return "không lấy được thông tin thời tiết"
 
         except Exception as e:
             self.logger.bind(tag=TAG).error(f"lấythông tinthất bại: {e}")
-            return "thông tinlấythất bại"
+            return "không lấy được thông tin thời tiết"
 
     def update_context_info(self, conn, client_ip: str):
         """cập nhậttrênthông tin"""
@@ -251,14 +241,14 @@ class PromptManager:
                         or ""
                     )
 
-            # lấyTTScủ，mặc địnhchotrong
+            # Lấy ngôn ngữ TTS, mặc định là tiếng Việt.
             language = (
                 self.config.get("TTS", {})
                 .get(self.config.get("selected_module", {}).get("TTS", ""), {})
                 .get("language")
-                or "trong"
+                or "Tiếng Việt"
             )
-            self.logger.bind(tag=TAG).debug(f"lấyđếncủ: {language}")
+            self.logger.bind(tag=TAG).debug(f"Ngôn ngữ phản hồi: {language}")
 
             # thay thế
             template = Template(self.base_prompt_template)

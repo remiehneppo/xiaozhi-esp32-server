@@ -149,7 +149,7 @@ export default {
       pendingProviderType: null,
       pendingModelData: null,
       dynamicCallInfoFields: [],
-      fieldJsonMap: {}, // 用于存储JSON字段的字符串形式
+      fieldJsonMap: {}, // Dạng chuỗi được sử dụng để lưu trữ các trường JSON
       sensitive_keys: [
         "api_key",
         "personal_access_token",
@@ -159,7 +159,7 @@ export default {
         "access_key_secret",
         "secret_key",
       ],
-      originalValues: {}, // 存储原始值，用于失焦时恢复
+      originalValues: {}, // Lưu trữ giá trị ban đầu để phục hồi khi mất tiêu điểm
       form: {
         id: "",
         modelType: "",
@@ -241,7 +241,7 @@ export default {
               model.modelCode =
                 this.modelData.modelCode + this.$t("modelConfigDialog.copySuffix");
 
-              // 处理敏感字段
+              // Xử lý các trường nhạy cảm
               if (model.configJson) {
                 Object.keys(model.configJson).forEach((key) => {
                   if (this.isSensitiveField(key) && model.configJson[key]) {
@@ -264,9 +264,9 @@ export default {
       }
     },
     handleSave() {
-      this.saving = true; // 开始保存加载
+      this.saving = true; // Bắt đầu lưu và tải
 
-      // 处理所有JSON字段
+// Xử lý tất cả các trường JSON
       Object.keys(this.fieldJsonMap).forEach((key) => {
         const parsed = this.validateJson(this.fieldJsonMap[key]);
         if (parsed !== null) {
@@ -290,11 +290,11 @@ export default {
         provideCode: this.form.configJson.type,
         formData,
         done: () => {
-          this.saving = false; // 保存完成后回调
+          this.saving = false; // Gọi lại sau khi lưu xong
         },
       });
 
-      // 如果父组件不处理done回调，3秒后自动关闭加载状态
+      // Nếu thành phần cha mẹ không xử lý lệnh gọi lại done, nó sẽ tự động đóng trạng thái tải sau 3 giây.
       setTimeout(() => {
         this.saving = false;
       }, 3000);
@@ -407,15 +407,15 @@ export default {
       return typeof value === "object" ? value : {};
     },
 
-    // 检测字段是否为敏感字段
+    // Kiểm tra xem một trường có phải là trường nhạy cảm không
     isSensitiveField(fieldName) {
-      // 将字段名转换为小写进行比较
+      // Chuyển đổi tên trường thành chữ thường để so sánh
       const lowerFieldName = fieldName.toLowerCase();
-      // 精确匹配keyMap中定义的7个敏感词
+      // Khớp chính xác 7 từ nhạy cảm được xác định trong keyMap
       return this.sensitive_keys.includes(lowerFieldName);
     },
 
-    // 获取敏感字段对应的中文名称
+    // Lấy tên tiếng Trung tương ứng với trường nhạy cảm
     getSensitiveFieldName(fieldName) {
       const keyMap = {
         api_key: "modelEdit.sensitive.apiKey",
@@ -435,45 +435,45 @@ export default {
       return this.$t("modelEdit.sensitive.default");
     },
 
-    // 处理input聚焦事件
+    // Xử lý các sự kiện tiêu điểm đầu vào
     handleInputFocus(field, value) {
-      // 如果值包含星号，清空显示
+      // Nếu giá trị chứa dấu hoa thị, hãy xóa màn hình
       if (value && value.includes("*")) {
-        // 存储原始值，用于失焦时恢复
+        // Lưu trữ giá trị ban đầu để phục hồi khi mất tiêu điểm
         this.$set(this.originalValues, field, this.form.configJson[field]);
         this.$set(this.form.configJson, field, "");
       }
     },
 
-    // 处理input失焦事件
+    // Xử lý các sự kiện đầu vào ngoài tiêu điểm
     handleInputBlur(field) {
-      // 检查是否为敏感字段
+      // Kiểm tra xem đó có phải là trường nhạy cảm không
       if (this.isSensitiveField(field)) {
-        // 如果值为空，恢复掩码值
+        // Nếu giá trị trống, hãy khôi phục giá trị mặt nạ
         if (!this.form.configJson[field] || this.form.configJson[field].trim() === "") {
-          // 如果有原始值，则恢复原始值；否则设置为掩码提示
+          // Nếu có giá trị gốc thì khôi phục giá trị gốc; nếu không thì đặt thành gợi ý mặt nạ
           if (this.originalValues[field]) {
             this.$set(this.form.configJson, field, this.originalValues[field]);
           } else {
             const sensitiveName = this.getSensitiveFieldName(field);
             this.$set(this.form.configJson, field, this.$t('modelEdit.sensitive.maskFormat', { name: sensitiveName }));
           }
-          // 清除临时存储的原始值
+          // Xóa giá trị ban đầu được lưu trữ tạm thời
           this.$delete(this.originalValues, field);
         }
       }
     },
 
-    // 处理JSON字段的聚焦事件
+    // Xử lý các sự kiện tiêu điểm cho các trường JSON
     handleJsonInputFocus(field, value) {
       if (value && value.includes("*")) {
         this.$set(this.fieldJsonMap, field, "");
       }
     },
 
-    // 处理JSON字段的失焦事件
+    // Xử lý các sự kiện nằm ngoài tiêu điểm cho các trường JSON
     handleJsonInputBlur(field) {
-      // JSON字段不做特殊处理，因为它们通常不包含简单的敏感信息
+      // JSONCác trường không được xử lý đặc biệt vì chúng thường không chứa thông tin nhạy cảm đơn giản
     },
   },
 };

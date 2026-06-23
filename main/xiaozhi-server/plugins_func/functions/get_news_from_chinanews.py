@@ -18,24 +18,23 @@ GET_NEWS_FROM_CHINANEWS_FUNCTION_DESC = {
     "function": {
         "name": "get_news_from_chinanews",
         "description": (
-            "sử dụngphảihoặckhi/thờisử dụng（như'đến''cógì'）。"
-            "sử dụngcó thểchỉ định，nhưsẽ、、v.v.。"
-            "nhưcóchỉ định，mặc địnhsẽ。"
+            "Lấy một tin tức từ nguồn RSS cấu hình sẵn. Dùng khi người dùng hỏi tin mới, tin xã hội, thế giới hoặc tài chính. "
+            "Nên ưu tiên nguồn tin phù hợp với Việt Nam trong cấu hình triển khai."
         ),
         "parameters": {
             "type": "object",
             "properties": {
                 "category": {
                     "type": "string",
-                    "description": "，nhưsẽ、、。tùy chọntham số，nhưkhônglàm chosử dụngmặc định",
+                    "description": "Chuyên mục tin tức, ví dụ xã hội, thế giới, tài chính. Nếu không truyền thì dùng chuyên mục mặc định.",
                 },
                 "detail": {
                     "type": "boolean",
-                    "description": "làlấybên trong，mặc địnhchofalse。nhưchotrue，lấytrêncủbên trong",
+                    "description": "Có lấy nội dung chi tiết của tin vừa đọc không. Mặc định false.",
                 },
                 "lang": {
                     "type": "string",
-                    "description": "Ngôn ngữ code user sử dụng trả về, ví dụ zh_CN/zh_HK/en_US/ja_JP v.v., mặc định zh_CN",
+                    "description": "Mã ngôn ngữ trả lời, ví dụ vi_VN hoặc en_US. Mặc định vi_VN.",
                 },
             },
             "required": ["lang"],
@@ -68,7 +67,7 @@ def fetch_news_from_rss(rss_url):
             pubDate = (
                 item.find("pubDate").text
                 if item.find("pubDate") is not None
-                else "không xác địnhkhi/thời"
+                else "không rõ thời gian"
             )
 
             news_items.append(
@@ -112,28 +111,27 @@ def fetch_news_detail(url):
             )
             return content[:2000]  # 
     except Exception as e:
-        logger.bind(tag=TAG).error(f"lấythất bại: {e}")
-        return "lấybên trong"
+        logger.bind(tag=TAG).error(f"Lấy nội dung tin thất bại: {e}")
+        return "không lấy được nội dung"
 
 
 def map_category(category_text):
-    """sẽsử dụngvàocủtrongđếncấu hìnhtệptrongcủ"""
+    """Ánh xạ tên chuyên mục tiếng Việt sang key cấu hình RSS."""
     if not category_text:
         return None
 
     # ，sẽ、、，nhưhơnnhiều，cấu hìnhtệp
     category_map = {
-        # sẽ
-        "sẽ": "society_rss_url",
-        "sẽ": "society_rss_url",
-        # 
-        "": "world_rss_url",
-        "": "world_rss_url",
-        # 
-        "": "finance_rss_url",
-        "": "finance_rss_url",
-        "": "finance_rss_url",
-        "": "finance_rss_url",
+        "xã hội": "society_rss_url",
+        "xa hoi": "society_rss_url",
+        "thế giới": "world_rss_url",
+        "the gioi": "world_rss_url",
+        "quốc tế": "world_rss_url",
+        "quoc te": "world_rss_url",
+        "tài chính": "finance_rss_url",
+        "tai chinh": "finance_rss_url",
+        "kinh tế": "finance_rss_url",
+        "kinh te": "finance_rss_url",
     }
 
     # chuyển đổichovàđi
@@ -152,9 +150,9 @@ def get_news_from_chinanews(
     conn: "ConnectionHandler",
     category: str = None,
     detail: bool = False,
-    lang: str = "zh_CN",
+    lang: str = "vi_VN",
 ):
-    """lấyvàtiến hành，hoặclấytrêncủbên trong"""
+    """Lấy tin tức RSS hoặc nội dung chi tiết của tin vừa chọn."""
     try:
         # nhưdetailchoTrue，lấytrêncủbên trong
         if detail:
@@ -165,16 +163,16 @@ def get_news_from_chinanews(
             ):
                 return ActionResponse(
                     Action.REQLLM,
-                    "，cóđếncủ，lấy。",
+                    "Chưa có tin nào trước đó để lấy nội dung chi tiết.",
                     None,
                 )
 
             link = conn.last_news_link.get("link")
-            title = conn.last_news_link.get("title", "không xác định")
+            title = conn.last_news_link.get("title", "không rõ tiêu đề")
 
             if link == "#":
                 return ActionResponse(
-                    Action.REQLLM, "，cókhả dụngcủlấybên trong。", None
+                    Action.REQLLM, "Tin trước đó không có liên kết chi tiết khả dụng.", None
                 )
 
             logger.bind(tag=TAG).debug(f"lấy: {title}, URL={link}")
@@ -182,20 +180,19 @@ def get_news_from_chinanews(
             # lấy
             detail_content = fetch_news_detail(link)
 
-            if not detail_content or detail_content == "lấybên trong":
+            if not detail_content or detail_content == "không lấy được nội dung":
                 return ActionResponse(
                     Action.REQLLM,
-                    f"，lấy《{title}》củbên trong，có thểlàđãhoặc。",
+                    f"Mình chưa lấy được nội dung chi tiết của tin \"{title}\".",
                     None,
                 )
 
             # xây dựngbáo cáo
             detail_report = (
-                f"theodữ liệu，sử dụng{lang}sử dụngcủyêu cầu：\n\n"
-                f": {title}\n"
-                f"bên trong: {detail_content}\n\n"
-                f"(vớitrênbên trongtiến hành，thông tin，bằng、củphương thứchướngsử dụng，"
-                f"khôngphảivà/cũngnàylà，thìlàtại/trongmộthoàn chỉnhcủ)"
+                f"Hãy dùng ngôn ngữ {lang} để tóm tắt tin sau cho người dùng Việt Nam:\n\n"
+                f"Tiêu đề: {title}\n"
+                f"Nội dung: {detail_content}\n\n"
+                "Trả lời ngắn gọn, nêu ý chính và tránh khẳng định vượt quá nội dung nguồn."
             )
 
             return ActionResponse(Action.REQLLM, detail_report, None)
@@ -224,7 +221,7 @@ def get_news_from_chinanews(
 
         if not news_items:
             return ActionResponse(
-                Action.REQLLM, "，có thểlấyđếnthông tin，sau。", None
+                Action.REQLLM, "Mình chưa lấy được tin tức từ nguồn cấu hình, bạn thử lại sau nhé.", None
             )
 
         # 
@@ -235,18 +232,16 @@ def get_news_from_chinanews(
             conn.last_news_link = {}
         conn.last_news_link = {
             "link": selected_news.get("link", "#"),
-            "title": selected_news.get("title", "không xác định"),
+            "title": selected_news.get("title", "không rõ tiêu đề"),
         }
 
         # xây dựngbáo cáo
         news_report = (
-            f"theodữ liệu，sử dụng{lang}sử dụngcủyêu cầu：\n\n"
-            f": {selected_news['title']}\n"
-            f"khi/thời: {selected_news['pubDate']}\n"
-            f"bên trong: {selected_news['description']}\n"
-            f"(bằng、củphương thứchướngsử dụngnày，có thểbên trong，"
-            f"ra，khôngcầnbên ngoàinhiềucủbên trong。"
-            f"nhưsử dụnghơnnhiều，sử dụngcó thểnói'này'lấyhơnnhiềubên trong)"
+            f"Hãy dùng ngôn ngữ {lang} để đọc tin này cho người dùng Việt Nam:\n\n"
+            f"Tiêu đề: {selected_news['title']}\n"
+            f"Thời gian: {selected_news['pubDate']}\n"
+            f"Tóm tắt nguồn: {selected_news['description']}\n"
+            "Trả lời ngắn gọn. Nếu người dùng muốn biết thêm, họ có thể hỏi chi tiết tin này."
         )
 
         return ActionResponse(Action.REQLLM, news_report, None)
@@ -254,5 +249,5 @@ def get_news_from_chinanews(
     except Exception as e:
         logger.bind(tag=TAG).error(f"lấyra: {e}")
         return ActionResponse(
-            Action.REQLLM, "，lấykhi/thờisai，sau。", None
+            Action.REQLLM, "Mình gặp lỗi khi lấy tin tức, bạn thử lại sau nhé.", None
         )
